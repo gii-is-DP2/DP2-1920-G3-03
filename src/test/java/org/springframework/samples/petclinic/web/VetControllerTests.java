@@ -57,18 +57,9 @@ class VetControllerTests {
         @WithMockUser(value = "spring")
 	@Test
 	void testShowVetListHtml() throws Exception {
-		mockMvc.perform(get("/vets.html")).andExpect(status().isOk()).andExpect(model().attributeExists("vets"))
+		mockMvc.perform(get("/vets")).andExpect(status().isOk()).andExpect(model().attributeExists("vets"))
 				.andExpect(view().name("vets/vetList"));
-	}
-
-	@WithMockUser(value = "spring")
-        @Test
-	void testShowResourcesVetList() throws Exception {
-		ResultActions actions = mockMvc.perform(get("/vets.json").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
-		actions.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.vetList[0].id").value(1));
-	}
+	}	
 
 	@WithMockUser(value = "spring")
         @Test
