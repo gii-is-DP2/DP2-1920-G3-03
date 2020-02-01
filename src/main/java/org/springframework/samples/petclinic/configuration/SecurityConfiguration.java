@@ -38,9 +38,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/owners/**","/vets/**").hasAuthority("admin")
 				.anyRequest().denyAll()
 				.and()
-				 .formLogin()
+				 	.formLogin()
 				 	/*.loginPage("/login")*/
-				 	.failureUrl("/login-error");
+				 	.failureUrl("/login-error")
+				.and()
+					.logout()
+						.logoutSuccessUrl("/"); 
 	}
 
 	@Override
