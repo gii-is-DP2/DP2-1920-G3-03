@@ -51,3 +51,12 @@ INSERT INTO visits VALUES (1, 7, '2013-01-01', 'rabies shot');
 INSERT INTO visits VALUES (2, 8, '2013-01-02', 'rabies shot');
 INSERT INTO visits VALUES (3, 8, '2013-01-03', 'neutered');
 INSERT INTO visits VALUES (4, 7, '2013-01-04', 'spayed');
+-- One admin user, named admin1 with passwor 4dm1n and authority admin
+INSERT INTO users VALUES ('admin1','4dm1n',TRUE)
+INSERT INTO authorities VALUES ('admin1','admin')
+-- One owner user, named owner1 with passwor 0wn3r
+INSERT INTO users VALUES ('owner1','0wn3r',TRUE);
+INSERT INTO authorities VALUES ('owner1','owner')
+-- One vet user, named vet1 with passwor v3t
+INSERT INTO users VALUES ('vet1','v3t',TRUE);
+INSERT INTO authorities VALUES ('vet1','veterinarian')

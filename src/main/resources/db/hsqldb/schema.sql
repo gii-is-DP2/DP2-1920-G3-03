@@ -65,8 +65,8 @@ ALTER TABLE visits ADD CONSTRAINT fk_visits_pets FOREIGN KEY (pet_id) REFERENCES
 CREATE INDEX visits_pet_id ON visits (pet_id);
 
 CREATE TABLE users(
-	username varchar_ignorecase(50) NOT NULL PRIMARY KEY,
-	password varchar_ignorecase(50) NOT NULL,
+	username varchar_ignorecase(255) NOT NULL PRIMARY KEY,
+	password varchar_ignorecase(255) NOT NULL,
 	enabled BOOLEAN NOT NULL
 );
 

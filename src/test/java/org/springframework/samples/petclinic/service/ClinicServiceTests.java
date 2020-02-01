@@ -15,13 +15,12 @@
  */
 package org.springframework.samples.petclinic.service;
 
-import java.security.Provider.Service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.util.Collection;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -32,6 +31,7 @@ import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.util.EntityUtils;
+import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,9 +65,9 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Michael Isvy
  * @author Dave Syer
  */
-@ExtendWith(SpringExtension.class)
+
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-abstract class ClinicServiceTests {
+class ClinicServiceTests {
 
 	@Autowired
 	protected ClinicService clinicService;
