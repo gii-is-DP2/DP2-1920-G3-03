@@ -34,6 +34,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Simple business object representing a pet.
@@ -46,7 +48,7 @@ import java.util.Set;
 @Table(name = "pets")
 public class Pet extends NamedEntity {
 
-	@Column(name = "birth_date")
+	@Column(name = "birth_date")        
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate birthDate;
 
