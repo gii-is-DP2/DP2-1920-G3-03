@@ -22,7 +22,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Owner;
-import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -44,13 +44,14 @@ public class OwnerController {
 	private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
 
 	private final ClinicService clinicService;
-	
 	private final UserService userService;
+	private final AuthoritiesService authoritiesService;
 
 	@Autowired
-	public OwnerController(ClinicService clinicService, UserService userService) {
+	public OwnerController(ClinicService clinicService, UserService userService, AuthoritiesService authoritiesService) {
 		this.clinicService = clinicService;
 		this.userService = userService;
+		this.authoritiesService = authoritiesService;
 	}
 
 	@InitBinder
@@ -71,9 +72,13 @@ public class OwnerController {
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		}
 		else {
+			//creating owner
 			this.clinicService.saveOwner(owner);
-			User user = owner.getUser();
-			this.userService.saveUser(user);
+			//creating user
+			this.userService.saveUser(owner.getUser());
+			//creating authorities
+			this.authoritiesService.saveAuthorities(owner.getUser().getUsername(), "owner");
+			
 			return "redirect:/owners/" + owner.getId();
 		}
 	}
