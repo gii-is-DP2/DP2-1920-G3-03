@@ -44,14 +44,10 @@ public class OwnerController {
 	private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
 
 	private final ClinicService clinicService;
-	private final UserService userService;
-	private final AuthoritiesService authoritiesService;
 
 	@Autowired
 	public OwnerController(ClinicService clinicService, UserService userService, AuthoritiesService authoritiesService) {
 		this.clinicService = clinicService;
-		this.userService = userService;
-		this.authoritiesService = authoritiesService;
 	}
 
 	@InitBinder
@@ -72,12 +68,8 @@ public class OwnerController {
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		}
 		else {
-			//creating owner
+			//creating owner, user and authorities
 			this.clinicService.saveOwner(owner);
-			//creating user
-			this.userService.saveUser(owner.getUser());
-			//creating authorities
-			this.authoritiesService.saveAuthorities(owner.getUser().getUsername(), "owner");
 			
 			return "redirect:/owners/" + owner.getId();
 		}

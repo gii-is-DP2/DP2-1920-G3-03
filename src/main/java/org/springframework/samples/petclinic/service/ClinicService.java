@@ -48,6 +48,12 @@ public class ClinicService {
 	private OwnerRepository ownerRepository;
 
 	private VisitRepository visitRepository;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private AuthoritiesService authoritiesService;
 
 	@Autowired
 	public ClinicService(PetRepository petRepository, VetRepository vetRepository, OwnerRepository ownerRepository,
@@ -75,7 +81,12 @@ public class ClinicService {
 
 	@Transactional
 	public void saveOwner(Owner owner) throws DataAccessException {
-		ownerRepository.save(owner);
+		//creating owner
+		ownerRepository.save(owner);		
+		//creating user
+		userService.saveUser(owner.getUser());
+		//creating authorities
+		authoritiesService.saveAuthorities(owner.getUser().getUsername(), "owner");
 	}
 
 	@Transactional
