@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import java.util.Collection;
+import org.springframework.samples.petclinic.model.Visit;
 
 /**
  * @author Juergen Hoeller
@@ -57,6 +58,11 @@ public class PetController {
 	@ModelAttribute("owner")
 	public Owner findOwner(@PathVariable("ownerId") int ownerId) {
 		return this.clinicService.findOwnerById(ownerId);
+	}
+        
+        @ModelAttribute("pet")
+	public Pet findPet(@PathVariable("petId") int petId) {
+		return this.clinicService.findPetById(petId);
 	}
 
 	@InitBinder("owner")
@@ -107,8 +113,8 @@ public class PetController {
 			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		}
 		else {
-			owner.addPet(pet);
-			this.clinicService.savePet(pet);
+			owner.addPet(pet);                                               
+			this.clinicService.savePet(pet);                        
 			return "redirect:/owners/{ownerId}";
 		}
 	}
