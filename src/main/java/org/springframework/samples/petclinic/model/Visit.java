@@ -24,6 +24,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Simple JavaBean domain object representing a visit.
@@ -37,7 +39,7 @@ public class Visit extends BaseEntity {
 	/**
 	 * Holds value of property date.
 	 */
-	@Column(name = "visit_date")
+	@Column(name = "visit_date")        
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate date;
 

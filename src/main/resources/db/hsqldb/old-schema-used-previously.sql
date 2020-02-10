@@ -5,7 +5,8 @@ DROP TABLE visits IF EXISTS;
 DROP TABLE pets IF EXISTS;
 DROP TABLE types IF EXISTS;
 DROP TABLE owners IF EXISTS;
-
+DROP TABLE users IF EXISTS;
+DROP TABLE authorities IF EXISTS;
 
 CREATE TABLE vets (
   id         INTEGER IDENTITY PRIMARY KEY,
@@ -62,3 +63,18 @@ CREATE TABLE visits (
 );
 ALTER TABLE visits ADD CONSTRAINT fk_visits_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
 CREATE INDEX visits_pet_id ON visits (pet_id);
+
+CREATE TABLE users(
+	username varchar_ignorecase(255) NOT NULL PRIMARY KEY,
+	password varchar_ignorecase(255) NOT NULL,
+	enabled BOOLEAN NOT NULL
+);
+
+CREATE TABLE authorities (
+	username varchar_ignorecase(50) NOT NULL,
+	authority varchar_ignorecase(50) NOT NULL,	
+);
+ALTER TABLE authorities ADD CONSTRAINT fk_authorities_users FOREIGN KEY (username) REFERENCES users(username);
+
+CREATE UNIQUE INDEX ix_auth_username ON authorities (username,authority);
+

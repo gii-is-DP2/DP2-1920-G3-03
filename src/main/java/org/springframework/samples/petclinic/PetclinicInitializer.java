@@ -7,7 +7,7 @@ public class PetclinicInitializer extends SpringBootServletInitializer {
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(SpringBoot3LayersPetclinicApplication.class);
+		return application.sources(PetclinicApplication.class);
 	}
 
 }

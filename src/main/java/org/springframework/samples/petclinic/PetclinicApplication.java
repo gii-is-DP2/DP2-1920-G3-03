@@ -4,12 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
-@EnableAutoConfiguration
-public class SpringBoot3LayersPetclinicApplication {
+@SpringBootApplication()
+public class PetclinicApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringBoot3LayersPetclinicApplication.class, args);
+		SpringApplication.run(PetclinicApplication.class, args);
 	}
 
 }
