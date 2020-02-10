@@ -33,21 +33,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-<<<<<<< HEAD
-                                // Recursos estáticos y consola de la BD
-				.antMatchers("/resources/**","/webjars/**","/h2-console/**").permitAll()                                
-				// Página de inicio y errores:
-                                .antMatchers(HttpMethod.GET, "/","/oups").permitAll()
-				// Zona protegida solo para administradores:
-                                .antMatchers("/owners/**","/vets/**").hasAuthority("admin")                                
-=======
 				.antMatchers("/resources/**","/webjars/**","/h2-console/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/","/oups").permitAll()
 				.antMatchers("/users/new").permitAll()
 				.antMatchers("/admin/**").hasAnyAuthority("admin")
 				.antMatchers("/owners/**").hasAnyAuthority("owner","admin")				
 				.antMatchers("/vets/**").authenticated()
->>>>>>> carlos_auth
 				.anyRequest().denyAll()
 				.and()
 				 	.formLogin()

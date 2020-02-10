@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import java.util.Collection;
+import org.springframework.beans.BeanUtils;
 import org.springframework.samples.petclinic.model.Visit;
 
 /**
@@ -60,11 +61,16 @@ public class PetController {
 		return this.clinicService.findOwnerById(ownerId);
 	}
         
-        @ModelAttribute("pet")
-	public Pet findPet(@PathVariable("petId") int petId) {
-		return this.clinicService.findPetById(petId);
-	}
-
+        /*@ModelAttribute("pet")
+	public Pet findPet(@PathVariable("petId") Integer petId) {
+            Pet result=null;
+		if(petId!=null)
+                    result=this.clinicService.findPetById(petId);
+                else
+                    result=new Pet();
+            return result;
+	}*/
+                
 	@InitBinder("owner")
 	public void initOwnerBinder(WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
@@ -106,15 +112,26 @@ public class PetController {
 		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 	}
 
-	@PostMapping(value = "/pets/{petId}/edit")
-	public String processUpdateForm(@Valid Pet pet, BindingResult result, Owner owner, ModelMap model) {
+    /**
+     *
+     * @param pet
+     * @param result
+     * @param petId
+     * @param model
+     * @param owner
+     * @param model
+     * @return
+     */
+        @PostMapping(value = "/pets/{petId}/edit")
+	public String processUpdateForm(@Valid Pet pet, BindingResult result, Owner owner,@PathVariable("petId") int petId, ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("pet", pet);
 			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		}
 		else {
-			owner.addPet(pet);                                               
-			this.clinicService.savePet(pet);                        
+                        Pet petToUpdate=this.clinicService.findPetById(petId);
+			BeanUtils.copyProperties(pet, petToUpdate, "id","owner","visits");                                                              
+			this.clinicService.savePet(petToUpdate);                                                
 			return "redirect:/owners/{ownerId}";
 		}
 	}
