@@ -19,17 +19,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
+import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.model.Authorities;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
 import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
@@ -102,6 +108,12 @@ class ClinicServiceTests {
 		owner.setAddress("4, Evans Street");
 		owner.setCity("Wollongong");
 		owner.setTelephone("4444444444");
+                User user=new User();
+                user.setUsername("Sam");
+                user.setPassword("supersecretpassword");
+                user.setEnabled(true);
+                owner.setUser(user);                
+                
 		this.clinicService.saveOwner(owner);
 		assertThat(owner.getId().longValue()).isNotEqualTo(0);
 
@@ -156,7 +168,11 @@ class ClinicServiceTests {
 		owner6.addPet(pet);
 		assertThat(owner6.getPets().size()).isEqualTo(found + 1);
 
-		this.clinicService.savePet(pet);
+            try {
+                this.clinicService.savePet(pet);
+            } catch (DuplicatedPetNameException ex) {
+                Logger.getLogger(ClinicServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+            }
 		this.clinicService.saveOwner(owner6);
 
 		owner6 = this.clinicService.findOwnerById(6);
@@ -199,7 +215,11 @@ class ClinicServiceTests {
 		pet7.addVisit(visit);
 		visit.setDescription("test");
 		this.clinicService.saveVisit(visit);
-		this.clinicService.savePet(pet7);
+            try {
+                this.clinicService.savePet(pet7);
+            } catch (DuplicatedPetNameException ex) {
+                Logger.getLogger(ClinicServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
 		pet7 = this.clinicService.findPetById(7);
 		assertThat(pet7.getVisits().size()).isEqualTo(found + 1);
