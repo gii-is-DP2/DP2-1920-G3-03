@@ -41,15 +41,9 @@ import org.springframework.util.StringUtils;
  * @author Michael Isvy
  */
 @Service
-public class ClinicService {
+public class OwnerService {
 
-	private PetRepository petRepository;
-
-	private VetRepository vetRepository;
-
-	private OwnerRepository ownerRepository;
-
-	private VisitRepository visitRepository;
+	private OwnerRepository ownerRepository;	
 	
 	@Autowired
 	private UserService userService;
@@ -58,18 +52,9 @@ public class ClinicService {
 	private AuthoritiesService authoritiesService;
 
 	@Autowired
-	public ClinicService(PetRepository petRepository, VetRepository vetRepository, OwnerRepository ownerRepository,
-			VisitRepository visitRepository) {
-		this.petRepository = petRepository;
-		this.vetRepository = vetRepository;
+	public OwnerService(OwnerRepository ownerRepository) {
 		this.ownerRepository = ownerRepository;
-		this.visitRepository = visitRepository;
-	}
-
-	@Transactional(readOnly = true)
-	public Collection<PetType> findPetTypes() throws DataAccessException {
-		return petRepository.findPetTypes();
-	}
+	}	
 
 	@Transactional(readOnly = true)
 	public Owner findOwnerById(int id) throws DataAccessException {
@@ -89,34 +74,6 @@ public class ClinicService {
 		userService.saveUser(owner.getUser());
 		//creating authorities
 		authoritiesService.saveAuthorities(owner.getUser().getUsername(), "owner");
-	}
-
-	@Transactional
-	public void saveVisit(Visit visit) throws DataAccessException {
-		visitRepository.save(visit);
-	}
-
-	@Transactional(readOnly = true)
-	public Pet findPetById(int id) throws DataAccessException {
-		return petRepository.findById(id);
-	}
-
-	@Transactional
-	public void savePet(Pet pet) throws DataAccessException, DuplicatedPetNameException {
-            if (StringUtils.hasLength(pet.getName()) && pet.isNew() && pet.getOwner().getPet(pet.getName(), true) != null) {
-                throw new DuplicatedPetNameException();
-            }
-            petRepository.save(pet);                
-	}
-
-	@Transactional(readOnly = true)
-	@Cacheable(value = "vets")
-	public Collection<Vet> findVets() throws DataAccessException {
-		return vetRepository.findAll();
-	}
-
-	public Collection<Visit> findVisitsByPetId(int petId) {
-		return visitRepository.findByPetId(petId);
-	}
+	}		
 
 }
