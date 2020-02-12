@@ -137,7 +137,12 @@ public class PetController {
 		else {
                         Pet petToUpdate=this.clinicService.findPetById(petId);
 			BeanUtils.copyProperties(pet, petToUpdate, "id","owner","visits");                                                                                  
+                    try {                    
                         this.clinicService.savePet(petToUpdate);                    
+                    } catch (DuplicatedPetNameException ex) {
+                        result.rejectValue("name", "duplicate", "already exists");
+                        return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+                    }
 			return "redirect:/owners/{ownerId}";
 		}
 	}
