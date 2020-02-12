@@ -30,8 +30,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Visit;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
 
 /**
  * @author Juergen Hoeller
@@ -90,18 +94,20 @@ public class PetController {
 	}
 
 	@PostMapping(value = "/pets/new")
-	public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, ModelMap model) {
-		if (StringUtils.hasLength(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null) {
-			result.rejectValue("name", "duplicate", "already exists");
-		}
+	public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, ModelMap model) {		
 		if (result.hasErrors()) {
 			model.put("pet", pet);
 			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		}
 		else {
+                    try{
 			owner.addPet(pet);
 			this.clinicService.savePet(pet);
-			return "redirect:/owners/{ownerId}";
+                    }catch(DuplicatedPetNameException ex){
+                        result.rejectValue("name", "duplicate", "already exists");
+                        return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+                    }
+                    return "redirect:/owners/{ownerId}";
 		}
 	}
 
@@ -130,8 +136,8 @@ public class PetController {
 		}
 		else {
                         Pet petToUpdate=this.clinicService.findPetById(petId);
-			BeanUtils.copyProperties(pet, petToUpdate, "id","owner","visits");                                                              
-			this.clinicService.savePet(petToUpdate);                                                
+			BeanUtils.copyProperties(pet, petToUpdate, "id","owner","visits");                                                                                  
+                        this.clinicService.savePet(petToUpdate);                    
 			return "redirect:/owners/{ownerId}";
 		}
 	}

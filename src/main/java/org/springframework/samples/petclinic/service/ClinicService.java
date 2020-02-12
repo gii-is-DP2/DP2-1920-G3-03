@@ -29,8 +29,10 @@ import org.springframework.samples.petclinic.repository.OwnerRepository;
 import org.springframework.samples.petclinic.repository.PetRepository;
 import org.springframework.samples.petclinic.repository.VetRepository;
 import org.springframework.samples.petclinic.repository.VisitRepository;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 /**
  * Mostly used as a facade for all Petclinic controllers Also a placeholder
@@ -100,8 +102,11 @@ public class ClinicService {
 	}
 
 	@Transactional
-	public void savePet(Pet pet) throws DataAccessException {
-		petRepository.save(pet);                
+	public void savePet(Pet pet) throws DataAccessException, DuplicatedPetNameException {
+            if (StringUtils.hasLength(pet.getName()) && pet.isNew() && pet.getOwner().getPet(pet.getName(), true) != null) {
+                throw new DuplicatedPetNameException();
+            }
+            petRepository.save(pet);                
 	}
 
 	@Transactional(readOnly = true)
