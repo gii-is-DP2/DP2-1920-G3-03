@@ -1,9 +1,8 @@
-# Spring PetClinic Sample Application [![Build Status](https://travis-ci.org/spring-projects/spring-petclinic.png?branch=master)](https://travis-ci.org/spring-projects/spring-petclinic/)
-Deploy this sample application to Pivotal Web Services:
+# Spring PetClinic Sample Application 
 
-<a href="https://push-to.cfapps.io?repo=https%3A%2F%2Fgithub.com%2Fspring-projects%2Fspring-petclinic.git">
-    <img src="https://push-to.cfapps.io/ui/assets/images/Push-to-Pivotal-Light-with-Shadow.svg" width="180" alt="Push" align="center">
-</a>
+This is a fork of https://github.com/spring-projects/spring-petclinic to be used for the DP2 course. The main changes that have been performed were:
+- Trimming several parts of the application to keep the example low
+- Reorganize some parts of the code according to best practices introduced in the course
 
 ## Understanding the Spring Petclinic application with a few diagrams
 <a href="https://speakerdeck.com/michaelisvy/spring-petclinic-sample-application">See the presentation here</a>
@@ -13,7 +12,7 @@ Petclinic is a [Spring Boot](https://spring.io/guides/gs/spring-boot) applicatio
 
 
 ```
-git clone https://github.com/spring-projects/spring-petclinic.git
+git clone https://github.com/gii-is-DP2/spring-petclinic.git
 cd spring-petclinic
 ./mvnw package
 java -jar target/*.jar
@@ -30,12 +29,12 @@ Or you can run it from Maven directly using the Spring Boot Maven plugin. If you
 ```
 
 ## In case you find a bug/suggested improvement for Spring Petclinic
-Our issue tracker is available here: https://github.com/spring-projects/spring-petclinic/issues
+Our issue tracker is available here: https://github.com/gii-is-DP2/spring-petclinic/issues
 
 
 ## Database configuration
 
-In its default configuration, Petclinic uses an in-memory database (HSQLDB) which
+In its default configuration, Petclinic uses an in-memory database (H2) which
 gets populated at startup with data. A similar setup is provided for MySql in case a persistent database configuration is needed.
 Note that whenever the database type is changed, the app needs to be run with a different profile: `spring.profiles.active=mysql` for MySql.
 
@@ -45,7 +44,7 @@ You could start MySql locally with whatever installer works for your OS, or with
 docker run -e MYSQL_USER=petclinic -e MYSQL_PASSWORD=petclinic -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=petclinic -p 3306:3306 mysql:5.7.8
 ```
 
-Further documentation is provided [here](https://github.com/spring-projects/spring-petclinic/blob/master/src/main/resources/db/mysql/petclinic_db_setup_mysql.txt).
+Further documentation is provided [here](https://github.com/gii-is-DP2/spring-petclinic/blob/master/src/main/resources/db/mysql/petclinic_db_setup_mysql.txt).
 
 ## Working with Petclinic in your IDE
 
@@ -64,7 +63,7 @@ The following items should be installed in your system:
 
 1) On the command line
 ```
-git clone https://github.com/spring-projects/spring-petclinic.git
+git clone https://github.com/gii-is-DP2/spring-petclinic.git
 ```
 2) Inside Eclipse or STS
 ```
@@ -93,9 +92,9 @@ Visit [http://localhost:8080](http://localhost:8080) in your browser.
 
 |Spring Boot Configuration | Class or Java property files  |
 |--------------------------|---|
-|The Main Class | [PetClinicApplication](https://github.com/spring-projects/spring-petclinic/blob/master/src/main/java/org/springframework/samples/petclinic/PetClinicApplication.java) |
-|Properties Files | [application.properties](https://github.com/spring-projects/spring-petclinic/blob/master/src/main/resources) |
-|Caching | [CacheConfiguration](https://github.com/spring-projects/spring-petclinic/blob/master/src/main/java/org/springframework/samples/petclinic/system/CacheConfiguration.java) |
+|The Main Class | [PetClinicApplication](https://github.com/gii-is-DP2/spring-petclinic/blob/master/src/main/java/org/springframework/samples/petclinic/PetClinicApplication.java) |
+|Properties Files | [application.properties](https://github.com/gii-is-DP2/spring-petclinic/blob/master/src/main/resources) |
+|Caching | [CacheConfiguration](https://github.com/gii-is-DP2/spring-petclinic/blob/master/src/main/java/org/springframework/samples/petclinic/system/CacheConfiguration.java) |
 
 ## Interesting Spring Petclinic branches and forks
 
@@ -105,22 +104,9 @@ GitHub org is the "canonical" implementation, currently based on Spring Boot and
 [spring-petclinic](https://github.com/spring-petclinic). If you have a special interest in a different technology stack
 that could be used to implement the Pet Clinic then please join the community there.
 
-
-## Interaction with other open source projects
-
-One of the best parts about working on the Spring Petclinic application is that we have the opportunity to work in direct contact with many Open Source projects. We found some bugs/suggested improvements on various topics such as Spring, Spring Data, Bean Validation and even Eclipse! In many cases, they've been fixed/implemented in just a few days.
-Here is a list of them:
-
-| Name | Issue |
-|------|-------|
-| Spring JDBC: simplify usage of NamedParameterJdbcTemplate | [SPR-10256](https://jira.springsource.org/browse/SPR-10256) and [SPR-10257](https://jira.springsource.org/browse/SPR-10257) |
-| Bean Validation / Hibernate Validator: simplify Maven dependencies and backward compatibility |[HV-790](https://hibernate.atlassian.net/browse/HV-790) and [HV-792](https://hibernate.atlassian.net/browse/HV-792) |
-| Spring Data: provide more flexibility when working with JPQL queries | [DATAJPA-292](https://jira.springsource.org/browse/DATAJPA-292) |
-
-
 # Contributing
 
-The [issue tracker](https://github.com/spring-projects/spring-petclinic/issues) is the preferred channel for bug reports, features requests and submitting pull requests.
+The [issue tracker](https://github.com/gii-is-DP2/spring-petclinic/issues) is the preferred channel for bug reports, features requests and submitting pull requests.
 
 For pull requests, editor preferences are available in the [editor config](.editorconfig) for easy use in common text editors. Read more and download plugins at <https://editorconfig.org>. If you have not previously done so, please fill out and submit the [Contributor License Agreement](https://cla.pivotal.io/sign/spring).
 
