@@ -7,13 +7,25 @@
 
 ## Historias de Usuario
 ### Administrador (TODO)
-1.
+#### Nombre
+Descripción
+##### Escenarios:
+* 
 ### Monitor de clases (TODO)
-2. 
+#### Nombre
+Descripción
+##### Escenarios:
+* 
 ### Entrenador (TODO)
-3. 
+#### Nombre
+Descripción
+##### Escenarios:
+* 
 ### Cliente (TODO)
-4.
+#### Nombre
+Descripción
+##### Escenarios:
+* 
 
 ## Planificación y asignación de las historias de usuario (TODO)
 | Historia de Usuario | Sprint | Pareja asignada |
