@@ -3,7 +3,19 @@
 ## Descripción de la aplicación (TODO)
 
 ## Entidades (TODO)
-* 
+* Ejercicio
+* Oraciones
+* Rutinas
+* Entrenamiento
+* Maquinas
+* Actividades
+* Dieta
+* Productos
+* Foros
+* Clasificación
+* Retos
+* Mensajes
+
 
 ## Historias de Usuario
 ### Administrador 
