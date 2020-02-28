@@ -56,11 +56,18 @@ Como administrador quiero que se muestren oraciones motivacionales diariamente p
 * **Mostrar oración diaria, conexión con API estable:** Dado un usuario con un rol cualquiera y una conexión con la API de oraciones estable, cuando se acceda la página principal de la aplicación, entonces se mostrará la oración del día.
 * **Mostrar oración diaria, conexión con API no estable:** Dado un usuario con un rol cualquiera y una conexión con la API de oraciones no estable, cuando se acceda la página principal de la aplicación, entonces se mostrará una oración motivacional predefinida.
 ---
-### Monitor de clases (TODO)
-#### Nombre
-Descripción
+### Monitor de clases
+#### Conocer el nº de asistentes a mis clases
+Como monitor quiero que se me muestren el número de clientes que se han apuntado a cada una de mis clases para poder decidir no ir a la clase si el número es 0, o adaptarla al total de participantes.
 #### Escenarios:
-* 
+* **Mostrar el nº de asistentes con asistentes apuntados:** Dado un monitor con clases registradas, cuando acceda a cada una de las clases, se mostrará el nº de asistentes y el aforo máximo.
+* **Mostrar el nº de asistentes sin asistentes apuntados:** Dado un monitor con clases registradas, se mostrará con un aviso aquellas clases sin alumnos asistentes.
+---
+#### Limitar nº de asistentes a mis clases
+Como monitor quiero poder limitar el número de asistentes a cada una de las clases que impartiré, para que estas se desarrollen sin problema y con un aforo adecuado al tipo de clase y sala.
+#### Escenarios:
+* **Limitar a mas de uno el nº máximo de asistentes:** Dado un monitor con clases registradas, establece un número mayor que 0 de límite y este se registra correctamente.
+* **Limitar a 0 el nº máximo de asistentes:** Dado un monitor con clases registradas, se le indicará que el aforo máximo debe ser mayor a 0 para que puedan asistir clientes.
 ---
 ### Entrenador (TODO)
 #### Nombre
