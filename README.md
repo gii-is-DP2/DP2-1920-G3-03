@@ -20,6 +20,7 @@ La aplicación web a desarrollar tiene como nombre YogoGym. El objetivo fundamen
 
 ## Historias de Usuario
 ### Administrador
+---
 #### Proponer retos semanales y mensuales 
 Como administrador quiero añadir retos semanales y mensuales al gimnasio para clientes individuales y gremios 
 para que estos puedan competir por lograrlos y obtengan beneficios en el gimnasio si lo hacen.
@@ -56,8 +57,30 @@ Como administrador quiero que se muestren oraciones motivacionales diariamente p
 * **Mostrar oración diaria, conexión con API estable:** Dado un usuario con un rol cualquiera y una conexión con la API de oraciones estable, cuando se acceda la página principal de la aplicación, entonces se mostrará la oración del día.
 * **Mostrar oración diaria, conexión con API no estable:** Dado un usuario con un rol cualquiera y una conexión con la API de oraciones no estable, cuando se acceda la página principal de la aplicación, entonces se mostrará una oración motivacional predefinida.
 ---
+#### Crear y asignar clases
+Como administrador quiero poder crear clases y asignarla a monitores, para poder administrar los horarios, que los clientes puedan apuntarse a ellas y los monitores sepan que clases deben impartir.
+#### Escenarios:
+* **Crear una clase en un horario vacío:** Dado un administrador, este crea una clase asignandole un título, tipo, monitor asignado, horario, la sala y el equipamiento del que dispone.
+* **Crear una clase en una sala y horario ya ocupado:** Dado un administrador, el sistema deberá avisarle de que esa sala con ese horario ya está ocupado por otra clase.
+* **Crear una clase y asignarla a un monitor ya ocupado:** Dado un administrador, el sistema deberá avisarle de que ese monitor ya está ocupado en ese horario en cualquiera de las salas.
+
+---
 ### Monitor de clases
-#### Conocer el nº de asistentes a mis clases
+---
+#### Ver horario clases que imparto
+Como monitor quiero poder visualizar el horario de las clases que imparto, para poder saber en que sala y a que hora debo estar para impartirla.
+#### Escenarios:
+* **Mostrar el horario con clases existentes:** Dado un monitor y clases asignadas a él, mostrarle el horario de las clases que imparte, visualizando: cada clase con su día y hora y el aula a usar.
+* **Mostrar el horario sin clases existentes:** Dado un monitor sin clases asignadas, mostrarle un aviso de que no dispone de horario porque no tiene clases asignadas.
+---
+#### Ver equipo disponible en mi clase
+Como monitor quiero ver el equipo disponible en cada aula, para poder saber de que dispondré en cada clase y poder adecuarla a ello.
+#### Escenarios:
+* **Mostrar el equipo disponible en un aula con equipo:** Dado un monitor y una clase asignada a él, mostrar el equipo del que dispone el aula.
+* **Mostrar el equipo disponible en un aula sin equipo:** Dado un monitor y una clase asignada a él, avisar de que el áula no dispone de equipo.
+* **Unir esta con mostrar nº de asistentes**
+---
+#### Mostrar el nº de asistentes a mis clases
 Como monitor quiero que se me muestren el número de clientes que se han apuntado a cada una de mis clases para poder decidir no ir a la clase si el número es 0, o adaptarla al total de participantes.
 #### Escenarios:
 * **Mostrar el nº de asistentes con asistentes apuntados:** Dado un monitor con clases registradas, cuando acceda a cada una de las clases, se mostrará el nº de asistentes y el aforo máximo.
@@ -70,12 +93,21 @@ Como monitor quiero poder limitar el número de asistentes a cada una de las cla
 * **Limitar a 0 el nº máximo de asistentes:** Dado un monitor con clases registradas, se le indicará que el aforo máximo debe ser mayor a 0 para que puedan asistir clientes.
 ---
 ### Entrenador (TODO)
+---
 #### Nombre
 Descripción
 #### Escenarios:
 * 
 ---
 ### Cliente (TODO)
+---
+#### Apuntarme a Clase
+Como cliente quiero poder apuntarme a las clases que me interesen, para poder asistir a ellas y saber el horario en las que se imparten.
+#### Escenarios:
+* **Apuntarse a una clase con huecos disponibles:** Dado un cliente y una clase sin el aforo completo, el cliente le da a inscribirse, se registra, y aumenta en uno el número de asistentes a esa clase.
+* **Apuntarse a una clase sin huecos disponibles:** Dado un cliente y una clase sin huecos disponibles, el cliente le da a inscribirse, y salta un aviso de que el aforo ya está completo.
+* **Apuntarse a una clase en el mismo horario que otra:** Dado un cliente y una clase con horario igual a otra que ya esté inscrito, le da a inscribirse y le salta un aviso diciendo que se solapa el horario con otra clase.
+---
 #### Nombre
 Descripción
 #### Escenarios:
