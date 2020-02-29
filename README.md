@@ -94,10 +94,37 @@ Como monitor quiero poder limitar el número de asistentes a cada una de las cla
 ---
 ### Entrenador (TODO)
 ---
-#### Nombre
-Descripción
+#### Mostrar clientes referidos
+Como monitor quiero poder ver los clientes que están relacionados conmigo para poder llevar un mejor seguimiento de mis referidos.
 #### Escenarios:
-* 
+* **Mostrar clientes cuando no tienes ninguno referido:** Dado un entrenador sin clientes referidos muestra los clientes sin entrenadores para ayudar a captar nuevos clientes.
+* **Mostrar clientes cuando tienes referidos:** Dado un entrenador con clientes referidos muestra los clientes y los enlaces a su perfil.
+---
+#### Realizar rutinas a los clientes
+Como monitor quiero poder quiero poder realizar rutinas a los clientes para poder ayudarles durante su entrenamiento.
+#### Escenarios:
+* **Realizar rutinas a los clientes:** Dado un entrenador sin clientes referidos muestra los clientes sin entrenadores para ayudar a captar nuevos clientes.
+* **Realizar rutinas a cliente referido:** Dado un entrenador con un cliente referido se le crea una rutina desde 0 o se le asocia una ya existente a dicho cliente.
+* **Realizar rutinas a cliente no referido:** Dado un entrenador con un cliente no referido, se le crea una rutina desde 0 o se le asocia una ya existente a dicho cliente y ese cliente pasa a ser un cliente asociado al entrenador.
+---
+#### Responder las dudas de los clientes
+Como monitor quiero poder responder las dudas de los clientes para ayudarles a realizar correctamente su entrenamiento, ejercicios, dietas, etc.
+#### Escenarios:
+* **Responder con lenguaje adecuado:** Dado un entrenador y un mensaje para su cliente comprueba que el mensaje no contenga lenguaje soez para evitar la falta de profesionalidad e impide su envío hasta su correción.
+* **Responder con lenguaje adecuado:** Dado un entrenador y un mensaje para su cliente comprueba que el mensaje no contenga lenguaje soez para evitar la falta de profesionalidad y procede a su envío.
+---
+
+#### Realizar las dietas de los clientes
+Como monitor quiero poder realizar las dietas de los clientes para ayudarles a complementar su entrenamiento.
+#### Escenarios:
+* **Usuario sin dieta asignada:** Dado un entrenador y cliente asociado sin dieta asignada se le crea o asigna una dieta previamente creada.
+* **Usuario sin dieta asignada:** Dado un entrenador y cliente asociado con dieta asignada no se le puede asociar otra dieta hasta que no se acabe o elimine la anterior.
+---
+#### Vender productor relacionados con la dieta de los clientes
+Como monitor quiero poder conseguir dinero referido a la venta de productos relacionados con la dieta del cliente para conseguir ingresos extras.
+#### Escenarios:
+* **Promocionar productos relacionados:** Dado un entrenador y cliente asociado con dieta asignada se permite asociar links y publicidad relacionada con los productos de su dieta.
+* **Promocionar productos no relacionados:** Dado un entrenador y cliente asociado con dieta asignada no se permite asociar links y publicidad relacionada con productos que no estén relacionados con su dieta.
 ---
 ### Cliente (TODO)
 ---
