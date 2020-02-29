@@ -94,8 +94,6 @@ Como monitor quiero poder limitar el número de asistentes a cada una de las cla
 ---
 ### Entrenador
 ---
-### Entrenador
----
 #### Añadir rutinas a nuestros clientes
 Como entrenador quiero realizar rutinas a nuestros clientes para facilitar el desarrollo físico del cliente
 #### Escenarios:
