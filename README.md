@@ -92,8 +92,64 @@ Como monitor quiero poder limitar el número de asistentes a cada una de las cla
 * **Limitar a mas de uno el nº máximo de asistentes:** Dado un monitor con clases registradas, establece un número mayor que 0 de límite y este se registra correctamente.
 * **Limitar a 0 el nº máximo de asistentes:** Dado un monitor con clases registradas, se le indicará que el aforo máximo debe ser mayor a 0 para que puedan asistir clientes.
 ---
-### Entrenador (TODO)
+### Entrenador
 ---
+### Entrenador
+---
+#### Añadir rutinas a nuestros clientes
+Como entrenador quiero realizar rutinas a nuestros clientes para facilitar el desarrollo físico del cliente
+#### Escenarios:
+* **Añadir rutina a un usuario, ya existe una rutina
+Dado un usuario que ya posee una rutina, cuando como entrenador intento asignarle una rutina. La operación de añadir la rutina no se efectúa resultando en el sistema informando al entrenador que el usuario ya posee una rutina.
+* **Añadir una rutina a un usuario, se añade vacía
+Dado un entrenador que añade una rutina a un usuario, cuando se intenta añadir vacía. La operación de añadir rutina no se efectúa resultando en el sistema informando al entrenador que debe como mínimo introducir un ejercicio.
+* **Añadir una rutina a un usuario sin rutina
+Dado un entrenador que añade una rutina a un usuario, cuando este usuario no tiene ninguna rutina. La operación de añadir rutina se efectúa correctamente y esta queda disponible tanto por el usuario para poder visualizarla como para el entrenador poder modificarla.
+* **Añadir una rutina a un usuario el cual no entrenas
+Dado un entrenador que añade una rutina a un usuario, cuando no entrenas a este usuario. La operación de añadir rutina no se realiza. La vista muestra una excepción al entrenador de que no puede añadir una rutina a un usuario el cual no entrena.
+#### Gestionar la rutina de nuestros clientes en función de la intensidad, duración y cantidad de ejercicios
+Como entrenador quiero llevar el control de las rutinas en función de intensidad, duración y cantidad de ejercicios para poder cambiar la rutina adaptándola de la mejor forma al cliente.
+#### Escenarios:
+* **Gestionar la rutina de un usuario sin que este tenga rutina
+Dado un entrenador que se dispone a gestionar la rutina de un usuario, cuando ese usuario no posee ninguna rutina. La vista de encargada la gestión de rutinas notificará al entrenador de que el usuario indicado que no posee ninguna rutina y le ofertará la opción de crearla. 
+* **Gestionar la rutina de un usuario cuyo usuario no entrenas
+Dado un entrenador que se dispone a gestionar la rutina de un usuario, cuando no eres entrenador de ese usuario. La operación de gestión no se puede efectuar. El sistema limita a solo poder ver la rutina que tiene el usuario deseado, pero no es manipulable por alguien que no sea su entrenador.
+* **Gestionar la rutina de un usuario borrando todos los ejercicios
+Dado un entrenador que se dispone a gestionar la rutina, en este caso modificar, de un usuario, borrando todos los ejercicios, cuando el usuario posee una rutina completa. La operación de gestión no se puede efectuar ya que debe existir un mínimo de 3 actividades por rutina.
+* **Gestionar la rutina de un usuario
+Dado un entrenador que se dispone a gestionar la rutina de un usuario si incumplir ninguna regla de negocio, cuando este usuario ya posee una. La operación de gestión se efectúa correctamente y esta queda disponible tanto por el usuario para poder visualizar los cambios como para el entrenador poder modificarlos en un futuro.
+#### Responder a las dudas presentadas por los clientes
+Como entrenador quiero responder a las dudas de los clientes para ayudarlo con todo lo relacionado con su entrenamiento y pueda aprender.
+#### Escenarios:
+* **Responder una duda de un cliente relacionada con dieta
+Dado un entrenador que se dispone a responder la duda de un cliente, cuando ese cliente tiene un duda relacionada con la dieta. El entrenador le responde a través del chat designado respondiendo a la duda especificada aportando el material necesario.
+* **Responder una duda de un cliente relacionada con rutinas
+Dado un entrenador que se dispone a responder la duda de un cliente, cuando ese cliente tiene un duda relacionada con las rutinas. El entrenador le responde a través del chat designado respondiendo a la duda especificada aportando el material necesario.
+* **Responder una duda de un cliente que no esta relacionada con preguntas del ámbito de un gimnasio
+Dado un entrenador que se dispone a responder la duda de un cliente, cuando ese cliente no posee una duda relacionada con el ámbito del gimnasio. El entrenador tiene la opción de finalizar la conversación incluso de reportar al cliente. El sistema guardará esa notificación y a cierto número de reportes el cliente no podrá preguntar por  un determinado tiempo.
+#### Añadir dietas alimenticias a nuestros clientes
+Como entrenador quiero realizar dietas a los clientes para mejorar su evolución física, haciéndola más eficiente.
+* **Añadir una dieta a un cliente que no posee una dieta
+Dado un entrenador que se dispone a añadir la dieta a un usuario, cuando ese usuario no posee ninguna dieta. La operación de añadir dieta se efectúa correctamente y esta queda disponible tanto por el usuario para poder visualizarla como para el entrenador poder modificarla.
+* **Añadir dieta a un usuario, ya existe una dieta
+Dado un usuario que ya posee una dieta, cuando como entrenador intento asignarle una dieta. La operación de añadir la dieta no se efectúa resultando en el sistema informando al entrenador que el usuario ya posee una dieta.
+* **Añadir una dieta a un usuario, se añade vacía
+Dado un entrenador que añade una dieta a un usuario, cuando se intenta añadir vacía. La operación de añadir dieta no se efectúa resultando en el sistema informando al entrenador que debe como mínimo introducir 3 comidas, una para el desayuno, otra para la comida y otro para la cena.
+* **Añadir una dieta a un usuario el cual no entrenas
+Dado un entrenador que añade una dieta a un usuario, cuando no entrenas a este usuario. La operación de añadir dieta no se realiza. La vista muestra una excepción al entrenador de que no puede añadir una dieta a un usuario el cual no entrena.
+#### Gestionar la dieta alimenticia de nuestros clientes en función de kilocalorías, nutrientes esenciales, peso y porcentaje de grasa
+Como entrenador quiero llevar el control de las dietas de los clientes en función de cantidad de kilocalorías, nutrientes esenciales, peso y porcentaje de grasa para poder cambiar las cosas necesarias con el fin de mejorar le evolución del cliente
+#### Escenarios:
+* **Gestionar la dieta de un usuario sin que este tenga rutina
+Dado un entrenador que se dispone a gestionar la dieta de un usuario, cuando ese usuario no posee ninguna dieta. La vista de encargada la gestión de dietas notificará al entrenador de que el usuario indicado que no posee ninguna dieta y le ofertará la opción de crearla. 
+* **Gestionar la dieta de un usuario cuyo usuario no entrenas
+Dado un entrenador que se dispone a gestionar la dieta de un usuario, cuando no eres entrenador de ese usuario. La operación de gestión no se puede efectuar. El sistema limita a solo poder ver la dieta que tiene el usuario deseado, pero no es manipulable por alguien que no sea su entrenador.
+* **Gestionar la dieta de un usuario borrando todos los ejercicios
+Dado un entrenador que se dispone a gestionar la dieta, en este caso modificar, de un usuario, borrando todas las comidas, cuando el usuario posee una dieta completa. La operación de gestión no se puede efectuar ya que debe existir un mínimo de 3 comidas por dieta.
+* **Gestionar la dieta de un usuario
+Dado un entrenador que se dispone a gestionar la dieta de un usuario sin incumplir ninguna regla de negocio, cuando este usuario ya posee una. La operación de gestión se efectúa correctamente y esta queda disponible tanto por el usuario para poder visualizar los cambios como para el entrenador poder modificarlos en un futuro.
+
+#### Lo hizo Xisko ####
 #### Mostrar clientes referidos
 Como monitor quiero poder ver los clientes que están relacionados conmigo para poder llevar un mejor seguimiento de mis referidos.
 #### Escenarios:
@@ -125,6 +181,8 @@ Como monitor quiero poder conseguir dinero referido a la venta de productos rela
 #### Escenarios:
 * **Promocionar productos relacionados:** Dado un entrenador y cliente asociado con dieta asignada se permite asociar links y publicidad relacionada con los productos de su dieta.
 * **Promocionar productos no relacionados:** Dado un entrenador y cliente asociado con dieta asignada no se permite asociar links y publicidad relacionada con productos que no estén relacionados con su dieta.
+
+#### Acaba lo de xisko
 ---
 ### Cliente (TODO)
 ---
