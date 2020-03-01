@@ -173,12 +173,55 @@ Como cliente quiero poder apuntarme a las clases que me interesen, para poder as
 * **Apuntarse a una clase sin huecos disponibles:** Dado un cliente y una clase sin huecos disponibles, el cliente le da a inscribirse, y salta un aviso de que el aforo ya está completo.
 * **Apuntarse a una clase en el mismo horario que otra:** Dado un cliente y una clase con horario igual a otra que ya esté inscrito, le da a inscribirse y le salta un aviso diciendo que se solapa el horario con otra clase.
 ---
-#### Nombre
-Descripción
+#### Consultar todos los ejercicios disponibles
+Como cliente quiero consultar todos los ejercicios disponible para poder coger ideas y realizar mis propias rutinas y entrenamientos.
 #### Escenarios:
-* 
+* **Consultar ejercicios disponibles:** Dado un cliente y un ejercicio publicado o disponible le muestra la información del ejericio.
+* **Consultar ejercicios no disponibles:** Dado un cliente y un ejercicio no publicado o no disponible salta un aviso de que el ejercicio no está disponible.
 ---
+#### Consultar cualquier tipo de duda relacionada con mi entrenamiento
+Como cliente quiero coonsultar cualquier tipo de duda relacionada con mi entrenamiento para poder realizarlo correctamente.
+#### Escenarios:
+* **Dudas relacionadas:** Dado un cliente y un mensaje que incluya una duda que se considere relacionada con su entrenamiento o algún ejercicio se le permitirá publicarla para conseguir ayuda de alguien.
+* **Dudas no relacionadas:** Dado un cliente y un mensaje que incluya una duda que no se considere relacionada con su entrenamiento o algún ejercicio se eliminará el mensaje y se le informará sobre las razones. 
 
+---
+#### Acceder a la tienda de productos para poder realizar de forma eficiente mi dieta
+Como cliente quiero acceder a la tienda de productos para poder realizar de forma eficiente mi dieta.
+#### Escenarios:
+* **Cliente con dieta asignada:** Dado un cliente con una dieta asignada se le permitirá acceder a esta función.
+* **Cliente sin dieta asignada:** Dado un cliente sin una dieta asignada no se le permitirá acceder a esta función y se le pedirá que consiga una dieta antes de acceder.
+
+---
+#### Dietas personalizadas según mi tipo de entrenamiento
+Como cliente quiero poder tener dietas personalizadas según mi tipo de entrenamiento para maximizar el resultado del ejercicio.
+#### Escenarios:
+* **Cliente con entrenamiento asignado:** Dado un cliente con un entrenamiento asignado se le asignará la dieta que mejor complemente su entrenamiento.
+* **Cliente sin entrenamiento asignado:** Dado un cliente sin un entrenamiento asignado no se le permitirá acceder a esta función y se le pedirá que consiga un entrenamiento antes de acceder.
+
+---
+#### Seguir a otros usuarios para copiar su entrenamiento
+Como cliente quiero seguir a otros usuarios para copiar su entrenamiento.
+#### Escenarios:
+* **Usuarios con perfil público:** Dado un cliente con perfil público se permitirá que otros clientes le sigan.
+* **Usuarios con perfil privado:** Dado un cliente con perfil privado no se permitirá que otros clientes le sigan.
+
+---
+---
+#### Dashboard Cliente
+Como cliente quiero poder tener un dashboard donde poder ver el Historial de actividades, Calorías quemadas y otros datos relacionados con mi entrenamiento.
+#### Escenarios:
+* **Suficientes datos que mostrar:** Dado un cliente con actividades realizadas se le mostrarán datos sobre su historial.
+* **Sin datos para mostrar:** Dado un cliente sin actividades realizadas se le mostrarán posibles actividades a realizar para empezar a hacer ejercicio.
+---
+---
+#### Personalizar mi entrenamiento: Crud ejercicio, entrenamiento
+Como cliente quiero poder personalizar mi entrenamiento para actualizarlo o personalizarlo a mi gusto.
+#### Escenarios:
+* **Con permiso para edición:** Dado un cliente con un entrenamiento que pueda ser editado se le permitirá actualizarlo a su gusto.
+* **Sin permiso para edición:** Dado un cliente con un entrenamiento que  no puede ser editado no se le permitirá actualizarlo.
+
+---
 ## Planificación y asignación de las historias de usuario (TODO)
 | Historia de Usuario | Sprint | Pareja asignada |
 | --- | --- | --- |
