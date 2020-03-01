@@ -4,18 +4,18 @@
 La aplicación web a desarrollar tiene como nombre YogoGym. El objetivo fundamental es conseguir modernizar la forma de realizar los entrenamientos y el seguimiento para un local/cadena de esta característica. Con ella se implementarán cuatro roles fundamentales: administrador, monitor de clase, entrenador y cliente. Cada uno de ellos tendrá unas funcionalidades específicas, como por ejemplo los planes de entrenamientos que realizan los entrenadores a sus clientes, pudiendo estos modificarlos para adaptarlos a su necesidad. Para ayudar a administrar el gimnasio, se planea crear gráfica/tableros de control, que ayude a al gerente a saber cuales son las máquinas con más usos, los días en los que más gente acude al entrenamiento, etc. facilitando la gestión del local. También para los clientes se implementará funciones para que, alcanzando unos retos, para los cuales necesitará acreditarlo con una prueba, este reciba algún beneficio.
 
 ## Entidades
-* Ejercicio
-* Oraciones
-* Rutinas
-* Entrenamiento
-* Maquinas
-* Actividades
-* Dieta
-* Productos
-* Foros
-* Clasificación
-* Retos
-* Mensajes
+* Ejercicio, donde se almacenará el tipo de ejercicio, junto con el tiempo y las máquinas necesarias para su realización.
+* Oración, que aparecerá de forma aleatoria en la web.
+* Rutina, será un conjunto de ejercicios específicos para un objetivo específico a un plazo medio.
+* Entrenamiento, será un conjunto de rutinas.
+* Maquina, donde se guardará su nombre y la cantidad de las que se tiene de ella.
+* Actividad, entrenamientos o rutinas echas por los clientes, para tener un seguimiento.
+* Dieta, se guardarán ciertas comidas con las que el cliente podrá cumplir sus necesidades.
+* Producto, se guardará la marca y la cantidad de ellos, como sus calorías
+* Gremio, donde los clientes con unos mismos objetivos/retos podrán compartir sobre ello.
+* Clasificación, orden de los clientes cuando hayan obtenido unos retos.
+* Reto, son unos objetivos a cumplir por los usuarios por los que se les recompensará.
+* Mensaje, se publicará en los gremios para compartir experiencias sobre lo realizado.
 
 
 ## Historias de Usuario
