@@ -252,6 +252,13 @@ Como cliente quiero poder ver la clasificación de mis retos, para poder ver en 
 #### Escenarios
 * **Ver un la clasificación de un reto completado:** Dado un cliente, al pulsar el botón de "mis retos", aparecerá un listado de los retos completados, de tal forma que al seleccionar uno, podrá darle al botón "clasificación" y verá quienes son los primeros y en que puesto se encuentra dicho cliente.
 ---
+#### HU35 - Añadir Playlist adaptada a mis entrenamientos
+Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis entrenamientos, es decir, adecuadas para el nivel de intensidad especificado, para poder motivarme y llevar un ritmo adecuado.
+#### Escenarios
+* **Añadir una playlist a un entrenamiento con ejercicios y spotify responde:** Dado un cliente y un entrenamiento, cuando el cliente pulsa sobre crear playlist asociada, spotify devuelve una playlist no vacía.
+* **Añadir una playlist a un entrenamiento con ejercicios y spotify no responde:** Dado un cliente y un entrenamiento, cuando el cliente pulsa sobre crear playlist asociada, spotify devuelve un error o una playlist vacía, el sistema debe mostrar un mensaje de error, sugiriendo alternativas o pidiendo disculpas porque spotify no está disponible.
+* **Añadir una playlist a un entrenamiento sin ejercicios:** Dado un cliente y un entrenamiento sin ejericios, cuando el cliente pulsa sobre crear playlist asociada, el sistema debe avisarle de que deben haber ejercicos para crear una playlist personalizada.
+---
 ## Planificación y asignación de las historias de usuario (TODO)
 | Historia de Usuario | Sprint | Pareja asignada |
 | --- | --- | --- |
