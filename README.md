@@ -63,7 +63,18 @@ Como administrador quiero poder crear clases y asignarla a monitores, para poder
 * **Crear una clase en un horario vacío:** Dado un administrador, este crea una clase asignandole un título, tipo, monitor asignado, horario, la sala y el equipamiento del que dispone.
 * **Crear una clase en una sala y horario ya ocupado:** Dado un administrador, el sistema deberá avisarle de que esa sala con ese horario ya está ocupado por otra clase.
 * **Crear una clase y asignarla a un monitor ya ocupado:** Dado un administrador, el sistema deberá avisarle de que ese monitor ya está ocupado en ese horario en cualquiera de las salas.
-
+---
+#### Dashboar Datos del Gimnasio
+Como administrador quiero poder gestionar los datos del gimnasio, así como el número de clientes actuales, el número de clientes por clase, y el número de entrenadores, para poder llevar un control de los clientes y los entrenadores de mi gimnasio.
+#### Escenarios:
+* **Suficientes datos que mostrar:** Si el sistema posee clientes y profesores se le mostraran los distintos datos que se solicitan, como el número de clientes, el número de clientes por clase, y el número de entrenadores.
+* **Sin datos para mostrar:** Si el sistema no posee clientes inscritos o profesores, los valores serán nulos o con valor 0.
+---
+#### Gestión de empleados
+Como administrador quiero ser capaz de gestionar mis empleados, los cuales son los monitores y los entrenadores, para llevar un control del personal contratado.
+#### Escenarios
+* **Suficientes datos que mostrar:** Si el sistema posee entrenadores y monitores se le mostraran los distintos datos que posea cada uno, como por ejemplo el nombre, apellidos, dni, correo electrónico, número de teléfono, así como la información de sus contratos.
+* **Sin datos para mostrar:** Si el sistema no posee monitores o entrenadores inscritos, los valores serán nulos o con valor 0.
 ---
 ### Monitor de clases
 ---
@@ -164,7 +175,7 @@ Como monitor quiero poder conseguir dinero referido a la venta de productos rela
 
 #### Acaba lo de xisko
 ---
-### Cliente (TODO)
+### Cliente
 ---
 #### Apuntarme a Clase
 Como cliente quiero poder apuntarme a las clases que me interesen, para poder asistir a ellas y saber el horario en las que se imparten.
