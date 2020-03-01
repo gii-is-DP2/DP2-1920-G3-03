@@ -243,6 +243,10 @@ Como cliente quiero poder participar en los distintos retos propuestos por los p
 * **Participar en un reto estando registrado en uno o más:** Dado un cliente, pinchará en la sección "retos", verá un listado con los diferentes retos propuestos y en los que ya está registrado saldrá como "pendiente", seleccionará el que desee, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "aceptar reto", añadiendosele dicho reto a la sección "retos" pero con un estado "pendiente" hasta que adjunte una foto demostrando que lo ha completado.
 * **Participar en un reto cuando no hay retos:** Dado un cliente, pinchará en la sección "retos", si dicho usuario ha completado todos los retos, no le saldrá ningún reto en dicha lista, y aparecerá un mensaje diciendo "lo sentimos en estos momentos no hay nuevos retos, vuelve más tarde".
 --
+#### Clasificación de los Retos
+Como cliente quiero poder ver la clasificación de mis retos, para poder ver en que posición me encuentro y que debo hacer para poder superar y subir al top.
+#### Escenarios
+* **Ver un la clasificación de un reto completado:** Dado un cliente, al pulsar el botón de "mis retos", aparecerá un listado de los retos completados, de tal forma que al seleccionar uno, podrá darle al botón "clasificación" y verá quienes son los primeros y en que puesto se encuentra dicho cliente.
 ## Planificación y asignación de las historias de usuario (TODO)
 | Historia de Usuario | Sprint | Pareja asignada |
 | --- | --- | --- |
