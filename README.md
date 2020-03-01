@@ -222,6 +222,27 @@ Como cliente quiero poder personalizar mi entrenamiento para actualizarlo o pers
 * **Sin permiso para edición:** Dado un cliente con un entrenamiento que  no puede ser editado no se le permitirá actualizarlo.
 
 ---
+#### Compartir progreso
+Como cliente quiero poder compartir mi progreso con otros usuarios, para poder poder ver su avance y poder compararlos con mis resultados.
+#### Escenarios:
+* **Compartir progreso sin foto pero con comentario:** Dado un cliente, escribe un mensaje declarando su progreso, le da a publicar y se publica en su perfil, publicandose también en el perfil de los usuarios que tenga agregados como amigos.
+* **Compartir progreso con foto pero sin comentario:** Dado un cliente, adjunta una foto, le da a enviar y se publica en su perfil, publicandose también en el perfil de los usuarios que tenga agregados como amigos.
+* **Compartir progreso con foto y con comentario:** Dado un cliente, escribe un mensaje declarando su progreso, adjunta una foto, le da a publicar y se publica en su perfil, publicandose también en el perfil de los usuarios que tenga agregados como amigos.
+* **Compartir progreso sin foto ni comentario:** Dado un cliente, al darle a publicar, si no ha adjuntado foto ni ha escrito ningún comentario le saltará un aviso diciendo "si desea publicar debe adjuntar una foto o escribir un comentario".
+---
+#### Registrarse en un Gremio
+Como cliente quiero poder registrarme en los distintos gremios disponibles, para poder unirme a una comunidad y poder compartir información con ellos.
+#### Escenarios:
+* **Unirse a un gremio sin estar en ninguno:** Dado un cliente, pinchará en la opción "unirme a un gremio", le saldrá una lista con los distintos gremios, al pinchar en uno podrá ver la información correspondiente, y si desea unirse a dicho gremio, pinchará sobre el botón "unirme al gremio", y automaticamente dicho usuario formará parte de ese gremio.
+* **Unirse a un gremio estando ya registrado en uno:** Dado un cliente, en la opción "mi gremio", saldrá toda la información correspondiente a su gremio, y en el botón "otros gremio", podrá ver un listado con el resto de gremios, al seleccionar uno y darle a "unirme al gremio" le saltará un aviso que dirá "solo puede estar registrado en un gremio, si desea unirse a este será expulsado del gremio X (X es el nombre del gremio en el que está registrado actualmente), ¿desea continuar?", pudiendo darle al botón de "aceptar" para cambiar de gremio o al de "cancelar" para no hacerlo.
+---
+#### Participar en  los Retos
+Como cliente quiero poder participar en los distintos retos propuestos por los profesores, para poder ganar puntos para mi gremio y para mi mismo y estar lo mas alto posible en la clasificación.
+#### Escenarios
+* **Participar en un reto sin estar en ninguno:** Dado un cliente, pinchará en la sección "retos", verá un listado con los diferentes retos propuestos y seleccionará el que desee, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "aceptar reto", añadiendosele dicho reto a la sección "retos" pero con un estado "pendiente" hasta que adjunte una foto demostrando que lo ha completado.
+* **Participar en un reto estando registrado en uno o más:** Dado un cliente, pinchará en la sección "retos", verá un listado con los diferentes retos propuestos y en los que ya está registrado saldrá como "pendiente", seleccionará el que desee, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "aceptar reto", añadiendosele dicho reto a la sección "retos" pero con un estado "pendiente" hasta que adjunte una foto demostrando que lo ha completado.
+* **Participar en un reto cuando no hay retos:** Dado un cliente, pinchará en la sección "retos", si dicho usuario ha completado todos los retos, no le saldrá ningún reto en dicha lista, y aparecerá un mensaje diciendo "lo sentimos en estos momentos no hay nuevos retos, vuelve más tarde".
+--
 ## Planificación y asignación de las historias de usuario (TODO)
 | Historia de Usuario | Sprint | Pareja asignada |
 | --- | --- | --- |
