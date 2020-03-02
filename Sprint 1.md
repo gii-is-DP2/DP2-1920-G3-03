@@ -24,4 +24,4 @@ Las horas realizada por cada miembro del equipo de trabajo son guardadas en una 
 
 **Horas dedicadas por cada miembro hasta el 2/3/2020**
 
-![](C:\Users\alval\Desktop\Hoaras.PNG)
+![](D:\Desktop\Universidad\3º IIS\DP\DP2\Project\Workspace\DP2-1920-G3-03\imagesDocumentation\Horas.PNG)
