@@ -24,4 +24,4 @@ Las horas realizada por cada miembro del equipo de trabajo son guardadas en una 
 
 **Horas dedicadas por cada miembro hasta el 2/3/2020**
 
-![](/imagesDocumentation\Horas.PNG)
+![](https://github.com/gii-is-DP2/DP2-1920-G3-03/blob/master/imagesDocumentation/Horas.PNG)
