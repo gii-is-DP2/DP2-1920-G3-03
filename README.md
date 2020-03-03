@@ -114,44 +114,44 @@ Como entrenador quiero llevar el control de los entrenamitno en función del nú
 ---
 ### Usuario
 ---
-#### HU13 - Apuntarme a las clases
+#### HU14 - Apuntarme a las clases
 Como cliente quiero poder apuntarme a las clases que me interesen, para poder asistir a ellas y saber el horario en las que se imparten.
 #### Escenarios:
 * **Apuntarse a una clase con huecos disponibles:** Dado un cliente y una clase sin el aforo completo, el cliente le da a inscribirse, se registra, y aumenta en uno el número de asistentes a esa clase.
 * **Apuntarse a una clase sin huecos disponibles:** Dado un cliente y una clase sin huecos disponibles, el cliente le da a inscribirse, y salta un aviso de que el aforo ya está completo.
 * **Apuntarse a una clase en el mismo horario que otra:** Dado un cliente y una clase con horario igual a otra que ya esté inscrito, le da a inscribirse y le salta un aviso diciendo que se solapa el horario con otra clase.
 ---
-#### HU14 - Consultar todos los ejercicios disponibles
+#### HU15 - Consultar todos los ejercicios disponibles
 Como cliente quiero consultar todos los ejercicios disponible para poder coger ideas y realizar mis propias rutinas y entrenamientos.
 #### Escenarios:
 * **Consultar ejercicios disponibles:** Dado un cliente y un ejercicio publicado o disponible le muestra la información del ejericio.
 * **Consultar ejercicios no disponibles:** Dado un cliente y un ejercicio no publicado o no disponible salta un aviso de que el ejercicio no está disponible.
 ---
-#### HU15 - Dietas personalizadas según mi tipo de entrenamiento
+#### HU16 - Dietas personalizadas según mi tipo de entrenamiento
 Como cliente quiero poder tener dietas personalizadas según mi tipo de entrenamiento para maximizar el resultado del ejercicio.
 #### Escenarios:
 * **Cliente con entrenamiento asignado:** Dado un cliente con un entrenamiento asignado se le asignará la dieta que mejor complemente su entrenamiento.
 * **Cliente sin entrenamiento asignado:** Dado un cliente sin un entrenamiento asignado no se le permitirá acceder a esta función y se le pedirá que consiga un entrenamiento antes de acceder.
 ---
-#### HU16 - Seguir a otros usuarios para copiar su entrenamiento
+#### HU17 - Seguir a otros usuarios para copiar su entrenamiento
 Como cliente quiero seguir a otros usuarios para copiar su entrenamiento.
 #### Escenarios:
 * **Usuarios con perfil público:** Dado un cliente con perfil público se permitirá que otros clientes le sigan.
 * **Usuarios con perfil privado:** Dado un cliente con perfil privado no se permitirá que otros clientes le sigan.
 ---
-#### HU17- Dashboard Cliente
+#### HU18- Dashboard Cliente
 Como cliente quiero poder tener un dashboard donde poder ver el Historial de actividades, Calorías quemadas y otros datos relacionados con mi entrenamiento.
 #### Escenarios:
 * **Suficientes datos que mostrar:** Dado un cliente con actividades realizadas se le mostrarán datos sobre su historial.
 * **Sin datos para mostrar:** Dado un cliente sin actividades realizadas se le mostrarán posibles actividades a realizar para empezar a hacer ejercicio.
 ---
-#### HU18 - Personalizar mi entrenamiento: Crud ejercicio, entrenamiento
+#### HU19 - Personalizar mi entrenamiento: Crud ejercicio, entrenamiento
 Como cliente quiero poder personalizar mi entrenamiento para actualizarlo o personalizarlo a mi gusto.
 #### Escenarios:
 * **Con permiso para edición:** Dado un cliente con un entrenamiento que pueda ser editado se le permitirá actualizarlo a su gusto.
 * **Sin permiso para edición:** Dado un cliente con un entrenamiento que  no puede ser editado no se le permitirá actualizarlo.
 ---
-#### HU19 - Compartir progreso
+#### HU20 - Compartir progreso
 Como cliente quiero poder compartir mi progreso con otros usuarios, para poder poder ver su avance y poder compararlos con mis resultados.
 #### Escenarios:
 * **Compartir progreso sin foto pero con comentario:** Dado un cliente, escribe un mensaje declarando su progreso, le da a publicar y se publica en su perfil, publicandose también en el perfil de los usuarios que tenga agregados como amigos.
@@ -159,19 +159,19 @@ Como cliente quiero poder compartir mi progreso con otros usuarios, para poder p
 * **Compartir progreso con foto y con comentario:** Dado un cliente, escribe un mensaje declarando su progreso, adjunta una foto, le da a publicar y se publica en su perfil, publicandose también en el perfil de los usuarios que tenga agregados como amigos.
 * **Compartir progreso sin foto ni comentario:** Dado un cliente, al darle a publicar, si no ha adjuntado foto ni ha escrito ningún comentario le saltará un aviso diciendo "si desea publicar debe adjuntar una foto o escribir un comentario".
 ---
-#### HU20 - Participar en  los Retos
+#### HU21 - Participar en  los Retos
 Como cliente quiero poder participar en los distintos retos propuestos por los profesores, para poder ganar puntos para mi gremio y para mi mismo y estar lo mas alto posible en la clasificación.
 #### Escenarios
 * **Participar en un reto sin estar en ninguno:** Dado un cliente, pinchará en la sección "retos", verá un listado con los diferentes retos propuestos y seleccionará el que desee, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "aceptar reto", añadiendosele dicho reto a la sección "retos" pero con un estado "pendiente" hasta que adjunte una foto demostrando que lo ha completado.
 * **Participar en un reto estando registrado en uno o más:** Dado un cliente, pinchará en la sección "retos", verá un listado con los diferentes retos propuestos y en los que ya está registrado saldrá como "pendiente", seleccionará el que desee, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "aceptar reto", añadiendosele dicho reto a la sección "retos" pero con un estado "pendiente" hasta que adjunte una foto demostrando que lo ha completado.
 * **Participar en un reto cuando no hay retos:** Dado un cliente, pinchará en la sección "retos", si dicho usuario ha completado todos los retos, no le saldrá ningún reto en dicha lista, y aparecerá un mensaje diciendo "lo sentimos en estos momentos no hay nuevos retos, vuelve más tarde".
 ---
-#### HU21 - Clasificación de los Retos
+#### HU22 - Clasificación de los Retos
 Como cliente quiero poder ver la clasificación de mis retos, para poder ver en que posición me encuentro y que debo hacer para poder superar y subir al top.
 #### Escenarios
 * **Ver un la clasificación de un reto completado:** Dado un cliente, al pulsar el botón de "mis retos", aparecerá un listado de los retos completados, de tal forma que al seleccionar uno, podrá darle al botón "clasificación" y verá quienes son los primeros y en que puesto se encuentra dicho cliente.
 ---
-#### HU22 - Añadir Playlist adaptada a mis entrenamientos
+#### HU23 - Añadir Playlist adaptada a mis entrenamientos
 Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis entrenamientos, es decir, adecuadas para el nivel de intensidad especificado, para poder motivarme y llevar un ritmo adecuado.
 #### Escenarios
 * **Añadir una playlist a un entrenamiento con ejercicios y spotify responde:** Dado un cliente y un entrenamiento, cuando el cliente pulsa sobre crear playlist asociada, spotify devuelve una playlist no vacía.
@@ -209,3 +209,4 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | HU4 | 3 | P2 |
 | HU7 | 3 | P3 |
 | HU22 | | |
+| HU23 | | |
