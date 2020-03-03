@@ -9,21 +9,20 @@ La aplicación web a desarrollar tiene como nombre YogoGym. El objetivo fundamen
 * Rutina, será un conjunto de ejercicios específicos para un objetivo específico a un plazo medio.
 * Entrenamiento, será un conjunto de rutinas.
 * Maquina, donde se guardará su nombre y la cantidad de las que se tiene de ella.
-* Actividad, entrenamientos o rutinas echas por los clientes, para tener un seguimiento.
+* Actividad, entrenamientos o rutinas hechas por los clientes, para tener un seguimiento.
 * Dieta, se guardarán ciertas comidas con las que el cliente podrá cumplir sus necesidades.
-* Producto, se guardará la marca y la cantidad de ellos, como sus calorías
-* Gremio, donde los clientes con unos mismos objetivos/retos podrán compartir sobre ello.
 * Clasificación, orden de los clientes cuando hayan obtenido unos retos.
 * Reto, son unos objetivos a cumplir por los usuarios por los que se les recompensará.
-* Mensaje, se publicará en los gremios para compartir experiencias sobre lo realizado.
+* Mensaje, se publicará en el perfil para compartir experiencias sobre lo realizado.
+* Clase, se almacenará los asistentes, monitor correspondiente y hoararios.
+* Playlist, lista de canciones asociadas a un entrenamiento.
 
 
 ## Historias de Usuario
 ### Administrador
 ---
 #### HU1 - Proponer retos semanales y mensuales 
-Como administrador quiero añadir retos semanales y mensuales al gimnasio para clientes individuales y gremios 
-para que estos puedan competir por lograrlos y obtengan beneficios en el gimnasio si lo hacen.
+Como administrador quiero añadir retos semanales y mensuales al gimnasio para que los clientes puedan competir por lograrlos y obtengan beneficios en el gimnasio si lo hacen.
 #### Escenarios:
 * **Añadir reto semanal/mensual a semana/mes sin retos:** Dado un administrador y una semana/mes sin retos, cuando este intente añadir uno aportando la información necesaria, entonces el reto se añadirá a la semana/mes.
 * **Añadir reto semanal/mensual ya existente:** Dado un administrador y una semana/mes con retos pero no completa, cuando este intente añadir uno con la información de otro ya existente, entonces se le indicará que esto no es posible debido a que ya existe.
@@ -34,8 +33,7 @@ para que estos puedan competir por lograrlos y obtengan beneficios en el gimnasi
 Como administrador quiero visualizar diagramas que muestren, clasificados por individuales o gremios y semanales o mensuales, el éxito en los retos para poder adecuarlos en temática y dificultad correctamente.
 #### Escenarios: 
 * **Visualizar diagrama individual de periodo con retos:** Dado un administrador y un periodo con retos individuales registrados, cuando este intente visualizar su diagrama individual, entonces se le mostrarán los nombres de estos y el número y porcentaje de clientes que los han logrado.
-* **Visualizar diagrama gremial de periodo con retos:** Dado un administrador y un periodo con retos gremiales registrados, cuando este intente visualizar su diagrama, entonces se le mostrarán los nombres de estos, el número y porcentaje de gremios que los han logrado y los gremios específicos que lo lograron.
-* **Visualizar diagrama individual/gremial de periodo sin retos:** Dado un administrador y un periodo sin retos, cuando este intente visualizar su diagrama, entonces se le indicará que no hay ninguno y se le ofrecerá añadir uno si el periodo es posterior al actual.
+* **Visualizar diagrama individual de periodo sin retos:** Dado un administrador y un periodo sin retos, cuando este intente visualizar su diagrama, entonces se le indicará que no hay ninguno y se le ofrecerá añadir uno si el periodo es posterior al actual.
 ---
 #### HU3 - Control de las máquinas
 Como administrador quiero visualizar diagrama que me muestren cuanto son utilizadas las máquinas de las que dispone el gimnasio para saber cuales requieren un mayor mantenimiento o si es necesario adquirir más de ellas o desecharlas.
