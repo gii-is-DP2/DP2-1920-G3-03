@@ -98,13 +98,15 @@ Como entrenador quiero llevar el control de las dietas de los clientes en funci�
 * **Gestionar la dieta de un usuario cuyo usuario no entrenas:** Dado un entrenador que se dispone a gestionar la dieta de un usuario, cuando no eres entrenador de ese usuario. La operación de gestión no se puede efectuar. El sistema limita a solo poder ver la dieta que tiene el usuario deseado, pero no es manipulable por alguien que no sea su entrenador.
 * **Gestionar la dieta de un usuario borrando todos los ejercicios:** Dado un entrenador que se dispone a gestionar la dieta, en este caso modificar, de un usuario, borrando todas las comidas, cuando el usuario posee una dieta completa. La operación de gestión no se puede efectuar ya que debe existir un mínimo de 3 comidas por dieta.
 * **Gestionar la dieta de un usuario:** Dado un entrenador que se dispone a gestionar la dieta de un usuario sin incumplir ninguna regla de negocio, cuando este usuario ya posee una. La operación de gestión se efectúa correctamente y esta queda disponible tanto por el usuario para poder visualizar los cambios como para el entrenador poder modificarlos en un futuro.
+---
 #### HU12 - Añadir un entrenamiento 
 Como entrenador quiero añadir eun entrenamiento a nuestros clientes para poder facilitar el desarrollo físico del cliente.
 #### Escenarios:
 * **Añadir entrenamiento a un usuario, se añade vacía:** Dado un entrenador que añade un entrenamiento a un usuario, cuando se intenta añadir vacío. La operación de añadir entrenamiento no se efectúa resultando en el sistema informando al entrenador que debe como mínimo introducir una rutina.
 * **Añadir entrenamiento a un usuario sin entrenamiento:** Dado un entrenador que añade un entrenamiento a un usuario, cuando este usuario no tiene ningun entrenamiento. La operación de añadir entrenamiento se efectúa correctamente y este queda disponible tanto por el usuario para poder visualizarla como para el entrenador poder modificarla.
 * **Añadir entrenamiento a un usuario el cual no entrenas:** Dado un entrenador que añade un entrenamiento a un usuario, cuando no entrenas a este usuario. La operación de añadir entrenamiento no se realiza. La vista muestra una excepción al entrenador de que no puede añadir un entrenamiento a un usuario el cual no entrena.
-#### H13 - Gestionar el entrenamiento de nuestros clientes en función del número de rutinas y las características de estas.
+---
+#### H13 - Gestionar el entrenamiento de nuestros clientes en función del número de rutinas y las características de estas
 Como entrenador quiero llevar el control de los entrenamitno en función del número de rutinas y las características de las rutinas para poder cambiar el entrenamiento adaptándolo de la mejor forma al cliente.
 #### Escenarios:
 * **Gestionar el entrenamiento de un usuario sin que este tenga rutina:** Dado un entrenador que se dispone a gestionar el entrenamiento de un usuario, cuando ese usuario no posee ningun entrenamiento. La vista de encargada la gestión de entrenamientos notificará al entrenador de que el usuario indicado que no posee ningun entrenamiento y le ofertará la opción de crearla. 
@@ -187,26 +189,26 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 
 | Historia de Usuario | Sprint | Pareja asignada |
 | --- | --- | --- |
+| HU12 | 1 | P1 |
+| HU13 | 1 | P1 |
 | HU8 | 1 | P1 | 
 | HU9 | 1 | P1 |
 | HU10 | 1 | P2 |
 | HU11 | 1 | P2 |
-| HU12 | 1 | P2 |
-| HU13 | 1 | P1 |
 | HU14 | 1 | P2 |
-| HU16 | 1 | P3 |
-| HU17 | 1 | P1 |
-| HU19 | 1 | P3 |
-| HU20 | 1 | P3 |
+| HU15 | 1 | P1 |
+| HU16 | 1 | P2 |
+| HU18 | 1 | P3 |
+| HU19 | 1 | P1 |
+| HU21 | 1 | P3 |
+| HU22 | 1 | P3 |
 | HU1 | 1 | P3 |
-| HU3 | 1 | P1 |
+| HU3 | 1 | P3 |
 | HU5 | 1 | P2 |
-| HU15 | 2 | P3 |
-| HU18 | 2 | P2 |
+| HU17 | 2 | P3 |
+| HU20 | 2 | P2 |
 | HU2 | 2 | P3 |
 | HU6 | 2 | P1 |
-| HU21 | 3 | P1 |
+| HU23 | 3 | P1 |
 | HU4 | 3 | P2 |
 | HU7 | 3 | P3 |
-| HU22 | | |
-| HU23 | | |
