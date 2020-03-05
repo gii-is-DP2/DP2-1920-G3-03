@@ -8,6 +8,22 @@ DROP TABLE owners IF EXISTS;
 DROP TABLE users IF EXISTS;
 DROP TABLE authorities IF EXISTS;
 
+CREATE TABLE Persona(
+	nif VARCHAR(9) IDENTITY PRIMARY KEY,
+	name VARCHAR(10),
+	surname VARCHAR(20),
+	password VARCHAR(20),
+	mail VARCHAR(30)	
+);
+
+CREATE TABLE Persona_Rol(
+	persona_id INTEGER NOT NULL,
+	rol_id INTEGER NIT NULL,
+);
+
+ALTER TABLE Persona_Rol ADD CONSTRAINT fk_persona_rol_persona FOREIGN KEY (persona_id) REFERENCES Persona (nif);
+ALTER TABLE Persona_Rol ADD CONSTRAINT fk_persona_rol_rol FOREIGN KEY (rol_id) REFERENCES Rol (id);
+
 CREATE TABLE vets (
   id         INTEGER IDENTITY PRIMARY KEY,
   first_name VARCHAR(30),

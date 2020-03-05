@@ -1,17 +1,17 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
-<!--  >%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%-->
+<%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags"%>
 <%@ attribute name="name" required="true" rtexprvalue="true"
 	description="Name of the active menu: home, owners, vets or error"%>
+
 
 <nav class="navbar navbar-default" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
 			<a class="navbar-brand"
-				href="<spring:url value="/" htmlEscape="true" />"><span></span></a>
+				href="<spring:url value="/" htmlEscape="true" />"><span></span>
+			</a>
 			<button type="button" class="navbar-toggle" data-toggle="collapse"
 				data-target="#main-navbar">
 				<span class="sr-only"><os-p>Toggle navigation</os-p></span> <span
@@ -21,35 +21,139 @@
 		</div>
 		<div class="navbar-collapse collapse" id="main-navbar">
 			<ul class="nav navbar-nav">
-
+				
+				<!-- Todos -->
+										
 				<petclinic:menuItem active="${name eq 'home'}" url="/"
 					title="home page">
 					<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 					<span>Home</span>
 				</petclinic:menuItem>
-
-				<petclinic:menuItem active="${name eq 'owners'}" url="/owners/find"
-					title="find owners">
+				
+				<petclinic:menuItem active="${name eq 'owners'}" url="/ejercicios/find"
+					title="Ejercicios">
 					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-					<span>Find owners</span>
+					<span>Ejercicios</span>
 				</petclinic:menuItem>
-
+								
 				<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
-					title="veterinarians">
+					title="Maquinas">
 					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-					<span>Veterinarians</span>
+					<span>Maquinas</span>
 				</petclinic:menuItem>
-
+				
+				<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+					title="Retos">
+					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+					<span>Retos</span>
+				</petclinic:menuItem>
+	
 				<petclinic:menuItem active="${name eq 'error'}" url="/oups"
 					title="trigger a RuntimeException to see how it is handled">
 					<span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
 					<span>Error</span>
 				</petclinic:menuItem>
+								
+				<!-- Admin -->
+				
+				<sec:authorize access="hasAuthority('admin')">		
+				
+					<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+						title="Retos">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+						<span>Retos</span>
+					</petclinic:menuItem>
+					
+					<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+						title="Clases">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+						<span>Clases</span>
+					</petclinic:menuItem>
+					
+					<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+						title="Dashboard">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+						<span>Dashboard</span>
+					</petclinic:menuItem>	
+					
+					<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+						title="Empleados">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+						<span>Empleados</span>
+					</petclinic:menuItem>
+					
+				</sec:authorize>
+				
+				<!-- Usuario -->
+				
+				<sec:authorize access="hasAuthority('user')">
+				
+				<ul class="nav navbar-nav">
+				
+					<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+						title="Entrenamientos">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+						<span>Mis Entrenamientos</span>
+					</petclinic:menuItem>
+					
+					<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+						title="Rutinas">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+						<span>Rutinas</span>
+					</petclinic:menuItem>
+					
+					<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+						title="Dietas">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+						<span>Dietas</span>
+					</petclinic:menuItem>
+					
+					<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+						title="Clases">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+						<span>Clases</span>
+					</petclinic:menuItem>
+					
+					<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+						title="Dashboard">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+						<span>Dashboard</span>
+					</petclinic:menuItem>		
+				</ul>
+				
+				</sec:authorize>
+					
+				
+				<!-- Entrenador -->
+				<sec:authorize access="hasAuthority('trainer')">
+				
+					<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+						title="Rutinas">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+						<span>Mis Alumnos</span>
+					</petclinic:menuItem>
+					
+					<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+						title="Rutinas">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+						<span>Gestion Rutinas</span>
+					</petclinic:menuItem>
+					
+					<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+						title="Dietas">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+						<span>Gestion Dietas</span>
+					</petclinic:menuItem>
+					
+					<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
+						title="Dashboard">
+						<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+						<span>Dashboard</span>
+					</petclinic:menuItem>		
 
+			</sec:authorize>
 			</ul>
-
-
-
+			
 
 			<ul class="nav navbar-nav navbar-right">
 				<sec:authorize access="!isAuthenticated()">
@@ -84,7 +188,7 @@
 								</div>
 							</li>
 							<li class="divider"></li>
-<!-- 							
+						
                             <li> 
 								<div class="navbar-login navbar-login-session">
 									<div class="row">
@@ -98,7 +202,7 @@
 									</div>
 								</div>
 							</li>
--->
+
 						</ul></li>
 				</sec:authorize>
 			</ul>

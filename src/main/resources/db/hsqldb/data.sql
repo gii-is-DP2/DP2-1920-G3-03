@@ -1,3 +1,4 @@
+/*
 -- One admin user, named admin1 with passwor 4dm1n and authority admin
 INSERT INTO users(username,password,enabled) VALUES ('admin1','4dm1n',TRUE);
 INSERT INTO authorities VALUES ('admin1','admin');
@@ -61,4 +62,17 @@ INSERT INTO visits(id,pet_id,visit_date,description) VALUES (1, 7, '2013-01-01',
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (2, 8, '2013-01-02', 'rabies shot');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (3, 8, '2013-01-03', 'neutered');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04', 'spayed');
+*/
 
+INSERT INTO users(username,password,enabled) VALUES ('admin1','admin1999',TRUE);
+INSERT INTO authorities VALUES (1,'admin','admin1');
+INSERT INTO authorities VALUES (2,'user','admin1');
+INSERT INTO admins VALUES (1, 'Vekto', 'Rino', 'proyectowip@vekto.com', '12345678A','admin1');
+
+INSERT INTO users(username,password,enabled) VALUES ('user1','user1999',TRUE);
+INSERT INTO authorities VALUES (3,'user','user1');
+INSERT INTO clients VALUES (2, 'Keke', 'Rino', 'proyectowip@keke.com', '12345678B','user1');
+
+INSERT INTO users(username,password,enabled) VALUES ('trainer1','trainer1999',TRUE);
+INSERT INTO authorities VALUES (4,'trainer','trainer1');
+INSERT INTO trainers VALUES (3, 'Alvaro', 'Rino', 'proyectowip@alvaro.com', '12345678C','trainer1');
