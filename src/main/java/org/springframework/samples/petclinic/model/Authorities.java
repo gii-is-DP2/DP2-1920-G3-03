@@ -9,8 +9,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "authorities")
-public class Authorities {
-	@Id
+public class Authorities extends BaseEntity{
 	String username;
 	String authority;
 }

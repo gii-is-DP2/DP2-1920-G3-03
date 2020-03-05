@@ -13,18 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.repository.springdatajpa;
+package org.springframework.samples.petclinic.model;
 
-import org.springframework.data.repository.Repository;
-import org.springframework.samples.petclinic.model.Vet;
-import org.springframework.samples.petclinic.repository.VetRepository;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
 
 /**
- * Spring Data JPA specialization of the {@link VetRepository} interface
+ * Simple JavaBean domain object representing an owner.
  *
+ * @author Ken Krebs
+ * @author Juergen Hoeller
+ * @author Sam Brannen
  * @author Michael Isvy
- * @since 15.1.2013
  */
-public interface SpringDataVetRepository extends VetRepository, Repository<Vet, Integer> {
-
+@Entity
+@Table(name = "admins")
+public class Admin extends Person {
+	
+	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "username", referencedColumnName = "username")
+	private User user;
+	
+	
 }

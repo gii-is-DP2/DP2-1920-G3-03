@@ -15,35 +15,28 @@
  */
 package org.springframework.samples.petclinic.model;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.Size;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
 
 /**
- * Simple JavaBean domain object adds a name property to <code>BaseEntity</code>. Used as
- * a base class for objects needing these properties.
+ * Simple JavaBean domain object representing an owner.
  *
  * @author Ken Krebs
  * @author Juergen Hoeller
+ * @author Sam Brannen
+ * @author Michael Isvy
  */
-@MappedSuperclass
-public class NamedEntity extends BaseEntity {
-
-    @Size(min = 3, max = 50)
-	@Column(name = "name")
-	private String name;
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public String toString() {
-		return this.getName();
-	}
-
+@Entity
+@Table(name = "trainers")
+public class Trainer extends Person {
+	
+	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "username", referencedColumnName = "username")
+	private User user;
+	
+	
 }
