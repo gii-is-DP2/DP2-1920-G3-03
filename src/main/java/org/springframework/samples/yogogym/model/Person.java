@@ -45,6 +45,7 @@ public class Person extends BaseEntity {
 	@Column(name = "nif")
 	@NotEmpty
 	@Size(min = 9, max = 9)
+	//Pattern de nif jaja salu2
 	protected String nif;
 
 	public String getFirstName() {
