@@ -17,7 +17,7 @@ PetClinic :: a Spring Framework demonstration
     <title>YogoGym</title>
 
     <%-- CSS generated from LESS --%>
-    <spring:url value="/resources/css/petclinic.css" var="YogoGymCss"/>
+    <spring:url value="/resources/css/yogogym.css" var="YogoGymCss"/>
     <link href="${YogoGymCss}" rel="stylesheet"/>
 
 
