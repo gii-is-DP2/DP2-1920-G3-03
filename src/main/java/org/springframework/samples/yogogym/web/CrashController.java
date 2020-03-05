@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.model;
+package org.springframework.samples.yogogym.web;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * Simple JavaBean domain object representing an owner.
+ * Controller used to showcase what happens when an exception is thrown
  *
- * @author Ken Krebs
- * @author Juergen Hoeller
- * @author Sam Brannen
  * @author Michael Isvy
+ * <p/>
+ * Also see how the bean of type 'SimpleMappingExceptionResolver' has been declared inside
+ * /WEB-INF/mvc-core-config.xml
  */
-@Entity
-@Table(name = "admins")
-public class Admin extends Person {
-	
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "username", referencedColumnName = "username")
-	private User user;
-	
-	
+@Controller
+public class CrashController {
+
+	@GetMapping(value = "/oups")
+	public String triggerException() {
+		throw new RuntimeException(
+				"Expected: controller used to showcase what " + "happens when an exception is thrown");
+	}
+
 }

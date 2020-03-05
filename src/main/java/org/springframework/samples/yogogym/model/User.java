@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.model;
+package org.springframework.samples.yogogym.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.model;
+package org.springframework.samples.yogogym.model;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -31,8 +31,8 @@ import javax.persistence.Table;
  * @author Michael Isvy
  */
 @Entity
-@Table(name = "clients")
-public class Client extends Person {
+@Table(name = "trainers")
+public class Trainer extends Person {
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "username", referencedColumnName = "username")

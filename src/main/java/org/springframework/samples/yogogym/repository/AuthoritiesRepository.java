@@ -1,7 +1,7 @@
-package org.springframework.samples.petclinic.repository;
+package org.springframework.samples.yogogym.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.samples.petclinic.model.Authorities;
+import org.springframework.samples.yogogym.model.Authorities;
 
 
 

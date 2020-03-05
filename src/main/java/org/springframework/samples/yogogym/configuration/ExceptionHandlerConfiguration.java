@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.configuration;
+package org.springframework.samples.yogogym.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
