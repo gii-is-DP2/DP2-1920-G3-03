@@ -7,7 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "phrase")
+@Table(name = "phrases")
 public class Phrase extends BaseEntity{
 
 	@Column(name = "text")

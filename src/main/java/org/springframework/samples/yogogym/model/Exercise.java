@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 
 
 @Entity
-@Table(name = "exercise")
+@Table(name = "exercises")
 public class Exercise extends BaseEntity{
 
 	@Column(name = "name")

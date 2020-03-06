@@ -13,7 +13,7 @@ import javax.validation.constraints.Min;
 import com.sun.istack.NotNull;
 
 @Entity
-@Table(name = "routine_line")
+@Table(name = "routines_lines")
 public class RoutineLine extends BaseEntity{
 	
 	@Column(name = "reps")
@@ -26,10 +26,10 @@ public class RoutineLine extends BaseEntity{
 	
 	
 	//Relations:
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "exercise_id")
-	@NotNull
-	private Collection<Exercise> exercises;
+	//@ManyToMany(cascade = CascadeType.ALL)
+	//@JoinColumn(name = "exercise_id")
+	//@NotNull
+	//private Collection<Exercise> exercises;
 	
 	
 	// Getters, Setters, Equals, HashCode, ToString:

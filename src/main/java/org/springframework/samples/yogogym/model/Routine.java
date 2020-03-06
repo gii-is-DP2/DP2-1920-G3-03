@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "routine")
+@Table(name = "routines")
 public class Routine extends BaseEntity{
 
 	@Column(name = "name")
@@ -22,9 +22,9 @@ public class Routine extends BaseEntity{
 	private String description;
 
 	//Relations:
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "routine_line_id")
-	private Collection<RoutineLine> routineLine;
+	//@OneToMany(cascade = CascadeType.ALL)
+	//@JoinColumn(name = "routine_line_id")
+	//private Collection<RoutineLine> routineLine;
 	
 	// Getters, Setters, Equals, HashCode, ToString:
 	public String getName() {
