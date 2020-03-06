@@ -9,4 +9,4 @@
 	
 	--%>
 	
-	<yogogym:menu />
+	<yogogym:menu name="${menuName}"/>
