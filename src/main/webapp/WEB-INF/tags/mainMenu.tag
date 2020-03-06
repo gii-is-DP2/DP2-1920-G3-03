@@ -2,6 +2,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags"%>
 
+<%@ attribute name="name" required="true" rtexprvalue="true" %>
+
 <yogogym:menuItem active="${name eq 'home'}" url="/" title="home page">
 	<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 	<span>Home</span>

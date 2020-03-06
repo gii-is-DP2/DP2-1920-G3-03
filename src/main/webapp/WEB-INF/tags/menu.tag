@@ -4,9 +4,7 @@
 <%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags"%>
 
-<%@ attribute name="active" required="false" rtexprvalue="true" %>
-<%@ attribute name="url" required="false" rtexprvalue="true" %>
-<%@ attribute name="title" required="false" rtexprvalue="true" %>
+<%@ attribute name="name" required="true" rtexprvalue="true" %>
 
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
@@ -18,13 +16,22 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">YogoGYM</a>
+      
+      <spring:url value="/resources/images/LogoYogoGym.png" var="favicon"/>
+      
+      
+      <a class="navbar-brand" href="#">
+      	<span class="navbar-text" style="position:relative; top:-20px">
+      		<img alt="Brand" src="${favicon}" style="position:relative; height: auto; width: 20px; top:-2px; right:10px;">
+      		YogoGYM
+      	</span>
+      </a>
+      
     </div>
-
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <yogogym:menuDropDown />
+        <yogogym:menuDropDown name="${menuName}"/>
       </ul>
       
       <!-- LOGIN -->
