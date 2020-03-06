@@ -77,6 +77,22 @@ INSERT INTO users(username,password,enabled) VALUES ('trainer1','trainer1999',TR
 INSERT INTO authorities VALUES (4,'trainer','trainer1');
 INSERT INTO trainers VALUES (3, 'Alvaro', 'Rino', 'proyectowip@alvaro.com', '12345678C','trainer1');
 
+INSERT INTO machines(name, location) VALUES('Gemelos_10000','Musculación');
+INSERT INTO machines(name, location) VALUES('Biceps_9000','Musculación');
+INSERT INTO machines(name, location) VALUES('Cinta de Correr','Cardio');
+
+INSERT INTO exercises(name, description, kcal, intensity, machine_id) VALUES('Biceps Normales', 'Arriba abajo', 50, 2, 2);
+INSERT INTO exercises(name, description, kcal, intensity, machine_id) VALUES('Correr', '20 minutos v=12', 200, 3, 3);
+
+INSERT INTO routines(name, description) VALUES('Piernas', 'Piernas fuertes');
+INSERT INTO routines(name, description) VALUES('Brazos', 'Biceps redondos');
+
+INSERT INTO routines_lines(reps, weight) VALUES(10, 25.0);
+INSERT INTO routines_lines(reps, weight) VALUES(5, 50.0);
+
+INSERT INTO phrases(text, prob) VALUES('BUENOS DIAS', 0.05);
+INSERT INTO phrases(text, prob) VALUES('VAMOS MAQUINA', 0.1);
+
 
 INSERT INTO trainings(id,name,description) VALUES (1, 'Entrenamiento1', 'Prueba de entrenamiento 1');
 INSERT INTO trainings(id,name,description) VALUES (2, 'Entrenamiento2', 'Prueba de entrenamiento 2');
