@@ -94,3 +94,15 @@ INSERT INTO phrases(text, prob) VALUES('BUENOS DIAS', 0.05);
 INSERT INTO phrases(text, prob) VALUES('VAMOS MAQUINA', 0.1);
 
 
+INSERT INTO trainings(id,name,description) VALUES (1, 'Entrenamiento1', 'Prueba de entrenamiento 1');
+INSERT INTO trainings(id,name,description) VALUES (2, 'Entrenamiento2', 'Prueba de entrenamiento 2');
+INSERT INTO trainings(id,name,description) VALUES (3, 'Entrenamiento3', 'Prueba de entrenamiento 3');
+INSERT INTO trainings(id,name,description) VALUES (4, 'Entrenamiento4', 'Prueba de entrenamiento 4');
+
+
+INSERT INTO diets(id,type,kcal,protein,fat,carb) VALUES(1, 'Dieta 1', 1, 1, 1, 1);
+INSERT INTO diets(id,type,kcal,protein,fat,carb) VALUES(2, 'Dieta 2', 1, 1, 1, 1);
+INSERT INTO diets(id,type,kcal,protein,fat,carb) VALUES(3, 'Dieta 3', 1, 1, 1, 1);
+INSERT INTO diets(id,type,kcal,protein,fat,carb) VALUES(4, 'Dieta 4', 1, 1, 1, 1);
+
+INSERT INTO challenges(id,description,reward,start,end,status) VALUES(1, 'Challenge1', 'Reward1', '2020-01-01', '2020-01-02', 2);
