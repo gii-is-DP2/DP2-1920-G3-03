@@ -76,3 +76,17 @@ INSERT INTO clients VALUES (2, 'Keke', 'Rino', 'proyectowip@keke.com', '12345678
 INSERT INTO users(username,password,enabled) VALUES ('trainer1','trainer1999',TRUE);
 INSERT INTO authorities VALUES (4,'trainer','trainer1');
 INSERT INTO trainers VALUES (3, 'Alvaro', 'Rino', 'proyectowip@alvaro.com', '12345678C','trainer1');
+
+
+INSERT INTO trainings(id,name,description) VALUES (1, 'Entrenamiento1', 'Prueba de entrenamiento 1');
+INSERT INTO trainings(id,name,description) VALUES (2, 'Entrenamiento2', 'Prueba de entrenamiento 2');
+INSERT INTO trainings(id,name,description) VALUES (3, 'Entrenamiento3', 'Prueba de entrenamiento 3');
+INSERT INTO trainings(id,name,description) VALUES (4, 'Entrenamiento4', 'Prueba de entrenamiento 4');
+
+
+INSERT INTO diets(id,type,kcal,protein,fat,carb) VALUES(1, 'Dieta 1', 1, 1, 1, 1);
+INSERT INTO diets(id,type,kcal,protein,fat,carb) VALUES(2, 'Dieta 2', 1, 1, 1, 1);
+INSERT INTO diets(id,type,kcal,protein,fat,carb) VALUES(3, 'Dieta 3', 1, 1, 1, 1);
+INSERT INTO diets(id,type,kcal,protein,fat,carb) VALUES(4, 'Dieta 4', 1, 1, 1, 1);
+
+INSERT INTO challenges(id,description,reward,start,end,status) VALUES(1, 'Challenge1', 'Reward1', '2020-01-01', '2020-01-02', 2);
