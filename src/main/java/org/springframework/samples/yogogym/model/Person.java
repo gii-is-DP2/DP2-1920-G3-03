@@ -46,6 +46,7 @@ public class Person extends BaseEntity {
 	@Column(name = "nif")
 	@NotEmpty
 	@Size(min = 9, max = 9)
+
 	@Pattern(regexp = "^[0-9]{8}[a-zA-Z]$")
 	protected String nif;
 
