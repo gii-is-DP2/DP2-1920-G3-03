@@ -18,6 +18,7 @@ package org.springframework.samples.yogogym.model;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
@@ -39,13 +40,14 @@ public class Person extends BaseEntity {
 		
 	@Column(name = "email")
 	@NotEmpty
-	//Pattern de email jaja salu2
+	@Pattern(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")
 	protected String email;
 	
 	@Column(name = "nif")
 	@NotEmpty
 	@Size(min = 9, max = 9)
-	//Pattern de nif jaja salu2
+
+	@Pattern(regexp = "^[0-9]{8}[a-zA-Z]$")
 	protected String nif;
 
 	public String getFirstName() {
