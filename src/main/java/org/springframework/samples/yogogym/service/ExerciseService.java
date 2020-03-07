@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.yogogym.service;
 
+package org.springframework.samples.yogogym.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,24 +37,31 @@ public class ExerciseService {
 
 	private ExerciseRepository exerciseRepository;
 
+
 	@Autowired
-	public ExerciseService(ExerciseRepository exerciseRepository) {
+	public ExerciseService(final ExerciseRepository exerciseRepository) {
 		this.exerciseRepository = exerciseRepository;
 	}
-	
+
 	@Transactional
-	public void saveExercise(Exercise exercise) throws DataAccessException {
-		exerciseRepository.save(exercise);
+	public void saveExercise(final Exercise exercise) throws DataAccessException {
+		this.exerciseRepository.save(exercise);
 	}
-	
+
 	@Transactional
 	public Collection<Exercise> findAllExercise() throws DataAccessException {
-		
+
 		Collection<Exercise> res = new ArrayList<>();
-		
-		for(Exercise e: this.exerciseRepository.findAll())
+
+		for (Exercise e : this.exerciseRepository.findAll()) {
 			res.add(e);
-		
-		return res;		
+		}
+
+		return res;
+	}
+
+	@Transactional(readOnly = true)
+	public Exercise findExerciseById(final int id) throws DataAccessException {
+		return this.exerciseRepository.findById(id);
 	}
 }

@@ -38,16 +38,10 @@
                 </td>                
                 
                 <td>
-                    <%--
-                    
                     <spring:url value="/mainMenu/machines/{machineId}" var="machineUrl">
                         <spring:param name="machineId" value="${exercise.machine.id}"/>
                     </spring:url>
-                    <a href="${fn:escapeXml(exerciseUrl)}"><c:out value="${exercise.machine.name}"/></a>
-                    
-                    --%>
-                    
-                    <c:out value="${exercise.id_machine}"/>
+                    <a href="${fn:escapeXml(machineUrl)}"><c:out value="${exercise.machine.name}"/></a>
                 </td>
                                 
             </tr>
