@@ -6,13 +6,17 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 @Entity
+@Data
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "challenges")
 public class Challenge extends BaseEntity{
 	
@@ -40,10 +44,11 @@ public class Challenge extends BaseEntity{
 	protected Date end;
 	
 	// Relations
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, optional = true)
 	@JoinColumn(name = "exercise_id")
 	private Exercise exercise;
 
+	/*
 	public String getDescription() {
 		return description;
 	}
@@ -166,7 +171,7 @@ public class Challenge extends BaseEntity{
 		return "Challenge [description=" + description + ", reward=" + reward + ", points=" + points + ", reps=" + reps
 				+ ", weight=" + weight + ", start=" + start + ", end=" + end + ", exercise=" + exercise + "]";
 	}
-	
+	*/
 	
 
 }

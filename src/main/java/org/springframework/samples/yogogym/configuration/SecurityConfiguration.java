@@ -38,6 +38,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/user/**").hasRole("USER")
 				.antMatchers("/admin/**").hasRole("ADMIN")
 				.antMatchers("/trainer/**").hasRole("TRAINER")
+				//Challenges:
+				.antMatchers("/challenges").authenticated()
+				.antMatchers("/challenges/save").hasRole("ADMIN")
+				.antMatchers("/challenges/delete").hasRole("ADMIN")
+				.antMatchers("/challenges/new").hasRole("ADMIN")
 				
 				/*
 				.antMatchers("/admin/**").hasAnyAuthority("admin")
