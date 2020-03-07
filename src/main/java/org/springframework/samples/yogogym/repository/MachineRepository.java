@@ -11,5 +11,5 @@ import org.springframework.samples.yogogym.model.Machine;
 public interface MachineRepository extends  CrudRepository<Machine, String>{
 	
 	@Query("SELECT machine FROM Machine machine WHERE machine.id=:id")
-	public Collection<Machine> findMachineByExerciseId(@Param("id") int id);
+	public Machine findMachineByExerciseId(@Param("id") int id);
 }

@@ -20,7 +20,7 @@
       <spring:url value="/resources/images/LogoYogoGym.png" var="favicon"/>
       
       
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="/">
       	<span class="navbar-text" style="position:relative; top:-20px">
       		<img alt="Brand" src="${favicon}" style="position:relative; height: auto; width: 20px; top:-2px; right:10px;">
       		YogoGYM

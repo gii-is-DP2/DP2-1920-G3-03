@@ -35,12 +35,12 @@
 
     <table class="table table-striped">
             <tr>
-	            <th>Name</th>
-	            <td><b><c:out value="${exercise.machine.name}"/></b></td>
-	        </tr>
-	        <tr>
-	            <th>Location</th>
-	            <td><c:out value="${exercise.machine.location}"/></td>
+	           <td>
+                    <spring:url value="/mainMenu/machines/{machineId}" var="machineUrl">
+                        <spring:param name="machineId" value="${exercise.machine.id}"/>
+                    </spring:url>
+                    <a href="${fn:escapeXml(machineUrl)}"><c:out value="${exercise.machine.name}"/></a>
+                </td>
 	        </tr>
     </table>
 

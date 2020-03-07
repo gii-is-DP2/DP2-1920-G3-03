@@ -61,9 +61,9 @@ public class MachineService {
 	}
 	
 	@Transactional
-	public Collection<Machine> findMachineByExerciseId(int exerciseId) throws DataAccessException {
+	public Machine findMachineByExerciseId(int exerciseId) throws DataAccessException {
 		
-		Collection<Machine> res = this.machineRepository.findMachineByExerciseId(exerciseId);
+		Machine res = this.machineRepository.findMachineByExerciseId(exerciseId);
 		
 		return res;		
 	}
