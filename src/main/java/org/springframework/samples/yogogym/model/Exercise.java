@@ -32,7 +32,6 @@ public class Exercise extends BaseEntity{
 	
 	//Relations:
 	@ManyToOne(cascade = CascadeType.ALL, optional = true)
-	@JoinColumn(name = "machine_id")
 	private Machine machine;
 
 	

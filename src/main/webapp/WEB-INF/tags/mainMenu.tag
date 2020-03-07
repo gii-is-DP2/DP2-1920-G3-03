@@ -9,19 +9,19 @@
 	<span>Home</span>
 </yogogym:menuItem>
 				
-<yogogym:menuItem active="${name eq 'owners'}" url="/ejercicios/find" title="Ejercicios">
-	<span class="glyphicon glyphicon-" aria-hidden="true"></span>
-	<span>Ejercicios</span>
+<yogogym:menuItem active="${name eq 'exercises'}" url="/mainMenu/exercises" title="Excercises">
+	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+	<span>Exercises</span>
 </yogogym:menuItem>
 								
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Maquinas">
+<yogogym:menuItem active="${name eq 'machines'}" url="/mainMenu/machines" title="Machines">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Maquinas</span>
+	<span>Machines</span>
 </yogogym:menuItem>
 				
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Retos">
+<yogogym:menuItem active="${name eq 'challenges'}" url="/mainMenu/challenges" title="Challenges">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Retos</span>
+	<span>Challenges</span>
 </yogogym:menuItem>
 	
 <yogogym:menuItem active="${name eq 'error'}" url="/oups" title="trigger a RuntimeException to see how it is handled">
