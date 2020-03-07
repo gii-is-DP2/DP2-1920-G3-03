@@ -187,28 +187,28 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | P2 | Carlos y Francisco José | 
 | P3 | Álvaro y José Manuel | 
 
-| Historia de Usuario | Sprint | Pareja asignada |
-| --- | --- | --- |
-| HU12 | 1 | P1 |
-| HU13 | 1 | P1 |
-| HU8 | 1 | P1 | 
-| HU9 | 1 | P1 |
-| HU10 | 1 | P2 |
-| HU11 | 1 | P2 |
-| HU14 | 1 | P2 |
-| HU15 | 1 | P1 | Done |
-| HU16 | 1 | P2 |
-| HU18 | 1 | P3 |
-| HU19 | 1 | P1 |
-| HU21 | 1 | P3 |
-| HU22 | 1 | P3 |
-| HU1 | 1 | P3 |
-| HU3 | 1 | P3 |
-| HU5 | 1 | P2 |
-| HU17 | 2 | P3 |
-| HU20 | 2 | P2 |
-| HU2 | 2 | P3 |
-| HU6 | 2 | P1 |
-| HU23 | 3 | P1 |
-| HU4 | 3 | P2 |
-| HU7 | 3 | P3 |
+| Historia de Usuario | Sprint | Pareja asignada | Hecho |
+| --- | --- | --- | --- |
+| HU12 | 1 | P1 | --- |
+| HU13 | 1 | P1 | --- |
+| HU8 | 1 | P1 | --- | 
+| HU9 | 1 | P1 | --- |
+| HU10 | 1 | P2 | --- |
+| HU11 | 1 | P2 | --- |
+| HU14 | 1 | P2 | --- |
+| HU15 | 1 | P1 | Sí |
+| HU16 | 1 | P2 | --- |
+| HU18 | 1 | P3 | --- |
+| HU19 | 1 | P1 | --- |
+| HU21 | 1 | P3 | --- |
+| HU22 | 1 | P3 | --- |
+| HU1 | 1 | P3 | --- |
+| HU3 | 1 | P3 | --- |
+| HU5 | 1 | P2 | --- |
+| HU17 | 2 | P3 | --- |
+| HU20 | 2 | P2 | --- |
+| HU2 | 2 | P3 | --- |
+| HU6 | 2 | P1 | --- |
+| HU23 | 3 | P1 | --- |
+| HU4 | 3 | P2 | --- |
+| HU7 | 3 | P3 | --- |
