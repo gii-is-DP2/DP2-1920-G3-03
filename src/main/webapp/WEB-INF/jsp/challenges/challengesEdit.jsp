@@ -17,7 +17,7 @@
     </jsp:attribute>
     
     <jsp:body>
-        <h2>>Challenge</h2>
+        <h2>Reto</h2>
 
         <form:form modelAttribute="challenge" class="form-horizontal" action="/challenges/save">
         
@@ -27,7 +27,11 @@
                 <petclinic:inputField label="Fecha de Fin" name="end"/>
             	<petclinic:inputField label="Recompensa" name="reward"/>
             	<petclinic:inputField label="Puntos" name="points"/>
-            	<petclinic:inputField label="Ejercicio" name="exercise"/>
+            	<h4>Ejercicio:</h4>
+            	<petclinic:inputField label="Ejercicio" name="exercise.name"/>
+            	<petclinic:inputField label="Descripción" name="exercise.description"/>
+            	<petclinic:inputField label="Calorías" name="exercise.kcal"/>
+            	<!-- petclinic:selectField label="Intensidad" name="exercise.intensity" names="High,Low" size="2" -->
             	<petclinic:inputField label="Repeticiones" name="reps"/>
             	<petclinic:inputField label="Peso" name="weight"/>  
             </div>

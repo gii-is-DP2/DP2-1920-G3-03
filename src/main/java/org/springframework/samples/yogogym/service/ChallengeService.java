@@ -30,9 +30,10 @@ public class ChallengeService {
 		challengeRepo.save(challenge);
 	}
 	
-	@Transactional
+	/*@Transactional
 	public void delete(Challenge challenge) {
+		//challenge.setExercise(null);
 		challengeRepo.delete(challenge);
-	}
+	}*/
 
 }

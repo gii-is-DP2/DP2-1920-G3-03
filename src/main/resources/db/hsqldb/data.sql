@@ -105,7 +105,7 @@ INSERT INTO diets(id,type,kcal,protein,fat,carb) VALUES(2, 'Dieta 2', 1, 1, 1, 1
 INSERT INTO diets(id,type,kcal,protein,fat,carb) VALUES(3, 'Dieta 3', 1, 1, 1, 1);
 INSERT INTO diets(id,type,kcal,protein,fat,carb) VALUES(4, 'Dieta 4', 1, 1, 1, 1);
 
-INSERT INTO challenges(id,description,reward,points,reps,weight,start,end, exercise_id) VALUES(1, 'Challenge1', 'Reward1', 10, 10, 10, '2020-01-01', '2020-01-02', 1);
+INSERT INTO challenges(id,description,reward,points,reps,weight,start,end,exercises_id) VALUES(1, 'Challenge1', 'Reward1', 10, 10, 10, '2020-01-01', '2020-01-02',1);
 
 INSERT INTO challenges_lines(photo_url, status, challenge_id) VALUES ('http://www.test.com', 1, 1);
 

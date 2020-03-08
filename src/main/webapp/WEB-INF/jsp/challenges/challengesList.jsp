@@ -19,7 +19,6 @@
             <th style="width: 100px">Ejercicio</th>
             <th style="width: 100px">Repeticiones</th>
             <th style="width: 100px">Peso</th>
-            <th style="width: 100px">Acciones</th>
         </tr>
         </thead>
         <tbody>
@@ -56,16 +55,14 @@
                 <td>
                     <c:out value="${challenge.weight}"/>
                 </td>
-                <td>
-                	<spring:url value="/challenges/delete/{challengeId}" var="challengeUrl">
-                        <spring:param name="challengeId" value="${challenge.id}"/>
-                    </spring:url>
-                    <a href="${fn:escapeXml(challengeUrl)}"> Borrar </a>
-                </td>
                          
             </tr>
         </c:forEach>
         
         </tbody>
     </table>
+    
+     <a class="btn btn-default" href='<spring:url value="/challenges/new" htmlEscape="true"/>'>Crear Reto</a>
+    
+    
 </petclinic:layout>

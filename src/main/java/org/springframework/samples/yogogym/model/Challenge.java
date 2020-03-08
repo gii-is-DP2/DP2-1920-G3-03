@@ -6,7 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,7 +27,7 @@ public class Challenge extends BaseEntity{
 	protected String reward;
 	
 	@Column(name = "points")
-	protected String points;
+	protected int points;
 	
 	@Column(name = "reps")
 	protected String reps;
@@ -44,8 +44,8 @@ public class Challenge extends BaseEntity{
 	protected Date end;
 	
 	// Relations
-	@OneToOne(cascade = CascadeType.ALL, optional = true)
-	@JoinColumn(name = "exercise_id")
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "exercises_id")
 	private Exercise exercise;
 
 	/*

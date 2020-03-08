@@ -19,7 +19,7 @@
 	<span>Maquinas</span>
 </yogogym:menuItem>
 				
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Retos">
+<yogogym:menuItem active="${name eq 'vets'}" url="/challenges" title="Retos">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>Retos</span>
 </yogogym:menuItem>

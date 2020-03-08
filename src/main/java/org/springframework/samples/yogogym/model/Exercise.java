@@ -1,5 +1,6 @@
 package org.springframework.samples.yogogym.model;
 
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,8 +10,13 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 
 @Entity
+@Data
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "exercises")
 public class Exercise extends BaseEntity{
 
@@ -34,8 +40,16 @@ public class Exercise extends BaseEntity{
 	@ManyToOne(cascade = CascadeType.ALL, optional = true)
 	@JoinColumn(name = "machine_id")
 	private Machine machine;
+	
+	
+	@Override
+	public String toString() {
+		
+		return name +": ["+ description +"], "+ kcal +" Kcal, "+intensity ;
+	}
 
 	
+	/*
 	// Getters, Setters, Equals, HashCode, ToString:
 	public String getName() {
 		return name;
@@ -105,11 +119,6 @@ public class Exercise extends BaseEntity{
 			return false;
 		return true;
 	}
-
-	@Override
-	public String toString() {
-		return "Exercise [name=" + name + ", description=" + description + ", kcal=" + kcal + ", intensity=" + intensity
-				+ "]";
-	}
+	*/
 	
 }

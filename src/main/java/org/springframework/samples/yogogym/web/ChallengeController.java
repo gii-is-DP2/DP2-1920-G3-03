@@ -1,17 +1,19 @@
 package org.springframework.samples.yogogym.web;
 
-import java.util.Optional;
 
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
+import org.springframework.samples.yogogym.model.Exercise;
+import org.springframework.samples.yogogym.model.Intensity;
 import org.springframework.samples.yogogym.service.ChallengeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -20,6 +22,11 @@ public class ChallengeController {
 
 	@Autowired
 	private ChallengeService challengeService;
+	
+	@InitBinder("challenges")
+	public void initChallengeBinder(WebDataBinder dataBinder) {
+		dataBinder.setValidator(new ChallengeValidator());
+	}
 	
 	@GetMapping()
 	public String listChallenges(ModelMap modelMap) {
@@ -37,15 +44,15 @@ public class ChallengeController {
 		
 		String view = "challenges/challengesEdit";
 		Challenge c = new Challenge();
-		c.setExercise(null);
+		//c.setExercise(null);
 		modelMap.addAttribute("challenge", c);
 		return view;
 	}
 	
-	@GetMapping(path="/save")
+	@PostMapping(path="/save")
 	public String saveChallenge(@Valid Challenge challenge, BindingResult result, ModelMap modelMap) {
 		
-		String view;
+		String view; 
 		
 		if(result.hasErrors()) {
 			modelMap.addAttribute("challenge", challenge);
@@ -60,7 +67,7 @@ public class ChallengeController {
 		return view;
 	}
 	
-	@GetMapping(path="/delete/{challengeId}")
+	/*@GetMapping(path="/delete/{challengeId}")
 	public String deleteChallenge(@PathVariable("challengeId") int challengeId, ModelMap modelMap) {
 		
 		String view = listChallenges(modelMap);
@@ -75,6 +82,6 @@ public class ChallengeController {
 		}
 		
 		return view;
-	}
+	}*/
 	
 }
