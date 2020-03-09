@@ -191,7 +191,7 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | --- | --- | --- | --- |
 | HU12 | 1 | P1 | --- |
 | HU13 | 1 | P1 | --- |
-| HU8 | 1 | P1 | --- | 
+| HU8 | 1 | P1 | Sí | 
 | HU9 | 1 | P1 | --- |
 | HU10 | 1 | P2 | --- |
 | HU11 | 1 | P2 | --- |
