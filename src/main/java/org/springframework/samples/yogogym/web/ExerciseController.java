@@ -31,7 +31,7 @@ public class ExerciseController {
 
 		return "mainMenu/exercises/exercisesList";
 	}
-
+		
 	@GetMapping("/mainMenu/exercises/{exerciseId}")
 	public ModelAndView showExercise(@PathVariable("exerciseId") final int exerciseId) {
 		ModelAndView mav = new ModelAndView("mainMenu/exercises/exerciseDetails");
