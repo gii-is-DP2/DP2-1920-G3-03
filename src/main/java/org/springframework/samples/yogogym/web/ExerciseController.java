@@ -1,8 +1,6 @@
-
 package org.springframework.samples.yogogym.web;
 
 import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.service.ExerciseService;
@@ -38,5 +36,5 @@ public class ExerciseController {
 		mav.addObject(this.exerciseService.findExerciseById(exerciseId));
 		return mav;
 	}
-
+  
 }

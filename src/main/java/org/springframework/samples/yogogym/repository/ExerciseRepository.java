@@ -1,4 +1,3 @@
-
 package org.springframework.samples.yogogym.repository;
 
 import org.springframework.data.jpa.repository.Query;

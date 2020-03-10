@@ -15,8 +15,8 @@
  */
 package org.springframework.samples.yogogym.model;
 
+import java.util.Collection;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -45,6 +45,10 @@ public class Client extends Person {
 	private User user;
 	
 	@OneToMany(cascade = CascadeType.ALL)
+	private Collection<ChallengeLine> challengesLines;
+  
+  @OneToMany(cascade = CascadeType.ALL)
 	private Set<Routine> routines;
+
 	
 }
