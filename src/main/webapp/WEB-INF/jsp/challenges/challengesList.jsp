@@ -6,19 +6,19 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
 <petclinic:layout pageName="challenges">
-    <h2>Retos</h2>
+    <h2>Challenges</h2>
 
     <table id="challengesTable" class="table table-striped">
         <thead>
         <tr>
-            <th style="width: 100px;">Descripción</th>
-            <th style="width: 100px;">Recompensa</th>
-            <th style="width: 100px">Puntos</th>
-            <th style="width: 100px">Comienza</th>
-            <th style="width: 100px">Finaliza</th>
-            <th style="width: 100px">Ejercicio</th>
-            <th style="width: 100px">Repeticiones</th>
-            <th style="width: 100px">Peso</th>
+            <th style="width: 100px;">Description</th>
+            <th style="width: 100px;">Reward</th>
+            <th style="width: 100px">Points</th>
+            <th style="width: 100px">Start Date</th>
+            <th style="width: 100px">Finish Date</th>
+            <th style="width: 100px">Exercise</th>
+            <th style="width: 100px">Repetitions</th>
+            <th style="width: 100px">Weight</th>
         </tr>
         </thead>
         <tbody>
@@ -47,7 +47,7 @@
                     <c:out value="${challenge.end}"/>
                 </td>
                 <td>
-                    <spring:url value="/exercises/{exerciseId}" var="exerciseUrl">
+                    <spring:url value="/mainMenu/exercises/{exerciseId}" var="exerciseUrl">
                         <spring:param name="exerciseId" value="${challenge.exercise.id}"/>
                     </spring:url>
                     <a href="${fn:escapeXml(exerciseUrl)}"><c:out value="${challenge.exercise.name}"/></a>
@@ -65,7 +65,7 @@
         </tbody>
     </table>
     
-     <a class="btn btn-default" href='<spring:url value="/challenges/new" htmlEscape="true"/>'>Crear Reto</a>
+     <a class="btn btn-default" href='<spring:url value="/challenges/new" htmlEscape="true"/>'>Create Challenge</a>
     
     
 </petclinic:layout>
