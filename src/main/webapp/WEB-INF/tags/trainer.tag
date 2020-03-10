@@ -1,15 +1,23 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags"%>
 
 <%@ attribute name="name" required="true" rtexprvalue="true" %>
 
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Rutinas">
+<sec:authorize access="isAuthenticated()">
+	<c:set var="trainerUsername">
+		<sec:authentication property="principal.username" />
+	</c:set>
+</sec:authorize>
+
+<yogogym:menuItem active="${name eq 'clients'}" url="/trainer/${trainerUsername}/clients" title="Clients">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Mis Alumnos</span>
+	<span>My Clients</span>
 </yogogym:menuItem>
 
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Rutinas">
+<yogogym:menuItem active="${name eq 'routines'}" url="/trainer/${trainerUsername}/routines" title="Rutinas">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>Gestion Rutinas</span>
 </yogogym:menuItem>

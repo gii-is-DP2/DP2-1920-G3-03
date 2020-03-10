@@ -67,15 +67,17 @@ INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04',
 INSERT INTO users(username,password,enabled) VALUES ('admin1','admin1999',TRUE);
 INSERT INTO authorities VALUES (1,'admin','admin1');
 INSERT INTO authorities VALUES (2,'user','admin1');
-INSERT INTO admins VALUES (1, 'Vekto', 'Rino', 'proyectowip@vekto.com', '12345678A','admin1');
+INSERT INTO admins VALUES (1, 'proyectowip@vekto.com','Vekto', 'Rino', '12345678A','admin1');
 
 INSERT INTO users(username,password,enabled) VALUES ('user1','user1999',TRUE);
 INSERT INTO authorities VALUES (3,'user','user1');
-INSERT INTO clients VALUES (2, 'Keke', 'Rino', 'proyectowip@keke.com', '12345678B','user1');
+INSERT INTO clients VALUES (2, 'proyectowip@keke.com','Keke', 'Rino', '12345678B','user1');
 
 INSERT INTO users(username,password,enabled) VALUES ('trainer1','trainer1999',TRUE);
 INSERT INTO authorities VALUES (4,'trainer','trainer1');
-INSERT INTO trainers VALUES (3, 'Alvaro', 'Rino', 'proyectowip@alvaro.com', '12345678C','trainer1');
+INSERT INTO trainers VALUES (3,  'proyectowip@alvaro.com', 'Alvaro', 'Rino', '12345678C','trainer1');
+
+INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (3,2);
 
 INSERT INTO machines(name, location) VALUES('Gemelos_10000','Musculación');
 INSERT INTO machines(name, location) VALUES('Biceps_9000','Musculación');
@@ -87,8 +89,12 @@ INSERT INTO exercises(name, description, kcal, intensity, machine_id) VALUES('Co
 INSERT INTO routines(name, description) VALUES('Piernas', 'Piernas fuertes');
 INSERT INTO routines(name, description) VALUES('Brazos', 'Biceps redondos');
 
-INSERT INTO routines_lines(reps, weight) VALUES(10, 25.0);
-INSERT INTO routines_lines(reps, weight) VALUES(5, 50.0);
+INSERT INTO clients_routines(client_id,routines_id) VALUES(2,1);
+INSERT INTO clients_routines(client_id,routines_id) VALUES(2,2);
+
+INSERT INTO routines_lines(reps, weight,exercise_id,routine_id) VALUES(10, 25.0, 1, 1);
+INSERT INTO routines_lines(reps, weight,exercise_id,routine_id) VALUES(5, 0.0, 2, 1);
+INSERT INTO routines_lines(reps, weight,exercise_id,routine_id) VALUES(5, 50.0, 1, 2);
 
 INSERT INTO phrases(text, prob) VALUES('BUENOS DIAS', 0.05);
 INSERT INTO phrases(text, prob) VALUES('VAMOS MAQUINA', 0.1);
