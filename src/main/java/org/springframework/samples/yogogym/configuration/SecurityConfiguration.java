@@ -35,14 +35,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 				.antMatchers("/resources/**","/webjars/**","/h2-console/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/","/oups").permitAll()
-				.antMatchers("/user/**").hasRole("USER")
-				.antMatchers("/admin/**").hasRole("ADMIN")
-				.antMatchers("/trainer/**").hasRole("TRAINER")
+				.antMatchers("/user/**").hasRole("user")
+				.antMatchers("/admin/**").hasRole("admin")
+				.antMatchers("/trainer/**").hasRole("trainer")
 				//Challenges:
 				.antMatchers("/challenges").authenticated()
-				.antMatchers("/challenges/new").authenticated() // CAMBIAR A ADMIN
-				.antMatchers("/challenges/save").authenticated() // CAMBIAR A ADMIN
-				
+				.antMatchers("/challenges/new").hasRole("admin") // CAMBIAR A ADMIN
+				.antMatchers("/exercises/**").authenticated()
 				
 				/*
 				.antMatchers("/admin/**").hasAnyAuthority("admin")

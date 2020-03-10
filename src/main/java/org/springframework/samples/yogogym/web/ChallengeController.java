@@ -1,11 +1,16 @@
 package org.springframework.samples.yogogym.web;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Intensity;
+import org.springframework.samples.yogogym.model.Machine;
 import org.springframework.samples.yogogym.service.ChallengeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -28,6 +34,11 @@ public class ChallengeController {
 		dataBinder.setValidator(new ChallengeValidator());
 	}
 	
+	@ModelAttribute("intensities")
+	public Collection<Intensity> populateIntensities() {
+		return  new ArrayList<Intensity>(Arrays.asList(Intensity.values()));
+	}
+	
 	@GetMapping()
 	public String listChallenges(ModelMap modelMap) {
 		
@@ -40,31 +51,30 @@ public class ChallengeController {
 	}
 	
 	@GetMapping(path="/new")
-	public String createChallenge(ModelMap modelMap) {
+	public String initCreationForm(ModelMap modelMap) {
 		
 		String view = "challenges/challengesEdit";
 		Challenge c = new Challenge();
-		//c.setExercise(null);
+		Exercise e = new Exercise();
+		Machine m = new Machine();
+		e.setMachine(m);
+		c.setExercise(e);
 		modelMap.addAttribute("challenge", c);
 		return view;
 	}
 	
-	@PostMapping(path="/save")
-	public String saveChallenge(@Valid Challenge challenge, BindingResult result, ModelMap modelMap) {
-		
-		String view; 
+	@PostMapping(path="/new")
+	public String processCreationForm(@Valid Challenge challenge, BindingResult result, ModelMap modelMap) {
 		
 		if(result.hasErrors()) {
-			modelMap.addAttribute("challenge", challenge);
-			view = "challenges/challengesEdit";
+			modelMap.put("challenge", challenge);
+			return "challenges/challengesEdit";
 		}
 		else {
 			challengeService.save(challenge);
 			modelMap.addAttribute("message", "Reto creado Satisfactoriamente");
-			view = listChallenges(modelMap);
+			return listChallenges(modelMap);
 		}
-		
-		return view;
 	}
 	
 	/*@GetMapping(path="/delete/{challengeId}")

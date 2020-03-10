@@ -47,7 +47,10 @@
                     <c:out value="${challenge.end}"/>
                 </td>
                 <td>
-                    <c:out value="${challenge.exercise}"/>
+                    <spring:url value="/exercises/{exerciseId}" var="exerciseUrl">
+                        <spring:param name="exerciseId" value="${challenge.exercise.id}"/>
+                    </spring:url>
+                    <a href="${fn:escapeXml(exerciseUrl)}"><c:out value="${challenge.exercise.name}"/></a>
                 </td>
                 <td>
                     <c:out value="${challenge.reps}"/>
