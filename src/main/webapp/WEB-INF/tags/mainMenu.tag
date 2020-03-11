@@ -14,15 +14,9 @@
 	<span>Exercises</span>
 </yogogym:menuItem>
 								
-<yogogym:menuItem active="${name eq 'machines'}" url="/mainMenu/machines" title="Machines">
+<yogogym:menuItem active="${name eq 'machines'}" url="/mainMenu/equipments" title="Equipments">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Machines</span>
-</yogogym:menuItem>
-				
-<yogogym:menuItem active="${name eq 'challenges'}" url="/challenges" title="Retos">
-
-	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Challenges</span>
+	<span>Equipments</span>
 </yogogym:menuItem>
 
 <yogogym:menuItem active="${name eq 'diets'}" url="/mainMenu/diets" title="Diets">

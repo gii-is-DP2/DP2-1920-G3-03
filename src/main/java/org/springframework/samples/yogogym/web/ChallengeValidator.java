@@ -23,8 +23,8 @@ public class ChallengeValidator implements Validator{
 		
 		Challenge cVal = (Challenge) target;
 		
-		Date start = cVal.getStart();
-		Date end = cVal.getEnd();
+		Date start = cVal.getInitialDate();
+		Date end = cVal.getEndDate();
 		String description = cVal.getDescription();
 		
 		Iterable<Challenge> cs = challengeService.findAll();
@@ -64,7 +64,7 @@ public class ChallengeValidator implements Validator{
 	private boolean sameWeek(Challenge c, int week) {
 		
 		Calendar Cal = Calendar.getInstance();
-		Cal.setTime(c.getStart());
+		Cal.setTime(c.getInitialDate());
 		
 		return week == Cal.getWeekYear();
 	}

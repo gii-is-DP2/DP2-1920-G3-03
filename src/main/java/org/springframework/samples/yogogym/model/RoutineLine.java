@@ -22,15 +22,18 @@ public class RoutineLine extends BaseEntity{
 	
 	@Column(name = "reps")
 	@Min(1)
-	private int reps;
+	protected Integer reps;
 	
 	@Column(name = "weight")
 	@Min(0)
-	private Double weight;
+	protected Double weight;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@Column(name = "series")
+	@Min(1)
+	protected Integer series;
+	
+	@ManyToOne(cascade = CascadeType.ALL, optional = false)
 	@JoinColumn(name = "exercise_id")
-	@NotNull
-	private Exercise exercises;
+	protected Exercise exercise;
 
 }

@@ -15,7 +15,7 @@
             <th>Description</th>
             <th>Kcal</th>
             <th>Intensity</th>
-            <th>Machine</th>
+            <th>Equipment</th>
         </tr>
         </thead>
         <tbody>
@@ -38,10 +38,10 @@
                 </td>                
                 
                 <td>
-                    <spring:url value="/mainMenu/machines/{machineId}" var="machineUrl">
-                        <spring:param name="machineId" value="${exercise.machine.id}"/>
+                    <spring:url value="/mainMenu/equipments/{equipmentId}" var="equipmentUrl">
+                        <spring:param name="equipmentId" value="${exercise.equipment.id}"/>
                     </spring:url>
-                    <a href="${fn:escapeXml(machineUrl)}"><c:out value="${exercise.machine.name}"/></a>
+                    <a href="${fn:escapeXml(equipmentUrl)}"><c:out value="${exercise.equipment.name}"/></a>
                 </td>
                                 
             </tr>

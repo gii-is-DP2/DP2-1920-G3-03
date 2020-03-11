@@ -4,9 +4,9 @@
 
 <%@ attribute name="name" required="true" rtexprvalue="true" %>
 
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Retos">
+<yogogym:menuItem active="${name eq 'challenges'}" url="/admin/challenges" title="Challenges">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Retos</span>
+	<span>Challenges</span>
 </yogogym:menuItem>
 					
 <yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Clases">

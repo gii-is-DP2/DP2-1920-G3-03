@@ -1,7 +1,6 @@
 
 package org.springframework.samples.yogogym.web;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.validation.Valid;
@@ -22,11 +21,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-public class RoutineController {
+public class RoutineLineController {
 
 	private final RoutineService routineService;
 	private final ExerciseService exerciseService;
@@ -35,7 +35,7 @@ public class RoutineController {
 	private final TrainingService trainingService;
 
 	@Autowired
-	public RoutineController(final RoutineService routineService, final ExerciseService exerciseService,
+	public RoutineLineController(final RoutineService routineService, final ExerciseService exerciseService,
 			final ClientService clientService, final TrainerService trainerService,
 			final TrainingService trainingService) {
 		this.routineService = routineService;
@@ -47,64 +47,49 @@ public class RoutineController {
 
 	// TRAINER
 
-	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}")
-	public String ClientRoutineDetails(@PathVariable("trainerUsername") String trainerUsername,
-			@PathVariable("clientId") int clientId, @PathVariable("routineId") int routineId,
-			@PathVariable("trainingId") int trainingId, Model model) {
-		Client client = this.clientService.findClientById(clientId);
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/create")
+	public String initRoutineLineCreateForm(@PathVariable("clientId") int clientId,
+			@PathVariable("routineId") int routineId, final Model model) {
 		Routine routine = this.routineService.findRoutineById(routineId);
-		Training training = this.trainingService.findTrainingById(trainingId);
 
-		model.addAttribute("client", client);
-		model.addAttribute("routine", routine);
-		model.addAttribute("training", training);
+		Exercise exercise = new Exercise();
 
-		return "trainer/routines/routineDetails";
-	}
-
-	@GetMapping("/trainer/{trainerUsername}/routines")
-	public String RoutinesList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
-		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
-		model.addAttribute("trainer", trainer);
-
-		return "trainer/routines/routinesList";
-	}
-
-	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create")
-	public String initRoutineCreateForm(@PathVariable("clientId") int clientId, final Model model) {
-		Collection<RoutineLine> routineLine = new ArrayList<>();
-
-		Routine routine = new Routine();
-		routine.setRoutineLine(routineLine);
+		RoutineLine routineLine = new RoutineLine();
+		routineLine.setExercise(exercise);
 
 		Collection<Exercise> exerciseCollection = this.exerciseService.findAllExercise();
 		Client client = this.clientService.findClientById(clientId);
 
-		model.addAttribute("client", client);
 		model.addAttribute("routine", routine);
+		model.addAttribute("client", client);
+		model.addAttribute("routineLine", routineLine);
 		model.addAttribute("exercises", exerciseCollection);
 
-		return "trainer/routines/routinesCreateOrUpdate";
+		return "trainer/routines/routinesLineCreateOrUpdate";
 	}
 
-	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create")
-	public String processRoutineCreationForm(@Valid Routine routine, BindingResult result,
-			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,
-			@PathVariable("clientId") int clientId) {
+	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/create")
+	public String processRoutineLineCreationForm(@Valid RoutineLine routineLine, BindingResult result,
+			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("routineId") int routineId,
+			@PathVariable("clientId") int clientId, @PathVariable("trainingId") int trainingId,
+			@ModelAttribute("exerciseId") int exerciseId) {
 		if (result.hasErrors()) {
-			return "trainer/routines/routinesCreateOrUpdate";
+			return "trainer/routines/routinesLineCreateOrUpdate";
 		} else {
-			Training training = this.trainingService.findTrainingById(trainingId);
-			training.getRoutines().add(routine);
+			Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
+			routineLine.setExercise(exercise);
 
-			this.trainingService.saveTraining(training);
+			Routine routine = this.routineService.findRoutineById(routineId);
+			routine.getRoutineLine().add(routineLine);
+
+			this.routineService.saveRoutine(routine);
 
 			Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 			Client client = this.clientService.findClientById(clientId);
+			Training training = this.trainingService.findTrainingById(trainingId);
 
 			return "redirect:/trainer/" + trainer.getUser().getUsername() + "/clients/" + client.getId() + "/trainings/"
-					+ training.getId();
+					+ training.getId() + "/routines/" + routine.getId();
 		}
 	}
-
 }

@@ -19,13 +19,16 @@ public class Routine extends BaseEntity{
 
 	@Column(name = "name")
 	@NotBlank
-	private String name;
+	protected String name;
 	
 	@Column(name = "description")
-	private String description;
+	protected String description;
 
+	@Column(name="reps_per_week")
+	protected Integer repsPerWeek;
+	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "routine_id")
-	private Collection<RoutineLine> routineLine;	
+	protected Collection<RoutineLine> routineLine;	
 	
 }

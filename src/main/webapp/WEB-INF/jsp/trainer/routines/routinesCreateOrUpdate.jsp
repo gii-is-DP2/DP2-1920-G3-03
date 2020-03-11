@@ -15,6 +15,8 @@
 		<input type="text" id="name" name="name" placeholder="Name" required="required" value="${routine.name}">
 		<br>
 		<input type="text" id="description" name="description" placeholder="description" required="required" value="${routine.description}">
+		<br>
+		<input type="number" id="repsPerWeek" name="repsPerWeek" placeholder="Repetition Per Week" required="required" value="${routine.repsPerWeek}">
 				
 		<br>
 		

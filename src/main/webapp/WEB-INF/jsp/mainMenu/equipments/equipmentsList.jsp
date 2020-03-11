@@ -5,10 +5,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
-<yogogym:layout pageName="machines">
-    <h2>Machines</h2>
+<yogogym:layout pageName="equipments">
+    <h2>Equipments</h2>
 
-    <table id="machinesTable" class="table table-striped">
+    <table id="equipmentTable" class="table table-striped">
         <thead>
         <tr>
             <th>Name</th>
@@ -16,16 +16,16 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach items="${machines}" var="machine">
+        <c:forEach items="${equipments}" var="equipment">
             <tr>
                 <td>
-                    <spring:url value="/mainMenu/machines/{machineId}" var="machineUrl">
-                        <spring:param name="machineId" value="${machine.id}"/>
+                    <spring:url value="/mainMenu/equipments/{equipmentId}" var="equipmentUrl">
+                        <spring:param name="equipmentId" value="${equipment.id}"/>
                     </spring:url>
-                    <a href="${fn:escapeXml(machineUrl)}"><c:out value="${machine.name}"/></a>
+                    <a href="${fn:escapeXml(equipmentUrl)}"><c:out value="${equipment.name}"/></a>
                 </td>
                 <td>
-                    <c:out value="${machine.location}"/>
+                    <c:out value="${equipment.location}"/>
                 </td>
             </tr>
         </c:forEach>

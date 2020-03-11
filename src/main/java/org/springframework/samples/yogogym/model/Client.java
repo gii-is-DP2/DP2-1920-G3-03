@@ -16,13 +16,15 @@
 package org.springframework.samples.yogogym.model;
 
 import java.util.Collection;
-import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 
 import lombok.Data;
 
@@ -42,13 +44,22 @@ public class Client extends Person {
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "username", referencedColumnName = "username")
-	private User user;
+	protected User user;
+	
+	@Column(name="weight")
+	@Min(0)
+	protected Double weight;
+	
+	@Column(name="height")
+	@Min(0)
+	protected Double height;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	private Collection<ChallengeLine> challengesLines;
-  
-  @OneToMany(cascade = CascadeType.ALL)
-	private Set<Routine> routines;
-
+	protected Collection<Training> trainings;
 	
+	@ManyToOne(cascade = CascadeType.ALL)
+	protected Guild guild;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	protected Collection<Inscription> inscriptions;
 }

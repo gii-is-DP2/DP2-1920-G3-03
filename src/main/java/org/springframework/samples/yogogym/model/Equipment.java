@@ -10,14 +10,14 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "machines")
-public class Machine extends BaseEntity {
+@Table(name = "equipments")
+public class Equipment extends BaseEntity {
 
 	@Column(name = "name")
 	@NotBlank
-	private String	name;
+	protected String	name;
 
 	@Column(name = "location")
-	private String	location;
+	protected String	location;
 
 }

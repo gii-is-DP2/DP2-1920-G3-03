@@ -10,4 +10,5 @@ public interface RoutineRepository extends  CrudRepository<Routine, String>{
 	
 	@Query("SELECT routine FROM Routine routine WHERE routine.id=:id")
 	public Routine findRoutineById(@Param("id") int id);
+	
 }

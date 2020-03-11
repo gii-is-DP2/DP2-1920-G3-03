@@ -31,15 +31,15 @@
     <br/>
     <br/>
     <br/>
-    <h2>Machine</h2>
+    <h2>Equipment</h2>
 
     <table class="table table-striped">
             <tr>
 	           <td>
-                    <spring:url value="/mainMenu/machines/{machineId}" var="machineUrl">
-                        <spring:param name="machineId" value="${exercise.machine.id}"/>
+                    <spring:url value="/mainMenu/equipments/{equipmentId}" var="equipmentUrl">
+                        <spring:param name="equipmentId" value="${exercise.equipment.id}"/>
                     </spring:url>
-                    <a href="${fn:escapeXml(machineUrl)}"><c:out value="${exercise.machine.name}"/></a>
+                    <a href="${fn:escapeXml(equipmentUrl)}"><c:out value="${exercise.equipment.name}"/></a>
                 </td>
 	        </tr>
     </table>

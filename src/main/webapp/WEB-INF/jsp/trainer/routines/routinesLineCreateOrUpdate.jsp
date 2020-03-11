@@ -15,9 +15,11 @@
 		<input type="number" min="1" id="reps" name="reps" placeholder="Repetitions" required="required">
 		<br>
 		<input type="number" min="0" id="weight" name="weight" placeholder="Weight" required="required">
+		<br>
+		<input type="number" min="1" id="series" name="series" placeholder="Series" required="required">
 		<h3>Pick Exercise</h3>
 		
-		<select id="exercise" name="exercise" required="required">
+		<select id="exerciseId" name="exerciseId" required="required">
 			<c:forEach var="exercise" items="${exercises}">
 				<option value="${exercise.id}">${exercise.name}</option>
 			</c:forEach>

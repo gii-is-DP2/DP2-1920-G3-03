@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.yogogym.model;
 
+import java.util.Collection;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -43,9 +44,9 @@ public class Trainer extends Person {
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "username", referencedColumnName = "username")
-	private User user;
+	protected User user;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	private Set<Client> clients;
+	protected Collection<Client> clients;
 	
 }

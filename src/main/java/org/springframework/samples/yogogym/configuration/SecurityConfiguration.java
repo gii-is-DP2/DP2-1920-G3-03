@@ -40,17 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/user/**").hasAuthority("user")
 				.antMatchers("/admin/**").hasAuthority("admin")
 				.antMatchers("/trainer/**").hasAuthority("trainer")
-        //Challenges:
-				.antMatchers("/challenges").authenticated()
-				.antMatchers("/challenges/new").hasAuthority("admin") // CAMBIAR A ADMIN
-				.antMatchers("/exercises/**").authenticated()
-				
-				/*
-				.antMatchers("/admin/**").hasAnyAuthority("admin")
-				.antMatchers("/owners/**").hasAnyAuthority("owner","admin")				
-				.antMatchers("/vets/**").authenticated()
-				 */
-				
+      				
 				.anyRequest().denyAll()
 				.and()
 				 	.formLogin()

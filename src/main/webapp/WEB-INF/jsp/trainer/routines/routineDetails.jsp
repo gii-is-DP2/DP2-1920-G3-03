@@ -6,11 +6,13 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="clients">
-	<h2>Trainer: Client Routine Details</h2>
-	<p><b>Client Name:</b> <c:out value="${client.firstName}"/></p>
+	<spring:url value="/trainer/${trainerUsername}/clients/{clientId}" var="clientUrl">
+		<spring:param name="clientId" value="${client.id}"/>
+	</spring:url>
+	<h2>Trainer: Routine Details of <a href="${fn:escapeXml(clientUrl)}"><c:out value="${client.firstName} ${client.lastName}"/></a></h2>
 	<p><b>Routine Name:</b> <c:out value="${routine.name}"/></p>
 	<p><b>Description:</b> <c:out value="${routine.description}"/></p>
-	
+	<p><b>Repetitions Per Week:</b> <c:out value="${routine.repsPerWeek}"/></p>
 	<br>
 	<br>
 	
@@ -33,17 +35,17 @@
 	        	<td><c:out value="${lineRoutine.weight}"/></td>
 	        	<td>
 				<spring:url value="/mainMenu/exercises/{exerciseId}" var="exerciseUrl">
-                       <spring:param name="exerciseId" value="${lineRoutine.exercises.id}"/>
+                       <spring:param name="exerciseId" value="${lineRoutine.exercise.id}"/>
                    </spring:url>
-				<a href="${fn:escapeXml(exerciseUrl)}"><c:out value="${lineRoutine.exercises.name}"/></a>
+				<a href="${fn:escapeXml(exerciseUrl)}"><c:out value="${lineRoutine.exercise.name}"/></a>
 				</td>
-				<td><c:out value="${lineRoutine.exercises.description}"/></td>
-				<td><c:out value="${lineRoutine.exercises.kcal}"/></td>
+				<td><c:out value="${lineRoutine.exercise.description}"/></td>
+				<td><c:out value="${lineRoutine.exercise.kcal}"/></td>
 	        </tr>
 	</table>
 	</c:forEach>
 	
-	<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/routines/${routine.id}/routineLine/create" var="routineLineAddUrl" />
+	<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/routineLine/create" var="routineLineAddUrl" />
 	<a href="${fn:escapeXml(routineLineAddUrl)}">Add Routine Line</a>
 	
 </yogogym:layout>

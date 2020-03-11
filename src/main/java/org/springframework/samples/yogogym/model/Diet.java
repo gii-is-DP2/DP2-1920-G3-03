@@ -1,56 +1,47 @@
 package org.springframework.samples.yogogym.model;
 
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "diets")
 public class Diet extends BaseEntity{
 	
-	@Column(name = "type")
-	protected String type;
+	@Column(name = "name")
+	@NotEmpty
+	protected String name;
+	
+	@Column(name = "description")
+	@NotEmpty
+	protected String description;
 	
 	@Column(name = "kcal")
-	protected int kcal;
+	@Min(0)
+	protected Integer kcal;
 	
 	@Column(name = "protein")
-	protected int protein;
+	@Min(0)
+	protected Integer protein;
 	
 	@Column(name = "fat")
-	protected int fat;
+	@Min(0)
+	protected Integer fat;
 	
 	@Column(name = "carb")
-	protected int carb;
+	@Min(0)
+	protected Integer carb;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	protected Collection<Food> foods;
 
-	public String getType() {
-		return this.type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
-	public int getKcal() {
-		return this.kcal;
-	}
-	public void setKcal(int kcal) {
-		this.kcal = kcal;
-	}
-	public int getProtein() {
-		return this.protein;
-	}
-	public void setProtein(int protein) {
-		this.protein = protein;
-	}
-	public int getFat() {
-		return this.fat;
-	}
-	public void setFat(int fat) {
-		this.fat = fat;
-	}
-	public int getCarb() {
-		return this.carb;
-	}
-	public void setCarb(int carb) {
-		this.carb = carb;
-	}
 }

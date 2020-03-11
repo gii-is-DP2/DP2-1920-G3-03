@@ -17,9 +17,14 @@
 	<span>My Clients</span>
 </yogogym:menuItem>
 
-<yogogym:menuItem active="${name eq 'routines'}" url="/trainer/${trainerUsername}/routines" title="Rutinas">
+<yogogym:menuItem active="${name eq 'trainings'}" url="/trainer/${trainerUsername}/trainings" title="Training">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Gestion Rutinas</span>
+	<span>Training Management</span>
+</yogogym:menuItem>
+
+<yogogym:menuItem active="${name eq 'routines'}" url="/trainer/${trainerUsername}/routines" title="Routines">
+	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+	<span>Routine Management</span>
 </yogogym:menuItem>
 
 <yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Dietas">

@@ -5,30 +5,29 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
-<yogogym:layout pageName="routines">
-    <h2>All Routines</h2>
+<yogogym:layout pageName="trainings">
+    <h2>All Trainings</h2>
 
 	<c:forEach var="client" items="${trainer.clients}">
 	<div>
+		
 		<spring:url value="/trainer/${trainerUsername}/clients/{clientId}" var="clientUrl">
 			<spring:param name="clientId" value="${client.id}"/>
 		</spring:url>
-		<h3>Client <a href="${fn:escapeXml(clientUrl)}"><c:out value="${client.firstName} ${client.lastName}"/> </a> ( <c:out value="${client.email}"/> ): </h3>
+		<h3> Client <a href="${fn:escapeXml(clientUrl)}"><c:out value="${client.firstName} ${client.lastName}"/></a> ( <c:out value ="${client.email}"/> )</h3>
 		
 		<ul>
 			<c:forEach var="training" items="${client.trainings}">
-				<li><c:out value="${training.name}"/></li>
-				<ul>
-					<c:forEach var="routine" items="${training.routines}">
-						<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/routines/{routineId}" var="routineUrl">
-		                        <spring:param name="routineId" value="${routine.id}"/>
-		                </spring:url>
-						<li><a href="${fn:escapeXml(routineUrl)}"><c:out value="${routine.name}"/></a></li>
-					</c:forEach>
-				</ul>
+				<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/{trainingId}" var="trainingUrl">
+                        <spring:param name="trainingId" value="${training.id}"/>
+                </spring:url>
+				<li><a href="${fn:escapeXml(trainingUrl)}"><c:out value="${training.name}"/></a></li>
 			</c:forEach>
 		</ul>
-				
+		
+		<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/create" var="trainingAddUrl" />
+		<a href="${fn:escapeXml(trainingAddUrl)}">Add Training</a>		
+		
 	</div>
 	</c:forEach>
     

@@ -12,32 +12,30 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@Data
 @Entity
-@EqualsAndHashCode(callSuper = false)
+@Data
 @Table(name = "exercises")
 public class Exercise extends BaseEntity {
 
 	@Column(name = "name")
 	@NotBlank
-	private String		name;
+	protected String		name;
 
 	@Column(name = "description")
 	@NotBlank
-	private String		description;
+	protected  String		description;
 
 	@Column(name = "kcal")
 	@Min(0)
-	private int			kcal;
+	protected  Integer			kcal;
 
 	@Column(name = "intensity")
-	private Intensity	intensity;
+	protected  Intensity	intensity;
 
 	//Relations:
-	@ManyToOne(cascade = CascadeType.ALL, optional = true, fetch = FetchType.EAGER)
-	@JoinColumn(name = "machine_id")
-    private Machine machine;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "equipment_id")
+	protected Equipment equipment;
 	
 }

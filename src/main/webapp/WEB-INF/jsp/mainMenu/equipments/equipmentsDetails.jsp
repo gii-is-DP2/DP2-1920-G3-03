@@ -5,17 +5,17 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
-<yogogym:layout pageName="machines">
-    <h2>Machine Details</h2>
+<yogogym:layout pageName="equipments">
+    <h2>Equipments Details</h2>
 
     <table class="table table-striped">
         <tr>
             <th>Name</th>
-            <td><b><c:out value="${machine.name}"/></b></td>
+            <td><b><c:out value="${equipment.name}"/></b></td>
         </tr>
         <tr>
             <th>Location</th>
-            <td><c:out value="${machine.location}"/></td>
+            <td><c:out value="${equipment.location}"/></td>
         </tr>        
     </table>
 

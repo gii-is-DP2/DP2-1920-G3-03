@@ -15,16 +15,13 @@
  */
 package org.springframework.samples.yogogym.service;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.samples.yogogym.model.Exercise;
-import org.springframework.samples.yogogym.model.Machine;
-import org.springframework.samples.yogogym.repository.ExerciseRepository;
-import org.springframework.samples.yogogym.repository.MachineRepository;
+import org.springframework.samples.yogogym.model.Equipment;
+import org.springframework.samples.yogogym.repository.EquipmentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,35 +32,35 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Michael Isvy
  */
 @Service
-public class MachineService {
+public class EquipmentService {
 
-	private MachineRepository machineRepository;
+	private EquipmentRepository equipmentRepository;
 
 	@Autowired
-	public MachineService(MachineRepository machineRepository) {
-		this.machineRepository = machineRepository;
+	public EquipmentService(EquipmentRepository equipmentRepository) {
+		this.equipmentRepository = equipmentRepository;
 	}
 	
 	@Transactional
-	public void saveMachine(Machine machine) throws DataAccessException {
-		machineRepository.save(machine);
+	public void saveEquipment(Equipment equipment) throws DataAccessException {
+		equipmentRepository.save(equipment);
 	}
 	
 	@Transactional
-	public Collection<Machine> findAllMachine() throws DataAccessException {
+	public Collection<Equipment> findAllEquipment() throws DataAccessException {
 		
-		Collection<Machine> res = new ArrayList<>();
+		Collection<Equipment> res = new ArrayList<>();
 		
-		for(Machine m: this.machineRepository.findAll())
+		for(Equipment m: this.equipmentRepository.findAll())
 			res.add(m);
 		
 		return res;		
 	}
 	
 	@Transactional
-	public Machine findMachineByExerciseId(int exerciseId) throws DataAccessException {
+	public Equipment findEquipmentByExerciseId(int exerciseId) throws DataAccessException {
 		
-		Machine res = this.machineRepository.findMachineByExerciseId(exerciseId);
+		Equipment res = this.equipmentRepository.findEquipmentByExerciseId(exerciseId);
 		
 		return res;		
 	}

@@ -4,6 +4,5 @@ import javax.persistence.Table;
 
 @Table(name = "intensity")
 public enum Intensity {
-
-	Baja, Moderada, Intensa, Fuerte
+	LOW, MODERATED, INTENSE, VERY_INTENSE
 }

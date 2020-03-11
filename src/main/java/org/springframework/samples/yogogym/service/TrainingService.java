@@ -15,10 +15,18 @@
  */
 package org.springframework.samples.yogogym.service;
 
+
+
+import java.util.Collection;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.repository.ClientRepository;
+import org.springframework.samples.yogogym.model.Trainer;
+import org.springframework.samples.yogogym.model.Training;
+import org.springframework.samples.yogogym.repository.TrainerRepository;
+import org.springframework.samples.yogogym.repository.TrainingRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,24 +37,32 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Michael Isvy
  */
 @Service
-public class ClientService {
+public class TrainingService {
 
-	private ClientRepository clientRepository;
+	private TrainingRepository trainingRepository;
 
 	@Autowired
-	public ClientService(ClientRepository clientRepository) {
-		this.clientRepository = clientRepository;
+	public TrainingService(TrainingRepository trainingRepository) {
+		this.trainingRepository = trainingRepository;
 	}
 	
 	@Transactional
-	public void saveClient(Client client) throws DataAccessException {
-		clientRepository.save(client);
+	public void saveTraining(Training training) throws DataAccessException {
+		trainingRepository.save(training);
 	}
 	
 	@Transactional
-	public Client findClientById(int clientId) throws DataAccessException {
+	public Training findTrainingById(int trainingId) throws DataAccessException {
 		
-		Client res = this.clientRepository.findClientById(clientId);
+		Training res = this.trainingRepository.findTrainingById(trainingId);
+		
+		return res;		
+	}
+	
+	@Transactional
+	public Collection<Training> findTrainingFromClient(int clientId) throws DataAccessException {
+		
+		Collection<Training> res = this.trainingRepository.findTrainingFromClient(clientId);
 		
 		return res;		
 	}

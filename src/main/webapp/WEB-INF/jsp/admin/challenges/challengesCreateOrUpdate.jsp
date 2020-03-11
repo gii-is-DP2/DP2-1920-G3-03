@@ -10,8 +10,8 @@
     <jsp:attribute name="customScript">
         <script>
             $(function () {
-                $("#start").datepicker({dateFormat: 'yy/mm/dd'});
-                $("#end").datepicker({dateFormat: 'yy/mm/dd'});
+                $("#initialDate").datepicker({dateFormat: 'yy/mm/dd'});
+                $("#endDate").datepicker({dateFormat: 'yy/mm/dd'});
             });
         </script>
     </jsp:attribute>
@@ -22,22 +22,23 @@
         <form:form modelAttribute="challenge" class="form-horizontal">
         
             <div class="form-group has-feedback">
+            	<petclinic:inputField label="Name" name="name"/>
             	<petclinic:inputField label="Description" name="description"/>
-            	<petclinic:inputField label="Start Date" name="start"/>
-                <petclinic:inputField label="End Date" name="end"/>
+            	<petclinic:inputField label="Initial Date" name="initialDate"/>
+                <petclinic:inputField label="End Date" name="endDate"/>
             	<petclinic:inputField label="Reward" name="reward"/>
             	<petclinic:inputField label="Points" name="points"/>
             	<petclinic:inputField label="Repetitions" name="reps"/>
             	<petclinic:inputField label="Weight" name="weight"/>  
-            	<h4>Exercise:</h4>
-            	<petclinic:inputField label="Exercise name" name="exercise.name"/>
-            	<petclinic:inputField label="Description" name="exercise.description"/>
-            	<petclinic:inputField label="Kcalories" name="exercise.kcal"/>
-            	<petclinic:selectField label="Intensity" name="exercise.intensity" names="${intensities}" size="4"/>
-            	<h4>Machine:</h4>
-            	<petclinic:inputField label="Machine Name" name="exercise.machine.name"/>
-            	<petclinic:inputField label="Location" name="exercise.machine.location"/>
             </div>
+            
+            <h3>Exercise</h3>
+            
+            <select id="exerciseId" name="exerciseId" required="required">
+				<c:forEach var="exercise" items="${exercises}">
+					<option value="${exercise.id}">${exercise.name}</option>
+				</c:forEach>
+			</select>
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
