@@ -5,30 +5,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Intensity;
-import org.springframework.samples.yogogym.model.Equipment;
 import org.springframework.samples.yogogym.service.ChallengeService;
 import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class ChallengeController {
 
 	@Autowired
 	private ChallengeService challengeService;
-	
 	@Autowired
 	private ExerciseService exerciseService;
 	
@@ -41,6 +39,8 @@ public class ChallengeController {
 	public Collection<Intensity> populateIntensities() {
 		return  new ArrayList<Intensity>(Arrays.asList(Intensity.values()));
 	}
+	
+	// ADMIN:
 	
 	@GetMapping("/admin/challenges")
 	public String listChallenges(ModelMap modelMap) {
@@ -65,7 +65,7 @@ public class ChallengeController {
 	}
 	
 	@PostMapping("/admin/challenges/new")
-	public String processCreationForm(Challenge challenge, @ModelAttribute("exerciseId")int exerciseId ,BindingResult result, ModelMap modelMap) {
+	public String processCreationForm(Challenge challenge, @ModelAttribute("exerciseId")int exerciseId ,BindingResult result) {
 		
 		if(result.hasErrors()) {
 			
@@ -75,9 +75,32 @@ public class ChallengeController {
 			
 			Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
 			challenge.setExercise(exercise);
-			challengeService.save(challenge);
+			challengeService.saveChallenge(challenge);
 			
-			modelMap.addAttribute("message", "Reto creado Satisfactoriamente");
+			return "redirect:/admin/challenges";
+		}
+	}
+	
+	@GetMapping("/admin/challenges/{challengeId}/edit/")
+	public String initUpdateForm(@PathVariable("challengeId")int challengeId, Model model) {
+		
+		Challenge challenge = this.challengeService.findChallengeById(challengeId);
+		model.addAttribute(challenge);
+		
+		return "/admin/challenges/challengesCreateOrUpdate";
+	}
+	
+	@PostMapping("/admin/challenges/{challengeId}/edit/")
+	public String processUpdateForm(Challenge challenge, @PathVariable("challengeId")int challengeId, @ModelAttribute("exerciseId")int exerciseId ,BindingResult result) {
+		
+		if (result.hasErrors()) {
+			return "/admin/challenges/challengesCreateOrUpdate";
+		}
+		else {
+			Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
+			challenge.setExercise(exercise);
+			challenge.setId(challengeId);
+			this.challengeService.saveChallenge(challenge);
 			return "redirect:/admin/challenges";
 		}
 	}
