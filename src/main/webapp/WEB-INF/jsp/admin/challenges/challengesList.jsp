@@ -11,21 +11,11 @@
     <table id="challengesTable" class="table table-striped">
         <thead>
         <tr>
-        	 <th>Name</th>
+        	<th>Name</th>
             <th>Points</th>
             <th>Start Date</th>
             <th>Finish Date</th>
             <th>Actions</th>
-            
-            <%-- 
-            	<th>Description</th>
-	            <th>Exercise</th>
-	            <th>Repetitions</th>
-	            <th>Weight</th>
-	            <th>Reward</th>
-            --%>
-            
-            
         </tr>
         </thead>
         <tbody>
@@ -33,7 +23,10 @@
         <c:forEach items="${challenges}" var="challenge">
             <tr>
                 <td>
-                    <c:out value="${challenge.name}"/>
+                    <spring:url value="/admin/challenges/{challengeId}" var="showUrl">
+        				<spring:param name="challengeId" value="${challenge.id}"/>
+   					</spring:url>
+    				<a href="${fn:escapeXml(showUrl)}"><c:out value="${challenge.name}"/></a>
                 </td>
                 <td>
                     <c:out value="${challenge.points}"/>
@@ -48,28 +41,13 @@
                 	<spring:url value="/admin/challenges/{challengeId}/edit/" var="editUrl">
         				<spring:param name="challengeId" value="${challenge.id}"/>
    					</spring:url>
-    				<a href="${fn:escapeXml(editUrl)}" class="btn btn-default">Edit</a>
+   					<spring:url value="/admin/challenges/{challengeId}/delete/" var="deleteUrl">
+        				<spring:param name="challengeId" value="${challenge.id}"/>
+   					</spring:url>
+    				<a href="${fn:escapeXml(editUrl)}">Edit</a>
+    				<b>|</b>
+    				<a href="${fn:escapeXml(deleteUrl)}">Delete</a>
                 </td>
-                <%-- 
-	                <td>
-	                    <c:out value="${challenge.description}"/>
-	                </td>
-	                <td>
-	                    <c:out value="${challenge.reward}"/>
-	                </td>                
-	                <td>
-	                    <spring:url value="/mainMenu/exercises/{exerciseId}" var="exerciseUrl">
-	                        <spring:param name="exerciseId" value="${challenge.exercise.id}"/>
-	                    </spring:url>
-	                    <a href="${fn:escapeXml(exerciseUrl)}"><c:out value="${challenge.exercise.name}"/></a>
-	                </td>
-	                <td>
-	                    <c:out value="${challenge.reps}"/>
-	                </td>
-	                <td>
-	                    <c:out value="${challenge.weight}"/>
-	                </td>
-                --%>
             </tr>
         </c:forEach>
         

@@ -36,7 +36,7 @@
             
             <select id="exerciseId" name="exerciseId" required="required">
 				<c:forEach var="exercise" items="${exercises}">
-					<option value="${exercise.id}">${exercise.name}</option>
+					<option value="${exercise.id}" selected="${exercise.id == challenge.exercise.id}">${exercise.name}</option>
 				</c:forEach>
 			</select>
 

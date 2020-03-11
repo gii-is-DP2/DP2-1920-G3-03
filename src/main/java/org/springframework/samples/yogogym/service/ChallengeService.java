@@ -29,10 +29,9 @@ public class ChallengeService {
 	}
 	
 	
-	/*@Transactional
-	public void delete(Challenge challenge) {
-		//challenge.setExercise(null);
+	@Transactional
+	public void deleteChallenge(Challenge challenge) {
 		challengeRepo.delete(challenge);
-	}*/
+	}
 
 }

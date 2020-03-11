@@ -7,10 +7,14 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
+import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Exercise;
+import org.springframework.samples.yogogym.model.Inscription;
 import org.springframework.samples.yogogym.model.Intensity;
 import org.springframework.samples.yogogym.service.ChallengeService;
+import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.ExerciseService;
+import org.springframework.samples.yogogym.service.InscriptionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -29,6 +33,10 @@ public class ChallengeController {
 	private ChallengeService challengeService;
 	@Autowired
 	private ExerciseService exerciseService;
+	@Autowired
+	private InscriptionService inscriptionService;
+	@Autowired
+	private ClientService clientService;
 	
 	@InitBinder("challenge")
 	public void initChallengeBinder(WebDataBinder dataBinder) {
@@ -49,6 +57,15 @@ public class ChallengeController {
 		modelMap.addAttribute("challenges", challenges);
 		
 		return "admin/challenges/challengesList";
+	}
+	
+	@GetMapping("/admin/challenges/{challengeId}")
+	public String showChallengeById(@PathVariable("challengeId") int challengeId, Model model) {	  
+
+	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
+	   	model.addAttribute("challenge", challenge);
+	   	
+	    return "admin/challenges/challengeDetails";
 	}
 	
 	@GetMapping("/admin/challenges/new")
@@ -81,16 +98,19 @@ public class ChallengeController {
 		}
 	}
 	
-	@GetMapping("/admin/challenges/{challengeId}/edit/")
+	@GetMapping("/admin/challenges/{challengeId}/edit")
 	public String initUpdateForm(@PathVariable("challengeId")int challengeId, Model model) {
 		
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
+		Collection<Exercise> exercises = this.exerciseService.findAllExercise();
+		
 		model.addAttribute(challenge);
+		model.addAttribute("exercises",exercises);
 		
 		return "/admin/challenges/challengesCreateOrUpdate";
 	}
 	
-	@PostMapping("/admin/challenges/{challengeId}/edit/")
+	@PostMapping("/admin/challenges/{challengeId}/edit")
 	public String processUpdateForm(Challenge challenge, @PathVariable("challengeId")int challengeId, @ModelAttribute("exerciseId")int exerciseId ,BindingResult result) {
 		
 		if (result.hasErrors()) {
@@ -105,21 +125,31 @@ public class ChallengeController {
 		}
 	}
 	
-	/*@GetMapping(path="/delete/{challengeId}")
-	public String deleteChallenge(@PathVariable("challengeId") int challengeId, ModelMap modelMap) {
+	@GetMapping("admin/challenges/{challengeId}/delete")
+	public String deleteChallenge(@PathVariable("challengeId") int challengeId) {
 		
-		String view = listChallenges(modelMap);
+		System.out.println("  ");
+		Challenge challenge = challengeService.findChallengeById(challengeId);
+		Inscription inscription = inscriptionService.findInscriptionByChallengeId(challengeId);
 		
-		Optional<Challenge> c = challengeService.findById(challengeId);
-		if(c.isPresent()) {
-			challengeService.delete(c.get());
-			modelMap.addAttribute("message", "Reto eliminado satisfactoriamente");
+		challenge.setExercise(null);
+		
+		if(inscription != null) {
+			
+
+			Client client = clientService.findClientByInscriptionId(inscription.getId());
+			Collection<Inscription> inscriptions = client.getInscriptions();
+			inscriptions.remove(inscription);
+			client.setInscriptions(inscriptions);
+			
+			this.clientService.saveClient(client);
+			this.inscriptionService.deleteInscription(inscription);
 		}
 		else {
-			modelMap.addAttribute("message", "Reto no encontrado");
+			this.challengeService.deleteChallenge(challenge);
 		}
 		
-		return view;
-	}*/
+		return "redirect:/admin/challenges";
+	}
 	
 }
