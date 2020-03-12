@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
@@ -82,10 +84,10 @@ public class ChallengeController {
 	}
 	
 	@PostMapping("/admin/challenges/new")
-	public String processCreationForm(Challenge challenge, @ModelAttribute("exerciseId")int exerciseId ,BindingResult result) {
+	public String processCreationForm(@Valid Challenge challenge, @ModelAttribute("exerciseId")int exerciseId ,BindingResult result, ModelMap model) {
 		
 		if(result.hasErrors()) {
-			
+			model.put("challenge",challenge);
 			return "/admin/challenges/challengesCreateOrUpdate";
 		}
 		else {
@@ -111,9 +113,10 @@ public class ChallengeController {
 	}
 	
 	@PostMapping("/admin/challenges/{challengeId}/edit")
-	public String processUpdateForm(Challenge challenge, @PathVariable("challengeId")int challengeId, @ModelAttribute("exerciseId")int exerciseId ,BindingResult result) {
+	public String processUpdateForm(@Valid Challenge challenge, @PathVariable("challengeId")int challengeId, @ModelAttribute("exerciseId")int exerciseId ,BindingResult result,ModelMap model) {
 		
 		if (result.hasErrors()) {
+			model.put("challenge",challenge);
 			return "/admin/challenges/challengesCreateOrUpdate";
 		}
 		else {

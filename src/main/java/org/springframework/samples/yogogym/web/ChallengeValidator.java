@@ -14,14 +14,25 @@ import org.springframework.validation.Validator;
 
 public class ChallengeValidator implements Validator{
 
-	@Autowired
-	private ChallengeService challengeService;
+	//@Autowired
+	//private ChallengeService challengeService;
+	
+	private static final String REQUIRED = "required";
 	
 	@Override
 	public void validate(Object target, Errors errors) {
 		
+		Challenge validar = (Challenge) target;
 		
-		Challenge cVal = (Challenge) target;
+		//Name not empty
+		if(!validar.getName().equals("A")) {
+			errors.rejectValue("name",REQUIRED, REQUIRED);
+		}
+		
+		//Description not empty
+		
+		
+		/*
 		
 		Date start = cVal.getInitialDate();
 		Date end = cVal.getEndDate();
@@ -55,24 +66,22 @@ public class ChallengeValidator implements Validator{
 		// Ya hay 3 retos
 		if(challengesSameWeek.size() > 3) {
 			errors.rejectValue("description", "Ya hay 3 retosen la misma semana");
-		}
+		}*/
 		
 		
 	}
-	
 
+	@Override
+	public boolean supports(Class<?> clazz) {
+		return Challenge.class.isAssignableFrom(clazz);
+	}
+	
 	private boolean sameWeek(Challenge c, int week) {
 		
 		Calendar Cal = Calendar.getInstance();
 		Cal.setTime(c.getInitialDate());
 		
 		return week == Cal.getWeekYear();
-	}
-
-
-	@Override
-	public boolean supports(Class<?> clazz) {
-		return Challenge.class.isAssignableFrom(clazz);
 	}
 
 }
