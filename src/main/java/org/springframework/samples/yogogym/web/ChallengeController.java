@@ -31,14 +31,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class ChallengeController {
 
-	@Autowired
+	
 	private ChallengeService challengeService;
-	@Autowired
 	private ExerciseService exerciseService;
-	@Autowired
 	private InscriptionService inscriptionService;
-	@Autowired
 	private ClientService clientService;
+	
+	@Autowired
+	public ChallengeController(ChallengeService challengeService, ExerciseService exerciseService, InscriptionService inscriptionService, ClientService clientService) {
+		this.challengeService = challengeService;
+		this.exerciseService = exerciseService;
+		this.inscriptionService = inscriptionService;
+		this.clientService = clientService;
+	}
 	
 	@InitBinder("challenge")
 	public void initChallengeBinder(WebDataBinder dataBinder) {
