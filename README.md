@@ -189,7 +189,7 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 
 | Historia de Usuario | Sprint | Pareja asignada | Hecho |
 | --- | --- | --- | --- |
-| HU12 | 1 | P1 | --- |
+| HU12 | 1 | P1 | Sí |
 | HU13 | 1 | P1 | --- |
 | HU8 | 1 | P1 | Sí | 
 | HU9 | 1 | P1 | --- |
