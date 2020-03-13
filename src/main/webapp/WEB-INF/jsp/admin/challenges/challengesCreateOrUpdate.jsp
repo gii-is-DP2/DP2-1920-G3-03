@@ -25,6 +25,7 @@
         <div class="form-group has-feedback">
         <div class="form-group">
             <div class="form-group has-feedback">
+            	<input type="hidden" name="id" id="id" class="form-control" value="${challenge.id}"/>
             	<yogogym:inputField label="Name" name="name"/>
             	<yogogym:inputField label="Description" name="description"/>
             	<yogogym:inputField label="Initial Date" name="initialDate"/>

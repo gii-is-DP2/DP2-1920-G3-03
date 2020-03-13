@@ -9,12 +9,10 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
-import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Inscription;
 import org.springframework.samples.yogogym.model.Intensity;
 import org.springframework.samples.yogogym.service.ChallengeService;
-import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.samples.yogogym.service.InscriptionService;
 import org.springframework.stereotype.Controller;
@@ -35,19 +33,17 @@ public class ChallengeController {
 	private ChallengeService challengeService;
 	private ExerciseService exerciseService;
 	private InscriptionService inscriptionService;
-	private ClientService clientService;
 	
 	@Autowired
-	public ChallengeController(ChallengeService challengeService, ExerciseService exerciseService, InscriptionService inscriptionService, ClientService clientService) {
+	public ChallengeController(ChallengeService challengeService, ExerciseService exerciseService, InscriptionService inscriptionService) {
 		this.challengeService = challengeService;
 		this.exerciseService = exerciseService;
 		this.inscriptionService = inscriptionService;
-		this.clientService = clientService;
 	}
 	
 	@InitBinder("challenge")
 	public void initChallengeBinder(WebDataBinder dataBinder) {
-		dataBinder.setValidator(new ChallengeValidator());
+		dataBinder.setValidator(new ChallengeValidator(challengeService));
 	}
 	
 	@ModelAttribute("intensities")
@@ -72,6 +68,12 @@ public class ChallengeController {
 	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
 	   	model.addAttribute("challenge", challenge);
 	   	
+	 // If there are inscriptions, it cannot be edited or deleted
+	 Inscription inscription = inscriptionService.findInscriptionByChallengeId(challengeId);
+	 if(inscription == null) {
+	 	model.addAttribute("isModifiable", true);
+	 }
+	   	
 	    return "admin/challenges/challengeDetails";
 	}
 	
@@ -93,6 +95,9 @@ public class ChallengeController {
 		
 		if(result.hasErrors()) {
 			model.put("challenge",challenge);
+			Collection<Exercise> exercises = this.exerciseService.findAllExercise();
+			model.addAttribute("exercises",exercises);
+			
 			return "/admin/challenges/challengesCreateOrUpdate";
 		}
 		else {
@@ -111,6 +116,12 @@ public class ChallengeController {
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 		Collection<Exercise> exercises = this.exerciseService.findAllExercise();
 		
+		// If there are inscriptions, it cannot be edited
+		Inscription inscription = inscriptionService.findInscriptionByChallengeId(challengeId);
+		if(inscription != null) {
+			return showChallengeById(challengeId,model);
+		}
+					
 		model.addAttribute(challenge);
 		model.addAttribute("exercises",exercises);
 		
@@ -118,10 +129,13 @@ public class ChallengeController {
 	}
 	
 	@PostMapping("/admin/challenges/{challengeId}/edit")
-	public String processUpdateForm(@Valid Challenge challenge, @PathVariable("challengeId")int challengeId, @ModelAttribute("exerciseId")int exerciseId ,BindingResult result,ModelMap model) {
+	public String processUpdateForm(@PathVariable("challengeId")int challengeId, @ModelAttribute("exerciseId")int exerciseId, @Valid Challenge challenge,  BindingResult result,ModelMap model) {
 		
 		if (result.hasErrors()) {
 			model.put("challenge",challenge);
+			Collection<Exercise> exercises = this.exerciseService.findAllExercise();
+			model.addAttribute("exercises",exercises);
+			
 			return "/admin/challenges/challengesCreateOrUpdate";
 		}
 		else {
@@ -134,28 +148,19 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("admin/challenges/{challengeId}/delete")
-	public String deleteChallenge(@PathVariable("challengeId") int challengeId) {
+	public String deleteChallenge(@PathVariable("challengeId") int challengeId, Model model) {
 		
 		System.out.println("  ");
 		Challenge challenge = challengeService.findChallengeById(challengeId);
 		Inscription inscription = inscriptionService.findInscriptionByChallengeId(challengeId);
 		
-		challenge.setExercise(null);
-		
+		// If there are inscriptions, it cannot be deleted
 		if(inscription != null) {
-			
-
-			Client client = clientService.findClientByInscriptionId(inscription.getId());
-			Collection<Inscription> inscriptions = client.getInscriptions();
-			inscriptions.remove(inscription);
-			client.setInscriptions(inscriptions);
-			
-			this.clientService.saveClient(client);
-			this.inscriptionService.deleteInscription(inscription);
+			return showChallengeById(challengeId,model);
 		}
-		else {
-			this.challengeService.deleteChallenge(challenge);
-		}
+		
+		challenge.setExercise(null);
+		this.challengeService.deleteChallenge(challenge);
 		
 		return "redirect:/admin/challenges";
 	}

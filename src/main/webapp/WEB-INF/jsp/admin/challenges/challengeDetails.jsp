@@ -53,15 +53,20 @@
         </tr>
     </table>
 
-
-	<spring:url value="/admin/challenges/{challengeId}/edit/" var="editUrl">
-		<spring:param name="challengeId" value="${challenge.id}" />
-	</spring:url> 
-	<a href="${fn:escapeXml(editUrl)}" class="btn btn-default">Edit</a>
+	<c:if test="${isModifiable}">
 	
-	<spring:url value="/admin/challenges/{challengeId}/delete/" var="deleteUrl">
-        <spring:param name="challengeId" value="${challenge.id}"/>
-   	</spring:url>
-   	<a href="${fn:escapeXml(deleteUrl)}" class="btn btn-default">Delete</a>
+		<spring:url value="/admin/challenges/{challengeId}/edit/"
+			var="editUrl">
+			<spring:param name="challengeId" value="${challenge.id}" />
+		</spring:url>
+		<a href="${fn:escapeXml(editUrl)}" class="btn btn-default">Edit</a>
+
+		<spring:url value="/admin/challenges/{challengeId}/delete/"
+			var="deleteUrl">
+			<spring:param name="challengeId" value="${challenge.id}" />
+		</spring:url>
+		<a href="${fn:escapeXml(deleteUrl)}" class="btn btn-default">Delete</a>
+		
+	</c:if>
 
 </yogogym:layout>

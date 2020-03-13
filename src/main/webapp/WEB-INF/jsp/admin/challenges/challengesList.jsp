@@ -15,7 +15,6 @@
             <th>Points</th>
             <th>Start Date</th>
             <th>Finish Date</th>
-            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -36,17 +35,6 @@
                 </td>
                 <td>
                     <c:out value="${challenge.endDate}"/>
-                </td>
-                <td>
-                	<spring:url value="/admin/challenges/{challengeId}/edit/" var="editUrl">
-        				<spring:param name="challengeId" value="${challenge.id}"/>
-   					</spring:url>
-   					<spring:url value="/admin/challenges/{challengeId}/delete/" var="deleteUrl">
-        				<spring:param name="challengeId" value="${challenge.id}"/>
-   					</spring:url>
-    				<a href="${fn:escapeXml(editUrl)}">Edit</a>
-    				<b>|</b>
-    				<a href="${fn:escapeXml(deleteUrl)}">Delete</a>
                 </td>
             </tr>
         </c:forEach>
