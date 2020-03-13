@@ -1,7 +1,5 @@
 package org.springframework.samples.yogogym.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.repository.ChallengeRepository;
@@ -21,19 +19,19 @@ public class ChallengeService {
 	}
 	
 	@Transactional(readOnly=true)
-	public Optional<Challenge> findById(int challengeId) {
-		return challengeRepo.findById(challengeId);
+	public Challenge findChallengeById(int challengeId) {
+		return challengeRepo.findById(challengeId).get();
 	}
 	
 	@Transactional
-	public void save(Challenge challenge) {
+	public void saveChallenge(Challenge challenge) {
 		challengeRepo.save(challenge);
 	}
 	
-	/*@Transactional
-	public void delete(Challenge challenge) {
-		//challenge.setExercise(null);
+	
+	@Transactional
+	public void deleteChallenge(Challenge challenge) {
 		challengeRepo.delete(challenge);
-	}*/
+	}
 
 }

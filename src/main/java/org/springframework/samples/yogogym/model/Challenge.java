@@ -10,11 +10,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.sun.istack.internal.NotNull;
+
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Entity
 @Data

@@ -15,10 +15,11 @@
  */
 package org.springframework.samples.yogogym.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.repository.ClientRepository;
+import org.springframework.samples.yogogym.model.Inscription;
+import org.springframework.samples.yogogym.repository.InscriptionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,32 +30,21 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Michael Isvy
  */
 @Service
-public class ClientService {
-
-	private ClientRepository clientRepository;
+public class InscriptionService {
 
 	@Autowired
-	public ClientService(ClientRepository clientRepository) {
-		this.clientRepository = clientRepository;
-	}
+	private InscriptionRepository inscriptionRepo;
+
 	
 	@Transactional
-	public void saveClient(Client client) throws DataAccessException {
-		clientRepository.save(client);
-	}
-	
-	@Transactional
-	public Client findClientById(int clientId) throws DataAccessException {
+	public Inscription findInscriptionByChallengeId(int challengeId) throws DataAccessException {
 		
-		Client res = this.clientRepository.findClientById(clientId);
-		
-		return res;		
+		return inscriptionRepo.findInscriptionByChallengeId(challengeId);
 	}
 
-	@Transactional
-	public Client findClientByInscriptionId(int inscriptionId) {
+
+	public void deleteInscription(Inscription inscription) {
 		
-		return this.clientRepository.findClientByInscriptionId(inscriptionId);
+		inscriptionRepo.delete(inscription);
 	}
-	
 }
