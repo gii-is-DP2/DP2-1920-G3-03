@@ -89,7 +89,7 @@ public class ChallengeController {
 	}
 	
 	@PostMapping("/admin/challenges/new")
-	public String processCreationForm(@Valid Challenge challenge, @ModelAttribute("exerciseId")int exerciseId ,BindingResult result, ModelMap model) {
+	public String processCreationForm(@ModelAttribute("exerciseId")int exerciseId ,@Valid Challenge challenge,BindingResult result, ModelMap model) {
 		
 		if(result.hasErrors()) {
 			model.put("challenge",challenge);
