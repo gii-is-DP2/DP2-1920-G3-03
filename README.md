@@ -21,13 +21,13 @@ La aplicación web a desarrollar tiene como nombre YogoGym. El objetivo fundamen
 ## Historias de Usuario
 ### Administrador
 ---
-#### HU1 - Proponer retos semanales y mensuales 
-Como administrador quiero añadir retos semanales y mensuales al gimnasio para que los clientes puedan competir por lograrlos y obtengan beneficios en el gimnasio si lo hacen.
+#### HU1 - Proponer retos semanales
+Como administrador quiero añadir retos semanales al gimnasio, que los clientes puedan competir por lograrlos y obtener beneficios y puntos (para su gremio) en el gimnasio si los completan, para motivarlos a realizar ciertos ejercicios y crear un ambiente competitivo.
 #### Escenarios:
-* **Añadir reto semanal/mensual a semana/mes sin retos:** Dado un administrador y una semana/mes sin retos, cuando este intente añadir uno aportando la información necesaria, entonces el reto se añadirá a la semana/mes.
-* **Añadir reto semanal/mensual ya existente:** Dado un administrador y una semana/mes con retos pero no completa, cuando este intente añadir uno con la información de otro ya existente, entonces se le indicará que esto no es posible debido a que ya existe.
-* **Añadir reto semanal/mensual a semana/mes con 3 retos:** Dado un administrador y una semana/mes con 3 retos, cuando este intente añadir uno, entonces se le indicará que no es posible debido a que se ha llegado al máximo de retos.
-* **Añadir reto semanal/mensual a semana/mes actual o anterior:** Dado un administrador, cuando este intente añadir un reto a una semana/mes actual o anterior, entonces se le indicará que no es posible debido a que solo se puede añadir a semanas/meses posteriores.
+* **Añadir reto semanal a semana sin retos:** Dado un administrador y una semana [Semana 1 de 2022] sin retos, cuando este intente añadir uno aportando la información necesaria, entonces el reto se creará correctamente.
+* **Añadir reto semanal ya existente:** Dado un administrador y una semana con retos [Semana 1 de 2021], cuando este intente añadir uno con el nombre [ChallengeTest] de otro ya existente, entonces se le indicará que esto no es posible debido a que ya existe.
+* **Añadir reto semanal a semana con 3 retos:** Dado un administrador y una semana con 3 retos [Semana 2 de 2021], cuando este intente añadir uno, entonces se le indicará que no es posible debido a que se ha llegado al máximo de retos esa semana.
+* **Añadir reto semanal en fecha anterior:** Dado un administrador, cuando este intente añadir un reto en una fecha anterior [01/01/2020], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
 ---
 #### HU2 - Control de los retos
 Como administrador quiero visualizar diagramas que muestren, clasificados por individuales o gremios y semanales o mensuales, el éxito en los retos para poder adecuarlos en temática y dificultad correctamente.
