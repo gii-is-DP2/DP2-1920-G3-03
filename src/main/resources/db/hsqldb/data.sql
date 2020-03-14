@@ -88,6 +88,7 @@ INSERT INTO routines_lines(id,reps,series,weight,exercise_id,routine_id) VALUES 
 /* CHALLENGE */
 
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (1,'Challenge1','Desc challenge 1','2020-01-01','2020-01-02','Reward1',10,10,10,1);
+INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (2,'Challenge2','Desc challenge 2','2020-10-01','2020-10-02','Reward2',20,5,20,2);
 
 /* INSCRIPTION */
 
