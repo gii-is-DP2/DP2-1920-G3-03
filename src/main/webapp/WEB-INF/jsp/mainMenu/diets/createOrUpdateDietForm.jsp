@@ -12,19 +12,26 @@
         <h2><c:if test="${diet['new']}"><fmt:message key="newDiet"/> </c:if>
         <h2><c:if test="${!diet['new']}"><fmt:message key="updateDiet"/> </c:if>
 
-        <form:form modelAttribute="diet" class="form-horizontal">
+        <form:form modelAttribute="client" class="form-horizontal">
             <div class="form-group has-feedback">
-            		<fmt:message var="type" key="type"/>
+            		<%-- <fmt:message var="name" key="name"/>
                     <fmt:message var="kcal" key="kcal"/>
                     <fmt:message var="carb" key="carb"/>
                     <fmt:message var="protein" key="protein"/>
                     <fmt:message var="fat" key="fat"/>
-                <petclinic:inputField label="${type}" name="type"/>
+                <petclinic:inputField label="${name}" name="name"/>
                 <petclinic:inputField label="${kcal}" name="kcal"/>
                 <petclinic:inputField label="${carb}" name="carb"/>
                 <petclinic:inputField label="${protein}" name="protein"/>
-                <petclinic:inputField label="${fat}" name="fat"/>
-
+                <petclinic:inputField label="${fat}" name="fat"/> --%>
+                    <fmt:message var="weight" key="weight"/>
+                    <fmt:message var="height" key="height"/>
+                    <fmt:message var="age" key="age"/>
+                    <fmt:message var="fatPercentage" key="fatPercentage"/>
+                <petclinic:inputField label="${weight}" name="weight"/>
+                <petclinic:inputField label="${height}" name="height"/>
+                <petclinic:inputField label="${age}" name="age"/>
+                <petclinic:inputField label="${fatPercentage}" name="fatPercentage"/>
             </div>
 
             <div class="form-group">
