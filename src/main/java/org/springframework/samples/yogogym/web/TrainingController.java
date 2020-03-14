@@ -68,15 +68,9 @@ public class TrainingController {
 	}
 
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/create")
-	public String processTrainingCreateForm(@Valid Training training, BindingResult result,
+	public String processTrainingCreateForm(Training training, BindingResult result,
 			@PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername,
 			Model model) {
-		Calendar cal = Calendar.getInstance();
-		Date thisDate = cal.getTime();
-		System.out.println(thisDate);
-		System.out.println("INIT DATE:" + training.getInitialDate());
-		System.out.println("END DATE:" + training.getEndDate());
-
 		if (result.hasErrors()) {
 			return "trainer/trainings/trainingCreateOrUpdate";
 		} else {

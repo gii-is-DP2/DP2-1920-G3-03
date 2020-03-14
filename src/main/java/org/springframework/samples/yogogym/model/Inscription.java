@@ -7,6 +7,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
+import org.springframework.samples.yogogym.model.Enums.Status;
+
 import lombok.Data;
 
 @Entity
