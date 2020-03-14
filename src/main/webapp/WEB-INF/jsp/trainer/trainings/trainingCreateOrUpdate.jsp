@@ -30,9 +30,11 @@
 		<form:form modelAttribute="training" class="form-horizontal" id="trainingForm">
 			<div class="form-group has-feedback">
 				<input type="hidden" name="id" id="id" class="form-control" value="${training.id}"/>
+				<input type="hidden" name="cId" class="form-control" value="${client.id}"/>
 				<yogogym:inputField label="Name" name="name"/>
 				<yogogym:inputField label="Initial Date" name="initialDate" readonly="${!training['new']}"/>
 	            <yogogym:inputField label="End Date" name="endDate"/>
+	            
             </div>
 			<div class="form-group">
 	            <div class="col-sm-offset-2 col-sm-10">
