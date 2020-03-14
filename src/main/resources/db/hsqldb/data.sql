@@ -243,7 +243,7 @@ INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,r
 
 /* INSCRIPTION */
 
-INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (1,1,'http://www.google.com',1);
+INSERT INTO inscriptions(id,status,url,submitted,challenge_id) VALUES (1,2,'http://www.google.com',true,1);
 
 /* CLIENT_INSCRIPTION */
 

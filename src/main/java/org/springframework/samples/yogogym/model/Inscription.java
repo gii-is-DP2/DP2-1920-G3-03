@@ -23,6 +23,9 @@ public class Inscription extends BaseEntity{
 	@NotEmpty
 	protected String url;
 	
+	@Column(name = "submitted")
+	protected boolean submitted;
+	
 	@ManyToOne(cascade = CascadeType.ALL, optional = false)
 	protected Challenge challenge;	
 }
