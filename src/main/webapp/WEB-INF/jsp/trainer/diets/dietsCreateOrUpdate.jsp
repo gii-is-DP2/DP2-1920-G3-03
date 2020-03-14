@@ -7,27 +7,28 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="diets">
+    <jsp:body>
+
     <h2>New Diet for <c:out value="${client.firstName} ${client.lastName}"/></h2>
 
 	<h3>Diet Data</h3>
-	<form:form modelAttribute="diets" id="dietForm">
 
-		<input type="text" id="name" name="name" placeholder="Name" required="required" value="${diet.name}">
-		<br>
-		<br>
-		
-		<label>Description:</label>
-		<br>
-		<input type="text" id="description" name="description" required="required" value="${diet.description}">
-		<br>
-		<br>
-		<label>Kcal:</label>
-		<br>
-		<input type="number" id="kcal" name="kcal" required="required" value="${diet.kcal}">
-		<br>
-		<br>
-		<input type="submit" value="Add Diet">
+	<form:form modelAttribute="diet" id="dietForm">
+        <fmt:message var="name" key="name"/>
+        <fmt:message var="description" key="description"/>
+        <fmt:message var="type" key="type"/>
+
+        <yogogym:inputField label="${name}" name="name"/>
+        <yogogym:inputField label="${description}" name="description"/>
+        <yogogym:selectField label="${type}" name="type" names="${dietTypes}" size="1"/>
+
+		<div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button class="btn btn-default" type="submit"><fmt:message key="saveDiet"/></button>
+            </div>
+        </div>
 		
 	</form:form>
-    
+
+    </jsp:body>
 </yogogym:layout>
