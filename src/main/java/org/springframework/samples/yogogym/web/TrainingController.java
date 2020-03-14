@@ -71,12 +71,6 @@ public class TrainingController {
 	public String processTrainingCreateForm(@Valid Training training, BindingResult result,
 			@PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername,
 			Model model) {
-		Calendar cal = Calendar.getInstance();
-		Date thisDate = cal.getTime();
-		System.out.println(thisDate);
-		System.out.println("INIT DATE:" + training.getInitialDate());
-		System.out.println("END DATE:" + training.getEndDate());
-
 		if (result.hasErrors()) {
 			return "trainer/trainings/trainingCreateOrUpdate";
 		} else {
@@ -89,5 +83,14 @@ public class TrainingController {
 
 			return "redirect:/trainer/" + trainer.getUser().getUsername() + "/trainings";
 		}
+	}
+	
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit")
+	public String initTrainingUpdateForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, Model model) {
+		Training training = this.trainingService.findTrainingById(trainingId);
+		Client client = this.clientService.findClientById(clientId);
+		model.addAttribute("training", training);
+		model.addAttribute("client", client);
+		return "trainer/trainings/trainingCreateOrUpdate";
 	}
 }

@@ -14,7 +14,12 @@
 	<h3>Name: <c:out value="${training.name}"/></h3>
 	<p><b>Starts:</b> <c:out value="${training.initialDate}"/></p>
 	<p><b>Ends:</b> <c:out value="${training.endDate}"/></p>
+	<br>
+	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/edit" var="trainingEditUrl" />
+	<a href="${fn:escapeXml(trainingEditUrl)}">Edit Training</a>
 	
+	<br>
+	<br>
 	<br>
 		
 	<h3>Routines</h3>
