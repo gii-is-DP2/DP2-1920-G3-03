@@ -18,14 +18,9 @@ package org.springframework.samples.yogogym.service;
 
 
 import java.util.Collection;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
-import org.springframework.samples.yogogym.repository.TrainerRepository;
 import org.springframework.samples.yogogym.repository.TrainingRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

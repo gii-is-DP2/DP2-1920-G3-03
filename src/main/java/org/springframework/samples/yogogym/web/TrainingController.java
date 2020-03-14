@@ -1,8 +1,5 @@
 package org.springframework.samples.yogogym.web;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +11,11 @@ import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -32,6 +32,11 @@ public class TrainingController {
 		this.clientService = clientService;
 		this.trainerService = trainerService;
 		this.trainingService = trainingService;
+	}
+	
+	@InitBinder("training")
+	public void initTrainingBinder(WebDataBinder dataBinder) {
+		dataBinder.setValidator(new TrainingValidator(trainingService));
 	}
 
 	// TRAINER
@@ -72,6 +77,8 @@ public class TrainingController {
 			@PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername,
 			Model model) {
 		if (result.hasErrors()) {
+			Client client = this.clientService.findClientById(clientId);
+			model.addAttribute("client", client);
 			return "trainer/trainings/trainingCreateOrUpdate";
 		} else {
 			Client client = this.clientService.findClientById(clientId);
@@ -92,5 +99,24 @@ public class TrainingController {
 		model.addAttribute("training", training);
 		model.addAttribute("client", client);
 		return "trainer/trainings/trainingCreateOrUpdate";
+	}
+	
+	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit")
+	public String processTrainingUpdateForm(@Valid Training training, BindingResult result, 
+		@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, ModelMap model) {
+		
+		if (result.hasErrors()) {
+			model.put("training", training);
+			Client client = this.clientService.findClientById(clientId);
+			model.addAttribute("client", client);
+			return "trainer/trainings/trainingCreateOrUpdate";
+		} 
+		else {
+			Training oldTraining = this.trainingService.findTrainingById(trainingId);
+			oldTraining.setName(training.getName());
+			oldTraining.setEndDate(training.getEndDate());
+			this.trainingService.saveTraining(oldTraining);
+			return "redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}";
+		}
 	}
 }

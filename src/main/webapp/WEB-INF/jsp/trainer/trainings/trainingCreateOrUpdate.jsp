@@ -25,32 +25,27 @@
 	                <h2>Editing Training for <c:out value="${client.firstName} ${client.lastName}"/></h2>
 	            </c:otherwise>
 	        </c:choose>
-	
-		<h3>Training Data</h3>
-		<form:form modelAttribute="trainings" id="trainingForm">
-	
-			<input type="text" id="name" name="name" placeholder="Name" required="required" value="${training.name}">
-			<br>
-			<br>
-			
-			<label>Initial Date:</label>
-			<br>
-			<input type="text" id="initialDate" name="initialDate" placeholder="yyyy/MM/dd" required="required" value="${training.initialDate}" readonly="${!training['new']}">
-			<br>
-			<br>
-			<label>End Date:</label>
-			<br>
-			<input type="text" id="endDate" name="endDate" placeholder="yyyy/MM/dd" required="required" value="${training.endDate}">
-			<br>
-			<br>
-			<c:choose>
-	            <c:when test="${training['new']}">
-	                <input type="submit" value="Add Training">
-	            </c:when>
-	            <c:otherwise>
-	                <input type="submit" value="Update Training">
-	            </c:otherwise>
-	        </c:choose>
+		
+		<h3>General information</h3>
+		<form:form modelAttribute="training" class="form-horizontal" id="trainingForm">
+			<div class="form-group has-feedback">
+				<input type="hidden" name="id" id="id" class="form-control" value="${training.id}"/>
+				<yogogym:inputField label="Name" name="name"/>
+				<yogogym:inputField label="Initial Date" name="initialDate" readonly="${!training['new']}"/>
+	            <yogogym:inputField label="End Date" name="endDate"/>
+            </div>
+			<div class="form-group">
+	            <div class="col-sm-offset-2 col-sm-10">
+	                <c:choose>
+	                    <c:when test="${training['new']}">
+	                        <button class="btn btn-default" type="submit">Add Training</button>
+	                    </c:when>
+	                    <c:otherwise>
+	                        <button class="btn btn-default" type="submit">Update Training</button>
+	                    </c:otherwise>
+	                </c:choose>
+	            </div>
+	        </div>
 		</form:form>
 	</jsp:body>
     
