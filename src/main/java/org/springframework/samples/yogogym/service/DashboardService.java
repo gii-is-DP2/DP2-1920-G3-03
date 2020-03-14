@@ -1,74 +1,45 @@
 package org.springframework.samples.yogogym.service;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collection;
 import java.util.List;
 
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.DashboardRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DashboardService {
 	
+	@Autowired
 	private DashboardRepository dashboardRepository;
 	
 	/* Equipment control */
 	
-	public List<String> equipmentControl(Date initialDate, Date endDate){
-		List<Integer> listTraining = this.dashboardRepository.findIdTrainingByDate(initialDate, endDate).isEmpty()? new ArrayList<>() : this.dashboardRepository.findIdTrainingByDate(initialDate, endDate);
-		if(!listTraining.isEmpty()) {
-			return listRoutine(listTraining);
-		}else{
-			return new ArrayList<>();
-		}
+	public Collection<Training> equipmentControl(){
+		return this.dashboardRepository.findIdTrainingByDate();
 	}
 	
-	public List<String> listRoutine(List<Integer> listTraining){
-		List<Integer> listRoutine = new ArrayList<>();
-		for(Integer x : listTraining) {
-			listRoutine.addAll(this.dashboardRepository.findIdRoutineByIdTraining(x));
-		}
-		return listRepsRoutine(listRoutine);
+	public List<Integer> listRoutine(Integer training){
+		return this.dashboardRepository.findIdRoutineByIdTraining(training);
 	}
 	
-	public List<String> listRepsRoutine(List<Integer> listRoutine){
-		List<Integer> listRepsRoutine = new ArrayList<>();
-		for(Integer x : listRoutine) {
-			Integer aux = this.dashboardRepository.findRepsPerWeekByIdRoutine(x);
-			if(aux!=null && aux!=0) {
-				for(int i=0;i<aux;i++) {
-					listRepsRoutine.add(x);
-				}
-			}
-		}
-		return listExercise(listRepsRoutine);
+	public Integer listRepsRoutine(Integer routine){
+		return this.dashboardRepository.findRepsPerWeekByIdRoutine(routine);
 	}
 	
-	public List<String> listExercise(List<Integer> listRepsRoutine){
-		List<Integer> listExercise = new ArrayList<>();
-		for(Integer x : listRepsRoutine) {
-			listExercise.add(this.dashboardRepository.findIdExerciseByIdRoutine(x));
-		}
-		return listIdEquipment(listExercise);
+	public Integer listExercise(Integer repsRoutine){
+		return this.dashboardRepository.findIdExerciseByIdRoutine(repsRoutine);
 	}
 	
-	public List<String> listIdEquipment (List<Integer> listExercise){
-		List<Integer> listIdEquipment = new ArrayList<>();
-		for(Integer x : listExercise) {
-			Integer aux = this.dashboardRepository.findIdEquipmentByIdExercise(x);
-			if(aux!=null) {
-				listIdEquipment.add(aux);
-			}
-		}
-		return listNameEquipment(listIdEquipment);
+	public Integer listIdEquipment (Integer exercise){
+		return this.dashboardRepository.findIdEquipmentByIdExercise(exercise);
 	}
 	
-	public List<String> listNameEquipment (List<Integer> listIdEquipment){
-		List<String> listNameEquipment = new ArrayList<>();
-		for(Integer x : listIdEquipment) {
-			listNameEquipment.add(this.dashboardRepository.findNameEquipmentByIdEquipment(x));
-		}
-		return listNameEquipment;
+	public String listNameEquipment (Integer equipment){
+		return this.dashboardRepository.findNameEquipmentByIdEquipment(equipment);
 	}
 
 }
