@@ -19,9 +19,9 @@
 	<span>Dietas</span>
 </yogogym:menuItem>
 
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Clases">
+<yogogym:menuItem active="${name eq 'challenges'}" url="/client/challenges" title="Challenges">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Clases</span>
+	<span>Challenges</span>
 </yogogym:menuItem>
 
 <yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Dashboard">

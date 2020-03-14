@@ -1,8 +1,6 @@
 package org.springframework.samples.yogogym.web;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.validation.Valid;
@@ -11,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Inscription;
-import org.springframework.samples.yogogym.model.Intensity;
 import org.springframework.samples.yogogym.service.ChallengeService;
 import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.samples.yogogym.service.InscriptionService;
@@ -45,16 +42,12 @@ public class ChallengeController {
 	public void initChallengeBinder(WebDataBinder dataBinder) {
 		dataBinder.setValidator(new ChallengeValidator(challengeService));
 	}
-	
-	@ModelAttribute("intensities")
-	public Collection<Intensity> populateIntensities() {
-		return  new ArrayList<Intensity>(Arrays.asList(Intensity.values()));
-	}
+
 	
 	// ADMIN:
 	
 	@GetMapping("/admin/challenges")
-	public String listChallenges(ModelMap modelMap) {
+	public String listChallengesAdmin(ModelMap modelMap) {
 			
 		Iterable<Challenge> challenges = challengeService.findAll();
 		modelMap.addAttribute("challenges", challenges);
@@ -63,7 +56,7 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("/admin/challenges/{challengeId}")
-	public String showChallengeById(@PathVariable("challengeId") int challengeId, Model model) {	  
+	public String showChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, Model model) {	  
 
 	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
 	   	model.addAttribute("challenge", challenge);
@@ -119,7 +112,7 @@ public class ChallengeController {
 		// If there are inscriptions, it cannot be edited
 		Inscription inscription = inscriptionService.findInscriptionByChallengeId(challengeId);
 		if(inscription != null) {
-			return showChallengeById(challengeId,model);
+			return showChallengeByIdAdmin(challengeId,model);
 		}
 					
 		model.addAttribute(challenge);
@@ -156,7 +149,7 @@ public class ChallengeController {
 		
 		// If there are inscriptions, it cannot be deleted
 		if(inscription != null) {
-			return showChallengeById(challengeId,model);
+			return showChallengeByIdAdmin(challengeId,model);
 		}
 		
 		challenge.setExercise(null);
@@ -165,4 +158,23 @@ public class ChallengeController {
 		return "redirect:/admin/challenges";
 	}
 	
+	// CLIENT:
+	
+	@GetMapping("/client/challenges")
+	public String listChallengesClient(ModelMap modelMap) {
+			
+		Iterable<Challenge> challenges = challengeService.findAll();
+		modelMap.addAttribute("challenges", challenges);
+		
+		return "client/challenges/challengesList";
+	}
+	
+	@GetMapping("/client/challenges/{challengeId}")
+	public String showChallengeByIdClient(@PathVariable("challengeId") int challengeId, Model model) {	  
+
+	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
+	   	model.addAttribute("challenge", challenge);
+	   	
+	    return "admin/challenges/challengeDetails";
+	}
 }
