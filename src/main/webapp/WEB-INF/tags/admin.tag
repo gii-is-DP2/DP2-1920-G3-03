@@ -8,6 +8,11 @@
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>Challenges</span>
 </yogogym:menuItem>
+
+<yogogym:menuItem active="${name eq 'submittedChallenges'}" url="/admin/challenges/submitted" title="Submitted Challenges">
+	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+	<span>Submitted Challenges</span>
+</yogogym:menuItem>
 					
 <yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Clases">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>

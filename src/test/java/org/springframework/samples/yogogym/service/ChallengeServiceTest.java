@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Equipment;
 import org.springframework.samples.yogogym.model.Exercise;
-import org.springframework.samples.yogogym.model.Intensity;
+import org.springframework.samples.yogogym.model.Enums.Intensity;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))

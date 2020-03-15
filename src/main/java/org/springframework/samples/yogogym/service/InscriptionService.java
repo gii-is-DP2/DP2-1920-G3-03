@@ -41,8 +41,13 @@ public class InscriptionService {
 		
 		return inscriptionRepo.findInscriptionByChallengeId(challengeId);
 	}
+	
+	@Transactional
+	public void saveInscription(Inscription inscription) throws DataAccessException{
+		inscriptionRepo.save(inscription);
+	}
 
-
+	@Transactional
 	public void deleteInscription(Inscription inscription) {
 		
 		inscriptionRepo.delete(inscription);

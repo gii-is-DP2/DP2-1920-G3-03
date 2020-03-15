@@ -12,4 +12,7 @@ public interface ClientRepository extends  CrudRepository<Client, String>{
 
 	@Query("SELECT c FROM Client c LEFT JOIN c.inscriptions i WHERE i.id=:id")
 	public Client findClientByInscriptionId(@Param("id") int inscriptionId);
+	
+	@Query("Select c FROM Client c WHERE c.user.username=:clientUsername")
+	public Client findClientByClientUsername(String clientUsername);
 }
