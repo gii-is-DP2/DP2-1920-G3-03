@@ -243,11 +243,13 @@ INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,r
 
 /* INSCRIPTION */
 
-INSERT INTO inscriptions(id,status,url,submitted,challenge_id) VALUES (1,2,'http://www.google.com',true,1);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (1,3,'https://allamericanfitness.com/wp-content/uploads/2016/11/Treadmill-XR-Console.jpg',1);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (2,0,null,2);
 
 /* CLIENT_INSCRIPTION */
 
-INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (2,1);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,1);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,2);
 
 /* PHRASES */
 

@@ -1,12 +1,12 @@
 package org.springframework.samples.yogogym.web;
 
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -15,13 +15,10 @@ import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Inscription;
-import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.service.ChallengeService;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.samples.yogogym.service.InscriptionService;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -170,6 +167,29 @@ public class ChallengeController {
 		return "redirect:/admin/challenges";
 	}
 	
+	@GetMapping("/admin/challenges/submitted")
+	public String listSubmittedChallengesAdmin(ModelMap modelMap) {
+			
+		Iterable<Challenge> challenges = challengeService.findSubmittedChallenges();
+		modelMap.addAttribute("challenges", challenges);
+		
+		return "admin/challenges/submittedChallengesList";
+	}
+	
+	@GetMapping("/admin/challenges/submitted/{challengeId}")
+	public String showSubmittedChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, Model model) {	  
+
+	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
+	   	Inscription inscription = this.inscriptionService.findInscriptionByChallengeId(challengeId);
+	   	Client client = this.clientService.findClientByInscriptionId(inscription.getId());
+	   	
+	   	model.addAttribute("challenge", challenge);
+	   	model.addAttribute("inscription", inscription);
+	   	model.addAttribute("client", client);
+	   	
+	    return "admin/challenges/submittedChallengeDetails";
+	}
+	
 	// CLIENT:
 	
 	@GetMapping("/client/{clientUsername}/challenges")
@@ -209,5 +229,33 @@ public class ChallengeController {
 	   	model.addAttribute("challenge", challenge);
 	   	
 	    return "client/challenges/challengeDetails";
+	}
+	
+	@GetMapping("/client/{clientUsername}/challenges/mine")
+	public String listMyChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
+			
+
+		Client client = this.clientService.findClientByClientUsername(clientUsername);
+		List<Challenge> challenges = client.getInscriptions().stream().map(i -> i.getChallenge()).collect(Collectors.toList());
+
+		modelMap.addAttribute("challenges", challenges);
+		
+		return "client/challenges/myChallengesList";
+	}
+	
+	@GetMapping("/client/{clientUsername}/challenges/mine/{challengeId}")
+	public String showAndEditMyChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
+
+	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
+	   	Inscription inscription = this.inscriptionService.findInscriptionByChallengeId(challengeId);
+	   	
+	   	Calendar now = Calendar.getInstance();
+	   	boolean expired = challenge.getEndDate().before(now.getTime());
+	   	
+	   	model.addAttribute("challenge", challenge);
+	   	model.addAttribute("inscription",inscription);
+	   	model.addAttribute("expired", expired);
+	   	
+	    return "client/challenges/myChallengeDetailsAndUpdate";
 	}
 }

@@ -27,9 +27,14 @@
 	<span>Dietas</span>
 </yogogym:menuItem>
 
-<yogogym:menuItem active="${name eq 'challenges'}" url="/client/${clientUsername}/challenges" title="Challenges">
+<yogogym:menuItem active="${name eq 'newChallenges'}" url="/client/${clientUsername}/challenges" title="New Challenges">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Challenges</span>
+	<span>New Challenges</span>
+</yogogym:menuItem>
+
+<yogogym:menuItem active="${name eq 'myChallenges'}" url="/client/${clientUsername}/challenges/mine" title="My Challenges">
+	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+	<span>My Challenges</span>
 </yogogym:menuItem>
 
 <yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Dashboard">
