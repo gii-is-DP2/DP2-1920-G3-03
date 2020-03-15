@@ -11,8 +11,11 @@
 	<jsp:attribute name="customScript">
         <script>
             $(function () {
-                $("#initialDate").datepicker({dateFormat: 'yy/mm/dd'});
+            	if(${training['new']}){
+            		$("#initialDate").datepicker({dateFormat: 'yy/mm/dd'});
+            	}
                 $("#endDate").datepicker({dateFormat: 'yy/mm/dd'});
+                console.log(training);
             });
         </script>
     </jsp:attribute>
@@ -30,7 +33,7 @@
 		<form:form modelAttribute="training" class="form-horizontal" id="trainingForm">
 			<div class="form-group has-feedback">
 				<input type="hidden" name="id" id="id" class="form-control" value="${training.id}"/>
-				<input type="hidden" name="cId" class="form-control" value="${client.id}"/>
+				<input type="hidden" name="client" value="${client.nif}"/>
 				<yogogym:inputField label="Name" name="name"/>
 				<yogogym:inputField label="Initial Date" name="initialDate" readonly="${!training['new']}"/>
 	            <yogogym:inputField label="End Date" name="endDate"/>

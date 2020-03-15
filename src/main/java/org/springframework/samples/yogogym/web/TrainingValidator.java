@@ -1,5 +1,7 @@
 package org.springframework.samples.yogogym.web;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +24,7 @@ public class TrainingValidator implements Validator{
 		this.trainingService = trainingService;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void validate(Object target, Errors errors) {
 		
 		Training validar = (Training) target;
@@ -43,18 +46,19 @@ public class TrainingValidator implements Validator{
 			Date initialDate = validar.getInitialDate();
 			Date endDate = validar.getEndDate();
 			Date now = new Date();
+			now = new Date(now.getYear(), now.getMonth(), now.getDate());
 			
-			// initialDate before endDate
-			if(endDate.before(initialDate)) {
-				errors.rejectValue("endDate", REQUIRED, "The end date must be after the initial date");
-			}
-
 			// No training starting in the past
 			if(validar.isNew() && initialDate.before(now)) {
 				errors.rejectValue("initialDate", REQUIRED, "The initial date cannot be in the past");
 			}
 			
-			// valid training period
+			// initialDate before endDate
+			if(endDate.before(initialDate)) {
+				errors.rejectValue("endDate", REQUIRED, "The end date must be after the initial date");
+			}
+			
+			// Period without other trainings
 			List<Training> associatedTrainings = validar.getClient().getTrainings()
 				.stream().sorted(Comparator.comparing(Training::getInitialDate)).collect(Collectors.toList());
 			Boolean break1 = true;
@@ -62,35 +66,39 @@ public class TrainingValidator implements Validator{
 			Boolean break3 = true;
 			
 			for(Training t : associatedTrainings) {
-				Date initDateAssoc = t.getInitialDate();
-				Date endDateAssoc = t.getEndDate();
+				if(t.isNew()||!t.getId().equals(validar.getId())) {
+					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					Date initDateAssoc = t.getInitialDate();
+					String initAssoc = dateFormat.format(initDateAssoc);
+					Date endDateAssoc = t.getEndDate();
+					String endAssoc = dateFormat.format(endDateAssoc);
 
-				Boolean initInPeriod = validar.isNew() && (initialDate.compareTo(initDateAssoc)>=0&&initialDate.compareTo(endDateAssoc)<=0);
-				Boolean endInPeriod = endDate.compareTo(initDateAssoc)>=0&&endDate.compareTo(endDateAssoc)<=0;
-				Boolean initAssocInPeriod = initDateAssoc.compareTo(initialDate)>=0&&initDateAssoc.compareTo(endDate)<=0;
-				Boolean endAssocInPeriod = endDateAssoc.compareTo(initialDate)>=0&&endDateAssoc.compareTo(endDate)<=0;
-				
-				if(initInPeriod && break1) {
-					break1 = false;
-					errors.rejectValue("initialDate", REQUIRED, "The training cannot start in a period "
-						+ "with other training (Other training period: " + initDateAssoc + " to " + endDateAssoc + ")");
+					Boolean initInPeriod = validar.isNew() && (initialDate.compareTo(initDateAssoc)>=0&&initialDate.compareTo(endDateAssoc)<=0);
+					Boolean endInPeriod = endDate.compareTo(initDateAssoc)>=0&&endDate.compareTo(endDateAssoc)<=0;
+					Boolean initAssocInPeriod = initDateAssoc.compareTo(initialDate)>=0&&initDateAssoc.compareTo(endDate)<=0;
+					Boolean endAssocInPeriod = endDateAssoc.compareTo(initialDate)>=0&&endDateAssoc.compareTo(endDate)<=0;
+					
+					if(initInPeriod && break1) {
+						break1 = false;
+						errors.rejectValue("initialDate", REQUIRED, "The training cannot start in a period "
+							+ "with other training (The other training is from " + initAssoc + " to " + endAssoc + ")");
+					}
+					if(endInPeriod && break2) {
+						break2 = false;
+						errors.rejectValue("endDate", REQUIRED, "The training cannot end in a period "
+							+ "with other training (The other training is from " + initAssoc + " to " + endAssoc + ")");
+					}
+					if(initAssocInPeriod && endAssocInPeriod && break3) {
+						break3 = false;
+						errors.rejectValue("initialDate", REQUIRED, "The training cannot be in a period "
+							+ "which includes another training (The other training is from " + initAssoc + " to " + endAssoc + ")");
+						errors.rejectValue("endDate", REQUIRED, "The training cannot be in a period "
+							+ "which includes another training (The other training is from " + initAssoc + " to " + endAssoc + ")");
+					}
+					if(!break1&&!break2&&!break3) {
+						break;
+					}
 				}
-				if(endInPeriod && break2) {
-					break2 = false;
-					errors.rejectValue("endDate", REQUIRED, "The training cannot end in a period "
-						+ "with other training (Other training period: " + initDateAssoc + " to " + endDateAssoc + ")");
-				}
-				if(initAssocInPeriod && endAssocInPeriod && break3) {
-					break3 = false;
-					errors.rejectValue("initialDate", REQUIRED, "The training cannot be in a period "
-						+ "which includes another training (Other training period: " + initDateAssoc + " to " + endDateAssoc + ")");
-					errors.rejectValue("endDate", REQUIRED, "The training cannot be in a period "
-						+ "which includes another training (Other training period: " + initDateAssoc + " to " + endDateAssoc + ")");
-				}
-				if(!break1&&!break2&&!break3) {
-					break;
-				}
-				
 			}
 			
 		}
