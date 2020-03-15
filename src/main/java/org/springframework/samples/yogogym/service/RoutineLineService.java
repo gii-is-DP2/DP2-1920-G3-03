@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2013 the original author or authors.
+	 * Copyright 2002-2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,8 @@ package org.springframework.samples.yogogym.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
-import org.springframework.samples.yogogym.repository.ClientRepository;
 import org.springframework.samples.yogogym.repository.RoutineLineRepository;
-import org.springframework.samples.yogogym.repository.RoutineRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +39,12 @@ public class RoutineLineService {
 	}
 	
 	@Transactional
+	public void deleteRoutineLine(RoutineLine routineLine) throws DataAccessException {
+		this.routineLineRepository.delete(routineLine);
+	}
+	
+	@Transactional
 	public void saveRoutineLine(RoutineLine routineLine) throws DataAccessException {
-		routineLineRepository.save(routineLine);
+		this.routineLineRepository.save(routineLine);
 	}
 }

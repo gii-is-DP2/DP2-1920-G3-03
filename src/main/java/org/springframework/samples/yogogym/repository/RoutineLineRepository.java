@@ -8,5 +8,5 @@ import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
 
 public interface RoutineLineRepository extends  CrudRepository<RoutineLine, String>{
-	
+
 }

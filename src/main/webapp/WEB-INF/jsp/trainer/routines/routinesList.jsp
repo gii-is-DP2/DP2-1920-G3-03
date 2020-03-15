@@ -17,6 +17,10 @@
 		
 		<ul>
 			<c:forEach var="training" items="${client.trainings}">
+				<spring:url value="/trainer/${trainerUsername}/clients/{clientId}/trainings/${training.id}/routines/create" var="routineUrl">
+					<spring:param name="clientId" value="${client.id}"/>
+				</spring:url>
+				<a href="${fn:escapeXml(routineUrl)}">Add Routine</a>
 				<li><c:out value="${training.name}"/></li>
 				<ul>
 					<c:forEach var="routine" items="${training.routines}">

@@ -21,7 +21,19 @@
 				<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/{trainingId}" var="trainingUrl">
                         <spring:param name="trainingId" value="${training.id}"/>
                 </spring:url>
-				<li><a href="${fn:escapeXml(trainingUrl)}"><c:out value="${training.name}"/></a></li>
+                
+                
+                <c:choose>
+                	<c:when test="${training.endDate < actualDate}">
+                		<c:set var="trainingCompleted" value="COMPLETED"/>
+                	</c:when>
+                	<c:otherwise>
+                		<c:set var="trainingCompleted" value="ON GOING"/>
+                	</c:otherwise>
+                </c:choose>
+               
+                
+				<li><a href="${fn:escapeXml(trainingUrl)}"><c:out value="${training.name}"/></a> <c:out value="(${trainingCompleted})"/></li>
 			</c:forEach>
 		</ul>
 		
@@ -29,6 +41,7 @@
 		<a href="${fn:escapeXml(trainingAddUrl)}">Add Training</a>		
 		
 	</div>
+	<br>
 	</c:forEach>
     
 </yogogym:layout>

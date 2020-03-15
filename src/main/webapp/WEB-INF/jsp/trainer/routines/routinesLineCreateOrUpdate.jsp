@@ -10,24 +10,26 @@
     <h2>New Routine Line for <c:out value="${routine.name} (${client.firstName} ${client.lastName})"/></h2>
 
 	<h3>Routine Line Data</h3>
-	<form:form modelAttribute="routines_lines" id="routineLineForm">
-		<input type="hidden" name="routine_id" value="${routine.id}">
-		<input type="number" min="1" id="reps" name="reps" placeholder="Repetitions" required="required">
-		<br>
-		<input type="number" min="0" id="weight" name="weight" placeholder="Weight" required="required">
-		<br>
-		<input type="number" min="1" id="series" name="series" placeholder="Series" required="required">
-		<h3>Pick Exercise</h3>
+	<form:form modelAttribute="routineLine" id="routineLineForm" class="form-horizontal">
+		<div class="form-group has-feedback">
+			<input type="hidden" name="routine_id" value="${routine.id}">
+			<yogogym:inputField label="Repetitions" name="reps"/>
+			<yogogym:inputField label="Weight" name="weight"/>
+			<yogogym:inputField label="Series" name="series"/>		
+			
+			<h3>Pick Exercise</h3>
+			
+			<yogogym:selectField label="Exercise" name="exercise" size="" map="${exercises}"/>
 		
-		<select id="exerciseId" name="exerciseId" required="required">
-			<c:forEach var="exercise" items="${exercises}">
-				<option value="${exercise.id}">${exercise.name}</option>
-			</c:forEach>
-		</select>		
-		<br>
-		
-		<input type="submit" value="Add Routine Line">
-		
+			
+			<br>
+			
+			<div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button class="btn btn-default" type="submit">Add Routine Line</button>
+                </div>
+            </div>
+		</div>
 	</form:form>
     
 </yogogym:layout>

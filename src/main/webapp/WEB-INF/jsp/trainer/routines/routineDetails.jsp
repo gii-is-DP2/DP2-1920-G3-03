@@ -17,22 +17,43 @@
 	<br>
 	
 	<h2>Line of Routines</h2>
-	<c:forEach var="lineRoutine" items="${routine.routineLine}">
-	<p><b>Line #${lineRoutine.id}</b> <a href="">Edit Routine</a> </p>
 	<table class="table table-striped">
 		<thead>
         <tr>
-            <th>Repetitions</th>
-            <th>Weight</th>
-            
+        	<th style="text-align:center">Line</th>
+            <th style="text-align:center">Repetitions</th>
+            <th style="text-align:center">Time</th>
             <th>Exercise</th>
 			<th>Description</th>
+            <th style="text-align:center">Weight</th>
 			<th>Kcal</th>
+			<th>Edit</th>
         </tr>
         </thead>
+	<c:forEach var="lineRoutine" items="${routine.routineLine}">
 			 <tr>
-	           <td><c:out value="${lineRoutine.reps}"/></td>
-	        	<td><c:out value="${lineRoutine.weight}"/></td>
+			 	<td style="text-align:center"><c:out value="${lineRoutine.id}"/></td>
+	            <td style="text-align:center">
+	            	<c:choose>
+	            		<c:when test="${!empty lineRoutine.reps}">
+	            			<c:out value="${lineRoutine.reps}"/>
+	            		</c:when>
+	            		<c:otherwise>
+	            			<c:out value="-"/>
+	            		</c:otherwise>
+	            	</c:choose>
+	            </td>
+	            <td style="text-align:center">
+	            	<c:choose>
+	            		<c:when test="${!empty lineRoutine.time}">
+	            			<c:out value="${lineRoutine.time}"/>
+	            		</c:when>
+	            		<c:otherwise>
+	            			<c:out value="-"/>
+	            		</c:otherwise>
+	            	</c:choose>
+	            </td>
+	        	<td style="text-align:center"><c:out value="${lineRoutine.weight}"/></td>
 	        	<td>
 				<spring:url value="/mainMenu/exercises/{exerciseId}" var="exerciseUrl">
                        <spring:param name="exerciseId" value="${lineRoutine.exercise.id}"/>
@@ -41,9 +62,10 @@
 				</td>
 				<td><c:out value="${lineRoutine.exercise.description}"/></td>
 				<td><c:out value="${lineRoutine.exercise.kcal}"/></td>
+				<td><a href="">Edit</a></td>
 	        </tr>
-	</table>
 	</c:forEach>
+	</table>
 	
 	<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/routineLine/create" var="routineLineAddUrl" />
 	<a href="${fn:escapeXml(routineLineAddUrl)}">Add Routine Line</a>
