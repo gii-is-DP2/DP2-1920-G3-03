@@ -1,17 +1,27 @@
 package org.springframework.samples.yogogym.web;
 
 
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
+import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Inscription;
+import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.service.ChallengeService;
+import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.samples.yogogym.service.InscriptionService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -30,12 +40,14 @@ public class ChallengeController {
 	private ChallengeService challengeService;
 	private ExerciseService exerciseService;
 	private InscriptionService inscriptionService;
+	private ClientService clientService;
 	
 	@Autowired
-	public ChallengeController(ChallengeService challengeService, ExerciseService exerciseService, InscriptionService inscriptionService) {
+	public ChallengeController(ChallengeService challengeService, ExerciseService exerciseService, InscriptionService inscriptionService, ClientService clientService) {
 		this.challengeService = challengeService;
 		this.exerciseService = exerciseService;
 		this.inscriptionService = inscriptionService;
+		this.clientService = clientService;
 	}
 	
 	@InitBinder("challenge")
@@ -160,21 +172,42 @@ public class ChallengeController {
 	
 	// CLIENT:
 	
-	@GetMapping("/client/challenges")
-	public String listChallengesClient(ModelMap modelMap) {
+	@GetMapping("/client/{clientUsername}/challenges")
+	public String listChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
 			
-		Iterable<Challenge> challenges = challengeService.findAll();
-		modelMap.addAttribute("challenges", challenges);
+		List<Challenge> challenges = (List<Challenge>) challengeService.findAll();
+		Client client = this.clientService.findClientByClientUsername(clientUsername);
+		
+		//Only if the end date is posterior to today's
+		List<Challenge> challengesFiltered = new ArrayList<>();
+		Calendar now = Calendar.getInstance();
+		Date d = now.getTime();
+		for(Challenge c : challenges) {
+			if(c.getEndDate().after(d)) {
+				challengesFiltered.add(c);
+			}
+		}
+		//and they are not already inscribed:
+		if(client.getInscriptions() != null) {
+			for(Inscription i : client.getInscriptions()) {
+				Challenge c = i.getChallenge();
+				if(challengesFiltered.contains(c)) {
+					challengesFiltered.remove(c);
+				}
+			}
+		}
+		
+		modelMap.addAttribute("challenges", challengesFiltered);
 		
 		return "client/challenges/challengesList";
 	}
 	
-	@GetMapping("/client/challenges/{challengeId}")
-	public String showChallengeByIdClient(@PathVariable("challengeId") int challengeId, Model model) {	  
+	@GetMapping("/client/{clientUsername}/challenges/{challengeId}")
+	public String showChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
 
 	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
 	   	model.addAttribute("challenge", challenge);
 	   	
-	    return "admin/challenges/challengeDetails";
+	    return "client/challenges/challengeDetails";
 	}
 }

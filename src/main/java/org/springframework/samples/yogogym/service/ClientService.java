@@ -57,4 +57,10 @@ public class ClientService {
 		return this.clientRepository.findClientByInscriptionId(inscriptionId);
 	}
 	
+	@Transactional
+	public Client findClientByClientUsername(String clientUsername) {
+		
+		return this.clientRepository.findClientByClientUsername(clientUsername);
+	}
+	
 }

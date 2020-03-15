@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags"%>
+<%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags"%>
 
 <yogogym:layout pageName="challenges">
 
@@ -52,5 +53,8 @@
             </td>
         </tr>
     </table>
+    
+    <spring:url value="/client/${clientUsername}/challenges/${challenge.id}/inscription/create" var="createInscriptionUrl"></spring:url>
+	<a href="${fn:escapeXml(createInscriptionUrl)}" class="btn btn-default">Inscribe me!</a>
 
 </yogogym:layout>

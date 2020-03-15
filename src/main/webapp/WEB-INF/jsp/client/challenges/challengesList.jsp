@@ -23,7 +23,7 @@
         <c:forEach items="${challenges}" var="challenge">
             <tr>
                 <td>
-                    <spring:url value="/client/challenges/{challengeId}" var="showUrl">
+                    <spring:url value="/client/${clientUsername}/challenges/{challengeId}" var="showUrl">
         				<spring:param name="challengeId" value="${challenge.id}"/>
    					</spring:url>
     				<a href="${fn:escapeXml(showUrl)}"><c:out value="${challenge.name}"/></a>
