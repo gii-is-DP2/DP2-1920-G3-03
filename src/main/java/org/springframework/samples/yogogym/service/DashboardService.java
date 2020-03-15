@@ -30,8 +30,8 @@ public class DashboardService {
 		return this.dashboardRepository.findRepsPerWeekByIdRoutine(routine);
 	}
 	
-	public Integer listExercise(Integer repsRoutine){
-		return this.dashboardRepository.findIdExerciseByIdRoutine(repsRoutine);
+	public List<Integer> listExercise(Integer routine){
+		return this.dashboardRepository.findIdExerciseByIdRoutine(routine);
 	}
 	
 	public Integer listIdEquipment (Integer exercise){

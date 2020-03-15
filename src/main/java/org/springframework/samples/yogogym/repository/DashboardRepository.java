@@ -25,7 +25,7 @@ public interface DashboardRepository extends CrudRepository<Dashboard, Integer>{
 	Integer findRepsPerWeekByIdRoutine(@Param("id") int id);
 	
 	@Query("SELECT rl.exercise.id FROM Routine r left join r.routineLine rl WHERE r.id = :id")
-	Integer findIdExerciseByIdRoutine(@Param("id") int id);
+	List<Integer> findIdExerciseByIdRoutine(@Param("id") int id);
 	
 	@Query("SELECT e.equipment.id FROM Exercise e WHERE e.id = :id")
 	Integer findIdEquipmentByIdExercise(@Param("id") int id);
