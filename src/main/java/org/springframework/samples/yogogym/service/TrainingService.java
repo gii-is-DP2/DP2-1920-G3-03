@@ -20,7 +20,6 @@ package org.springframework.samples.yogogym.service;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.TrainingRepository;
 import org.springframework.stereotype.Service;
@@ -46,6 +45,12 @@ public class TrainingService {
 	public void saveTraining(Training training) throws DataAccessException {
 		trainingRepository.save(training);
 	}
+	
+	@Transactional
+	public void deleteTraining(Training training) throws DataAccessException {
+		this.trainingRepository.delete(training);
+	}
+
 	
 	@Transactional
 	public Training findTrainingById(int trainingId) throws DataAccessException {

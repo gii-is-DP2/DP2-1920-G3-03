@@ -17,6 +17,10 @@
 	<br>
 	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/edit" var="trainingEditUrl" />
 	<a href="${fn:escapeXml(trainingEditUrl)}">Edit Training</a>
+	<br>
+	<br>
+	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/delete" var="trainingDeleteUrl" />
+	<a href="${fn:escapeXml(trainingDeleteUrl)}">Delete Training</a>
 	
 	<br>
 	<br>

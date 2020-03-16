@@ -15,9 +15,8 @@ import org.springframework.validation.Validator;
 
 public class TrainingValidator implements Validator{
 	
+	@SuppressWarnings("unused")
 	private TrainingService trainingService;
-	
-	private static final String REQUIRED = "required: ";
 	
 	@Autowired
 	public TrainingValidator(TrainingService trainingService) {
@@ -30,16 +29,16 @@ public class TrainingValidator implements Validator{
 		Training validar = (Training) target;
 		
 		// Name not empty
-		if (validar.getName().isEmpty()) {
-			errors.rejectValue("name", REQUIRED, "The name cannot be empty");
+		if (validar.getName().trim().isEmpty()) {
+			errors.rejectValue("name", null, "The name cannot be empty");
 		}
 		// Initial Date not empty
 		if (validar.getInitialDate() == null) {
-			errors.rejectValue("initialDate", REQUIRED, "The initial date cannot be null");
+			errors.rejectValue("initialDate", null, "The initial date cannot be null");
 		}
 		// End Date not empty
 		if (validar.getEndDate() == null) {
-			errors.rejectValue("endDate", REQUIRED, "The end date cannot be null");
+			errors.rejectValue("endDate", null, "The end date cannot be null");
 		}
 		
 		if(validar.getInitialDate() != null && validar.getEndDate() != null) {
@@ -50,12 +49,12 @@ public class TrainingValidator implements Validator{
 			
 			// No training starting in the past
 			if(validar.isNew() && initialDate.before(now)) {
-				errors.rejectValue("initialDate", REQUIRED, "The initial date cannot be in the past");
+				errors.rejectValue("initialDate", null, "The initial date cannot be in the past");
 			}
 			
 			// initialDate before endDate
 			if(endDate.before(initialDate)) {
-				errors.rejectValue("endDate", REQUIRED, "The end date must be after the initial date");
+				errors.rejectValue("endDate", null, "The end date must be after the initial date");
 			}
 			
 			// Period without other trainings
@@ -80,19 +79,19 @@ public class TrainingValidator implements Validator{
 					
 					if(initInPeriod && break1) {
 						break1 = false;
-						errors.rejectValue("initialDate", REQUIRED, "The training cannot start in a period "
+						errors.rejectValue("initialDate", null, "The training cannot start in a period "
 							+ "with other training (The other training is from " + initAssoc + " to " + endAssoc + ")");
 					}
 					if(endInPeriod && break2) {
 						break2 = false;
-						errors.rejectValue("endDate", REQUIRED, "The training cannot end in a period "
+						errors.rejectValue("endDate", null, "The training cannot end in a period "
 							+ "with other training (The other training is from " + initAssoc + " to " + endAssoc + ")");
 					}
 					if(initAssocInPeriod && endAssocInPeriod && break3) {
 						break3 = false;
-						errors.rejectValue("initialDate", REQUIRED, "The training cannot be in a period "
+						errors.rejectValue("initialDate", null, "The training cannot be in a period "
 							+ "which includes another training (The other training is from " + initAssoc + " to " + endAssoc + ")");
-						errors.rejectValue("endDate", REQUIRED, "The training cannot be in a period "
+						errors.rejectValue("endDate", null, "The training cannot be in a period "
 							+ "which includes another training (The other training is from " + initAssoc + " to " + endAssoc + ")");
 					}
 					if(!break1&&!break2&&!break3) {

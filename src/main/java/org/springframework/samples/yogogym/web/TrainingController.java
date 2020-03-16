@@ -1,5 +1,9 @@
 package org.springframework.samples.yogogym.web;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class TrainingController {
@@ -92,15 +97,24 @@ public class TrainingController {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit")
 	public String initTrainingUpdateForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, Model model) {
 		Training training = this.trainingService.findTrainingById(trainingId);
 		Client client = this.clientService.findClientById(clientId);
+		
+		Date now = new Date();
+		now = new Date(now.getYear(), now.getMonth(), now.getDate());
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String actualDate = dateFormat.format(now);
+		
+		model.addAttribute("actualDate", actualDate);
 		model.addAttribute("training", training);
 		model.addAttribute("client", client);
 		return "trainer/trainings/trainingCreateOrUpdate";
 	}
 	
+	@SuppressWarnings("deprecation")
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit")
 	public String processTrainingUpdateForm(@Valid Training training, BindingResult result, 
 		@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, ModelMap model) {
@@ -112,11 +126,30 @@ public class TrainingController {
 			return "trainer/trainings/trainingCreateOrUpdate";
 		} 
 		else {
+			Date now = new Date();
+			now = new Date(now.getYear(), now.getMonth(), now.getDate());
+			
 			Training oldTraining = this.trainingService.findTrainingById(trainingId);
 			oldTraining.setName(training.getName());
-			oldTraining.setEndDate(training.getEndDate());
+			if(!training.getEndDate().before(now)) {
+				oldTraining.setEndDate(training.getEndDate());
+			}
 			this.trainingService.saveTraining(oldTraining);
 			return "redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}";
 		}
 	}
+	
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete")
+	public String processDeleteTrainingForm(@PathVariable("trainingId") int trainingId, RedirectAttributes redirectAttrs) {
+		Training training = this.trainingService.findTrainingById(trainingId);
+		if(training!=null) {
+			Client client = training.getClient();
+			client.getTrainings().remove(training);
+			this.clientService.saveClient(client);
+			this.trainingService.deleteTraining(training);
+			redirectAttrs.addFlashAttribute("deleteMessage", "The training was deleted successfully");
+		}
+		return "redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings";
+	}
+	
 }

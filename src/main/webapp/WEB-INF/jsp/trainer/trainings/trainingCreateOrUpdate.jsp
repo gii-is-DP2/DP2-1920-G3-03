@@ -14,8 +14,10 @@
             	if(${training['new']}){
             		$("#initialDate").datepicker({dateFormat: 'yy/mm/dd'});
             	}
-                $("#endDate").datepicker({dateFormat: 'yy/mm/dd'});
-                console.log(training);
+            	if(${training.endDate>=actualDate||training.endDate==null||!hasErrors['endDate'].isEmpty()}){
+            		$("#endDate").datepicker({dateFormat: 'yy/mm/dd'});
+            	}
+               
             });
         </script>
     </jsp:attribute>
@@ -36,7 +38,7 @@
 				<input type="hidden" name="client" value="${client.nif}"/>
 				<yogogym:inputField label="Name" name="name"/>
 				<yogogym:inputField label="Initial Date" name="initialDate" readonly="${!training['new']}"/>
-	            <yogogym:inputField label="End Date" name="endDate"/>
+	            <yogogym:inputField label="End Date" name="endDate" readonly="${training.endDate<actualDate}"/>
 	            
             </div>
 			<div class="form-group">
