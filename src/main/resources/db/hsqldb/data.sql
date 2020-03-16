@@ -100,6 +100,7 @@ INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (6, '2020-02
 INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (7, '2020-03-01', '2020-03-10', 'Entrenamiento3', 3);
 INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (8, '2020-04-01', '2020-04-20', 'Entrenamiento4', 4);
 
+
 /* ROUTINE */
 
 INSERT INTO routines(id,name,description,reps_per_week) VALUES (1,'Cardio', 'Augment resistance',3);

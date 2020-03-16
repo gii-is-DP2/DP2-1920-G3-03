@@ -15,6 +15,8 @@
  */
 package org.springframework.samples.yogogym.service;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
@@ -61,6 +63,11 @@ public class ClientService {
 	public Client findClientByClientUsername(String clientUsername) {
 		
 		return this.clientRepository.findClientByClientUsername(clientUsername);
+	}
+	
+	@Transactional
+	public Collection<Client> findAllClient() throws DataAccessException {
+		return this.clientRepository.findAll();
 	}
 	
 }

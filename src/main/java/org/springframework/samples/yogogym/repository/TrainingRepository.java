@@ -14,4 +14,5 @@ public interface TrainingRepository extends  CrudRepository<Training, String>{
 	
 	@Query("SELECT training FROM Training training WHERE training.id=:id")
 	public Training findTrainingById(@Param("id")int id);
+	
 }
