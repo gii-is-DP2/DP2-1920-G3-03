@@ -16,3 +16,4 @@ public interface TrainingRepository extends  CrudRepository<Training, String>{
 	public Training findTrainingById(@Param("id")int id);
 	
 }
+	

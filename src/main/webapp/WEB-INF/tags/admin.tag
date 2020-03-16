@@ -19,7 +19,7 @@
 	<span>Clases</span>
 </yogogym:menuItem>
 					
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Dashboard">
+<yogogym:menuItem active="${name eq 'dashboard'}" url="/admin/dashboard" title="Dashboard">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>Dashboard</span>
 </yogogym:menuItem>	
