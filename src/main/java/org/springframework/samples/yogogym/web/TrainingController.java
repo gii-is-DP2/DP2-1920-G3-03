@@ -149,7 +149,7 @@ public class TrainingController {
 			this.trainingService.deleteTraining(training);
 			redirectAttrs.addFlashAttribute("deleteMessage", "The training was deleted successfully");
 		}
-		return "redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings";
+		return "redirect:/trainer/{trainerUsername}/trainings";
 	}
 	
 }
