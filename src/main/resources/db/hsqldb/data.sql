@@ -91,14 +91,14 @@ INSERT INTO diets_foods(diet_id,foods_id) VALUES (4,3);
 
 /* TRAINING */
 
-INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (1, '2020-01-01', '2020-01-10', 'Entrenamiento1', 1);
-INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (2, '2020-02-01', '2020-02-20', 'Entrenamiento2', 2);
-INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (3, '2020-03-01', '2020-03-10', 'Entrenamiento3', 3);
-INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (4, '2020-04-01', '2020-04-20', 'Entrenamiento4', 4);
-INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (5, '2020-01-01', '2020-01-10', 'Entrenamiento1', 1);
-INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (6, '2020-02-01', '2020-02-20', 'Entrenamiento2', 2);
-INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (7, '2020-03-01', '2020-03-10', 'Entrenamiento3', 3);
-INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (8, '2020-04-01', '2020-04-20', 'Entrenamiento4', 4);
+INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (1, '2020-01-01', '2020-01-10', 'Entrenamiento1', 1, 1);
+INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (2, '2020-02-01', '2020-02-20', 'Entrenamiento2', 2, 2);
+INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (3, '2020-03-01', '2020-03-10', 'Entrenamiento3', 3, 3);
+INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (4, '2020-04-01', '2020-04-20', 'Entrenamiento4', 4, 4);
+INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (5, '2020-01-01', '2020-01-10', 'Entrenamiento1', 1, 5);
+INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (6, '2020-02-01', '2020-02-20', 'Entrenamiento2', 2, 6);
+INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (7, '2020-03-01', '2020-03-10', 'Entrenamiento3', 3, 7);
+INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (8, '2020-04-01', '2020-04-20', 'Entrenamiento4', 4, 8);
 
 
 /* ROUTINE */
