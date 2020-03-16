@@ -6,7 +6,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
-<yogogym:layout pageName="routines">
+<yogogym:layout pageName="trainings">
 	
 	<jsp:attribute name="customScript">
         <script>
@@ -55,5 +55,4 @@
 	        </div>
 		</form:form>
 	</jsp:body>
-    
 </yogogym:layout>

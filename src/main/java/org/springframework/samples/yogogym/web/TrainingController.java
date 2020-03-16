@@ -78,7 +78,7 @@ public class TrainingController {
 	}
 
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/create")
-	public String processTrainingCreateForm(@Valid Training training, BindingResult result,
+	public String processTrainingCreateForm(Training training, BindingResult result,
 			@PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername,
 			Model model) {
 		if (result.hasErrors()) {

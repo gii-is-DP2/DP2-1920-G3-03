@@ -23,6 +23,10 @@ public class RoutineLine extends BaseEntity{
 	@Min(0)
 	protected Double weight;
 	
+	@Column(name = "time")
+	@Min(0)
+	protected Double time;
+	
 	@Column(name = "series")
 	@Min(1)
 	protected Integer series;

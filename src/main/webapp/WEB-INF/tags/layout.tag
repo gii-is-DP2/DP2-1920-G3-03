@@ -15,7 +15,7 @@
     <div class="container xd-container">
 
         <jsp:doBody/>
-
+        
         <yogogym:pivotal/>
     </div>
 </div>

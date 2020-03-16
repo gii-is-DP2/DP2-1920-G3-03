@@ -22,7 +22,7 @@
         <c:forEach items="${challenges}" var="challenge">
             <tr>
                 <td>
-                    <spring:url value="/admin/challenges/{challengeId}" var="showUrl">
+                    <spring:url value="/admin/challenges/submitted/{challengeId}" var="showUrl">
         				<spring:param name="challengeId" value="${challenge.id}"/>
    					</spring:url>
     				<a href="${fn:escapeXml(showUrl)}"><c:out value="${challenge.name}"/></a>
@@ -41,8 +41,6 @@
         
         </tbody>
     </table>
-    
-     <a class="btn btn-default" href='<spring:url value="challenges/new" htmlEscape="true"/>'>Create Challenge</a>
     
     
 </petclinic:layout>
