@@ -23,9 +23,9 @@
         	<th style="text-align:center">Line</th>
             <th style="text-align:center">Repetitions</th>
             <th style="text-align:center">Time</th>
+            <th style="text-align:center">Weight</th>
             <th>Exercise</th>
 			<th>Description</th>
-            <th style="text-align:center">Weight</th>
 			<th>Kcal</th>
 			<th>Edit</th>
         </tr>

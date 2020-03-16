@@ -15,6 +15,8 @@
  */
 package org.springframework.samples.yogogym.service;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.RoutineLine;
@@ -36,6 +38,16 @@ public class RoutineLineService {
 	@Autowired
 	public RoutineLineService(RoutineLineRepository routineLineRepository) {
 		this.routineLineRepository = routineLineRepository;
+	}
+	
+	@Transactional
+	public RoutineLine findRoutoneLineById(int routineLineId) throws DataAccessException {
+		return this.routineLineRepository.findRoutineLineById(routineLineId);
+	}
+	
+	public Collection<RoutineLine> findAllRoutinesLines() throws DataAccessException
+	{
+		return this.routineLineRepository.findAllRoutines();
 	}
 	
 	@Transactional

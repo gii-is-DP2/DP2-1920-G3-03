@@ -12,9 +12,9 @@
 	<h3>Routine Data</h3>
 	<form:form modelAttribute="routine" class="form-horizontal">
 		<div class="form-group has-feedback">
-			<yogogym:inputField label="name" name="name"/>
-			<yogogym:inputField label="description" name="description"/>
-			<yogogym:inputField label="repsPerWeek" name="repsPerWeek"/>
+			<yogogym:inputField label="Name" name="name"/>
+			<yogogym:inputField label="Description" name="description"/>
+			<yogogym:inputField label="Repetitions Per Week" name="repsPerWeek"/>
 		
 			<div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
