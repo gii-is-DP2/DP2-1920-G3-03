@@ -100,11 +100,14 @@ class ValidatorTests {
 		Validator validator = createValidator();
 		Set<ConstraintViolation<RoutineLine>> constraintViolations = validator.validate(routineLine);
 		
-		assertThat(constraintViolations.size()).isEqualTo(1);
+		assertThat(constraintViolations.size()).isEqualTo(2);
 		ConstraintViolation<RoutineLine> violation = constraintViolations.iterator().next();
 		
-		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");		
+		assertThat(violation.getPropertyPath().toString()).isEqualTo("reps");
+		assertThat(violation.getMessage()).isEqualTo("no puede ser null");
+		
+		assertThat(violation.getPropertyPath().toString()).isEqualTo("time");
+		assertThat(violation.getMessage()).isEqualTo("no puede ser null");	
 	}
 		
 	/* ------------------------ CHALLENGE -----------------------------------------------------------------*/
