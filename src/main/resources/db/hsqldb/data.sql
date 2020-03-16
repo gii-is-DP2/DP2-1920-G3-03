@@ -240,16 +240,21 @@ INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VA
 
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (1,'Challenge1','Desc challenge 1','2020-01-01','2020-01-02','Reward1',10,10,10,1);
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (2,'Challenge2','Desc challenge 2','2020-10-01','2020-10-02','Reward2',20,5,20,2);
+INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (3,'Challenge3','Desc challenge 3','2020-10-10','2020-10-15','Reward3',30,4,40,10);
 
 /* INSCRIPTION */
 
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (1,3,'https://allamericanfitness.com/wp-content/uploads/2016/11/Treadmill-XR-Console.jpg',1);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (2,0,null,2);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (3,0,null,3);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (4,0,null,3);
 
 /* CLIENT_INSCRIPTION */
 
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,1);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,2);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,3);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (2,4);
 
 /* PHRASES */
 

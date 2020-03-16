@@ -1,6 +1,10 @@
 package org.springframework.samples.yogogym.web;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
@@ -11,6 +15,7 @@ import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.InscriptionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +37,34 @@ public class InscriptionController {
 		
 	
 	// ADMIN:
+	
+	@GetMapping("/admin/inscriptions/submitted")
+	public String listSubmittedInscriptionsAdmin(ModelMap modelMap) {
+			
+		Collection<Inscription> inscriptions = inscriptionService.findSubmittedInscriptions();
+		List<Client> clients = new ArrayList<Client>();
+		for(Inscription i : inscriptions) {
+			clients.add(this.clientService.findClientByInscriptionId(i.getId()));
+		}
+		modelMap.addAttribute("inscriptions", inscriptions);
+		modelMap.addAttribute("clients",clients);
+		
+		return "admin/challenges/submittedInscriptionsList";
+	}
+	
+	@GetMapping("/admin/inscriptions/submitted/{inscriptionId}")
+	public String showSubmittedChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, Model model) {	  
+
+	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
+	   	Collection<Inscription> inscriptions = this.inscriptionService.findInscriptionsByChallengeId(challengeId); 
+	   // Client client = this.clientService.findClientByInscriptionId(inscription.getId());
+	   	
+	   	model.addAttribute("challenge", challenge);
+	   //	model.addAttribute("inscription", inscription);
+	   //	model.addAttribute("client", client);
+	   	
+	    return "admin/challenges/submittedChallengeDetails";
+	}
 	
 	@PostMapping("/admin/challenges/submitted/{challengeId}/inscription/{inscriptionId}/evaluate")
 	public String evaluateChallengeAdmin(@PathVariable("challengeId") int challengeId, @PathVariable("inscriptionId") int inscriptionId,
