@@ -51,7 +51,7 @@ public class Challenge extends BaseEntity{
 	protected Date endDate;
 	
 	// Relations
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
 	@JoinColumn(name = "exercise_id")
 	protected Exercise exercise;
 }
