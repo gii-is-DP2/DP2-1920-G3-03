@@ -267,13 +267,13 @@ INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (2,8);
 /* CLIENT_TRAINING */
 
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (1,1);
-INSERT INTO clients_trainings(client_id,trainings_id) VALUES (2,2);
-INSERT INTO clients_trainings(client_id,trainings_id) VALUES (3,3);
-INSERT INTO clients_trainings(client_id,trainings_id) VALUES (4,4);
-INSERT INTO clients_trainings(client_id,trainings_id) VALUES (5,5);
-INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,6);
-INSERT INTO clients_trainings(client_id,trainings_id) VALUES (7,7);
-INSERT INTO clients_trainings(client_id,trainings_id) VALUES (8,8);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (1,2);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (2,3);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (3,4);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (4,5);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (5,6);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,7);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (7,8);
 
 
 
