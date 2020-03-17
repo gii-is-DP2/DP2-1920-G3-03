@@ -50,9 +50,21 @@ public class ChallengeValidator implements Validator{
 		if (validar.getReward().isEmpty()) {
 			errors.rejectValue("reward", REQUIRED, "The Reward can not be empty");
 		}
-		// Points not empty and number
-		if (validar.getPoints() == null) {
-			errors.rejectValue("points", REQUIRED, "Points can not be null");
+		// Points not empty and positive
+		if (validar.getPoints() == null || validar.getPoints() < 0) {
+			errors.rejectValue("points", REQUIRED, "Points can not be null or less than 0");
+		}
+		// Repetitions positive
+		if(validar.getReps() != null) {
+			if (validar.getReps() < 0) {
+				errors.rejectValue("reps", REQUIRED, "Repetitions can not be less than 0");
+			}
+		}
+		// Weight positive
+		if(validar.getWeight() != null) {
+			if (validar.getWeight() < 0) {
+				errors.rejectValue("weight", REQUIRED, "Weight can not be less than 0");
+			}
 		}
 		
 		

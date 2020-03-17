@@ -34,4 +34,9 @@ public class ChallengeService {
 		challengeRepo.delete(challenge);
 	}
 
+	public Iterable<Challenge> findSubmittedChallenges() {
+		
+		return challengeRepo.findSubmittedChallenges();
+	}
+
 }

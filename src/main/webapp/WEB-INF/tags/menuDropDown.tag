@@ -33,7 +33,7 @@
 	</li>
 </sec:authorize>
 
-<sec:authorize access="hasAuthority('user')">
+<sec:authorize access="hasAuthority('client')">
 	<li class="dropdown">
 	    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Client<span class="caret"></span></a>
 		
