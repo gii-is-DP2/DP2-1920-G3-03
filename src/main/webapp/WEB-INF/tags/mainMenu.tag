@@ -19,11 +19,6 @@
 	<span>Equipments</span>
 </yogogym:menuItem>
 
-<yogogym:menuItem active="${name eq 'diets'}" url="/mainMenu/diets" title="Diets">
-	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Diets</span>
-</yogogym:menuItem>
-
 <yogogym:menuItem active="${name eq 'error'}" url="/oups" title="trigger a RuntimeException to see how it is handled">
  	<span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
 	<span>Error</span>

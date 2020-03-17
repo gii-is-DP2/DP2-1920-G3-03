@@ -11,7 +11,7 @@
     <table id="dietsTable" class="table table-striped">
         <thead>
         <tr>
-            <th>Type</th>
+            <th>Name</th>
             <th>Kcal</th>
         </tr>
         </thead>
@@ -22,7 +22,7 @@
                     <spring:url value="/mainMenu/diets/{dietId}" var="dietUrl">
                         <spring:param name="dietId" value="${diet.id}"/>
                     </spring:url>
-                    <a href="${fn:escapeXml(dietUrl)}"><c:out value="${diet.type}"/></a>
+                    <a href="${fn:escapeXml(dietUrl)}"><c:out value="${diet.name}"/></a>
                 </td>
                 <td>
                     <c:out value="${diet.kcal}"/>

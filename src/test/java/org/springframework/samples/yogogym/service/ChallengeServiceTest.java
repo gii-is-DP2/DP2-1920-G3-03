@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -25,7 +27,7 @@ public class ChallengeServiceTest {
 	@Test
 	void shouldFindAllChallenges(){
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAll();
-		assertThat(challenges.size()).isEqualTo(2);
+		assertThat(challenges.size()).isEqualTo(4);
 	}
 	
 	@Test
@@ -80,16 +82,15 @@ public class ChallengeServiceTest {
 		assertThat(challenge.getName()).isEqualTo("UpdateTest");
 	}
 	
+	
 	@Test
-	void shouldDeleteOwner() {
+	void shouldDeleteChallenge() {
 		
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAll();
 		int foundBefore = challenges.size();
 		
-		Challenge challenge = this.challengeService.findChallengeById(2);
-		challenge.setExercise(null);
+		Challenge challenge = this.challengeService.findChallengeById(4);
 		this.challengeService.deleteChallenge(challenge);
-		
 		challenges = (Collection<Challenge>) this.challengeService.findAll();
 		int foundAfter = challenges.size();
 		
