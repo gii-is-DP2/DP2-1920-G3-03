@@ -1,5 +1,7 @@
 package org.springframework.samples.yogogym.web;
 
+
+import java.util.Calendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,7 +52,14 @@ public class TrainingController {
 	public String ClienTrainingList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		model.addAttribute("trainer", trainer);
-
+		
+		Calendar now = Calendar.getInstance();
+		Date date = now.getTime();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");		
+		String actualDate = dateFormat.format(date);
+		
+		model.addAttribute("actualDate", actualDate);
+		
 		return "trainer/trainings/trainingsList";
 	}
 

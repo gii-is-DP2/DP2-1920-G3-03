@@ -26,6 +26,10 @@
 						<li><a href="${fn:escapeXml(routineUrl)}"><c:out value="${routine.name}"/></a></li>
 					</c:forEach>
 				</ul>
+				<spring:url value="/trainer/${trainerUsername}/clients/{clientId}/trainings/${training.id}/routines/create" var="routineUrl">
+					<spring:param name="clientId" value="${client.id}"/>
+				</spring:url>
+				<h3><a href="${fn:escapeXml(routineUrl)}">Add Routine</a></h3>
 			</c:forEach>
 		</ul>
 				
