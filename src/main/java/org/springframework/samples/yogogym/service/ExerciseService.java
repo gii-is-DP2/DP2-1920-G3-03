@@ -20,6 +20,11 @@ public class ExerciseService {
 	public ExerciseService(final ExerciseRepository exerciseRepository) {
 		this.exerciseRepository = exerciseRepository;
 	}
+	
+	@Transactional
+	public void deleteExercise(final Exercise exercise) throws DataAccessException {
+		this.exerciseRepository.delete(exercise);
+	}
 
 	@Transactional
 	public void saveExercise(final Exercise exercise) throws DataAccessException {

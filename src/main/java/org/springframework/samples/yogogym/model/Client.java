@@ -15,7 +15,10 @@
  */
 package org.springframework.samples.yogogym.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,13 +56,37 @@ public class Client extends Person {
 	@Column(name="height")
 	@Min(0)
 	protected Double height;
-	
+
+	@Column(name="age")
+	@Min(0)
+	protected Integer age;
+
+	@Column(name="fatPercentage")
+	@Min(0)
+	protected Double fatPercentage;
+
 	@OneToMany(cascade = CascadeType.ALL)
 	protected Collection<Training> trainings;
-	
+
+	@OneToMany(cascade = CascadeType.ALL)
+	protected Collection<Diet> diets;
+
 	@ManyToOne(cascade = CascadeType.ALL)
 	protected Guild guild;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	protected Collection<Inscription> inscriptions;
+	protected List<Inscription> inscriptions;
+	
+	
+	protected List<Inscription> getInscriptionsInternal() {
+		if (this.inscriptions == null) {
+			this.inscriptions = new ArrayList<>();
+		}
+		return this.inscriptions;
+	}
+
+	public void addInscription(Inscription inscription) {
+		List<Inscription> l = getInscriptionsInternal();
+		l.add(inscription);
+	}
 }
