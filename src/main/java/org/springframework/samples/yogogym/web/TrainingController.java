@@ -47,7 +47,7 @@ public class TrainingController {
 	// TRAINER
 
 	@GetMapping("/trainer/{trainerUsername}/trainings")
-	public String ClienTrainingList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
+	public String ClientTrainingList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		model.addAttribute("trainer", trainer);
 
@@ -86,10 +86,7 @@ public class TrainingController {
 			model.addAttribute("client", client);
 			return "trainer/trainings/trainingCreateOrUpdate";
 		} else {
-			Client client = this.clientService.findClientById(clientId);
-			client.getTrainings().add(training);
-
-			this.clientService.saveClient(client);
+			this.trainingService.saveTraining(training);
 
 			Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 
@@ -143,9 +140,6 @@ public class TrainingController {
 	public String processDeleteTrainingForm(@PathVariable("trainingId") int trainingId, RedirectAttributes redirectAttrs) {
 		Training training = this.trainingService.findTrainingById(trainingId);
 		if(training!=null) {
-			Client client = training.getClient();
-			client.getTrainings().remove(training);
-			this.clientService.saveClient(client);
 			this.trainingService.deleteTraining(training);
 			redirectAttrs.addFlashAttribute("deleteMessage", "The training was deleted successfully");
 		}
