@@ -28,7 +28,7 @@ public class RoutineLineServiceTest {
 	
 	@Test
 	void shouldFindRoutineLineById(){
-		RoutineLine routineLine = this.routineLineService.findRoutoneLineById(1);
+		RoutineLine routineLine = this.routineLineService.findRoutineLineById(1);
 			
 		Boolean notNull = routineLine != null;
 		Boolean repsOrTimeNotEmptyAndGreaterThanMin = (routineLine.getReps() != null && routineLine.getReps() > 0) || (routineLine.getTime() != null && routineLine.getTime() >= 0);
@@ -78,7 +78,25 @@ public class RoutineLineServiceTest {
 		Boolean sameWeight = routineLine.getWeight().equals(addedRoutineLine.getWeight());
 		Boolean sameExercise = routineLine.getExercise().equals(addedRoutineLine.getExercise());
 		
-		assertThat(hasBeenAdded && hasBeenAddedToRoutine && sameReps && sameTime && sameSeries && sameWeight && sameExercise);		
+		assertThat(hasBeenAdded && hasBeenAddedToRoutine && sameReps && sameTime && sameSeries && sameWeight && sameExercise);
+	}
+	
+	@Test
+	void shouldDeleteRoutineLine(){
 		
+		final int routineLineId = 1;
+		
+		RoutineLine routineLine = this.routineLineService.findRoutineLineById(routineLineId);
+		
+		Collection<RoutineLine> beforeDelete = this.routineLineService.findAllRoutinesLines();
+		
+		this.routineLineService.deleteRoutineLine(routineLine);
+		
+		Collection<RoutineLine> afterDelete = this.routineLineService.findAllRoutinesLines();
+		
+		Boolean hasBeenDeleted = beforeDelete.size() > afterDelete.size();
+		Boolean notExist = this.routineLineService.findRoutineLineById(routineLineId) == null;
+		
+		assertThat(notExist && hasBeenDeleted);
 	}
 }

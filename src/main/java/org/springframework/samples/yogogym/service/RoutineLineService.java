@@ -41,7 +41,7 @@ public class RoutineLineService {
 	}
 	
 	@Transactional
-	public RoutineLine findRoutoneLineById(int routineLineId) throws DataAccessException {
+	public RoutineLine findRoutineLineById(int routineLineId) throws DataAccessException {
 		return this.routineLineRepository.findRoutineLineById(routineLineId);
 	}
 	
