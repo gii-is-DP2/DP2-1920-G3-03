@@ -14,7 +14,7 @@ public class DashboardClientService {
 	@Autowired
 	private DashboardClientRepository dashboardClientRepository;
 
-	public List<Training> listTrainigByClient(Integer idClient){
+	public List<Training> listTrainingByClient(Integer idClient){
 		return this.dashboardClientRepository.findIdTrainingByClient(idClient);
 	}
 	
@@ -22,11 +22,11 @@ public class DashboardClientService {
 		return this.dashboardClientRepository.findIdRoutineByIdTraining(idTraining);
 	}
 	
-	public Integer listRepsRoutine(Integer idRoutine){
+	public Integer listRepsRoutineByRoutine(Integer idRoutine){
 		return this.dashboardClientRepository.findRepsPerWeekByIdRoutine(idRoutine);
 	}
 	
-	public List<Exercise> listExercise(Integer idRoutine){
+	public List<Exercise> listExerciseByRoutine(Integer idRoutine){
 		return this.dashboardClientRepository.findIdExerciseByIdRoutine(idRoutine);
 	}
 
