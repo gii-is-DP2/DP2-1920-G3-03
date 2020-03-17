@@ -53,30 +53,5 @@ public class DietServiceTest {
 		assertThat(c.getName()).isEqualTo("DietTest");
 	}
 	
-	// @Test
-	// void shouldUpdateOwner() {
-		
-	// 	Diet diet = this.dietService.findDietById(1);
-	// 	diet.setName("UpdateTest");
-	// 	this.dietService.saveDiet(diet);
-		
-	// 	diet = this.dietService.findDietById(1);
-	// 	assertThat(diet.getName()).isEqualTo("UpdateTest");
-	// }
-	
-	// @Test
-	// void shouldDeleteOwner() {
-		
-	// 	Collection<Diet> diets = (Collection<Diet>) this.dietService.findAll();
-	// 	int foundBefore = diets.size();
-		
-	// 	Diet diet = this.dietService.findDietById(2);
-	// 	diet.setExercise(null);
-	// 	this.dietService.deleteDiet(diet);
-		
-	// 	diets = (Collection<Diet>) this.dietService.findAll();
-	// 	int foundAfter = diets.size();
-		
-	// 	assertThat(foundBefore).isGreaterThan(foundAfter);
-	// }
+
 }
