@@ -62,6 +62,7 @@ public class ClientService {
 	@Transactional
 	public Client findClientByUsername(String username) {
 		return this.clientRepository.findClientByUsername(username);
+	}
 
 	public Client findClientByClientUsername(String clientUsername) {
 		

@@ -16,43 +16,43 @@ INSERT INTO guilds(id,creator,description,name) VALUES (3,'client3','Here we hel
 
 INSERT INTO users(username,password,enabled) VALUES ('client1','client1999',TRUE);
 INSERT INTO authorities VALUES (3,'client','client1');
-INSERT INTO clients VALUES (1, 'marantle@yogogym.com','Martin', 'Antonio Lera', '12345678B',1.83,80.0,1,'client1');
+INSERT INTO clients VALUES (1, 'marantle@yogogym.com','Martin', 'Antonio Lera', '12345678B',18,20.0,1.83,80.0,1,'client1');
 
 INSERT INTO users(username,password,enabled) VALUES ('client2','client1999',TRUE);
 INSERT INTO authorities VALUES (4,'client','client2');
-INSERT INTO clients VALUES (2, 'fejasa@yogogym.com','Federico', 'Javier Saco', '12345678C',1.90,95.3,2,'client2');
+INSERT INTO clients VALUES (2, 'fejasa@yogogym.com','Federico', 'Javier Saco', '12345678C',18,20.0,1.90,95.3,2,'client2');
 
 INSERT INTO users(username,password,enabled) VALUES ('client3','client1999',TRUE);
 INSERT INTO authorities VALUES (5,'client','client3');
-INSERT INTO clients VALUES (3, 'juengue@yogogym.com','Julio', 'Enrique Guerrero', '12345678D',1.77,110.7,3,'client3');
+INSERT INTO clients VALUES (3, 'juengue@yogogym.com','Julio', 'Enrique Guerrero', '12345678D',18,20.0,1.77,110.7,3,'client3');
 
 INSERT INTO users(username,password,enabled) VALUES ('client4','client1999',TRUE);
 INSERT INTO authorities VALUES (6,'client','client4');
-INSERT INTO clients VALUES (4, 'anjomi@yogogym.com','Andrés', 'José Michelena', '12345678E',1.68,74.3, null ,'client4');
+INSERT INTO clients VALUES (4, 'anjomi@yogogym.com','Andrés', 'José Michelena', '12345678E',18,20.0,1.68,74.3, null ,'client4');
 
 INSERT INTO users(username,password,enabled) VALUES ('client5','client1999',TRUE);
 INSERT INTO authorities VALUES (7,'client','client5');
-INSERT INTO clients VALUES (5, 'caresro@yogogym.com','Carmelina', 'Esteso Rodríguez', '12345678F',1.70,83.7,1,'client5');
+INSERT INTO clients VALUES (5, 'caresro@yogogym.com','Carmelina', 'Esteso Rodríguez', '12345678F',18,20.0,1.70,83.7,1,'client5');
 
 INSERT INTO users(username,password,enabled) VALUES ('client6','client1999',TRUE);
 INSERT INTO authorities VALUES (8,'client','client6');
-INSERT INTO clients VALUES (6, 'soviob@yogogym.com','Sofia', 'Victoria Obeso', '12345678G',1.75,63.4,2,'client6');
+INSERT INTO clients VALUES (6, 'soviob@yogogym.com','Sofia', 'Victoria Obeso', '12345678G',18,20.0,1.75,63.4,2,'client6');
 
 INSERT INTO users(username,password,enabled) VALUES ('client7','client1999',TRUE);
 INSERT INTO authorities VALUES (9,'client','client7');
-INSERT INTO clients VALUES (7, 'anmamu@yogogym.com','Ana', 'Maria Muniesa', '12345678H',1.56,54.2,3,'client7');
+INSERT INTO clients VALUES (7, 'anmamu@yogogym.com','Ana', 'Maria Muniesa', '12345678H',18,20.0,1.56,54.2,3,'client7');
 
 INSERT INTO users(username,password,enabled) VALUES ('client8','client1999',TRUE);
 INSERT INTO authorities VALUES (10,'client','client8');
-INSERT INTO clients VALUES (8, 'lusoba@yogogym.com','Luisa', 'Soledad Basurto', '12345678I',1.63,75.6, null ,'client8');
+INSERT INTO clients VALUES (8, 'lusoba@yogogym.com','Luisa', 'Soledad Basurto', '12345678I',18,20.0,1.63,75.6, null ,'client8');
 
 INSERT INTO users(username,password,enabled) VALUES ('client9','client1999',TRUE);
 INSERT INTO authorities VALUES (11,'client','client9');
-INSERT INTO clients VALUES (9, 'caralfe@yogogym.com','Carmen', 'Alejandra Fernandez', '12345678J',1.70,72.4,1,'client9');
+INSERT INTO clients VALUES (9, 'caralfe@yogogym.com','Carmen', 'Alejandra Fernandez', '12345678J',18,20.0,1.70,72.4,1,'client9');
 
 INSERT INTO users(username,password,enabled) VALUES ('client10','client1999',TRUE);
 INSERT INTO authorities VALUES (12,'client','client10');
-INSERT INTO clients VALUES (10, 'trinimon@yogogym.com','Trinidad', 'Maria Montosa', '12345678K',1.69,83.5,2,'client10');
+INSERT INTO clients VALUES (10, 'trinimon@yogogym.com','Trinidad', 'Maria Montosa', '12345678K',18,20.0,1.69,83.5,2,'client10');
 
 
 /* TRAINER */
