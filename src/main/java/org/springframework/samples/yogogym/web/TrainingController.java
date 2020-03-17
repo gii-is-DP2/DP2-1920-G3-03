@@ -47,7 +47,7 @@ public class TrainingController {
 	// TRAINER
 
 	@GetMapping("/trainer/{trainerUsername}/trainings")
-	public String ClienTrainingList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
+	public String ClientTrainingList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		model.addAttribute("trainer", trainer);
 
