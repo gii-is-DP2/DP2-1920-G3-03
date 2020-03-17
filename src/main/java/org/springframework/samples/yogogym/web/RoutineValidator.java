@@ -22,13 +22,13 @@ public class RoutineValidator implements Validator{
 	public void validate(Object target, Errors errors) {
 		
 		Routine validar = (Routine) target;
-		
-		// Name not empty
-		if (validar.getName().isEmpty()) {
+				
+		// Name not empty and not null
+		if (validar.getName() == null || validar.getName().trim().isEmpty()) {
 			errors.rejectValue("name", REQUIRED, "The name cannot be empty");
 		}
 		// Description not empty
-		if (validar.getDescription().isEmpty()) {
+		if (validar.getDescription() == null || validar.getDescription().trim().isEmpty()) {
 			errors.rejectValue("description", REQUIRED, "The description cannot be empty");
 		}
 		// Reps per week not empty
@@ -36,10 +36,10 @@ public class RoutineValidator implements Validator{
 			errors.rejectValue("repsPerWeek", REQUIRED, "The repetition per week cannot be null");
 		}
 		// Reps per week positive
-		if (validar.getRepsPerWeek() < 0) {
+		else if(validar.getRepsPerWeek() < 0) {
 			errors.rejectValue("repsPerWeek", REQUIRED, "The repetition per week must be positive");
 		}
-				
+		
 	}
 		
 	@Override

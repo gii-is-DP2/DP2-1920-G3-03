@@ -20,6 +20,7 @@ import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class RoutineController {
 
+	@Autowired
 	private final RoutineService routineService;
 	private final ExerciseService exerciseService;
 	private final ClientService clientService;
@@ -96,7 +98,7 @@ public class RoutineController {
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create")
 	public String processRoutineCreationForm(@Valid Routine routine, BindingResult result,
 			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,
-			@PathVariable("clientId") int clientId) {
+			@PathVariable("clientId") int clientId,  final ModelMap model) {
 		if (result.hasErrors()) {
 			return "trainer/routines/routinesCreateOrUpdate";
 		} else {
@@ -105,11 +107,8 @@ public class RoutineController {
 
 			this.trainingService.saveTraining(training);
 
-			Trainer trainer = this.trainerService.findTrainer(trainerUsername);
-			Client client = this.clientService.findClientById(clientId);
-
-			return "redirect:/trainer/" + trainer.getUser().getUsername() + "/clients/" + client.getId() + "/trainings/"
-					+ training.getId();
+			return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId + "/trainings/"
+					+ trainingId;
 		}
 	}
 

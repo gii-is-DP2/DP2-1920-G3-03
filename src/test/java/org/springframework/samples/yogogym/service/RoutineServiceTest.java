@@ -70,7 +70,7 @@ public class RoutineServiceTest {
 		assertThat(hasBeenAddedToRoutine && hasBeenAddedToTraining && sameName && sameDescription && sameRepetitionsPerWeek);		
 	}
 	
-	@Ignore
+	@Test
 	void shouldDeleteRoutine(){
 		
 		final int routineId = 1;

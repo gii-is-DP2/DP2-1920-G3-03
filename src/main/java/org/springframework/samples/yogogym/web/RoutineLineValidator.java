@@ -2,7 +2,6 @@
 package org.springframework.samples.yogogym.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.service.RoutineLineService;
 import org.springframework.validation.Errors;
@@ -25,36 +24,44 @@ public class RoutineLineValidator implements Validator{
 		RoutineLine validar = (RoutineLine) target;
 		
 		// Weight greater than 0
-		if (validar.getWeight() < 0) {
-			errors.rejectValue("reps", REQUIRED, "The weight cannot be less than 0");
+		if (validar.getWeight() == null) {
+			errors.rejectValue("weight", REQUIRED, "The weight cannot be null");
+		}
+		else if (validar.getWeight() < 0) {
+			errors.rejectValue("weight", REQUIRED, "The weight cannot be less than 0");
 		}
 		// Series greater than 0
-		if (validar.getSeries() < 1) {
-			errors.rejectValue("reps", REQUIRED, "The series cannot be less than 0");
+		if (validar.getSeries() == null) {
+			errors.rejectValue("series", REQUIRED, "The series cannot be null");
 		}
-		// Only time or reps setted
-		//Priority to reps
-		if(validar.getReps() > 1)
+		else if (validar.getSeries() < 1) {
+			errors.rejectValue("series", REQUIRED, "The series cannot be less than 0");
+		}
+		
+		if(validar.getReps() == null && validar.getTime() == null)
 		{
-			if(validar.getTime() > 0)
-				errors.rejectValue("time", REQUIRED, "You can only set one, or repetition or time, not both");
-			
-			//Time reps be greater than 0
+			errors.rejectValue("reps", REQUIRED, "Reps cannot be null");
+			errors.rejectValue("time", REQUIRED, "Time cannot be null");
+		}
+		else if(validar.getTime() == null && validar.getReps() != null)
+		{
 			if(validar.getReps() < 0)
-				errors.rejectValue("reps", REQUIRED, "Repetition cannot be less than 0");
+				errors.rejectValue("reps", REQUIRED, "Reps cannot lower than 0");
+		}
+		else if(validar.getReps() == null && validar.getTime() != null)
+		{
+			if(validar.getTime() < 0)
+				errors.rejectValue("time", REQUIRED, "Time cannot lower than 0");
 		}
 		else
 		{
-			if(validar.getReps() > 0)
-				errors.rejectValue("reps", REQUIRED, "You can only set one, or repetition or time, not both");
-			//Time must be greater than 0
-			if(validar.getTime() < 0)
-				errors.rejectValue("time", REQUIRED, "Time cannot be less than 0");
-		}				
+			errors.rejectValue("reps", REQUIRED, "You cannot enter both time and reps. Choose one.");
+			errors.rejectValue("time", REQUIRED, "You cannot enter both time and reps. Choose one.");
+		}
 	}
 		
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return Routine.class.isAssignableFrom(clazz);
+		return RoutineLine.class.isAssignableFrom(clazz);
 	}
 }

@@ -19,7 +19,9 @@ import org.springframework.samples.yogogym.service.RoutineService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,12 +44,10 @@ public class RoutineLineController {
 	
 	}
 
-	/*
 	@InitBinder("routineLine")
 	public void initRoutineLineBinder(WebDataBinder dataBinder) {
 		dataBinder.setValidator(new RoutineLineValidator(routineLineService));
 	}
-	*/
 	
 	// TRAINER
 
@@ -76,11 +76,28 @@ public class RoutineLineController {
 	}
 
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/create")
-	public String processRoutineLineCreationForm(@Valid RoutineLine routineLine,@ModelAttribute("exercise.id")final int exerciseId, BindingResult result,
+	public String processRoutineLineCreationForm(@Valid RoutineLine routineLine,BindingResult result, @ModelAttribute("exercise.id")final int exerciseId,
 			@PathVariable("trainerUsername") String trainerUsername, @ModelAttribute("routineId") int routineId,
-			@PathVariable("clientId") int clientId, @PathVariable("trainingId") int trainingId) {
+			@PathVariable("clientId") int clientId, @PathVariable("trainingId") int trainingId, final ModelMap model) {
 					
 		if (result.hasErrors()) {
+			
+			Client client = this.clientService.findClientById(clientId);
+			
+			Collection<Exercise> exerciseCollection = this.exerciseService.findAllExercise();
+			Map<Integer,String> selectVals = new TreeMap<>();
+			
+			for(Exercise e:exerciseCollection)
+			{
+				selectVals.put(e.getId(), e.getName());
+			}
+			
+			model.addAttribute("routineId", routineId);
+			model.addAttribute("client", client);
+			model.addAttribute("routineLine", routineLine);
+			
+			model.addAttribute("exercises", selectVals);
+			
 			return "trainer/routines/routinesLineCreateOrUpdate";
 		} else {
 			
