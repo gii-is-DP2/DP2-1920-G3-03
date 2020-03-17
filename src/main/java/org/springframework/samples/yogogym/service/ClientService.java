@@ -60,6 +60,9 @@ public class ClientService {
 	}
 	
 	@Transactional
+	public Client findClientByUsername(String username) {
+		return this.clientRepository.findClientByUsername(username);
+
 	public Client findClientByClientUsername(String clientUsername) {
 		
 		return this.clientRepository.findClientByClientUsername(clientUsername);
@@ -74,6 +77,7 @@ public class ClientService {
 	@Transactional
 	public Collection<Client> findAllClient() throws DataAccessException {
 		return this.clientRepository.findAll();
+
 	}
 	
 }
