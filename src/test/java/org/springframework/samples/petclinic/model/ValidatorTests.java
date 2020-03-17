@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
@@ -13,12 +14,9 @@ import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
-import org.springframework.samples.yogogym.service.ChallengeService;
-
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
-
-
+import org.springframework.samples.yogogym.service.ChallengeService;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
@@ -170,15 +168,17 @@ class ValidatorTests {
 	
 	@Ignore
 	void shouldNotValidateWhenEndDateBeforeIntialDate() {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		
 		Challenge c = CreateFilledChallenge();
 		Calendar cal = Calendar.getInstance();
-		Date initial = new Date();
-		Date end = new Date();
-				
-		cal.set(2021, 1, 15);
-		initial = cal.getTime();
-		cal.set(2021, 1, 10);
-		end = cal.getTime();
+		
+		Date end = cal.getTime();
+		
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+		Date initial = cal.getTime();
+		dateFormat.format(initial);
+		
 		c.setInitialDate(initial);
 		c.setEndDate(end);
 		

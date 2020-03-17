@@ -21,7 +21,7 @@ public class DashboardClientServiceTest {
 	@Test
 	void shouldListTrainingByClient() {
 		Collection<Training> trainings = this.dashboardClientService.listTrainingByClient(1);
-		assertThat(trainings.size()).isEqualTo(1);
+		assertThat(trainings.size()).isEqualTo(2);
 	}
 	
 	@Test

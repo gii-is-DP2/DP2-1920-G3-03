@@ -238,6 +238,7 @@ INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VA
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (1,'Challenge1','Desc challenge 1','2020-01-01','2020-01-02','Reward1',10,10,10,1);
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (2,'Challenge2','Desc challenge 2','2020-10-01','2020-10-02','Reward2',20,5,20,2);
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (3,'Challenge3','Desc challenge 3','2020-10-10','2020-10-15','Reward3',30,4,40,10);
+INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (4,'Challenge4','Desc challenge 4','2020-10-10','2020-10-15','Reward2',30,4,40,10);
 
 /* INSCRIPTION */
 
@@ -296,7 +297,7 @@ INSERT INTO clients_trainings(client_id,trainings_id) VALUES (7,8);
 
 /* CLIENT_DIET */
 
-INSERT INTO clients_diets(client_id,diets_id) VALUES(2,1);
+-- INSERT INTO clients_diets(client_id,diets_id) VALUES(2,1);
 -- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,2);
 -- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,3);
 -- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,4);

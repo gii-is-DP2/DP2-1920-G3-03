@@ -27,7 +27,7 @@ public class ChallengeServiceTest {
 	@Test
 	void shouldFindAllChallenges(){
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAll();
-		assertThat(challenges.size()).isEqualTo(3);
+		assertThat(challenges.size()).isEqualTo(4);
 	}
 	
 	@Test
@@ -83,13 +83,13 @@ public class ChallengeServiceTest {
 	}
 	
 	
-	@Ignore
+	@Test
 	void shouldDeleteChallenge() {
 		
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAll();
 		int foundBefore = challenges.size();
 		
-		Challenge challenge = this.challengeService.findChallengeById(2);
+		Challenge challenge = this.challengeService.findChallengeById(4);
 		this.challengeService.deleteChallenge(challenge);
 		challenges = (Collection<Challenge>) this.challengeService.findAll();
 		int foundAfter = challenges.size();
