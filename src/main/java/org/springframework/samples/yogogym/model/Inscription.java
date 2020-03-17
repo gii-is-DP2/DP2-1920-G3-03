@@ -5,8 +5,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.validator.constraints.URL;
 import org.springframework.samples.yogogym.model.Enums.Status;
 
 import lombok.Data;
@@ -20,7 +20,7 @@ public class Inscription extends BaseEntity{
 	protected Status status;
 	
 	@Column(name = "url")
-	@NotEmpty
+	@URL
 	protected String url;
 	
 	@ManyToOne(cascade = CascadeType.ALL, optional = false)

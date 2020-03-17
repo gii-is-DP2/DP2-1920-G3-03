@@ -14,7 +14,16 @@
 	<h3>Name: <c:out value="${training.name}"/></h3>
 	<p><b>Starts:</b> <c:out value="${training.initialDate}"/></p>
 	<p><b>Ends:</b> <c:out value="${training.endDate}"/></p>
+	<br>
+	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/edit" var="trainingEditUrl" />
+	<a href="${fn:escapeXml(trainingEditUrl)}">Edit Training</a>
+	<br>
+	<br>
+	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/delete" var="trainingDeleteUrl" />
+	<a href="${fn:escapeXml(trainingDeleteUrl)}">Delete Training</a>
 	
+	<br>
+	<br>
 	<br>
 		
 	<h3>Routines</h3>
@@ -29,8 +38,7 @@
 		</c:forEach>
 	</ul>
 	
-	<h3>Diet</h3>
-		<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/routines/create" var="routineAddurl" />
+  <spring:url value="/trainer/${trainerUsername}/clients/${client.id}/routines/create" var="routineAddurl" />
 		<h3><a href="${fn:escapeXml(routineAddurl)}">Add Diet</a></h3>
 		
 		<c:if test="${!empty training.diet}">
@@ -41,5 +49,16 @@
 				<li><a href="${fn:escapeXml(routineUrl)}"><c:out value="${training.diet.name}"/></a></li>
 			</ul>
 		</c:if>
+  
+	<h3>Diet</h3>
+	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/diets/create?training=${training.id}" var="dietAddurl" />
+	<h3><a href="${fn:escapeXml(dietAddurl)}">Add Diet</a></h3>
+	<ul>
+		<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/diets/{dietId}" var="dietUrl">
+	       	<spring:param name="dietId" value="${training.diet.id}"/>
+	    </spring:url>
+		<li><a href="${fn:escapeXml(dietUrl)}"><c:out value="${training.diet.name}"/></a></li>
+	</ul>
+		
 	
 </yogogym:layout>

@@ -10,8 +10,8 @@
 
     <table class="table table-striped">
         <tr>
-            <th>Type</th>
-            <td><b><c:out value="${diet.type}"/></b></td>
+            <th>Name</th>
+            <td><b><c:out value="${diet.name}"/></b></td>
         </tr>
         <tr>
             <th>Kcal</th>

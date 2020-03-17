@@ -15,11 +15,11 @@
  */
 package org.springframework.samples.yogogym.service;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Routine;
-import org.springframework.samples.yogogym.repository.ClientRepository;
 import org.springframework.samples.yogogym.repository.RoutineRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +43,21 @@ public class RoutineService {
 	@Transactional
 	public void saveRoutine(Routine routine) throws DataAccessException {
 		routineRepository.save(routine);
+	}
+	
+	@Transactional
+	public void deleteRoutine(Routine routine) throws DataAccessException {
+		routineRepository.delete(routine);
+	}
+	
+	@Transactional
+	public Collection<Routine> findAllRoutines() throws DataAccessException {
+		return (Collection<Routine>) routineRepository.findAll();
+	}
+	
+	@Transactional
+	public Collection<Routine> findAllRoutinesFromTraining(int id) throws DataAccessException {
+		return routineRepository.findAllRoutinesFromTraining(id);
 	}
 	
 	@Transactional
