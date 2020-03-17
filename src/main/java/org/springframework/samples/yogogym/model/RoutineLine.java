@@ -31,7 +31,7 @@ public class RoutineLine extends BaseEntity{
 	@Min(1)
 	protected Integer series;
 	
-	@ManyToOne(cascade = CascadeType.PERSIST, optional = false)
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, optional = false)
 	@JoinColumn(name = "exercise_id")
 	protected Exercise exercise;
 

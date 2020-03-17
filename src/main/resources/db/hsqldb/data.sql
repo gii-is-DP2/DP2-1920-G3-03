@@ -95,28 +95,22 @@ INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (1
 INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (2, '2020-02-01', '2020-02-20', 'Entrenamiento2', 2, 2);
 INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (3, '2020-03-01', '2020-03-10', 'Entrenamiento3', 3, 3);
 INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (4, '2020-04-01', '2020-04-20', 'Entrenamiento4', 4, 4);
-INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (5, '2020-01-01', '2020-01-10', 'Entrenamiento1', 1, 5);
-INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (6, '2020-02-01', '2020-02-20', 'Entrenamiento2', 2, 6);
-INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (7, '2020-03-01', '2020-03-10', 'Entrenamiento3', 3, 7);
-INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (8, '2020-04-01', '2020-04-20', 'Entrenamiento4', 4, 8);
+INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (5, '2020-01-01', '2020-01-10', 'Entrenamiento1', null, 5);
+INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (6, '2020-02-01', '2020-02-20', 'Entrenamiento2', null, 6);
+INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (7, '2020-03-01', '2020-03-10', 'Entrenamiento3', null, 7);
+INSERT INTO trainings(id,initial_date,end_date,name,diet_id,client_id) VALUES (8, '2020-04-01', '2020-04-20', 'Entrenamiento4', null, 8);
 
 
 /* ROUTINE */
 
-INSERT INTO routines(id,name,description,reps_per_week) VALUES (1,'Cardio', 'Augment resistance',3);
-INSERT INTO routines(id,name,description,reps_per_week) VALUES (2,'Brazos', 'Biceps redondos',3);
-
-/* TRAINING_ROUTINE */
-
-INSERT INTO trainings_routines(training_id,routines_id) VALUES (1,1);
-INSERT INTO trainings_routines(training_id,routines_id) VALUES (1,2);
-INSERT INTO trainings_routines(training_id,routines_id) VALUES (2,1);
-INSERT INTO trainings_routines(training_id,routines_id) VALUES (3,2);
-INSERT INTO trainings_routines(training_id,routines_id) VALUES (4,1);
-INSERT INTO trainings_routines(training_id,routines_id) VALUES (5,1);
-INSERT INTO trainings_routines(training_id,routines_id) VALUES (6,2);
-INSERT INTO trainings_routines(training_id,routines_id) VALUES (7,1);
-INSERT INTO trainings_routines(training_id,routines_id) VALUES (8,2);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (1,'Cardio', 'Augment resistance',3,1);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (2,'Brazos', 'Biceps redondos',3,1);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (3,'Piernas', 'Aumentar fuerza',3,2);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (4,'Resistencia', 'Aumentar resistencia',3,3);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (5,'Musculación', 'Tonificación',3,4);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (6,'Triatlon', 'Para participantes del triatlon',3,5);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (7,'Culturismo', 'Para participar en competiciones de culturismo',3,5);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (8,'Relajación', 'Descanso',3,6);
 
 /* EQUIPMENT */
 
