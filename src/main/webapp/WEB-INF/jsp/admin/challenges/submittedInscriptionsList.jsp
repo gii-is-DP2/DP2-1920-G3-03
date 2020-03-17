@@ -6,39 +6,42 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
 <petclinic:layout pageName="inscriptions">
-    <h2>Submitted Inscriptions</h2>
+    <h2>Submitted Inscriptions</h2><br>
 
-    <table id="challengesTable" class="table table-striped">
-        <thead>
-        <tr>
-        	<th>Challenge</th>
-            <th>End Date</th>
-            <th>Client</th>
-        </tr>
-        </thead>
-        <tbody>
-        
-        <tr>
-	        <c:forEach items="${inscriptions}" var="inscription">
-	                <td>
-	                    <spring:url value="/admin/inscriptions/submitted/{inscriptionId}" var="showUrl">
-	        				<spring:param name="inscriptionId" value="${inscription.id}"/>
-	   					</spring:url>
-	    				<a href="${fn:escapeXml(showUrl)}"><c:out value="${inscription.challenge.name}"/></a>
-	                </td>
-	                <td>
-	                    <c:out value="${inscription.challenge.endDate}"/>
-	                </td>
-	        </c:forEach>
-	         <c:forEach items="${clients}" var="client">
-	                <td>
-	                    <c:out value="${client.firstName}"/>
-	                </td>
-	        </c:forEach>
-        </tr>
-        
-        </tbody>
-    </table>
+	<c:forEach items="${clients}" var="client">
+	
+		<h3><c:out value="Client: ${client.firstName} ${client.lastName}"></c:out></h3>
+		
+		<table id="inscriptionsTable" class="table table-striped">
+	        <thead>
+		        <tr>
+		        	<th>Challenge</th>
+		            <th>Initial Date</th>
+		            <th>End Date</th>
+		        </tr>
+		    </thead>
+	        <tbody>
+	        	<c:forEach items="${client.inscriptions}" var="inscription">
+	        		<tr>
+		                <td>
+		                    <spring:url value="/admin/inscriptions/submitted/{inscriptionId}" var="showInscriptionUrl">
+		        				<spring:param name="inscriptionId" value="${inscription.id}"/>
+		   					</spring:url>
+		    				<a href="${fn:escapeXml(showInscriptionUrl)}"><c:out value="${inscription.challenge.name}"/></a>
+		                </td>
+		                <td>
+		                    <c:out value="${inscription.challenge.initialDate}"/>
+		                </td>
+		                <td>
+		                    <c:out value="${inscription.challenge.endDate}"/>
+		                </td>
+	        		</tr>
+	        	</c:forEach>
+	        </tbody>
+    	</table>
+	
+	</c:forEach>
+    
     
     
 </petclinic:layout>

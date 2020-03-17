@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -15,6 +14,7 @@ import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Inscription;
+import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.service.ChallengeService;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.ExerciseService;
@@ -152,7 +152,6 @@ public class ChallengeController {
 	@GetMapping("admin/challenges/{challengeId}/delete")
 	public String deleteChallenge(@PathVariable("challengeId") int challengeId, Model model) {
 		
-		System.out.println("  ");
 		Challenge challenge = challengeService.findChallengeById(challengeId);
 		Collection<Inscription> inscriptions = inscriptionService.findInscriptionsByChallengeId(challengeId);
 		
@@ -213,9 +212,9 @@ public class ChallengeController {
 			
 
 		Client client = this.clientService.findClientByClientUsername(clientUsername);
-		List<Challenge> challenges = client.getInscriptions().stream().map(i -> i.getChallenge()).collect(Collectors.toList());
+		List<Inscription> inscriptions = client.getInscriptions();
 
-		modelMap.addAttribute("challenges", challenges);
+		modelMap.addAttribute("inscriptions", inscriptions);
 		
 		return "client/challenges/myChallengesList";
 	}
@@ -229,11 +228,16 @@ public class ChallengeController {
 	   	Inscription inscription = inscriptions.stream().filter(i -> client.getInscriptions().contains(i)).findFirst().get();
 	   	
 	   	Calendar now = Calendar.getInstance();
-	   	boolean expired = challenge.getEndDate().before(now.getTime());
+	   	if(challenge.getEndDate().before(now.getTime())) {
+	   		if(inscription.getStatus().equals(Status.PARTICIPATING) || inscription.getStatus().equals(Status.SUBMITTED)) {
+	   			inscription.setStatus(Status.FAILED);
+	   			this.inscriptionService.saveInscription(inscription);
+	   		}
+	   	}
 	   	
 	   	model.addAttribute("challenge", challenge);
 	   	model.addAttribute("inscription",inscription);
-	   	model.addAttribute("expired", expired);
+	   //	model.addAttribute("expired", expired);
 	   	
 	    return "client/challenges/myChallengeDetailsAndUpdate";
 	}

@@ -1,9 +1,8 @@
 package org.springframework.samples.yogogym.web;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
@@ -41,27 +40,25 @@ public class InscriptionController {
 	@GetMapping("/admin/inscriptions/submitted")
 	public String listSubmittedInscriptionsAdmin(ModelMap modelMap) {
 			
-		Collection<Inscription> inscriptions = inscriptionService.findSubmittedInscriptions();
-		List<Client> clients = new ArrayList<Client>();
-		for(Inscription i : inscriptions) {
-			clients.add(this.clientService.findClientByInscriptionId(i.getId()));
+		List<Client> clients = this.clientService.findClientsWithSubmittedInscriptions();
+		for(Client c : clients) {
+			c.setInscriptions(c.getInscriptions().stream().filter(i -> i.getStatus().equals(Status.SUBMITTED)).collect(Collectors.toList()));
 		}
-		modelMap.addAttribute("inscriptions", inscriptions);
 		modelMap.addAttribute("clients",clients);
 		
 		return "admin/challenges/submittedInscriptionsList";
 	}
 	
 	@GetMapping("/admin/inscriptions/submitted/{inscriptionId}")
-	public String showSubmittedChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, Model model) {	  
+	public String showSubmittedInscriptionAdmin(@PathVariable("inscriptionId") int inscriptionId, Model model) {	  
 
-	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
-	   	Collection<Inscription> inscriptions = this.inscriptionService.findInscriptionsByChallengeId(challengeId); 
-	   // Client client = this.clientService.findClientByInscriptionId(inscription.getId());
+		Inscription i = this.inscriptionService.findInscriptionsByInscriptionId(inscriptionId);
+	   	Challenge c = this.challengeService.findChallengeById(i.getChallenge().getId()); 
+	    Client client = this.clientService.findClientByInscriptionId(inscriptionId);
 	   	
-	   	model.addAttribute("challenge", challenge);
-	   //	model.addAttribute("inscription", inscription);
-	   //	model.addAttribute("client", client);
+	   	model.addAttribute("challenge", c);
+	    model.addAttribute("inscription", i);
+	    model.addAttribute("client", client);
 	   	
 	    return "admin/challenges/submittedChallengeDetails";
 	}
@@ -77,7 +74,7 @@ public class InscriptionController {
 		
 		this.inscriptionService.saveInscription(inscription);
 		
-		return "redirect:/admin/challenges/submitted";
+		return "redirect:/admin/inscriptions/submitted";
 	}
 	
 	// CLIENT:

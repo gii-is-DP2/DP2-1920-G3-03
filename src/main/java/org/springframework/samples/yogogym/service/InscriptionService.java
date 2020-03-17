@@ -60,4 +60,9 @@ public class InscriptionService {
 		return inscriptionRepo.findSubmittedInscriptions();
 	}
 
+	public Inscription findInscriptionsByInscriptionId(int inscriptionId) {
+		
+		return inscriptionRepo.findById(inscriptionId).get();
+	}
+
 }
