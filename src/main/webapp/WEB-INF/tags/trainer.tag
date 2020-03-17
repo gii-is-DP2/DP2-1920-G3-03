@@ -27,9 +27,9 @@
 	<span>Routine Management</span>
 </yogogym:menuItem>
 
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Dietas">
+<yogogym:menuItem active="${name eq 'diets'}" url="/trainer/${trainerUsername}/diets" title="Diets">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Gestion Dietas</span>
+	<span>Diets Management</span>
 </yogogym:menuItem>
 
 <yogogym:menuItem active="${name eq 'vets'}" url="/vets"

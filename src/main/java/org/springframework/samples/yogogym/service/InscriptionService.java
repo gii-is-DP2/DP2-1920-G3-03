@@ -16,6 +16,8 @@
 package org.springframework.samples.yogogym.service;
 
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Inscription;
@@ -36,10 +38,9 @@ public class InscriptionService {
 	private InscriptionRepository inscriptionRepo;
 
 	
-	@Transactional
-	public Inscription findInscriptionByChallengeId(int challengeId) throws DataAccessException {
+	public Collection<Inscription> findInscriptionsByChallengeId(int challengeId) throws DataAccessException {
 		
-		return inscriptionRepo.findInscriptionByChallengeId(challengeId);
+		return inscriptionRepo.findInscriptionsByChallengeId(challengeId);
 	}
 	
 	@Transactional
@@ -52,4 +53,21 @@ public class InscriptionService {
 		
 		inscriptionRepo.delete(inscription);
 	}
+	
+	@Transactional
+	public Collection<Inscription> findSubmittedInscriptions() {
+		
+		return inscriptionRepo.findSubmittedInscriptions();
+	}
+
+	public Inscription findInscriptionsByInscriptionId(int inscriptionId) {
+		
+		return inscriptionRepo.findById(inscriptionId).get();
+	}
+
+	public Collection<Inscription> findAll() {
+		
+		return (Collection<Inscription>) this.inscriptionRepo.findAll();
+	}
+
 }

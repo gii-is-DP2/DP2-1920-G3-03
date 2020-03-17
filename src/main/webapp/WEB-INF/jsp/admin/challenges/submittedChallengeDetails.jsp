@@ -62,7 +62,7 @@
 		</tr>
 		<tr>
 			<th>Client</th>
-			<td><c:out value="${client.firstName}" /></td>
+			<td><c:out value="${client.firstName} ${client.lastName}" /></td>
 		</tr>
 	</table>
 
@@ -76,7 +76,7 @@
 			<option value="FAILED">Failed</option>
 		</select>
 		
-		<input type="submit" value="Submit!">
+		<input type="submit" value="Evaluate!">
 
 	</form:form>
 </yogogym:layout>

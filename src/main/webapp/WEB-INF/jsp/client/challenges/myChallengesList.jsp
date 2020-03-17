@@ -16,29 +16,33 @@
             <th>Reward</th>
             <th>Start Date</th>
             <th>Finish Date</th>
+            <th>Status</th>
         </tr>
         </thead>
         <tbody>
         
-        <c:forEach items="${challenges}" var="challenge">
+        <c:forEach items="${inscriptions}" var="inscription">
             <tr>
                 <td>
                     <spring:url value="/client/${clientUsername}/challenges/mine/{challengeId}" var="showUrl">
-        				<spring:param name="challengeId" value="${challenge.id}"/>
+        				<spring:param name="challengeId" value="${inscription.challenge.id}"/>
    					</spring:url>
-    				<a href="${fn:escapeXml(showUrl)}"><c:out value="${challenge.name}"/></a>
+    				<a href="${fn:escapeXml(showUrl)}"><c:out value="${inscription.challenge.name}"/></a>
                 </td>
                 <td>
-                    <c:out value="${challenge.points}"/>
+                    <c:out value="${inscription.challenge.points}"/>
                 </td>
                 <td>
-                    <c:out value="${challenge.reward}"/>
+                    <c:out value="${inscription.challenge.reward}"/>
                 </td>
                 <td>
-                    <c:out value="${challenge.initialDate}"/>
+                    <c:out value="${inscription.challenge.initialDate}"/>
                 </td>
                 <td>
-                    <c:out value="${challenge.endDate}"/>
+                    <c:out value="${inscription.challenge.endDate}"/>
+                </td>
+                <td>
+                    <c:out value="${inscription.status}"/>
                 </td>
             </tr>
         </c:forEach>
