@@ -1,7 +1,9 @@
 package org.springframework.samples.yogogym.web;
 
-import java.text.SimpleDateFormat;
+
 import java.util.Calendar;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.validation.Valid;
@@ -15,10 +17,14 @@ import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class TrainingController {
@@ -33,6 +39,11 @@ public class TrainingController {
 		this.clientService = clientService;
 		this.trainerService = trainerService;
 		this.trainingService = trainingService;
+	}
+	
+	@InitBinder("training")
+	public void initTrainingBinder(WebDataBinder dataBinder) {
+		dataBinder.setValidator(new TrainingValidator(trainingService));
 	}
 
 	// TRAINER
@@ -76,10 +87,12 @@ public class TrainingController {
 	}
 
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/create")
-	public String processTrainingCreateForm(Training training, BindingResult result,
+	public String processTrainingCreateForm(@Valid Training training, BindingResult result,
 			@PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername,
 			Model model) {
 		if (result.hasErrors()) {
+			Client client = this.clientService.findClientById(clientId);
+			model.addAttribute("client", client);
 			return "trainer/trainings/trainingCreateOrUpdate";
 		} else {
 			Client client = this.clientService.findClientById(clientId);
@@ -92,4 +105,60 @@ public class TrainingController {
 			return "redirect:/trainer/" + trainer.getUser().getUsername() + "/trainings";
 		}
 	}
+	
+	@SuppressWarnings("deprecation")
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit")
+	public String initTrainingUpdateForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, Model model) {
+		Training training = this.trainingService.findTrainingById(trainingId);
+		Client client = this.clientService.findClientById(clientId);
+		
+		Date now = new Date();
+		now = new Date(now.getYear(), now.getMonth(), now.getDate());
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String actualDate = dateFormat.format(now);
+		
+		model.addAttribute("actualDate", actualDate);
+		model.addAttribute("training", training);
+		model.addAttribute("client", client);
+		return "trainer/trainings/trainingCreateOrUpdate";
+	}
+	
+	@SuppressWarnings("deprecation")
+	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit")
+	public String processTrainingUpdateForm(@Valid Training training, BindingResult result, 
+		@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, ModelMap model) {
+		
+		if (result.hasErrors()) {
+			model.put("training", training);
+			Client client = this.clientService.findClientById(clientId);
+			model.addAttribute("client", client);
+			return "trainer/trainings/trainingCreateOrUpdate";
+		} 
+		else {
+			Date now = new Date();
+			now = new Date(now.getYear(), now.getMonth(), now.getDate());
+			
+			Training oldTraining = this.trainingService.findTrainingById(trainingId);
+			oldTraining.setName(training.getName());
+			if(!training.getEndDate().before(now)) {
+				oldTraining.setEndDate(training.getEndDate());
+			}
+			this.trainingService.saveTraining(oldTraining);
+			return "redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}";
+		}
+	}
+	
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete")
+	public String processDeleteTrainingForm(@PathVariable("trainingId") int trainingId, RedirectAttributes redirectAttrs) {
+		Training training = this.trainingService.findTrainingById(trainingId);
+		if(training!=null) {
+			Client client = training.getClient();
+			client.getTrainings().remove(training);
+			this.clientService.saveClient(client);
+			this.trainingService.deleteTraining(training);
+			redirectAttrs.addFlashAttribute("deleteMessage", "The training was deleted successfully");
+		}
+		return "redirect:/trainer/{trainerUsername}/trainings";
+	}
+	
 }

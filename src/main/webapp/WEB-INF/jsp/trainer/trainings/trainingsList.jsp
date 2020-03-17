@@ -6,6 +6,11 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="trainings">
+	<c:if test="${deleteMessage!=null}">
+   		<div class="alert alert-success">
+   			<p>${deleteMessage}</p>
+   		</div>
+   	</c:if>
     <h2>All Trainings</h2>
 
 	<c:forEach var="client" items="${trainer.clients}">

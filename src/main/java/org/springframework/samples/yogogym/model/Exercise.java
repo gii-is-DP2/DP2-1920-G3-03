@@ -12,6 +12,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.samples.yogogym.model.Enums.BodyParts;
+import org.springframework.samples.yogogym.model.Enums.Intensity;
 import org.springframework.samples.yogogym.model.Enums.RepetitionType;
 
 import lombok.Data;

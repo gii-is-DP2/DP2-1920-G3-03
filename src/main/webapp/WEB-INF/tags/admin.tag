@@ -8,13 +8,18 @@
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>Challenges</span>
 </yogogym:menuItem>
+
+<yogogym:menuItem active="${name eq 'submittedChallenges'}" url="/admin/challenges/submitted" title="Submitted Challenges">
+	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+	<span>Submitted Challenges</span>
+</yogogym:menuItem>
 					
 <yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Clases">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>Clases</span>
 </yogogym:menuItem>
 					
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Dashboard">
+<yogogym:menuItem active="${name eq 'dashboard'}" url="/admin/dashboard" title="Dashboard">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>Dashboard</span>
 </yogogym:menuItem>	

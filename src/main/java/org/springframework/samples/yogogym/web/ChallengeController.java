@@ -2,17 +2,21 @@ package org.springframework.samples.yogogym.web;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
+import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Inscription;
-import org.springframework.samples.yogogym.model.Intensity;
 import org.springframework.samples.yogogym.service.ChallengeService;
+import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.samples.yogogym.service.InscriptionService;
 import org.springframework.stereotype.Controller;
@@ -33,28 +37,26 @@ public class ChallengeController {
 	private ChallengeService challengeService;
 	private ExerciseService exerciseService;
 	private InscriptionService inscriptionService;
+	private ClientService clientService;
 	
 	@Autowired
-	public ChallengeController(ChallengeService challengeService, ExerciseService exerciseService, InscriptionService inscriptionService) {
+	public ChallengeController(ChallengeService challengeService, ExerciseService exerciseService, InscriptionService inscriptionService, ClientService clientService) {
 		this.challengeService = challengeService;
 		this.exerciseService = exerciseService;
 		this.inscriptionService = inscriptionService;
+		this.clientService = clientService;
 	}
 	
 	@InitBinder("challenge")
 	public void initChallengeBinder(WebDataBinder dataBinder) {
 		dataBinder.setValidator(new ChallengeValidator(challengeService));
 	}
-	
-	@ModelAttribute("intensities")
-	public Collection<Intensity> populateIntensities() {
-		return  new ArrayList<Intensity>(Arrays.asList(Intensity.values()));
-	}
+
 	
 	// ADMIN:
 	
 	@GetMapping("/admin/challenges")
-	public String listChallenges(ModelMap modelMap) {
+	public String listChallengesAdmin(ModelMap modelMap) {
 			
 		Iterable<Challenge> challenges = challengeService.findAll();
 		modelMap.addAttribute("challenges", challenges);
@@ -63,7 +65,7 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("/admin/challenges/{challengeId}")
-	public String showChallengeById(@PathVariable("challengeId") int challengeId, Model model) {	  
+	public String showChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, Model model) {	  
 
 	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
 	   	model.addAttribute("challenge", challenge);
@@ -119,7 +121,7 @@ public class ChallengeController {
 		// If there are inscriptions, it cannot be edited
 		Inscription inscription = inscriptionService.findInscriptionByChallengeId(challengeId);
 		if(inscription != null) {
-			return showChallengeById(challengeId,model);
+			return showChallengeByIdAdmin(challengeId,model);
 		}
 					
 		model.addAttribute(challenge);
@@ -156,7 +158,7 @@ public class ChallengeController {
 		
 		// If there are inscriptions, it cannot be deleted
 		if(inscription != null) {
-			return showChallengeById(challengeId,model);
+			return showChallengeByIdAdmin(challengeId,model);
 		}
 		
 		challenge.setExercise(null);
@@ -165,4 +167,95 @@ public class ChallengeController {
 		return "redirect:/admin/challenges";
 	}
 	
+	@GetMapping("/admin/challenges/submitted")
+	public String listSubmittedChallengesAdmin(ModelMap modelMap) {
+			
+		Iterable<Challenge> challenges = challengeService.findSubmittedChallenges();
+		modelMap.addAttribute("challenges", challenges);
+		
+		return "admin/challenges/submittedChallengesList";
+	}
+	
+	@GetMapping("/admin/challenges/submitted/{challengeId}")
+	public String showSubmittedChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, Model model) {	  
+
+	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
+	   	Inscription inscription = this.inscriptionService.findInscriptionByChallengeId(challengeId);
+	   	Client client = this.clientService.findClientByInscriptionId(inscription.getId());
+	   	
+	   	model.addAttribute("challenge", challenge);
+	   	model.addAttribute("inscription", inscription);
+	   	model.addAttribute("client", client);
+	   	
+	    return "admin/challenges/submittedChallengeDetails";
+	}
+	
+	// CLIENT:
+	
+	@GetMapping("/client/{clientUsername}/challenges")
+	public String listChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
+			
+		List<Challenge> challenges = (List<Challenge>) challengeService.findAll();
+		Client client = this.clientService.findClientByClientUsername(clientUsername);
+		
+		//Only if the end date is posterior to today's
+		List<Challenge> challengesFiltered = new ArrayList<>();
+		Calendar now = Calendar.getInstance();
+		Date d = now.getTime();
+		for(Challenge c : challenges) {
+			if(c.getEndDate().after(d)) {
+				challengesFiltered.add(c);
+			}
+		}
+		//and they are not already inscribed:
+		if(client.getInscriptions() != null) {
+			for(Inscription i : client.getInscriptions()) {
+				Challenge c = i.getChallenge();
+				if(challengesFiltered.contains(c)) {
+					challengesFiltered.remove(c);
+				}
+			}
+		}
+		
+		modelMap.addAttribute("challenges", challengesFiltered);
+		
+		return "client/challenges/challengesList";
+	}
+	
+	@GetMapping("/client/{clientUsername}/challenges/{challengeId}")
+	public String showChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
+
+	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
+	   	model.addAttribute("challenge", challenge);
+	   	
+	    return "client/challenges/challengeDetails";
+	}
+	
+	@GetMapping("/client/{clientUsername}/challenges/mine")
+	public String listMyChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
+			
+
+		Client client = this.clientService.findClientByClientUsername(clientUsername);
+		List<Challenge> challenges = client.getInscriptions().stream().map(i -> i.getChallenge()).collect(Collectors.toList());
+
+		modelMap.addAttribute("challenges", challenges);
+		
+		return "client/challenges/myChallengesList";
+	}
+	
+	@GetMapping("/client/{clientUsername}/challenges/mine/{challengeId}")
+	public String showAndEditMyChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
+
+	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
+	   	Inscription inscription = this.inscriptionService.findInscriptionByChallengeId(challengeId);
+	   	
+	   	Calendar now = Calendar.getInstance();
+	   	boolean expired = challenge.getEndDate().before(now.getTime());
+	   	
+	   	model.addAttribute("challenge", challenge);
+	   	model.addAttribute("inscription",inscription);
+	   	model.addAttribute("expired", expired);
+	   	
+	    return "client/challenges/myChallengeDetailsAndUpdate";
+	}
 }
