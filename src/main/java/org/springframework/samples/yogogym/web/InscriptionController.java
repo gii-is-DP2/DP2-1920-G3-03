@@ -2,7 +2,6 @@ package org.springframework.samples.yogogym.web;
 
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
@@ -40,10 +39,7 @@ public class InscriptionController {
 	@GetMapping("/admin/inscriptions/submitted")
 	public String listSubmittedInscriptionsAdmin(ModelMap modelMap) {
 			
-		List<Client> clients = this.clientService.findClientsWithSubmittedInscriptions();
-		for(Client c : clients) {
-			c.setInscriptions(c.getInscriptions().stream().filter(i -> i.getStatus().equals(Status.SUBMITTED)).collect(Collectors.toList()));
-		}
+		List<Client> clients = this.clientService.findClientsWithOnlySubmittedInscriptions();
 		modelMap.addAttribute("clients",clients);
 		
 		return "admin/challenges/submittedInscriptionsList";
