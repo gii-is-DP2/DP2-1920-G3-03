@@ -249,6 +249,7 @@ INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (2,0,null,2);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (3,0,null,3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (4,0,null,3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (5,0,'https://google.com',1);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (6,1,'https://google.com',3);
 
 /* CLIENT_INSCRIPTION */
 
@@ -257,6 +258,7 @@ INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,2);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,3);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (2,4);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (3,5);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (4,6);
 
 /* PHRASES */
 

@@ -72,7 +72,7 @@ public class ChallengeController {
 	   	
 	 // If there are inscriptions, it cannot be edited or deleted
 	 Collection<Inscription> inscriptions = inscriptionService.findInscriptionsByChallengeId(challengeId);
-	 if(inscriptions == null) {
+	 if(inscriptions.isEmpty()) {
 	 	model.addAttribute("isModifiable", true);
 	 }
 	   	
@@ -120,7 +120,7 @@ public class ChallengeController {
 		
 		// If there are inscriptions, it cannot be edited
 		Collection<Inscription> inscriptions = inscriptionService.findInscriptionsByChallengeId(challengeId);
-		if(inscriptions != null) {
+		if(!inscriptions.isEmpty()) {
 			return showChallengeByIdAdmin(challengeId,model);
 		}
 					
@@ -156,11 +156,10 @@ public class ChallengeController {
 		Collection<Inscription> inscriptions = inscriptionService.findInscriptionsByChallengeId(challengeId);
 		
 		// If there are inscriptions, it cannot be deleted
-		if(inscriptions != null) {
+		if(!inscriptions.isEmpty()) {
 			return showChallengeByIdAdmin(challengeId,model);
 		}
 		
-		challenge.setExercise(null);
 		this.challengeService.deleteChallenge(challenge);
 		
 		return "redirect:/admin/challenges";
@@ -237,7 +236,6 @@ public class ChallengeController {
 	   	
 	   	model.addAttribute("challenge", challenge);
 	   	model.addAttribute("inscription",inscription);
-	   //	model.addAttribute("expired", expired);
 	   	
 	    return "client/challenges/myChallengeDetailsAndUpdate";
 	}

@@ -65,4 +65,9 @@ public class InscriptionService {
 		return inscriptionRepo.findById(inscriptionId).get();
 	}
 
+	public Collection<Inscription> findAll() {
+		
+		return (Collection<Inscription>) this.inscriptionRepo.findAll();
+	}
+
 }
