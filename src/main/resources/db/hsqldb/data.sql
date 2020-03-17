@@ -13,6 +13,7 @@ INSERT INTO guilds(id,creator,description,name) VALUES (3,'client3','Here we hel
 
 /* CLIENT */
 
+
 INSERT INTO users(username,password,enabled) VALUES ('client1','client1999',TRUE);
 INSERT INTO authorities VALUES (3,'client','client1');
 INSERT INTO clients VALUES (1, 'marantle@yogogym.com','Martin', 'Antonio Lera', '12345678B',1.83,80.0,1,'client1');
@@ -52,6 +53,7 @@ INSERT INTO clients VALUES (9, 'caralfe@yogogym.com','Carmen', 'Alejandra Fernan
 INSERT INTO users(username,password,enabled) VALUES ('client10','client1999',TRUE);
 INSERT INTO authorities VALUES (12,'client','client10');
 INSERT INTO clients VALUES (10, 'trinimon@yogogym.com','Trinidad', 'Maria Montosa', '12345678K',1.69,83.5,2,'client10');
+
 
 /* TRAINER */
 
@@ -276,5 +278,17 @@ INSERT INTO clients_trainings(client_id,trainings_id) VALUES (7,7);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (8,8);
 
 
+/* DIET */
 
+-- INSERT INTO diets(id,name,description,kcal) VALUES (1, 'Mantenimiento', 'Algo', 2000);
+-- INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (2, '2020-02-01', '2020-02-20', 'Entrenamiento2', 2);
+-- INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (3, '2020-03-01', '2020-03-10', 'Entrenamiento3', 3);
+-- INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (4, '2020-04-01', '2020-04-20', 'Entrenamiento4', 4);
+
+/* CLIENT_DIET */
+
+INSERT INTO clients_diets(client_id,diets_id) VALUES(2,1);
+-- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,2);
+-- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,3);
+-- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,4);
 
