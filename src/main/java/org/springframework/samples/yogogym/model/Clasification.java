@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "dashboards")
-public class Dashboard extends BaseEntity{
+@Table(name = "clasifications")
+public class Clasification extends BaseEntity{
 
 }

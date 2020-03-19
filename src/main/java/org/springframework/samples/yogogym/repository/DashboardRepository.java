@@ -6,10 +6,10 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.samples.yogogym.model.Dashboard;
+import org.springframework.samples.yogogym.model.DashboardAdmin;
 import org.springframework.samples.yogogym.model.Training;
 
-public interface DashboardRepository extends CrudRepository<Dashboard, Integer>{
+public interface DashboardRepository extends CrudRepository<DashboardAdmin, Integer>{
 	
 	/* Equipment control */
 	
