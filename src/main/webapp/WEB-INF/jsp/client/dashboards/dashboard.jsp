@@ -87,7 +87,6 @@ $(document).ready(function(){
 				{
 					ticks : {
 						min : 0,
-						stepSize : 1,
 						autoSkip : true
 					}
 				}
@@ -150,7 +149,6 @@ $(document).ready(function(){
 					{
 						ticks : {
 							min : 0,
-							stepSize : 1,
 							autoSkip : true
 						}
 					}
@@ -213,7 +211,6 @@ $(document).ready(function(){
 						{
 							ticks : {
 								min : 0,
-								stepSize : 1,
 								autoSkip : true
 							}
 						}
@@ -276,7 +273,6 @@ $(document).ready(function(){
 							{
 								ticks : {
 									min : 0,
-									stepSize : 1,
 									autoSkip : true
 								}
 							}
