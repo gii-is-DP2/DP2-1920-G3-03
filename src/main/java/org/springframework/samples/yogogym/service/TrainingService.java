@@ -15,15 +15,26 @@
  */
 package org.springframework.samples.yogogym.service;
 
-
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.ClientRepository;
 import org.springframework.samples.yogogym.repository.TrainingRepository;
+import org.springframework.samples.yogogym.service.exceptions.EndBeforeInitException;
+import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.PastEndException;
+import org.springframework.samples.yogogym.service.exceptions.PastInitException;
+import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,14 +56,84 @@ public class TrainingService {
 		this.clientRepository = clientRepository;
 	}
 	
-	@Transactional
-	public void saveTraining(Training training) throws DataAccessException {
+	@SuppressWarnings("deprecation")
+	@Transactional(rollbackFor = {PastInitException.class, PastEndException.class, EndBeforeInitException.class, 
+		InitInTrainingException.class, EndInTrainingException.class, PeriodIncludingTrainingException.class})
+	
+	public void saveTraining(Training training) throws DataAccessException, PastInitException, EndBeforeInitException,
+	InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
+		
 		Client client = training.getClient();
-		if(!client.getTrainings().contains(training)) {
-			client.getTrainings().add(training);
-			this.clientRepository.save(client);
+		Date initialDate = training.getInitialDate();
+		Date endDate = training.getEndDate();
+		Date now = new Date();
+		now = new Date(now.getYear(), now.getMonth(), now.getDate());
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Boolean anyException = true;
+
+		// Training starting in the past?
+		if(training.isNew() && initialDate.before(now)) {
+			anyException = false;
+			throw new PastInitException();
 		}
-		this.trainingRepository.save(training);
+		// End date before or equals to initial date?
+		else if(endDate.compareTo(initialDate)<=0) {
+			anyException = false;
+			throw new EndBeforeInitException();
+		}
+		// No training ending in the past
+		else if(!training.isNew()) {
+			Training oldTraining = this.trainingRepository.findTrainingById(training.getId());
+			if(endDate.before(now) && !endDate.equals(oldTraining.getEndDate())){
+				anyException = false;
+				throw new PastEndException();
+			}
+			
+		}
+		else {
+			// Period without other trainings
+			List<Training> associatedTrainings = training.getClient().getTrainings()
+				.stream().sorted(Comparator.comparing(Training::getInitialDate)).collect(Collectors.toList());
+			for(Training t : associatedTrainings) {
+				if(training.isNew()||!t.getId().equals(training.getId())) {
+					
+					Date initDateAssoc = t.getInitialDate();
+					String initAssoc = dateFormat.format(initDateAssoc);
+					Date endDateAssoc = t.getEndDate();
+					String endAssoc = dateFormat.format(endDateAssoc);
+
+					Boolean initInPeriod = initialDate.compareTo(initDateAssoc)>=0&&initialDate.compareTo(endDateAssoc)<=0;
+					Boolean endInPeriod = endDate.compareTo(initDateAssoc)>=0&&endDate.compareTo(endDateAssoc)<=0;
+					Boolean initAssocInPeriod = initDateAssoc.compareTo(initialDate)>=0&&initDateAssoc.compareTo(endDate)<=0;
+					Boolean endAssocInPeriod = endDateAssoc.compareTo(initialDate)>=0&&endDateAssoc.compareTo(endDate)<=0;
+					
+					if(initInPeriod) {
+						anyException=false;
+						throw new InitInTrainingException(initAssoc,endAssoc);
+					}
+					else if(endInPeriod) {
+						anyException=false;
+						throw new EndInTrainingException(initAssoc,endAssoc);
+					}
+					else if(initAssocInPeriod && endAssocInPeriod) {
+						anyException=false;
+						throw new PeriodIncludingTrainingException(initAssoc,endAssoc);
+					}
+					if(!anyException) {
+						break;
+					}
+				}
+			}
+		
+			if(anyException) {
+				// Checking if it is create or update
+				if(!client.getTrainings().contains(training)) {
+					client.getTrainings().add(training);
+					this.clientRepository.save(client);
+				}
+				this.trainingRepository.save(training);
+			}
+		}
 	}
 	
 	@Transactional

@@ -11,8 +11,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Training;
+import org.springframework.samples.yogogym.service.exceptions.EndBeforeInitException;
+import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.PastEndException;
+import org.springframework.samples.yogogym.service.exceptions.PastInitException;
+import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
 import org.springframework.samples.yogogym.util.EntityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -42,7 +49,7 @@ public class TrainingServiceTest {
 	
 	@Test
 	@Transactional
-	public void shouldInsertTraining() throws ParseException {
+	public void shouldInsertTraining() throws ParseException, DataAccessException, PastInitException, EndBeforeInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException {
 		Collection<Training> trainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		int found = trainings.size();
 		
@@ -62,7 +69,7 @@ public class TrainingServiceTest {
 	
 	@Test
 	@Transactional
-	public void shouldUpdateTraining() throws ParseException {
+	public void shouldUpdateTraining() throws ParseException, DataAccessException, PastInitException, EndBeforeInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException {
 		Training training = this.trainingService.findTrainingById(TRAINING_ID);
 		String newName = "Entrenamiento Actualizado";
 		Date newInitDate = dateFormat.parse("2020-06-01");
