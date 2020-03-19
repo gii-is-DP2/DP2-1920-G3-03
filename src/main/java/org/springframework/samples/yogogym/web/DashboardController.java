@@ -33,13 +33,8 @@ public class DashboardController {
 			dashboard(listTraining, 28, "Month", model);
 			dashboard(listTraining, 7, "Week", model);
 		} else {
-			String[] s = { "" };
-			Integer[] c = {};
-			model.addAttribute("orderNameMonth", s);
-			model.addAttribute("countMonth", c);
-			model.addAttribute("orderNameWeek", s);
-			model.addAttribute("countWeek", c);
-			model.addAttribute("noEquipment", true);
+			model.addAttribute("hasEquipmentMonth", false);
+			model.addAttribute("hasEquipmentWeek", false);
 		}
 		return "admin/dashboards/dashboardEquipment";
 	}
@@ -106,26 +101,15 @@ public class DashboardController {
 					}
 					model.addAttribute("orderName" + string, s);
 					model.addAttribute("count" + string, c);
+					model.addAttribute("hasEquipment" + string, true);
 				} else {
-					String[] s = { "" };
-					Integer[] c = {};
-					model.addAttribute("orderName" + string, s);
-					model.addAttribute("count" + string, c);
-					model.addAttribute("noEquipment", true);
+					model.addAttribute("hasEquipment" + string, false);
 				}
 			} else {
-				String[] s = { "" };
-				Integer[] c = {};
-				model.addAttribute("orderName" + string, s);
-				model.addAttribute("count" + string, c);
-				model.addAttribute("noEquipment", true);
-			}
+				model.addAttribute("hasEquipment" + string, false);			
+				}
 		} else {
-			String[] s = { "" };
-			Integer[] c = {};
-			model.addAttribute("orderName" + string, s);
-			model.addAttribute("count" + string, c);
-			model.addAttribute("noEquipment", true);
+			model.addAttribute("hasEquipment" + string, false);
 		}
 
 	}

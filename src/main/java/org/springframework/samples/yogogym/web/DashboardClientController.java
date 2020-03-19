@@ -43,36 +43,14 @@ public class DashboardClientController {
 				dashboard(listTraining, 28, "Month", model);
 				dashboard(listTraining, null, "All", model);
 			} else {
-				String[] s = { "" };
-				Integer[] c = {};
-				Integer sum = 0;
-				model.addAttribute("kcalMonth", sum);
-				model.addAttribute("orderBodyPartsMonth", s);
-				model.addAttribute("countBodyPartsMonth", c);
-				model.addAttribute("orderRepetitionTypeMonth", s);
-				model.addAttribute("countRepetitionTypeMonth", c);
-				model.addAttribute("kcalAll", sum);
-				model.addAttribute("orderBodyPartsAll", s);
-				model.addAttribute("countBodyPartsAll", c);
-				model.addAttribute("orderRepetitionTypeAll", s);
-				model.addAttribute("countRepetitionTypeAll", c);
+				model.addAttribute("hasExerciseMonth", false);
+				model.addAttribute("hasExerciseAll", false);
 			}
 		} else {
-			String[] s = { "" };
-			Integer[] c = {};
-			Integer sum = 0;
-			model.addAttribute("kcalMonth", sum);
-			model.addAttribute("orderBodyPartsMonth", s);
-			model.addAttribute("countBodyPartsMonth", c);
-			model.addAttribute("orderRepetitionTypeMonth", s);
-			model.addAttribute("countRepetitionTypeMonth", c);
-			model.addAttribute("kcalAll", sum);
-			model.addAttribute("orderBodyPartsAll", s);
-			model.addAttribute("countBodyPartsAll", c);
-			model.addAttribute("orderRepetitionTypeAll", s);
-			model.addAttribute("countRepetitionTypeAll", c);
+			model.addAttribute("hasExerciseMonth", false);
+			model.addAttribute("hasExerciseAll", false);
 		}
-		return "mainMenu/dashboards/dashboard";
+		return "client/dashboards/dashboard";
 	}
 
 	private void dashboard(List<Training> listTraining, Integer days, String string, Model model) {
@@ -92,14 +70,7 @@ public class DashboardClientController {
 			}
 		}
 		if (listTrainingFilter.isEmpty()) {
-			String[] s = { "" };
-			Integer[] c = {};
-			Integer sum = 0;
-			model.addAttribute("kcal" + string, sum);
-			model.addAttribute("orderBodyParts" + string, s);
-			model.addAttribute("countBodyParts" + string, c);
-			model.addAttribute("orderRepetitionType" + string, s);
-			model.addAttribute("countRepetitionType" + string, c);
+			model.addAttribute("hasExercise" + string, false);
 		} else {
 			List<Integer> listRoutine = new ArrayList<>();
 			for (Integer x : listTrainingFilter) {
@@ -163,15 +134,9 @@ public class DashboardClientController {
 				model.addAttribute("countBodyParts" + string, cBodyParts);
 				model.addAttribute("orderRepetitionType" + string, sRepetitionType);
 				model.addAttribute("countRepetitionType" + string, cRepetitionType);
+				model.addAttribute("hasExercise" + string, true);
 			} else {
-				String[] s = { "" };
-				Integer[] c = {};
-				Integer sum = 0;
-				model.addAttribute("kcal" + string, sum);
-				model.addAttribute("orderBodyParts" + string, s);
-				model.addAttribute("countBodyParts" + string, c);
-				model.addAttribute("orderRepetitionType" + string, s);
-				model.addAttribute("countRepetitionType" + string, c);
+				model.addAttribute("hasExercise" + string, false);
 			}
 		}
 	}
