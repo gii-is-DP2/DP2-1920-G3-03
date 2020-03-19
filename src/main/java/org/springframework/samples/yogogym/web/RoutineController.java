@@ -8,7 +8,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Trainer;
@@ -80,18 +79,16 @@ public class RoutineController {
 
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create")
 	public String initRoutineCreateForm(@PathVariable("clientId") int clientId, final Model model) {
-		Collection<RoutineLine> routineLine = new ArrayList<>();
-
-		Routine routine = new Routine();
-		routine.setRoutineLine(routineLine);
-
-		Collection<Exercise> exerciseCollection = this.exerciseService.findAllExercise();
+		
 		Client client = this.clientService.findClientById(clientId);
+		
+		Routine routine = new Routine();
+		Collection<RoutineLine> routineLine = new ArrayList<>();
+		routine.setRoutineLine(routineLine);
 
 		model.addAttribute("client", client);
 		model.addAttribute("routine", routine);
-		model.addAttribute("exercises", exerciseCollection);
-
+		
 		return "trainer/routines/routinesCreateOrUpdate";
 	}
 
@@ -100,6 +97,11 @@ public class RoutineController {
 			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,
 			@PathVariable("clientId") int clientId,  final ModelMap model) {
 		if (result.hasErrors()) {
+			
+			Client client = this.clientService.findClientById(clientId);
+			
+			model.put("client",client);
+			
 			return "trainer/routines/routinesCreateOrUpdate";
 		} else {
 			Training training = this.trainingService.findTrainingById(trainingId);
@@ -110,6 +112,51 @@ public class RoutineController {
 			return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId + "/trainings/"
 					+ trainingId;
 		}
+	}
+	
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/edit")
+	public String initEditRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername, ModelMap model)
+	{
+		Routine routine = this.routineService.findRoutineById(routineId);
+		Client client = this.clientService.findClientById(clientId);
+		
+		model.put("client", client);
+		model.put("routine", routine);
+		
+		return "trainer/routines/routinesCreateOrUpdate";
+	}
+	
+	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/edit")
+	public String processRoutineEditForm(@Valid Routine routine, BindingResult result,
+			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,
+			@PathVariable("clientId") int clientId, @PathVariable("routineId")final int routineId, final ModelMap model) {
+		if (result.hasErrors()) {
+			routine.setId(routineId);
+			Client client = this.clientService.findClientById(clientId);
+			model.put("client",client);
+			
+			return "trainer/routines/routinesCreateOrUpdate";
+		} else {
+			Routine oldRoutine = this.routineService.findRoutineById(routineId);
+		
+			routine.setId(routineId);
+			routine.setRoutineLine(oldRoutine.getRoutineLine());
+			
+			this.routineService.saveRoutine(routine);
+			
+			return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId + "/trainings/"
+					+ trainingId + "/routines/" + routineId;
+		}
+	}
+	
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/delete")
+	public String deleteRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername)
+	{
+		Routine routine = this.routineService.findRoutineById(routineId);
+		
+		this.routineService.deleteRoutine(routine);
+		
+		return "redirect:/trainer/"+ trainerUsername + "/routines";
 	}
 
 }

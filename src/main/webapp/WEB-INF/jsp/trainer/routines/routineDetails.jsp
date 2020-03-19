@@ -14,6 +14,12 @@
 	<p><b>Description:</b> <c:out value="${routine.description}"/></p>
 	<p><b>Repetitions Per Week:</b> <c:out value="${routine.repsPerWeek}"/></p>
 	<br>
+	<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/edit" var="routineEditUrl" />
+	<a href="${fn:escapeXml(routineEditUrl)}">Edit Routine</a>
+	<br>
+	<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/delete" var="routineDeleteAddUrl" />
+	<a href="${fn:escapeXml(routineDeleteAddUrl)}">Delete Routine</a>
+	<br>
 	<br>
 	
 	<h2>Line of Routines</h2>
@@ -28,6 +34,7 @@
 			<th>Description</th>
 			<th>Kcal</th>
 			<th>Edit</th>
+			<th>Delete</th>
         </tr>
         </thead>
 	<c:forEach var="lineRoutine" items="${routine.routineLine}">
@@ -63,10 +70,11 @@
 				<td><c:out value="${lineRoutine.exercise.description}"/></td>
 				<td><c:out value="${lineRoutine.exercise.kcal}"/></td>
 				<td><a href="">Edit</a></td>
+				<td><a href="">Delete</a></td>
 	        </tr>
 	</c:forEach>
 	</table>
-	
+		
 	<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/routineLine/create" var="routineLineAddUrl" />
 	<a href="${fn:escapeXml(routineLineAddUrl)}">Add Routine Line</a>
 	
