@@ -69,8 +69,16 @@
 				</td>
 				<td><c:out value="${lineRoutine.exercise.description}"/></td>
 				<td><c:out value="${lineRoutine.exercise.kcal}"/></td>
-				<td><a href="">Edit</a></td>
-				<td><a href="">Delete</a></td>
+				
+				<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/routineLine/{routineLineId}/update" var="routineLineUpdateUrl">
+					<spring:param name="routineLineId" value="${lineRoutine.id}"/>
+				</spring:url>	
+				<td><a href="${fn:escapeXml(routineLineUpdateUrl)}">Edit</a></td>
+				
+				<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/routineLine/{routineLineId}/delete" var="routineLineDeleteUrl">
+					<spring:param name="routineLineId" value="${lineRoutine.id}"/>
+				</spring:url>				
+				<td><a href="${fn:escapeXml(routineLineDeleteUrl)}">Delete</a></td>
 	        </tr>
 	</c:forEach>
 	</table>

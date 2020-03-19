@@ -17,6 +17,7 @@ import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.samples.yogogym.service.RoutineLineService;
 import org.springframework.samples.yogogym.service.RoutineService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -112,5 +113,77 @@ public class RoutineLineController {
 			return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId + "/trainings/"
 					+ trainingId + "/routines/" + routineId;
 		}
+	}
+	
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/update")
+	public String initRoutineLineUpdateForm(@PathVariable("clientId") int clientId,
+			@PathVariable("routineId") int routineId, @PathVariable("routineLineId") int routineLineId,final ModelMap model) {
+		
+		RoutineLine routineLine = this.routineLineService.findRoutineLineById(routineLineId);
+		
+		Collection<Exercise> exerciseCollection = this.exerciseService.findAllExercise();
+		Map<Integer,String> selectVals = new TreeMap<>();
+		
+		for(Exercise e:exerciseCollection)
+		{
+			selectVals.put(e.getId(), e.getName());
+		}	
+		
+		Client client = this.clientService.findClientById(clientId);
+			
+		model.addAttribute("routineId", routineId);
+		model.addAttribute("client", client);
+		model.addAttribute("routineLine", routineLine);
+		model.addAttribute("exercises", selectVals);
+		
+		return "trainer/routines/routinesLineCreateOrUpdate";
+	}
+
+	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/update")
+	public String processRoutineLineUpdateForm(@Valid RoutineLine routineLine,BindingResult result, @ModelAttribute("exercise.id")final int exerciseId,
+			@PathVariable("trainerUsername") String trainerUsername, @ModelAttribute("routineId") int routineId,
+			@PathVariable("clientId") int clientId, @PathVariable("trainingId") int trainingId,@PathVariable("routineLineId")final int routineLineId, final ModelMap model) {
+					
+		if (result.hasErrors()) {
+			
+			routineLine.setId(this.routineLineService.findRoutineLineById(routineLineId).getId());
+			
+			Client client = this.clientService.findClientById(clientId);
+			
+			Collection<Exercise> exerciseCollection = this.exerciseService.findAllExercise();
+			Map<Integer,String> selectVals = new TreeMap<>();
+			
+			for(Exercise e:exerciseCollection)
+			{
+				selectVals.put(e.getId(), e.getName());
+			}
+			
+			model.addAttribute("routineId", routineId);
+			model.addAttribute("client", client);
+			model.addAttribute("routineLine", routineLine);
+			
+			model.addAttribute("exercises", selectVals);
+			
+			return "trainer/routines/routinesLineCreateOrUpdate";
+		} else {
+						
+			routineLine.setId(routineLineId);
+			Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
+			routineLine.setExercise(exercise);
+	
+			this.routineLineService.saveRoutineLine(routineLine);
+
+			return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId + "/trainings/"
+					+ trainingId + "/routines/" + routineId;
+		}
+	}
+	
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/delete")
+	public String deleteRoutineLine(@PathVariable("routineId")int routineId,@PathVariable("routineLineId")int routineLineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername, Model model)
+	{
+		RoutineLine routineLine = this.routineLineService.findRoutineLineById(routineLineId);
+		this.routineLineService.deleteRoutineLine(routineLine);
+		
+		return "redirect:/trainer/"+ trainerUsername + "/clients/" + clientId + "/trainings/" + trainingId + "/routines/" + routineId;
 	}
 }
