@@ -45,6 +45,7 @@
 		<b>You haven't exercises</b>
 	</jstl:if>
 <script>
+<jstl:if test="${hasExerciseMonth}">
 $(document).ready(function(){
 	var data = {
 			labels : [
@@ -107,6 +108,8 @@ $(document).ready(function(){
 		options : options
 	});
 });
+</jstl:if>
+<jstl:if test="${hasExerciseAll}">
 	$(document).ready(function(){
 		var data = {
 				labels : [
@@ -169,6 +172,8 @@ $(document).ready(function(){
 			options : options
 		});
 	});
+</jstl:if>
+<jstl:if test="${hasExerciseMonth}">
 		$(document).ready(function(){
 			var data = {
 					labels : [
@@ -231,6 +236,8 @@ $(document).ready(function(){
 				options : options
 			});
 		});
+</jstl:if>
+<jstl:if test="${hasExerciseAll}">
 			$(document).ready(function(){
 				var data = {
 						labels : [
@@ -293,6 +300,7 @@ $(document).ready(function(){
 					options : options
 				});
 			});
+</jstl:if>
 </script>
 
 </petclinic:layout>

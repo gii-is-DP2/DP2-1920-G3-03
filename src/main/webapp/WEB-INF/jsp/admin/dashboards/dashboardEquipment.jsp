@@ -25,10 +25,9 @@
 	<jstl:if test="${!hasEquipmentMonth}">
 		<b>Equipment has not been used this month</b><br/>
 	</jstl:if>
-<spring:url value="/admin/equipment/new" var="equipmentUrl"/> 
-<a href="${fn:escapeXml(equipmentUrl)}" class="btn btn-default"> New equipment </a>
 
 <script>
+<jstl:if test="${hasEquipmentMonth}">
 $(document).ready(function(){
 	var data = {
 			labels : [
@@ -92,7 +91,8 @@ $(document).ready(function(){
 		options : options
 	});
 });
-
+</jstl:if>
+<jstl:if test="${hasEquipmentWeek}">
 	$(document).ready(function(){
 		var data = {
 				labels : [
@@ -156,7 +156,7 @@ $(document).ready(function(){
 			options : options
 		});
 	});
-
+</jstl:if>
 </script>
 
 </petclinic:layout>
