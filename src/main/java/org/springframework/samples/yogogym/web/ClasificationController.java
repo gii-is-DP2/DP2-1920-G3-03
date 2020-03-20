@@ -14,6 +14,8 @@ import org.springframework.samples.yogogym.model.Inscription;
 import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.InscriptionService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,39 +36,43 @@ public class ClasificationController {
 
 	@GetMapping("/client/{clientUsername}/clasification")
 	public String getClasification(@PathVariable("clientUsername") String clientUsername, Model model) {
-		List<Inscription> listInscription = this.inscriptionService.findInscriptionsByUsername(clientUsername);
-		List<Client> listClientWithPoint = this.clientService.findClientsWithCompletedInscriptions();
-		if (!listClientWithPoint.isEmpty()) {
-			// Table and total points of client
-			if (!listInscription.isEmpty()) {
-				List<Challenge> listChallenge = new ArrayList<Challenge>();
-				Integer totalPoint = 0;
-				for (Inscription x : listInscription) {
-					if (x != null) {
-						if (x.getChallenge() != null && x.getStatus().equals(Status.COMPLETED)) {
-							listChallenge.add(x.getChallenge());
-							totalPoint += x.getChallenge().getPoints();
+		if (isTheRealUser(clientUsername)) {
+			List<Inscription> listInscription = this.inscriptionService.findInscriptionsByUsername(clientUsername);
+			List<Client> listClientWithPoint = this.clientService.findClientsWithCompletedInscriptions();
+			if (!listClientWithPoint.isEmpty()) {
+				// Table and total points of client
+				if (!listInscription.isEmpty()) {
+					List<Challenge> listChallenge = new ArrayList<Challenge>();
+					Integer totalPoint = 0;
+					for (Inscription x : listInscription) {
+						if (x != null) {
+							if (x.getChallenge() != null && x.getStatus().equals(Status.COMPLETED)) {
+								listChallenge.add(x.getChallenge());
+								totalPoint += x.getChallenge().getPoints();
+							}
 						}
 					}
-				}
-				if (!listChallenge.isEmpty()) {
-					model.addAttribute("hasChallenge", true);
-					model.addAttribute("challenges", listChallenge);
-					model.addAttribute("totalPoint", totalPoint);
+					if (!listChallenge.isEmpty()) {
+						model.addAttribute("hasChallenge", true);
+						model.addAttribute("challenges", listChallenge);
+						model.addAttribute("totalPoint", totalPoint);
+					} else {
+						model.addAttribute("hasChallenge", false);
+					}
 				} else {
 					model.addAttribute("hasChallenge", false);
 				}
+				// Clasification
+				dashboardClasification(listClientWithPoint, clientUsername, listInscription, model, "Week");
+				dashboardClasification(listClientWithPoint, clientUsername, listInscription, model, "All");
 			} else {
 				model.addAttribute("hasChallenge", false);
+				model.addAttribute("hasChallengeClasification", false);
 			}
-			// Clasification
-			dashboardClasification(listClientWithPoint, clientUsername, listInscription, model, "Week");
-			dashboardClasification(listClientWithPoint, clientUsername, listInscription, model, "All");
-		} else {
-			model.addAttribute("hasChallenge", false);
-			model.addAttribute("hasChallengeClasification", false);
+			return "client/clasifications/clasification";
+		}else {
+			return "exception";
 		}
-		return "client/clasifications/clasification";
 	}
 
 	private void dashboardClasification(List<Client> listClientWithPoint, String clientUsername,
@@ -106,7 +112,7 @@ public class ClasificationController {
 				position.add(mapClientPoint.get(aux.get(i - 1)));
 			}
 			if (!listInscription.isEmpty()) {
-				if(position.contains(clientUsername)) {
+				if (position.contains(clientUsername)) {
 					Integer pos = position.indexOf(clientUsername) + 1;
 					model.addAttribute("position" + days, pos);
 					model.addAttribute("hasPosition" + days, true);
@@ -118,6 +124,17 @@ public class ClasificationController {
 		} else {
 			model.addAttribute("hasChallengeClasification" + days, false);
 		}
+	}
+
+	private boolean isTheRealUser(String usernameClient) {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username = "";
+		if (principal instanceof UserDetails) {
+			username = ((UserDetails) principal).getUsername();
+		} else {
+			username = principal.toString();
+		}
+		return username.equals(usernameClient);
 	}
 
 }

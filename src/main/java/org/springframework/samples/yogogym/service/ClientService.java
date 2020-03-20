@@ -88,6 +88,8 @@ public class ClientService {
 
 	}
 	
+	//Clasication
+	@Transactional
 	public List<Client> findClientsWithCompletedInscriptions(){
 		return this.clientRepository.findClientsWithCompletedInscriptions();
 	}
