@@ -13,7 +13,6 @@ import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.service.ClientService;
-import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.samples.yogogym.service.RoutineService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
@@ -32,17 +31,15 @@ public class RoutineController {
 
 	@Autowired
 	private final RoutineService routineService;
-	private final ExerciseService exerciseService;
 	private final ClientService clientService;
 	private final TrainerService trainerService;
 	private final TrainingService trainingService;
 
 	@Autowired
-	public RoutineController(final RoutineService routineService, final ExerciseService exerciseService,
+	public RoutineController(final RoutineService routineService,
 			final ClientService clientService, final TrainerService trainerService,
 			final TrainingService trainingService) {
 		this.routineService = routineService;
-		this.exerciseService = exerciseService;
 		this.clientService = clientService;
 		this.trainerService = trainerService;
 		this.trainingService = trainingService;
@@ -58,6 +55,10 @@ public class RoutineController {
 	public String ClientRoutineDetails(@PathVariable("trainerUsername") String trainerUsername,
 			@PathVariable("clientId") int clientId, @PathVariable("routineId") int routineId,
 			@PathVariable("trainingId") int trainingId, Model model) {
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
+		
 		Client client = this.clientService.findClientById(clientId);
 		Routine routine = this.routineService.findRoutineById(routineId);
 		Training training = this.trainingService.findTrainingById(trainingId);
@@ -71,6 +72,7 @@ public class RoutineController {
 
 	@GetMapping("/trainer/{trainerUsername}/routines")
 	public String RoutinesList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
+				
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		model.addAttribute("trainer", trainer);
 
@@ -78,7 +80,10 @@ public class RoutineController {
 	}
 
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create")
-	public String initRoutineCreateForm(@PathVariable("clientId") int clientId, final Model model) {
+	public String initRoutineCreateForm(@PathVariable("clientId") int clientId,@PathVariable("trainerUsername")final String trainerUsername, final Model model) {
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
 		
 		Client client = this.clientService.findClientById(clientId);
 		
@@ -96,6 +101,10 @@ public class RoutineController {
 	public String processRoutineCreationForm(@Valid Routine routine, BindingResult result,
 			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,
 			@PathVariable("clientId") int clientId,  final ModelMap model) {
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
+		
 		if (result.hasErrors()) {
 			
 			Client client = this.clientService.findClientById(clientId);
@@ -117,6 +126,9 @@ public class RoutineController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/edit")
 	public String initEditRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername, ModelMap model)
 	{
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
+		
 		Routine routine = this.routineService.findRoutineById(routineId);
 		Client client = this.clientService.findClientById(clientId);
 		
@@ -130,6 +142,10 @@ public class RoutineController {
 	public String processRoutineEditForm(@Valid Routine routine, BindingResult result,
 			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,
 			@PathVariable("clientId") int clientId, @PathVariable("routineId")final int routineId, final ModelMap model) {
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
+		
 		if (result.hasErrors()) {
 			routine.setId(routineId);
 			Client client = this.clientService.findClientById(clientId);
@@ -152,11 +168,22 @@ public class RoutineController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/delete")
 	public String deleteRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername)
 	{
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
+		
 		Routine routine = this.routineService.findRoutineById(routineId);
 		
 		this.routineService.deleteRoutine(routine);
 		
 		return "redirect:/trainer/"+ trainerUsername + "/routines";
+	}
+	
+	public Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername)
+	{		
+		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
+		Client client = this.clientService.findClientById(clientId);
+		
+		return trainer.getClients().contains(client);
 	}
 
 }
