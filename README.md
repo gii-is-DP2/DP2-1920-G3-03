@@ -172,7 +172,7 @@ Como cliente quiero poder participar en los distintos retos propuestos por los p
 #### HU22 - Clasificación de los Retos
 Como cliente quiero poder ver la clasificación de mis retos, para poder ver en que posición me encuentro y que debo hacer para poder superar y subir al top.
 #### Escenarios
-* **Ver un la clasificación de un reto completado:** Dado un cliente, al pulsar el botón de "mis retos", aparecerá un listado de los retos completados, viendo también una clasificación semanal y global.
+* **Ver un la clasificación de un reto completado:** Dado un cliente, al pulsar el botón de "Clasificación", aparecerá un listado de los retos completados, viendo también una clasificación semanal y global.
 ---
 #### HU23 - Añadir Playlist adaptada a mis entrenamientos
 Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis entrenamientos, es decir, adecuadas para el nivel de intensidad especificado, para poder motivarme y llevar un ritmo adecuado.
