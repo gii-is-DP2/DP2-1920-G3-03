@@ -43,7 +43,7 @@ Como administrador quiero visualizar diagrama que me muestren cuanto son utiliza
 #### Escenarios:
 * **Visualizar diagrama general de máquinas, sistema con datos de la última semana:** Dado un administrador y un sistema con máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le mostrará el nombre de estas, cuantas veces han sido utilizadas en la última semana.
 * **Visualizar diagrama general de máquinas, sistema con datos del último mes:** Dado un administrador y un sistema con máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le mostrará el nombre de estas, cuantas veces han sido utilizadas en el último mes.
-* **Visualizar diagrama general de máquinas, sistema sin datos:** Dado un administrador y un sistema sin máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna y se le ofrecerá la posibilidad de añadir una. 
+* **Visualizar diagrama general de máquinas, sistema sin datos:** Dado un administrador y un sistema sin máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
 ---
 #### HU4 - Mostrar oraciones motivacionales diariamente
 Como administrador quiero que se muestren oraciones motivacionales diariamente para intentar motivar a los clientes y mejorar su estado de ánimo.
