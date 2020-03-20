@@ -4,6 +4,7 @@ package org.springframework.samples.yogogym.service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -105,5 +106,12 @@ public class InscriptionServiceTest {
 		int foundAfter = inscriptions.size();
 		
 		assertThat(foundBefore).isGreaterThan(foundAfter);
+	}
+	
+	//Clasification
+	@Test
+	void shouldFindInscriptionByUsername() {
+		List<Inscription> inscription = this.inscriptionService.findInscriptionsByUsername("client3");
+		assertThat(inscription.size()).isEqualTo(1);
 	}
 }

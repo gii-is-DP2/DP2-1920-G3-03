@@ -5,6 +5,7 @@ package org.springframework.samples.yogogym.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,12 @@ public class ClientServiceTest {
 	void shouldFindClientsWithOnlySubmittedInscriptions(){
 		Collection<Client> clients = this.clientService.findClientsWithOnlySubmittedInscriptions();
 		assertThat(clients.size()).isEqualTo(1);	
+	}
+	
+	@Test
+	void shouldFindClientsWithOnlyCompletedInscriptions() {
+		List<Client> clients = this.clientService.findClientsWithCompletedInscriptions();
+		assertThat(clients.size()).isEqualTo(1);
 	}
 	
 }
