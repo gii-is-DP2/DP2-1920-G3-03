@@ -20,6 +20,8 @@ import org.springframework.samples.yogogym.service.exceptions.InitInTrainingExce
 import org.springframework.samples.yogogym.service.exceptions.PastEndException;
 import org.springframework.samples.yogogym.service.exceptions.PastInitException;
 import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -55,6 +57,10 @@ public class TrainingController {
 
 	@GetMapping("/trainer/{trainerUsername}/trainings")
 	public String ClientTrainingList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
+		
+		if(!isLoggedTrainer(trainerUsername))
+			return "exception";
+		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		model.addAttribute("trainer", trainer);
 		
@@ -71,6 +77,10 @@ public class TrainingController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}")
 	public String ClientTrainingDetails(@PathVariable("trainerUsername") String trainerUsername,
 			@PathVariable("clientId") int clientId, @PathVariable("trainingId") int trainingId, Model model) {
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
+		
 		Client client = this.clientService.findClientById(clientId);
 		Training training = this.trainingService.findTrainingById(trainingId);
 
@@ -81,7 +91,11 @@ public class TrainingController {
 	}
 
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/create")
-	public String initTrainingCreateForm(@PathVariable("clientId") int clientId, ModelMap model) {
+	public String initTrainingCreateForm(@PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, ModelMap model) {
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
+		
 		Training training = new Training();
 		Client client = this.clientService.findClientById(clientId);
 
@@ -95,6 +109,9 @@ public class TrainingController {
 	public String processTrainingCreateForm(@Valid Training training, BindingResult result,
 			@PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername,
 			ModelMap model) {
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
 		
 		Client client = this.clientService.findClientById(clientId);
 		model.addAttribute("client", client);
@@ -137,7 +154,10 @@ public class TrainingController {
 	
 	@SuppressWarnings("deprecation")
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit")
-	public String initTrainingUpdateForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, Model model) {
+	public String initTrainingUpdateForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, Model model) {
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		Client client = this.clientService.findClientById(clientId);
@@ -157,7 +177,10 @@ public class TrainingController {
 	@SuppressWarnings("deprecation")
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit")
 	public String processTrainingUpdateForm(@Valid Training training, BindingResult result, 
-		@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, ModelMap model) {
+		@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, ModelMap model) {
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
 		
 		Training oldTraining = this.trainingService.findTrainingById(trainingId);
 		Client client = this.clientService.findClientById(clientId);
@@ -214,13 +237,34 @@ public class TrainingController {
 	}
 	
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete")
-	public String processDeleteTrainingForm(@PathVariable("trainingId") int trainingId, RedirectAttributes redirectAttrs) {
+	public String processDeleteTrainingForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername,RedirectAttributes redirectAttrs) {
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
+		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		if(training!=null) {
 			this.trainingService.deleteTraining(training);
 			redirectAttrs.addFlashAttribute("deleteMessage", "The training was deleted successfully");
 		}
 		return "redirect:/trainer/{trainerUsername}/trainings";
+	}
+	
+	public Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername)
+	{		
+		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
+		Client client = this.clientService.findClientById(clientId);
+		
+		return isLoggedTrainer(trainerUsername)&&trainer.getClients().contains(client);
+	}
+	
+	public Boolean isLoggedTrainer(final String trainerUsername) {
+		
+		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username = ((UserDetails)principal).getUsername();
+		
+		return trainer.getUser().getUsername().equals(username);
 	}
 	
 }
