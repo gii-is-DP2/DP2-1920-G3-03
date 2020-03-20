@@ -16,6 +16,8 @@ import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.RoutineService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -29,7 +31,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class RoutineController {
 
-	@Autowired
 	private final RoutineService routineService;
 	private final ClientService clientService;
 	private final TrainerService trainerService;
@@ -56,9 +57,11 @@ public class RoutineController {
 			@PathVariable("clientId") int clientId, @PathVariable("routineId") int routineId,
 			@PathVariable("trainingId") int trainingId, Model model) {
 		
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+		if(!isClientOfLoggedTrainer(clientId))
+		{
 			return "exception";
-		
+		}
+
 		Client client = this.clientService.findClientById(clientId);
 		Routine routine = this.routineService.findRoutineById(routineId);
 		Training training = this.trainingService.findTrainingById(trainingId);
@@ -82,7 +85,7 @@ public class RoutineController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create")
 	public String initRoutineCreateForm(@PathVariable("clientId") int clientId,@PathVariable("trainerUsername")final String trainerUsername, final Model model) {
 		
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+		if(!isClientOfLoggedTrainer(clientId))
 			return "exception";
 		
 		Client client = this.clientService.findClientById(clientId);
@@ -102,7 +105,7 @@ public class RoutineController {
 			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,
 			@PathVariable("clientId") int clientId,  final ModelMap model) {
 		
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+		if(!isClientOfLoggedTrainer(clientId))
 			return "exception";
 		
 		if (result.hasErrors()) {
@@ -126,7 +129,7 @@ public class RoutineController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/edit")
 	public String initEditRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername, ModelMap model)
 	{
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+		if(!isClientOfLoggedTrainer(clientId))
 			return "exception";
 		
 		Routine routine = this.routineService.findRoutineById(routineId);
@@ -143,7 +146,7 @@ public class RoutineController {
 			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,
 			@PathVariable("clientId") int clientId, @PathVariable("routineId")final int routineId, final ModelMap model) {
 		
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+		if(!isClientOfLoggedTrainer(clientId))
 			return "exception";
 		
 		if (result.hasErrors()) {
@@ -168,7 +171,7 @@ public class RoutineController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/delete")
 	public String deleteRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername)
 	{
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+		if(!isClientOfLoggedTrainer(clientId))
 			return "exception";
 		
 		Routine routine = this.routineService.findRoutineById(routineId);
@@ -178,8 +181,11 @@ public class RoutineController {
 		return "redirect:/trainer/"+ trainerUsername + "/routines";
 	}
 	
-	public Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername)
+	public Boolean isClientOfLoggedTrainer(final int clientId)
 	{		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String trainerUsername = ((UserDetails)principal).getUsername();
+		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		Client client = this.clientService.findClientById(clientId);
 		
