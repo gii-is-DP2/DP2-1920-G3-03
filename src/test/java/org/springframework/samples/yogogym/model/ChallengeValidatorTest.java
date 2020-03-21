@@ -1,4 +1,4 @@
-package org.springframework.samples.yogogym.web;
+package org.springframework.samples.yogogym.model;
 
 public class ChallengeValidatorTest {
 
