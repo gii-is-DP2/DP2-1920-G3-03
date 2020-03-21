@@ -35,8 +35,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class InscriptionService {
 
-	@Autowired
+	
 	private InscriptionRepository inscriptionRepo;
+	
+	@Autowired
+	public InscriptionService(InscriptionRepository inscriptionRepo) {
+		this.inscriptionRepo = inscriptionRepo;
+	}
 
 	
 	public Collection<Inscription> findInscriptionsByChallengeId(int challengeId) throws DataAccessException {
