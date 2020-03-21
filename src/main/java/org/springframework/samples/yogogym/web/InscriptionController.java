@@ -2,7 +2,6 @@ package org.springframework.samples.yogogym.web;
 
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
@@ -40,10 +39,7 @@ public class InscriptionController {
 	@GetMapping("/admin/inscriptions/submitted")
 	public String listSubmittedInscriptionsAdmin(ModelMap modelMap) {
 			
-		List<Client> clients = this.clientService.findClientsWithSubmittedInscriptions();
-		for(Client c : clients) {
-			c.setInscriptions(c.getInscriptions().stream().filter(i -> i.getStatus().equals(Status.SUBMITTED)).collect(Collectors.toList()));
-		}
+		List<Client> clients = this.clientService.findClientsWithOnlySubmittedInscriptions();
 		modelMap.addAttribute("clients",clients);
 		
 		return "admin/challenges/submittedInscriptionsList";
@@ -52,12 +48,10 @@ public class InscriptionController {
 	@GetMapping("/admin/inscriptions/submitted/{inscriptionId}")
 	public String showSubmittedInscriptionAdmin(@PathVariable("inscriptionId") int inscriptionId, Model model) {	  
 
-		Inscription i = this.inscriptionService.findInscriptionsByInscriptionId(inscriptionId);
-	   	Challenge c = this.challengeService.findChallengeById(i.getChallenge().getId()); 
 	    Client client = this.clientService.findClientByInscriptionId(inscriptionId);
+	    Inscription inscription = client.getInscriptions().stream().filter(i -> i.getId() == inscriptionId).findFirst().get();
 	   	
-	   	model.addAttribute("challenge", c);
-	    model.addAttribute("inscription", i);
+	    model.addAttribute("inscription", inscription);
 	    model.addAttribute("client", client);
 	   	
 	    return "admin/challenges/submittedChallengeDetails";
@@ -83,7 +77,7 @@ public class InscriptionController {
 	public String createInscriptionByChallengeId(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
 		
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
-		Client client = this.clientService.findClientByClientUsername(clientUsername);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 	   	Inscription inscription = new Inscription();
 	   	
 	   	inscription.setChallenge(challenge);
