@@ -29,6 +29,7 @@
         	<th style="text-align:center">Line</th>
             <th style="text-align:center">Repetitions</th>
             <th style="text-align:center">Time</th>
+            <th style="text-align:center">Series</th>
             <th style="text-align:center">Weight</th>
             <th>Exercise</th>
 			<th>Description</th>
@@ -60,6 +61,7 @@
 	            		</c:otherwise>
 	            	</c:choose>
 	            </td>
+	            <td style="text-align:center"><c:out value="${lineRoutine.series}"/></td>
 	        	<td style="text-align:center"><c:out value="${lineRoutine.weight}"/></td>
 	        	<td>
 				<spring:url value="/mainMenu/exercises/{exerciseId}" var="exerciseUrl">

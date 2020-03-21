@@ -37,6 +37,10 @@ public class RoutineLineValidator implements Validator{
 		else if (validar.getSeries() < 1) {
 			errors.rejectValue("series", REQUIRED, "The series cannot be less than 0");
 		}
+		else if(validar.getSeries() > 30)
+		{
+			errors.rejectValue("series", REQUIRED, "The series cannot be greater than 30");
+		}
 		
 		if(validar.getReps() == null && validar.getTime() == null)
 		{
