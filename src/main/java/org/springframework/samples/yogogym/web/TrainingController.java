@@ -1,5 +1,7 @@
 package org.springframework.samples.yogogym.web;
 
+
+import java.util.Calendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,10 +49,17 @@ public class TrainingController {
 	// TRAINER
 
 	@GetMapping("/trainer/{trainerUsername}/trainings")
-	public String ClienTrainingList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
+	public String ClientTrainingList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		model.addAttribute("trainer", trainer);
-
+		
+		Calendar now = Calendar.getInstance();
+		Date date = now.getTime();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");		
+		String actualDate = dateFormat.format(date);
+		
+		model.addAttribute("actualDate", actualDate);
+		
 		return "trainer/trainings/trainingsList";
 	}
 
@@ -86,10 +95,7 @@ public class TrainingController {
 			model.addAttribute("client", client);
 			return "trainer/trainings/trainingCreateOrUpdate";
 		} else {
-			Client client = this.clientService.findClientById(clientId);
-			client.getTrainings().add(training);
-
-			this.clientService.saveClient(client);
+			this.trainingService.saveTraining(training);
 
 			Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 
@@ -143,9 +149,6 @@ public class TrainingController {
 	public String processDeleteTrainingForm(@PathVariable("trainingId") int trainingId, RedirectAttributes redirectAttrs) {
 		Training training = this.trainingService.findTrainingById(trainingId);
 		if(training!=null) {
-			Client client = training.getClient();
-			client.getTrainings().remove(training);
-			this.clientService.saveClient(client);
 			this.trainingService.deleteTraining(training);
 			redirectAttrs.addFlashAttribute("deleteMessage", "The training was deleted successfully");
 		}

@@ -9,9 +9,9 @@
 	<span>Challenges</span>
 </yogogym:menuItem>
 
-<yogogym:menuItem active="${name eq 'submittedChallenges'}" url="/admin/challenges/submitted" title="Submitted Challenges">
+<yogogym:menuItem active="${name eq 'submittedInscriptions'}" url="/admin/inscriptions/submitted" title="Submitted Inscriptions">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Submitted Challenges</span>
+	<span>Submitted Inscriptions</span>
 </yogogym:menuItem>
 					
 <yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Clases">

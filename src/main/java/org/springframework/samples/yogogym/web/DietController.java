@@ -1,5 +1,7 @@
 package org.springframework.samples.yogogym.web;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +75,7 @@ public class DietController {
 
 		Diet diet = new Diet();
 		Client client = this.clientService.findClientById(clientId);
-		List<DietType> dietTypes = List.of(DietType.values());
+		List<DietType> dietTypes = Arrays.asList(DietType.values());
 
 		model.addAttribute("diet", diet);
 		model.addAttribute("client", client);
