@@ -10,6 +10,6 @@ public interface ChallengeRepository extends CrudRepository<Challenge, Integer>{
 
 	@Query("SELECT i.challenge from Inscription i WHERE i.status=1")
 	List<Challenge> findSubmittedChallenges();
-
+	
 
 }
