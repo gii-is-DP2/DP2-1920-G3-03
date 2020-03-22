@@ -1,11 +1,12 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <%@ attribute name="menuName" required="true" rtexprvalue="true"
               description="Name of the active menu: home, owners, vets or error" %>
 
-	<petclinic:menu name="${menuName}"/>
-
-<!--
-	<petclinic:test />
--->
+	<%--	
+	<yogogym:menu name="${menuName}"/>
+	
+	--%>
+	
+	<yogogym:menu name="${menuName}"/>
