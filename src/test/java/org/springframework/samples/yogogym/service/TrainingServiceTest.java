@@ -1,6 +1,7 @@
 package org.springframework.samples.yogogym.service;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,15 @@ public class TrainingServiceTest {
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	private final int CLIENT_ID=1;
 	private final int TRAINING_ID=1;
-	private final Date now = new Date();
+	private final static Calendar now = Calendar.getInstance();
+	
+	@BeforeAll
+	public static void setup() {
+		now.set(Calendar.HOUR, 0);
+		now.set(Calendar.MINUTE, 0);
+		now.set(Calendar.SECOND, 0);
+		now.set(Calendar.MILLISECOND, 0);
+	}
 	
 	//TODO CHECK ALL ATTRIBUTES
 	@Test
@@ -76,7 +86,6 @@ public class TrainingServiceTest {
 		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	@Transactional
 	public void shouldInsertTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
@@ -87,6 +96,9 @@ public class TrainingServiceTest {
 		int foundClient = clientTrainings.size();
 		
 		Training training = createSampleTraining(0,7);
+		Calendar initDate = (Calendar) now.clone();
+		Calendar endDate = (Calendar) now.clone();
+		endDate.add(Calendar.DAY_OF_MONTH, 7);
 		
 		this.trainingService.saveTraining(training);
 		
@@ -100,9 +112,9 @@ public class TrainingServiceTest {
 		assertThat(training.getId().longValue()).isNotNull();
 		assertThat(training.getName()).isEqualTo("Nuevo Entrenamiento");
 		assertThat(dateFormat.format(training.getInitialDate()))
-		.isEqualTo(dateFormat.format(new Date(now.getYear(), now.getMonth(), now.getDate())));
+		.isEqualTo(dateFormat.format(initDate.getTime()));
 		assertThat(dateFormat.format(training.getEndDate()))
-		.isEqualTo(dateFormat.format(new Date(now.getYear(), now.getMonth(), now.getDate()+7)));
+		.isEqualTo(dateFormat.format(endDate.getTime()));
 		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
 		
 	}
@@ -127,7 +139,6 @@ public class TrainingServiceTest {
 		
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	@Transactional
 	public void shouldNotInsertTrainingDueToEndBeforeEqualsInit() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
@@ -141,7 +152,8 @@ public class TrainingServiceTest {
 		
 		assertThrows(EndBeforeEqualsInitException.class, ()->this.trainingService.saveTraining(training));
 		
-		training.setEndDate(new Date(now.getYear(), now.getMonth(), now.getDate()));
+		Calendar endDate = (Calendar) now.clone();
+		training.setEndDate(endDate.getTime());
 		assertThrows(EndBeforeEqualsInitException.class, ()->this.trainingService.saveTraining(training));
 		
 		allTrainings = this.trainingService.findAllTrainings();
@@ -151,7 +163,26 @@ public class TrainingServiceTest {
 		
 	}
 	
-	@SuppressWarnings("deprecation")
+	@Test
+	@Transactional
+	public void shouldNotInsertTrainingDueToLongerThan90Days() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
+		
+		Collection<Training> allTrainings = this.trainingService.findAllTrainings();
+		int foundAll = allTrainings.size();
+		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
+		int foundClient = clientTrainings.size();
+		
+		Training training = createSampleTraining(0,92);
+		
+		assertThrows(LongerThan90DaysException.class, ()->this.trainingService.saveTraining(training));
+		
+		allTrainings = this.trainingService.findAllTrainings();
+		assertThat(allTrainings.size()).isNotEqualTo(foundAll+1);
+		clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
+		assertThat(clientTrainings.size()).isNotEqualTo(foundClient+1);
+		
+	}
+	
 	@Test
 	@Transactional
 	public void shouldNotInsertTrainingDueToInitInTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
@@ -167,13 +198,19 @@ public class TrainingServiceTest {
 		Training training2 = createSampleTraining(0,14);
 		assertThrows(InitInTrainingException.class, ()->this.trainingService.saveTraining(training2));
 		
-		training2.setInitialDate(new Date(now.getYear(), now.getMonth(), now.getDate()+1));
+		Calendar initDate = (Calendar) now.clone();
+		initDate.add(Calendar.DAY_OF_MONTH, 1);
+		training2.setInitialDate(initDate.getTime());
 		assertThrows(InitInTrainingException.class, ()->this.trainingService.saveTraining(training2));
 		
-		training2.setInitialDate(new Date(now.getYear(), now.getMonth(), now.getDate()+6));
+		initDate = (Calendar) now.clone();
+		initDate.add(Calendar.DAY_OF_MONTH, 6);
+		training2.setInitialDate(initDate.getTime());
 		assertThrows(InitInTrainingException.class, ()->this.trainingService.saveTraining(training2));
 		
-		training2.setInitialDate(new Date(now.getYear(), now.getMonth(), now.getDate()+7));
+		initDate = (Calendar) now.clone();
+		initDate.add(Calendar.DAY_OF_MONTH, 7);
+		training2.setInitialDate(initDate.getTime());
 		assertThrows(InitInTrainingException.class, ()->this.trainingService.saveTraining(training2));
 		
 		allTrainings = this.trainingService.findAllTrainings();
@@ -182,7 +219,6 @@ public class TrainingServiceTest {
 		assertThat(clientTrainings.size()).isNotEqualTo(foundClient+2);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	@Transactional
 	public void shouldNotInsertTrainingDueToEndInTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
@@ -198,13 +234,19 @@ public class TrainingServiceTest {
 		Training training2 = createSampleTraining(0,7);
 		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(training2));
 		
-		training2.setEndDate(new Date(now.getYear(), now.getMonth(), now.getDate()+8));
+		Calendar endDate = (Calendar) now.clone();
+		endDate.add(Calendar.DAY_OF_MONTH, 8);
+		training2.setEndDate(endDate.getTime());
 		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(training2));
 		
-		training2.setEndDate(new Date(now.getYear(), now.getMonth(), now.getDate()+13));
+		endDate = (Calendar) now.clone();
+		endDate.add(Calendar.DAY_OF_MONTH, 13);
+		training2.setEndDate(endDate.getTime());
 		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(training2));
 		
-		training2.setEndDate(new Date(now.getYear(), now.getMonth(), now.getDate()+14));
+		endDate = (Calendar) now.clone();
+		endDate.add(Calendar.DAY_OF_MONTH, 14);
+		training2.setEndDate(endDate.getTime());
 		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(training2));
 		
 		allTrainings = this.trainingService.findAllTrainings();
@@ -234,7 +276,6 @@ public class TrainingServiceTest {
 		assertThat(clientTrainings.size()).isNotEqualTo(foundClient+2);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	@Transactional
 	public void shouldUpdateTraining() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
@@ -256,7 +297,9 @@ public class TrainingServiceTest {
 		training = clientTrainingsList.get(clientTrainingsList.size()-1);
 		
 		String newName = "Nuevo Entrenamiento Actualizado";
-		Date newEndDate = new Date(now.getYear(), now.getMonth(), now.getDate()+5);
+		Calendar aux = (Calendar) now.clone();
+		aux.add(Calendar.DAY_OF_MONTH, 5);
+		Date newEndDate = aux.getTime();
 		training.setName(newName);
 		training.setEndDate(newEndDate);
 		
@@ -264,50 +307,111 @@ public class TrainingServiceTest {
 		
 		training = clientTrainingsList.get(clientTrainingsList.size()-1);
 		assertThat(training.getName()).isEqualTo(newName);
-		assertThat(dateFormat.format(training.getEndDate())).isEqualTo(dateFormat.format(new Date(now.getYear(), now.getMonth(), now.getDate()+5)));
-		
-		allTrainings = this.trainingService.findAllTrainings();
-		assertThat(allTrainings.size()).isEqualTo(foundAll+1);
-		clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
-		assertThat(clientTrainings.size()).isEqualTo(foundClient+1);
+		assertThat(dateFormat.format(training.getEndDate())).isEqualTo(dateFormat.format(newEndDate));
 	}
 	
-	@SuppressWarnings("deprecation")
+	//TODO Test failing
 	@Test
 	@Transactional
 	public void shouldNotUpdateTrainingDueToPastEnd() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
 		
-		Collection<Training> allTrainings = this.trainingService.findAllTrainings();
-		int foundAll = allTrainings.size();
-		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
-		int foundClient = clientTrainings.size();
+		Training training = this.trainingService.findTrainingById(TRAINING_ID);
+		
+		String newName = "Entrenamiento 1 Actualizado";
+		Calendar aux = (Calendar) now.clone();
+		aux.add(Calendar.DAY_OF_MONTH, -1);
+		Date newEndDate = aux.getTime();
+		
+		training.setName(newName);
+		training.setEndDate(newEndDate);
+		
+		assertThrows(PastEndException.class, ()->this.trainingService.saveTraining(training));
+		
+	}
+	
+	@Test
+	@Transactional
+	public void shouldNotUpdateTrainingDueToLongerThan90Days() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
 		
 		Training training = createSampleTraining(0,7);
 		this.trainingService.saveTraining(training);
 		
-		allTrainings = this.trainingService.findAllTrainings();
-		assertThat(allTrainings.size()).isEqualTo(foundAll+1);
-		clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
-		assertThat(clientTrainings.size()).isEqualTo(foundClient+1);
-		
+		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		List<Training> clientTrainingsList = (List<Training>) clientTrainings;
-		training = clientTrainingsList.get(clientTrainingsList.size()-1);
+		Training afterCreateTraining = clientTrainingsList.get(clientTrainingsList.size()-1);
 		
 		String newName = "Nuevo Entrenamiento Actualizado";
-		Date newEndDate = new Date(now.getYear(), now.getMonth(), now.getDate()+5);
-		training.setName(newName);
-		training.setEndDate(newEndDate);
+		Calendar aux = (Calendar) now.clone();
+		aux.add(Calendar.DAY_OF_MONTH, 92);
+		Date newEndDate = aux.getTime();
+		afterCreateTraining.setName(newName);
+		afterCreateTraining.setEndDate(newEndDate);
+		assertThrows(LongerThan90DaysException.class, ()->this.trainingService.saveTraining(afterCreateTraining));
+	
+	}
+	
+	@Test
+	@Transactional
+	public void shouldNotUpdateTrainingDueToEndInTraining() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
 		
+		Training training2 = createSampleTraining(8,15);
+		this.trainingService.saveTraining(training2);
+		Training training = createSampleTraining(0,7);
 		this.trainingService.saveTraining(training);
 		
-		training = clientTrainingsList.get(clientTrainingsList.size()-1);
-		assertThat(training.getName()).isEqualTo(newName);
-		assertThat(dateFormat.format(training.getEndDate())).isEqualTo(dateFormat.format(new Date(now.getYear(), now.getMonth(), now.getDate()+5)));
+		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
+		List<Training> clientTrainingsList = (List<Training>) clientTrainings;
+		Training afterCreateTraining = clientTrainingsList.get(clientTrainingsList.size()-1);
 		
-		allTrainings = this.trainingService.findAllTrainings();
-		assertThat(allTrainings.size()).isEqualTo(foundAll+1);
-		clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
-		assertThat(clientTrainings.size()).isEqualTo(foundClient+1);
+		String newName = "Nuevo Entrenamiento Actualizado";
+		Calendar aux = (Calendar) now.clone();
+		aux.add(Calendar.DAY_OF_MONTH, 8);
+		Date newEndDate = aux.getTime();
+		afterCreateTraining.setName(newName);
+		afterCreateTraining.setEndDate(newEndDate);
+		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(afterCreateTraining));
+		
+		aux = (Calendar) now.clone();
+		aux.add(Calendar.DAY_OF_MONTH, 9);
+		newEndDate = aux.getTime();
+		afterCreateTraining.setEndDate(newEndDate);
+		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(afterCreateTraining));
+		
+		aux = (Calendar) now.clone();
+		aux.add(Calendar.DAY_OF_MONTH, 14);
+		newEndDate = aux.getTime();
+		afterCreateTraining.setEndDate(newEndDate);
+		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(afterCreateTraining));
+		
+		aux = (Calendar) now.clone();
+		aux.add(Calendar.DAY_OF_MONTH, 15);
+		newEndDate = aux.getTime();
+		afterCreateTraining.setEndDate(newEndDate);
+		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(afterCreateTraining));
+		
+	}
+	
+	@Test
+	@Transactional
+	public void shouldNotUpdateTrainingDueToIncludingTraining() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
+		
+		Training training2 = createSampleTraining(8,15);
+		this.trainingService.saveTraining(training2);
+		Training training = createSampleTraining(0,7);
+		this.trainingService.saveTraining(training);
+		
+		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
+		List<Training> clientTrainingsList = (List<Training>) clientTrainings;
+		Training afterCreateTraining = clientTrainingsList.get(clientTrainingsList.size()-1);
+		
+		String newName = "Nuevo Entrenamiento Actualizado";
+		Calendar aux = (Calendar) now.clone();
+		aux.add(Calendar.DAY_OF_MONTH, 16);
+		Date newEndDate = aux.getTime();
+		afterCreateTraining.setName(newName);
+		afterCreateTraining.setEndDate(newEndDate);
+		assertThrows(PeriodIncludingTrainingException.class, ()->this.trainingService.saveTraining(afterCreateTraining));
+		
 	}
 	
 	@Test
@@ -330,13 +434,18 @@ public class TrainingServiceTest {
 		assertThat(clientTrainings.size()).isEqualTo(foundClient-1);
 	}
 	
-	@SuppressWarnings("deprecation")
 	private Training createSampleTraining(int addInitDate, int addEndDate) {
+		
+		Calendar initDate = (Calendar) now.clone();
+		Calendar endDate = (Calendar) now.clone();
+		
+		initDate.add(Calendar.DAY_OF_MONTH, addInitDate);
+		endDate.add(Calendar.DAY_OF_MONTH, addEndDate);
 		
 		Training training = new Training();
 		training.setName("Nuevo Entrenamiento");
-		training.setInitialDate(new Date(now.getYear(), now.getMonth(), now.getDate() + addInitDate));
-		training.setEndDate(new Date(now.getYear(), now.getMonth(), now.getDate() + addEndDate));
+		training.setInitialDate(initDate.getTime());
+		training.setEndDate(endDate.getTime());
 		Client client = this.clientService.findClientById(CLIENT_ID);
 		training.setClient(client);
 		

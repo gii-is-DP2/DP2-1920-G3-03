@@ -97,7 +97,6 @@ public class TrainingService {
 		
 		long diffInMillies = Math.abs(endDate.getTime()-initialDate.getTime());
 		long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-		System.out.println("PATATA"+diff);
 		
 		Date now = new Date();
 		now = new Date(now.getYear(), now.getMonth(), now.getDate());
@@ -110,12 +109,12 @@ public class TrainingService {
 			throw new PastInitException();
 		}
 		// End date before or equals to initial date?
-		if(endDate.compareTo(initialDate)<=0) {
+		else if(endDate.compareTo(initialDate)<=0) {
 			anyException = false;
 			throw new EndBeforeEqualsInitException();
 		}
 		// Training longer than 90 days?
-		if(diff>90) {
+		else if(diff>90) {
 			anyException = false;
 			throw new LongerThan90DaysException();
 		}
@@ -148,11 +147,11 @@ public class TrainingService {
 						anyException=false;
 						throw new InitInTrainingException(initAssoc,endAssoc);
 					}
-					if(endInPeriod) {
+					else if(endInPeriod) {
 						anyException=false;
 						throw new EndInTrainingException(initAssoc,endAssoc);
 					}
-					if(initAssocInPeriod && endAssocInPeriod) {
+					else if(initAssocInPeriod && endAssocInPeriod) {
 						anyException=false;
 						throw new PeriodIncludingTrainingException(initAssoc,endAssoc);
 					}
