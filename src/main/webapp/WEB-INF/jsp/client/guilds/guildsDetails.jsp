@@ -32,7 +32,7 @@
 		</spring:url>
 		<a href="${fn:escapeXml(joinUrl)}" class="btn btn-default">Join the Guild</a>
 	</c:if>
-	<c:if test="${(!empty client.guild) && (guild.creator != client.user.username)}">
+	<c:if test="${(client.guild.id == guild.id) && (guild.creator != client.user.username)}">
 		<spring:url value="/client/${clientUsername}/guilds/${guild.id}/leave"
 			var="leaveUrl">
 		</spring:url>
