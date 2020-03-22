@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -52,7 +53,6 @@ public class TrainingServiceTest {
 		now.set(Calendar.MILLISECOND, 0);
 	}
 	
-	//TODO CHECK ALL ATTRIBUTES
 	@Test
 	public void shouldFindAllTrainings() {
 		Collection<Training> trainings = this.trainingService.findAllTrainings();
@@ -300,17 +300,24 @@ public class TrainingServiceTest {
 		Calendar aux = (Calendar) now.clone();
 		aux.add(Calendar.DAY_OF_MONTH, 5);
 		Date newEndDate = aux.getTime();
-		training.setName(newName);
-		training.setEndDate(newEndDate);
 		
-		this.trainingService.saveTraining(training);
+		Training auxTraining = new Training();
+		BeanUtils.copyProperties(training, auxTraining);
+		auxTraining.setName(newName);
+		auxTraining.setEndDate(newEndDate);
+		this.trainingService.saveTraining(auxTraining);
 		
+		allTrainings = this.trainingService.findAllTrainings();
+		assertThat(allTrainings.size()).isEqualTo(foundAll+1);
+		clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
+		assertThat(clientTrainings.size()).isEqualTo(foundClient+1);
+		
+		clientTrainingsList = (List<Training>) clientTrainings;
 		training = clientTrainingsList.get(clientTrainingsList.size()-1);
 		assertThat(training.getName()).isEqualTo(newName);
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo(dateFormat.format(newEndDate));
 	}
 	
-	//TODO Test failing
 	@Test
 	@Transactional
 	public void shouldNotUpdateTrainingDueToPastEnd() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
@@ -322,11 +329,16 @@ public class TrainingServiceTest {
 		aux.add(Calendar.DAY_OF_MONTH, -1);
 		Date newEndDate = aux.getTime();
 		
-		training.setName(newName);
-		training.setEndDate(newEndDate);
+		Training auxTraining = new Training();
+		BeanUtils.copyProperties(training, auxTraining);
+		auxTraining.setName(newName);
+		auxTraining.setEndDate(newEndDate);
 		
-		assertThrows(PastEndException.class, ()->this.trainingService.saveTraining(training));
+		assertThrows(PastEndException.class, ()->this.trainingService.saveTraining(auxTraining));
 		
+		training = this.trainingService.findTrainingById(TRAINING_ID);
+		assertThat(training.getName()).isNotEqualTo(newName);
+		assertThat(dateFormat.format(training.getEndDate())).isNotEqualTo(dateFormat.format(newEndDate));
 	}
 	
 	@Test
@@ -344,10 +356,17 @@ public class TrainingServiceTest {
 		Calendar aux = (Calendar) now.clone();
 		aux.add(Calendar.DAY_OF_MONTH, 92);
 		Date newEndDate = aux.getTime();
-		afterCreateTraining.setName(newName);
-		afterCreateTraining.setEndDate(newEndDate);
-		assertThrows(LongerThan90DaysException.class, ()->this.trainingService.saveTraining(afterCreateTraining));
-	
+		
+		Training auxTraining = new Training();
+		BeanUtils.copyProperties(afterCreateTraining, auxTraining);
+		auxTraining.setName(newName);
+		auxTraining.setEndDate(newEndDate);
+		
+		assertThrows(LongerThan90DaysException.class, ()->this.trainingService.saveTraining(auxTraining));
+		
+		training = this.trainingService.findTrainingById(TRAINING_ID);
+		assertThat(training.getName()).isNotEqualTo(newName);
+		assertThat(dateFormat.format(training.getEndDate())).isNotEqualTo(dateFormat.format(newEndDate));
 	}
 	
 	@Test
@@ -367,27 +386,31 @@ public class TrainingServiceTest {
 		Calendar aux = (Calendar) now.clone();
 		aux.add(Calendar.DAY_OF_MONTH, 8);
 		Date newEndDate = aux.getTime();
-		afterCreateTraining.setName(newName);
-		afterCreateTraining.setEndDate(newEndDate);
-		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(afterCreateTraining));
+		
+		Training auxTraining = new Training();
+		BeanUtils.copyProperties(afterCreateTraining, auxTraining);
+		auxTraining.setName(newName);
+		auxTraining.setEndDate(newEndDate);
+		
+		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(auxTraining));
 		
 		aux = (Calendar) now.clone();
 		aux.add(Calendar.DAY_OF_MONTH, 9);
 		newEndDate = aux.getTime();
-		afterCreateTraining.setEndDate(newEndDate);
-		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(afterCreateTraining));
+		auxTraining.setEndDate(newEndDate);
+		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(auxTraining));
 		
 		aux = (Calendar) now.clone();
 		aux.add(Calendar.DAY_OF_MONTH, 14);
 		newEndDate = aux.getTime();
-		afterCreateTraining.setEndDate(newEndDate);
-		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(afterCreateTraining));
+		auxTraining.setEndDate(newEndDate);
+		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(auxTraining));
 		
 		aux = (Calendar) now.clone();
 		aux.add(Calendar.DAY_OF_MONTH, 15);
 		newEndDate = aux.getTime();
-		afterCreateTraining.setEndDate(newEndDate);
-		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(afterCreateTraining));
+		auxTraining.setEndDate(newEndDate);
+		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(auxTraining));
 		
 	}
 	
@@ -408,9 +431,13 @@ public class TrainingServiceTest {
 		Calendar aux = (Calendar) now.clone();
 		aux.add(Calendar.DAY_OF_MONTH, 16);
 		Date newEndDate = aux.getTime();
-		afterCreateTraining.setName(newName);
-		afterCreateTraining.setEndDate(newEndDate);
-		assertThrows(PeriodIncludingTrainingException.class, ()->this.trainingService.saveTraining(afterCreateTraining));
+		
+		Training auxTraining = new Training();
+		BeanUtils.copyProperties(afterCreateTraining, auxTraining);
+		auxTraining.setName(newName);
+		auxTraining.setEndDate(newEndDate);
+		
+		assertThrows(PeriodIncludingTrainingException.class, ()->this.trainingService.saveTraining(auxTraining));
 		
 	}
 	
