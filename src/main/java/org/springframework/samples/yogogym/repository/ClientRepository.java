@@ -2,11 +2,11 @@ package org.springframework.samples.yogogym.repository;
 
 import java.util.Collection;
 import java.util.List;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.model.Trainer;
 
 public interface ClientRepository extends  CrudRepository<Client, String>{
 	
@@ -27,5 +27,8 @@ public interface ClientRepository extends  CrudRepository<Client, String>{
 
 	@Query("SELECT DISTINCT c FROM Client c LEFT JOIN c.inscriptions i WHERE i.status=1")
 	public List<Client> findClientsWithSubmittedInscriptions();
+	
+	@Query("SELECT DISTINCT c FROM Client c LEFT JOIN c.inscriptions i WHERE i.status=2")
+	public List<Client> findClientsWithCompletedInscriptions();
 
 }

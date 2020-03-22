@@ -118,5 +118,7 @@ public class ChallengeService {
 		int week2 = Cal.get(GregorianCalendar.WEEK_OF_YEAR);
 		return week == week2;
 	}
+	
+
 
 }
