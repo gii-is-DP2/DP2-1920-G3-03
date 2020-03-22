@@ -16,6 +16,7 @@ import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
 import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
 import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
 import org.springframework.samples.yogogym.service.exceptions.PastEndException;
 import org.springframework.samples.yogogym.service.exceptions.PastInitException;
@@ -48,10 +49,10 @@ public class TrainingController {
 		this.trainingService = trainingService;
 	}
 	
-//	@InitBinder
-//	public void setAllowedFields(WebDataBinder dataBinder) {
-//		dataBinder.setDisallowedFields("id");
-//	}
+	@InitBinder
+	public void setAllowedFields(WebDataBinder dataBinder) {
+		dataBinder.setDisallowedFields("id");
+	}
 
 	// TRAINER
 
@@ -131,6 +132,9 @@ public class TrainingController {
 			} catch (EndBeforeEqualsInitException e) {
 				result.rejectValue("endDate", null, "The end date must be after the initial date");
 				return "trainer/trainings/trainingCreateOrUpdate";
+			} catch (LongerThan90DaysException e) {
+				result.rejectValue("endDate", null, "The training cannot be longer than 90 days");
+				return "trainer/trainings/trainingCreateOrUpdate";
 			} catch (InitInTrainingException e) {
 				result.rejectValue("initialDate", null, "The training cannot start in a period "
 					+ "with other training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
@@ -140,8 +144,6 @@ public class TrainingController {
 					+ "with other training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
 				return "trainer/trainings/trainingCreateOrUpdate";
 			} catch (PeriodIncludingTrainingException e) {
-				result.rejectValue("initialDate", null, "The training cannot be in a period "
-					+ "which includes another training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
 				result.rejectValue("endDate", null, "The training cannot be in a period "
 					+ "which includes another training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
 				return "trainer/trainings/trainingCreateOrUpdate";
@@ -216,6 +218,9 @@ public class TrainingController {
 			} catch (EndBeforeEqualsInitException e) {
 				result.rejectValue("endDate", null, "The end date must be after the initial date");
 				return "trainer/trainings/trainingCreateOrUpdate";
+			} catch (LongerThan90DaysException e) {
+				result.rejectValue("endDate", null, "The training cannot be longer than 90 days");
+				return "trainer/trainings/trainingCreateOrUpdate";
 			} catch (InitInTrainingException e) {
 				result.rejectValue("initialDate", null, "The training cannot start in a period "
 					+ "with other training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
@@ -225,8 +230,6 @@ public class TrainingController {
 					+ "with other training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
 				return "trainer/trainings/trainingCreateOrUpdate";
 			} catch (PeriodIncludingTrainingException e) {
-				result.rejectValue("initialDate", null, "The training cannot be in a period "
-					+ "which includes another training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
 				result.rejectValue("endDate", null, "The training cannot be in a period "
 					+ "which includes another training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
 				return "trainer/trainings/trainingCreateOrUpdate";
@@ -246,12 +249,14 @@ public class TrainingController {
 		if(training!=null) {
 			this.trainingService.deleteTraining(training);
 			redirectAttrs.addFlashAttribute("deleteMessage", "The training was deleted successfully");
+			return "redirect:/trainer/{trainerUsername}/trainings";
 		}
-		return "redirect:/trainer/{trainerUsername}/trainings";
+		else {
+			return "exception";
+		}
 	}
 	
-	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername)
-	{		
+	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		Client client = this.clientService.findClientById(clientId);
 		

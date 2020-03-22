@@ -31,7 +31,6 @@
 	            </c:otherwise>
 	        </c:choose>
 		
-		<c:out value="${endDateAux}"></c:out>
 		<h3>General information</h3>
 		<form:form modelAttribute="training" class="form-horizontal" id="trainingForm">
 			<div class="form-group has-feedback">

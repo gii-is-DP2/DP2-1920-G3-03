@@ -18,6 +18,7 @@ import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
 import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
 import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
 import org.springframework.samples.yogogym.service.exceptions.PastEndException;
 import org.springframework.samples.yogogym.service.exceptions.PastInitException;
@@ -78,7 +79,7 @@ public class TrainingServiceTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	@Transactional
-	public void shouldInsertTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
+	public void shouldInsertTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
 		
 		Collection<Training> allTrainings = this.trainingService.findAllTrainings();
 		int foundAll = allTrainings.size();
@@ -153,7 +154,7 @@ public class TrainingServiceTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	@Transactional
-	public void shouldNotInsertTrainingDueToInitInTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
+	public void shouldNotInsertTrainingDueToInitInTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
 		
 		Collection<Training> allTrainings = this.trainingService.findAllTrainings();
 		int foundAll = allTrainings.size();
@@ -184,7 +185,7 @@ public class TrainingServiceTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	@Transactional
-	public void shouldNotInsertTrainingDueToEndInTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
+	public void shouldNotInsertTrainingDueToEndInTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
 		
 		Collection<Training> allTrainings = this.trainingService.findAllTrainings();
 		int foundAll = allTrainings.size();
@@ -214,7 +215,7 @@ public class TrainingServiceTest {
 	
 	@Test
 	@Transactional
-	public void shouldNotInsertTrainingDuePeriodIncludingTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
+	public void shouldNotInsertTrainingDuePeriodIncludingTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
 		
 		Collection<Training> allTrainings = this.trainingService.findAllTrainings();
 		int foundAll = allTrainings.size();
@@ -236,7 +237,7 @@ public class TrainingServiceTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	@Transactional
-	public void shouldUpdateTraining() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException {
+	public void shouldUpdateTraining() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
 		
 		Collection<Training> allTrainings = this.trainingService.findAllTrainings();
 		int foundAll = allTrainings.size();
@@ -274,7 +275,7 @@ public class TrainingServiceTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	@Transactional
-	public void shouldNotUpdateTrainingDueToPastEnd() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException {
+	public void shouldNotUpdateTrainingDueToPastEnd() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
 		
 		Collection<Training> allTrainings = this.trainingService.findAllTrainings();
 		int foundAll = allTrainings.size();

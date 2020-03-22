@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import org.springframework.samples.yogogym.repository.ClientRepository;
 import org.springframework.samples.yogogym.repository.TrainingRepository;
 import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
 import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
 import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
 import org.springframework.samples.yogogym.service.exceptions.PastEndException;
 import org.springframework.samples.yogogym.service.exceptions.PastInitException;
@@ -82,17 +84,24 @@ public class TrainingService {
 	
 	@SuppressWarnings("deprecation")
 	@Transactional(rollbackFor = {PastInitException.class, PastEndException.class, EndBeforeEqualsInitException.class, 
-		InitInTrainingException.class, EndInTrainingException.class, PeriodIncludingTrainingException.class})
+		InitInTrainingException.class, EndInTrainingException.class, PeriodIncludingTrainingException.class, LongerThan90DaysException.class})
 	
 	public void saveTraining(Training training) throws DataAccessException, PastInitException, EndBeforeEqualsInitException,
-	InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
+	InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
+		
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		
 		Client client = training.getClient();
 		Date initialDate = training.getInitialDate();
 		Date endDate = training.getEndDate();
+		
+		long diffInMillies = Math.abs(endDate.getTime()-initialDate.getTime());
+		long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+		System.out.println("PATATA"+diff);
+		
 		Date now = new Date();
 		now = new Date(now.getYear(), now.getMonth(), now.getDate());
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		
 		Boolean anyException = true;
 
 		// Training starting in the past?
@@ -101,20 +110,24 @@ public class TrainingService {
 			throw new PastInitException();
 		}
 		// End date before or equals to initial date?
-		else if(endDate.compareTo(initialDate)<=0) {
+		if(endDate.compareTo(initialDate)<=0) {
 			anyException = false;
 			throw new EndBeforeEqualsInitException();
 		}
+		// Training longer than 90 days?
+		if(diff>90) {
+			anyException = false;
+			throw new LongerThan90DaysException();
+		}
 		// No training ending in the past
-		else if(!training.isNew()) {
+		if(!training.isNew()) {
 			Training oldTraining = this.trainingRepository.findTrainingById(training.getId());
 			if(endDate.before(now) && !endDate.equals(oldTraining.getEndDate())){
 				anyException = false;
 				throw new PastEndException();
-			}
-			
+			}	
 		}
-		else {
+		if (anyException) {
 			// Period without other trainings
 			List<Training> associatedTrainings = training.getClient().getTrainings()
 				.stream().sorted(Comparator.comparing(Training::getInitialDate)).collect(Collectors.toList());
@@ -135,11 +148,11 @@ public class TrainingService {
 						anyException=false;
 						throw new InitInTrainingException(initAssoc,endAssoc);
 					}
-					else if(endInPeriod) {
+					if(endInPeriod) {
 						anyException=false;
 						throw new EndInTrainingException(initAssoc,endAssoc);
 					}
-					else if(initAssocInPeriod && endAssocInPeriod) {
+					if(initAssocInPeriod && endAssocInPeriod) {
 						anyException=false;
 						throw new PeriodIncludingTrainingException(initAssoc,endAssoc);
 					}
