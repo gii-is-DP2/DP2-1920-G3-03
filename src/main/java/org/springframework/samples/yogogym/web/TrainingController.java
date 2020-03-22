@@ -14,7 +14,7 @@ import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
-import org.springframework.samples.yogogym.service.exceptions.EndBeforeInitException;
+import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
 import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
 import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
 import org.springframework.samples.yogogym.service.exceptions.PastEndException;
@@ -48,10 +48,10 @@ public class TrainingController {
 		this.trainingService = trainingService;
 	}
 	
-	@InitBinder
-	public void setAllowedFields(WebDataBinder dataBinder) {
-		dataBinder.setDisallowedFields("id");
-	}
+//	@InitBinder
+//	public void setAllowedFields(WebDataBinder dataBinder) {
+//		dataBinder.setDisallowedFields("id");
+//	}
 
 	// TRAINER
 
@@ -128,7 +128,7 @@ public class TrainingController {
 			} catch (PastEndException e) {
 				result.rejectValue("endDate", null, "The end date cannot be in the past");
 				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (EndBeforeInitException e) {
+			} catch (EndBeforeEqualsInitException e) {
 				result.rejectValue("endDate", null, "The end date must be after the initial date");
 				return "trainer/trainings/trainingCreateOrUpdate";
 			} catch (InitInTrainingException e) {
@@ -213,7 +213,7 @@ public class TrainingController {
 			} catch (PastEndException e) {
 				result.rejectValue("endDate", null, "The end date cannot be in the past");
 				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (EndBeforeInitException e) {
+			} catch (EndBeforeEqualsInitException e) {
 				result.rejectValue("endDate", null, "The end date must be after the initial date");
 				return "trainer/trainings/trainingCreateOrUpdate";
 			} catch (InitInTrainingException e) {
@@ -250,7 +250,7 @@ public class TrainingController {
 		return "redirect:/trainer/{trainerUsername}/trainings";
 	}
 	
-	public Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername)
+	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername)
 	{		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		Client client = this.clientService.findClientById(clientId);
@@ -258,11 +258,18 @@ public class TrainingController {
 		return isLoggedTrainer(trainerUsername)&&trainer.getClients().contains(client);
 	}
 	
-	public Boolean isLoggedTrainer(final String trainerUsername) {
+	private Boolean isLoggedTrainer(final String trainerUsername) {
 		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String username = ((UserDetails)principal).getUsername();
+		String username = "";
+		
+		if(principal instanceof UserDetails) {
+			username = ((UserDetails)principal).getUsername();
+		}
+		else {
+			username = principal.toString();
+		}
 		
 		return trainer.getUser().getUsername().equals(username);
 	}

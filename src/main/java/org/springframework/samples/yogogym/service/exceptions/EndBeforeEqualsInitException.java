@@ -1,5 +1,5 @@
 package org.springframework.samples.yogogym.service.exceptions;
 
-public class EndBeforeInitException extends Exception{
+public class EndBeforeEqualsInitException extends Exception{
     
 }

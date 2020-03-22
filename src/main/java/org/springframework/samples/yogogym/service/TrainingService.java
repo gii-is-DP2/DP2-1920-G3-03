@@ -29,7 +29,7 @@ import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.ClientRepository;
 import org.springframework.samples.yogogym.repository.TrainingRepository;
-import org.springframework.samples.yogogym.service.exceptions.EndBeforeInitException;
+import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
 import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
 import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
 import org.springframework.samples.yogogym.service.exceptions.PastEndException;
@@ -56,11 +56,35 @@ public class TrainingService {
 		this.clientRepository = clientRepository;
 	}
 	
+	@Transactional
+	public Collection<Training> findAllTrainings() throws DataAccessException {
+		
+		Collection<Training> res = (Collection<Training>) this.trainingRepository.findAll();
+		
+		return res;
+	}
+	
+	@Transactional
+	public Collection<Training> findTrainingFromClient(int clientId) throws DataAccessException {
+		
+		Collection<Training> res = this.trainingRepository.findTrainingFromClient(clientId);
+		
+		return res;		
+	}
+	
+	@Transactional
+	public Training findTrainingById(int trainingId) throws DataAccessException {
+		
+		Training res = this.trainingRepository.findTrainingById(trainingId);
+		
+		return res;		
+	}
+	
 	@SuppressWarnings("deprecation")
-	@Transactional(rollbackFor = {PastInitException.class, PastEndException.class, EndBeforeInitException.class, 
+	@Transactional(rollbackFor = {PastInitException.class, PastEndException.class, EndBeforeEqualsInitException.class, 
 		InitInTrainingException.class, EndInTrainingException.class, PeriodIncludingTrainingException.class})
 	
-	public void saveTraining(Training training) throws DataAccessException, PastInitException, EndBeforeInitException,
+	public void saveTraining(Training training) throws DataAccessException, PastInitException, EndBeforeEqualsInitException,
 	InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
 		
 		Client client = training.getClient();
@@ -79,7 +103,7 @@ public class TrainingService {
 		// End date before or equals to initial date?
 		else if(endDate.compareTo(initialDate)<=0) {
 			anyException = false;
-			throw new EndBeforeInitException();
+			throw new EndBeforeEqualsInitException();
 		}
 		// No training ending in the past
 		else if(!training.isNew()) {
@@ -124,13 +148,15 @@ public class TrainingService {
 					}
 				}
 			}
+		}
 		
-			if(anyException) {
-				// Checking if it is create or update
-				if(!client.getTrainings().contains(training)) {
-					client.getTrainings().add(training);
-					this.clientRepository.save(client);
-				}
+		if(anyException) {
+			// Checking if it is create or update
+			if(training.isNew()) {
+				client.getTrainings().add(training);
+				this.clientRepository.save(client);
+			}
+			else {
 				this.trainingRepository.save(training);
 			}
 		}
@@ -143,22 +169,4 @@ public class TrainingService {
 		this.clientRepository.save(client);
 		this.trainingRepository.delete(training);
 	}
-
-	
-	@Transactional
-	public Training findTrainingById(int trainingId) throws DataAccessException {
-		
-		Training res = this.trainingRepository.findTrainingById(trainingId);
-		
-		return res;		
-	}
-	
-	@Transactional
-	public Collection<Training> findTrainingFromClient(int clientId) throws DataAccessException {
-		
-		Collection<Training> res = this.trainingRepository.findTrainingFromClient(clientId);
-		
-		return res;		
-	}
-	
 }
