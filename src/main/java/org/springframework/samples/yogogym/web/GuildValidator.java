@@ -29,6 +29,8 @@ public class GuildValidator implements Validator{
 	
 	if(validar.getLogo() == "") {
 		errors.rejectValue("logo", REQUIRED, "Must provide an image for your Guild");
+	}else if(!validar.getLogo().startsWith("https://")) {
+		errors.rejectValue("logo", REQUIRED, "Must provide an URL starting with 'https://'");
 	}
 	
 	if(validar.getDescription() == "") {
