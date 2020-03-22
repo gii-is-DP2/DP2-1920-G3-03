@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,13 +93,6 @@ public class ClasificationControllerTests {
 				.andExpect(model().attribute("hasChallenge", false))
 				.andExpect(model().attribute("hasChallengeClasificationWeek", true))
 				.andExpect(model().attribute("hasChallengeClasificationAll", true));
-	}
-
-	@WithMockUser(username = "trainer1", authorities = { "client" })
-	@Test
-	void testWrongAuthority() throws Exception {
-		mockMvc.perform(get("/client/{clientUsername}/clasification", "trainer1")).andExpect(status().isOk())
-				.andExpect(view().name("client/clasifications/clasification"));
 	}
 
 	@WithMockUser(username = "client1", authorities = { "client" })
