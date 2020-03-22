@@ -7,9 +7,9 @@ INSERT INTO admins VALUES (1, 'proyectowip@vekto.com','Vekto', 'Rino', '12345678
 
 /* GUILD */
 
-INSERT INTO guilds(id,creator,description,name) VALUES (1,'client1','Here we practice Calisthenics for everyone','Calisthenics');
-INSERT INTO guilds(id,creator,description,name) VALUES (2,'client2','Here we practice Weightlifting for everyone','Weightlifting');
-INSERT INTO guilds(id,creator,description,name) VALUES (3,'client3','Here we help you achieve your goals','Gym for Dummies');
+INSERT INTO guilds(id,creator,description,name,logo) VALUES (1,'client1','Here we practice Calisthenics for everyone','Calisthenics','https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/heria10-1566732385.jpg?crop=1.00xw:0.922xh;0,0.0778xh&resize=980:*');
+INSERT INTO guilds(id,creator,description,name,logo) VALUES (2,'client2','Here we practice Weightlifting for everyone','Weightlifting','https://www.iwf.net/wp-content/uploads/2017/12/DSC00237.jpg');
+INSERT INTO guilds(id,creator,description,name,logo) VALUES (3,'client3','Here we help you achieve your goals','Gym for Dummies','https://www.mobiefit.com/blog/wp-content/uploads/2017/06/shutterstock_326360432.jpg');
 
 /* CLIENT */
 

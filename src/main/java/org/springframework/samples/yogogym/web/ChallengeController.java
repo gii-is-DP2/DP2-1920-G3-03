@@ -143,7 +143,8 @@ public class ChallengeController {
 	}
 	
 	@PostMapping("/admin/challenges/{challengeId}/edit")
-	public String processUpdateForm(@PathVariable("challengeId")int challengeId, @ModelAttribute("exerciseId")int exerciseId, @Valid Challenge challenge,  BindingResult result,ModelMap model) {
+	public String processUpdateForm(@PathVariable("challengeId")int challengeId, 
+			@ModelAttribute("exerciseId")int exerciseId, @Valid Challenge challenge,  BindingResult result,ModelMap model) {
 		
 		if(result.hasErrors()) {
 			model.put("challenge",challenge);
