@@ -7,7 +7,15 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="routineLine">
-    <h2>New Routine Line for <c:out value="${routine.name} (${client.firstName} ${client.lastName})"/></h2>
+
+	<c:choose>
+		<c:when test="${routineLine['new']}">		
+		    <h2>New Routine Line for <c:out value="${routine.name} (${client.firstName} ${client.lastName})"/></h2>
+		</c:when>
+		<c:otherwise>
+			<h2>Update Routine Line for <c:out value="${routine.name} (${client.firstName} ${client.lastName})"/></h2>
+		</c:otherwise>
+	</c:choose>
 
 	<h3>Routine Line Data</h3>
 	<form:form modelAttribute="routineLine" class="form-horizontal">
@@ -26,9 +34,16 @@
 				
 			<br>
 			<div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button class="btn btn-default" type="submit">Add Routine Line</button>
-                </div>
+                <div class="col-sm-offset-2 col-sm-10">                    
+                    <c:choose>
+						<c:when test="">		
+						     <button class="btn btn-default" type="submit">Add Routine Line</button>
+						</c:when>
+						<c:otherwise>
+							 <button class="btn btn-default" type="submit">Update Routine Line</button>
+						</c:otherwise>
+					</c:choose>
+				</div>
             </div>
 		</div>
 	</form:form>

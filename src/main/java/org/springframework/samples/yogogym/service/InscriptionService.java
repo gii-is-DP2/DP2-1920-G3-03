@@ -16,12 +16,16 @@
 package org.springframework.samples.yogogym.service;
 
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.yogogym.model.Challenge;
+import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Inscription;
+import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.repository.InscriptionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,16 +53,6 @@ public class InscriptionService {
 		return inscriptionRepo.findInscriptionsByChallengeId(challengeId);
 	}
 	
-	@Transactional
-	public void saveInscription(Inscription inscription) throws DataAccessException{
-		inscriptionRepo.save(inscription);
-	}
-
-	@Transactional
-	public void deleteInscription(Inscription inscription) {
-		
-		inscriptionRepo.delete(inscription);
-	}
 	
 	@Transactional
 	public Collection<Inscription> findSubmittedInscriptions() {
@@ -66,10 +60,12 @@ public class InscriptionService {
 		return inscriptionRepo.findSubmittedInscriptions();
 	}
 
-	public Inscription findInscriptionsByInscriptionId(int inscriptionId) {
+	
+	public Inscription findInscriptionByInscriptionId(int inscriptionId) {
 		
 		return inscriptionRepo.findById(inscriptionId).get();
 	}
+	
 
 	public Collection<Inscription> findAll() {
 		
@@ -80,6 +76,28 @@ public class InscriptionService {
 	public List<Inscription> findInscriptionsByUsername(String username){
 		
 		return this.inscriptionRepo.findIncriptionsByUsername(username);
+  }
+
+
+	public Inscription findInscriptionByClientAndChallenge(Client client, Challenge challenge) {
+		
+		Collection<Inscription> inscriptions = this.findInscriptionsByChallengeId(challenge.getId());
+		Inscription inscription = inscriptions.stream().filter(i -> client.getInscriptions().contains(i)).findFirst().get();
+	   	
+		//If the endDate have passed, its fails
+	   	Calendar now = Calendar.getInstance();
+	   	if(challenge.getEndDate().before(now.getTime())) {
+	   		if(inscription.getStatus().equals(Status.PARTICIPATING) || inscription.getStatus().equals(Status.SUBMITTED)) {
+	   			inscription.setStatus(Status.FAILED);
+	   			this.saveInscription(inscription);
+	   		}
+	   	}
+		return inscription;
+	}
+	
+	@Transactional
+	public void saveInscription(Inscription inscription) throws DataAccessException{
+		inscriptionRepo.save(inscription);
 	}
 
 }
