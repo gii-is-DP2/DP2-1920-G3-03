@@ -7,21 +7,39 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="routines">
-    <h2>New Routine for <c:out value="${client.firstName} ${client.lastName}"/></h2>
+
+	<c:choose>
+		<c:when test="${routine['new']}">
+			<h2>New Routine for <c:out value="${client.firstName} ${client.lastName}"/></h2>
+		 </c:when>
+		 <c:otherwise>
+		     <h2>Edit Routine for <c:out value="${client.firstName} ${client.lastName}"/></h2>
+		 </c:otherwise>
+	</c:choose>
+    
 
 	<h3>Routine Data</h3>
-	<form:form modelAttribute="routines" id="routineForm">
-
-		<input type="text" id="name" name="name" placeholder="Name" required="required" value="${routine.name}">
-		<br>
-		<input type="text" id="description" name="description" placeholder="description" required="required" value="${routine.description}">
-		<br>
-		<input type="number" id="repsPerWeek" name="repsPerWeek" placeholder="Repetition Per Week" required="required" value="${routine.repsPerWeek}">
-				
-		<br>
+	<form:form modelAttribute="routine" class="form-horizontal">
+		<div class="form-group has-feedback">
+			<yogogym:inputField label="Name" name="name"/>
+			<yogogym:inputField label="Description" name="description"/>
+			<yogogym:inputField label="Repetitions Per Week" name="repsPerWeek"/>
 		
-		<input type="submit" value="Add Routine">
-		
+			<div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                
+                <c:choose>
+					<c:when test="${routine['new']}">
+						 <button class="btn btn-default" type="submit">Add Routine</button>
+					 </c:when>
+					 <c:otherwise>
+					      <button class="btn btn-default" type="submit">Update Routine</button>
+					 </c:otherwise>
+				</c:choose>
+                   
+                </div>
+            </div>
+		</div>
 	</form:form>
     
 </yogogym:layout>

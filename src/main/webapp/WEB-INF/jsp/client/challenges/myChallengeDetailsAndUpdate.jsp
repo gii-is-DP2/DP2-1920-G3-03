@@ -72,7 +72,7 @@
     	<form:form modelAttribute="inscription" class="form-horizontal" 
     	 action="/client/${clientUsername}/challenges/${challenge.id}/inscription/${inscription.id}/submit">
 		
-		<input type="url" id="url" name="url" placeholder="URL" required="required">
+		<input type="url" id="url" name="url" placeholder="https://" pattern="https://.*" required="required">
 	    <input type="submit" value="Submit!">
 		
 		</form:form>

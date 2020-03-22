@@ -20,7 +20,7 @@ public class DashboardServiceTest {
 	@Test
 	void shouldEquipmentControl() {
 		Collection<Training> trainings = this.dashboardService.equipmentControl();
-		assertThat(trainings.size()).isEqualTo(4);
+		assertThat(trainings.size()).isEqualTo(8);
 	}
 	
 	@Test
@@ -32,13 +32,13 @@ public class DashboardServiceTest {
 	@Test
 	void shouldListRepsRoutine() {
 		Integer reps = this.dashboardService.listRepsRoutine(1);
-		assertThat(reps).isEqualTo(4);
+		assertThat(reps).isEqualTo(3);
 	}
 	
 	@Test
 	void shouldListExercise() {
 		List<Integer> exercises = this.dashboardService.listExercise(1);
-		assertThat(exercises.size()).isEqualTo(2);
+		assertThat(exercises.size()).isEqualTo(6);
 	}
 	
 	@Test
@@ -50,6 +50,6 @@ public class DashboardServiceTest {
 	@Test
 	void shouldListNameEquipment() {
 		String name = this.dashboardService.listNameEquipment(1);
-		assertThat(name).isEqualTo("Gemelos_10000");
+		assertThat(name).isEqualTo("Squat-Calf");
 	}
 }

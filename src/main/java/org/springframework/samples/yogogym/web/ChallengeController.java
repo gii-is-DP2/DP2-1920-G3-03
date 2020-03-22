@@ -1,12 +1,8 @@
 package org.springframework.samples.yogogym.web;
 
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -19,6 +15,9 @@ import org.springframework.samples.yogogym.service.ChallengeService;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.samples.yogogym.service.InscriptionService;
+import org.springframework.samples.yogogym.service.exceptions.ChallengeMore3Exception;
+import org.springframework.samples.yogogym.service.exceptions.ChallengeSameNameException;
+import org.springframework.samples.yogogym.service.exceptions.ChallengeWithInscriptionsException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -49,7 +48,7 @@ public class ChallengeController {
 	
 	@InitBinder("challenge")
 	public void initChallengeBinder(WebDataBinder dataBinder) {
-		dataBinder.setValidator(new ChallengeValidator(challengeService));
+		dataBinder.setValidator(new ChallengeValidator());
 	}
 
 	
@@ -65,18 +64,18 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("/admin/challenges/{challengeId}")
-	public String showChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, Model model) {	  
+	public String showChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, Model model) {
 
-	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
-	   	model.addAttribute("challenge", challenge);
-	   	
-	 // If there are inscriptions, it cannot be edited or deleted
-	 Inscription inscription = inscriptionService.findInscriptionByChallengeId(challengeId);
-	 if(inscription == null) {
-	 	model.addAttribute("isModifiable", true);
-	 }
-	   	
-	    return "admin/challenges/challengeDetails";
+		Challenge challenge = this.challengeService.findChallengeById(challengeId);
+		model.addAttribute("challenge", challenge);
+
+		// If there are inscriptions, it cannot be edited or deleted
+		Collection<Inscription> inscriptions = inscriptionService.findInscriptionsByChallengeId(challengeId);
+		if (inscriptions.isEmpty()) {
+			model.addAttribute("isModifiable", true);
+		}
+
+		return "admin/challenges/challengeDetails";
 	}
 	
 	@GetMapping("/admin/challenges/new")
@@ -103,11 +102,24 @@ public class ChallengeController {
 			return "/admin/challenges/challengesCreateOrUpdate";
 		}
 		else {
-			
-			Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
-			challenge.setExercise(exercise);
-			challengeService.saveChallenge(challenge);
-			
+			try{
+				Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
+				challenge.setExercise(exercise);
+				challengeService.saveChallenge(challenge);
+				
+            }catch(Exception ex){
+            	if(ex instanceof ChallengeSameNameException) {
+            		result.rejectValue("name", "required: ", "There is already a challenge with that name the same week");
+            	}
+            	else if(ex instanceof ChallengeMore3Exception) {
+            		result.rejectValue("initialDate", "required: ", "There must not be more than 3 challenges per week");
+            	}
+            	
+            	Collection<Exercise> exercises = this.exerciseService.findAllExercise();
+    			model.addAttribute("exercises",exercises);
+                return "/admin/challenges/challengesCreateOrUpdate";
+            }
+
 			return "redirect:/admin/challenges";
 		}
 	}
@@ -119,8 +131,8 @@ public class ChallengeController {
 		Collection<Exercise> exercises = this.exerciseService.findAllExercise();
 		
 		// If there are inscriptions, it cannot be edited
-		Inscription inscription = inscriptionService.findInscriptionByChallengeId(challengeId);
-		if(inscription != null) {
+		Collection<Inscription> inscriptions = inscriptionService.findInscriptionsByChallengeId(challengeId);
+		if(!inscriptions.isEmpty()) {
 			return showChallengeByIdAdmin(challengeId,model);
 		}
 					
@@ -133,7 +145,7 @@ public class ChallengeController {
 	@PostMapping("/admin/challenges/{challengeId}/edit")
 	public String processUpdateForm(@PathVariable("challengeId")int challengeId, @ModelAttribute("exerciseId")int exerciseId, @Valid Challenge challenge,  BindingResult result,ModelMap model) {
 		
-		if (result.hasErrors()) {
+		if(result.hasErrors()) {
 			model.put("challenge",challenge);
 			Collection<Exercise> exercises = this.exerciseService.findAllExercise();
 			model.addAttribute("exercises",exercises);
@@ -141,10 +153,25 @@ public class ChallengeController {
 			return "/admin/challenges/challengesCreateOrUpdate";
 		}
 		else {
-			Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
-			challenge.setExercise(exercise);
-			challenge.setId(challengeId);
-			this.challengeService.saveChallenge(challenge);
+			try{
+				Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
+				challenge.setExercise(exercise);
+				challenge.setId(challengeId);
+				challengeService.saveChallenge(challenge);
+				
+            }catch(Exception ex){
+            	if(ex instanceof ChallengeSameNameException) {
+            		result.rejectValue("name", "required: ", "There is already a challenge with that name the same week");
+            	}
+            	else if(ex instanceof ChallengeMore3Exception) {
+            		result.rejectValue("initialDate", "required: ", "There must not be more than 3 challenges per week");
+            	}
+            	
+            	Collection<Exercise> exercises = this.exerciseService.findAllExercise();
+    			model.addAttribute("exercises",exercises);
+                return "/admin/challenges/challengesCreateOrUpdate";
+            }
+
 			return "redirect:/admin/challenges";
 		}
 	}
@@ -152,42 +179,14 @@ public class ChallengeController {
 	@GetMapping("admin/challenges/{challengeId}/delete")
 	public String deleteChallenge(@PathVariable("challengeId") int challengeId, Model model) {
 		
-		System.out.println("  ");
 		Challenge challenge = challengeService.findChallengeById(challengeId);
-		Inscription inscription = inscriptionService.findInscriptionByChallengeId(challengeId);
-		
-		// If there are inscriptions, it cannot be deleted
-		if(inscription != null) {
-			return showChallengeByIdAdmin(challengeId,model);
+		try {
+			this.challengeService.deleteChallenge(challenge);
+		}catch(ChallengeWithInscriptionsException ex){
+			return "/welcome";
 		}
 		
-		challenge.setExercise(null);
-		this.challengeService.deleteChallenge(challenge);
-		
 		return "redirect:/admin/challenges";
-	}
-	
-	@GetMapping("/admin/challenges/submitted")
-	public String listSubmittedChallengesAdmin(ModelMap modelMap) {
-			
-		Iterable<Challenge> challenges = challengeService.findSubmittedChallenges();
-		modelMap.addAttribute("challenges", challenges);
-		
-		return "admin/challenges/submittedChallengesList";
-	}
-	
-	@GetMapping("/admin/challenges/submitted/{challengeId}")
-	public String showSubmittedChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, Model model) {	  
-
-	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
-	   	Inscription inscription = this.inscriptionService.findInscriptionByChallengeId(challengeId);
-	   	Client client = this.clientService.findClientByInscriptionId(inscription.getId());
-	   	
-	   	model.addAttribute("challenge", challenge);
-	   	model.addAttribute("inscription", inscription);
-	   	model.addAttribute("client", client);
-	   	
-	    return "admin/challenges/submittedChallengeDetails";
 	}
 	
 	// CLIENT:
@@ -195,29 +194,9 @@ public class ChallengeController {
 	@GetMapping("/client/{clientUsername}/challenges")
 	public String listChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
 			
-		List<Challenge> challenges = (List<Challenge>) challengeService.findAll();
-		Client client = this.clientService.findClientByClientUsername(clientUsername);
-		
-		//Only if the end date is posterior to today's
-		List<Challenge> challengesFiltered = new ArrayList<>();
-		Calendar now = Calendar.getInstance();
-		Date d = now.getTime();
-		for(Challenge c : challenges) {
-			if(c.getEndDate().after(d)) {
-				challengesFiltered.add(c);
-			}
-		}
-		//and they are not already inscribed:
-		if(client.getInscriptions() != null) {
-			for(Inscription i : client.getInscriptions()) {
-				Challenge c = i.getChallenge();
-				if(challengesFiltered.contains(c)) {
-					challengesFiltered.remove(c);
-				}
-			}
-		}
-		
-		modelMap.addAttribute("challenges", challengesFiltered);
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		List<Challenge> challenges = this.challengeService.findAllChallengesClients(client.getId(), client.getInscriptions());
+		modelMap.addAttribute("challenges", challenges);
 		
 		return "client/challenges/challengesList";
 	}
@@ -235,10 +214,10 @@ public class ChallengeController {
 	public String listMyChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
 			
 
-		Client client = this.clientService.findClientByClientUsername(clientUsername);
-		List<Challenge> challenges = client.getInscriptions().stream().map(i -> i.getChallenge()).collect(Collectors.toList());
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		List<Inscription> inscriptions = client.getInscriptions();
 
-		modelMap.addAttribute("challenges", challenges);
+		modelMap.addAttribute("inscriptions", inscriptions);
 		
 		return "client/challenges/myChallengesList";
 	}
@@ -247,14 +226,11 @@ public class ChallengeController {
 	public String showAndEditMyChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
 
 	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
-	   	Inscription inscription = this.inscriptionService.findInscriptionByChallengeId(challengeId);
-	   	
-	   	Calendar now = Calendar.getInstance();
-	   	boolean expired = challenge.getEndDate().before(now.getTime());
+	   	Client client = this.clientService.findClientByUsername(clientUsername);
+	   	Inscription inscription = this.inscriptionService.findInscriptionByClientAndChallenge(client,challenge);
 	   	
 	   	model.addAttribute("challenge", challenge);
 	   	model.addAttribute("inscription",inscription);
-	   	model.addAttribute("expired", expired);
 	   	
 	    return "client/challenges/myChallengeDetailsAndUpdate";
 	}

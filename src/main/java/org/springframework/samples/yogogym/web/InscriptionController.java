@@ -1,6 +1,8 @@
 package org.springframework.samples.yogogym.web;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
@@ -11,6 +13,7 @@ import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.InscriptionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +36,27 @@ public class InscriptionController {
 	
 	// ADMIN:
 	
+	@GetMapping("/admin/inscriptions/submitted")
+	public String listSubmittedInscriptionsAdmin(ModelMap modelMap) {
+			
+		List<Client> clients = this.clientService.findClientsWithOnlySubmittedInscriptions();
+		modelMap.addAttribute("clients",clients);
+		
+		return "admin/challenges/submittedInscriptionsList";
+	}
+	
+	@GetMapping("/admin/inscriptions/submitted/{inscriptionId}")
+	public String showSubmittedInscriptionAdmin(@PathVariable("inscriptionId") int inscriptionId, Model model) {	  
+
+	    Client client = this.clientService.findClientByInscriptionId(inscriptionId);
+	    Inscription inscription = client.getInscriptions().stream().filter(i -> i.getId() == inscriptionId).findFirst().get();
+	   	
+	    model.addAttribute("inscription", inscription);
+	    model.addAttribute("client", client);
+	   	
+	    return "admin/challenges/submittedChallengeDetails";
+	}
+	
 	@PostMapping("/admin/challenges/submitted/{challengeId}/inscription/{inscriptionId}/evaluate")
 	public String evaluateChallengeAdmin(@PathVariable("challengeId") int challengeId, @PathVariable("inscriptionId") int inscriptionId,
 			                             Inscription inscription, Model model) {
@@ -44,7 +68,7 @@ public class InscriptionController {
 		
 		this.inscriptionService.saveInscription(inscription);
 		
-		return "redirect:/admin/challenges/submitted";
+		return "redirect:/admin/inscriptions/submitted";
 	}
 	
 	// CLIENT:
@@ -53,7 +77,7 @@ public class InscriptionController {
 	public String createInscriptionByChallengeId(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
 		
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
-		Client client = this.clientService.findClientByClientUsername(clientUsername);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 	   	Inscription inscription = new Inscription();
 	   	
 	   	inscription.setChallenge(challenge);

@@ -16,9 +16,15 @@
 package org.springframework.samples.yogogym.service;
 
 
+import java.util.Calendar;
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.yogogym.model.Challenge;
+import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Inscription;
+import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.repository.InscriptionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +42,45 @@ public class InscriptionService {
 	private InscriptionRepository inscriptionRepo;
 
 	
-	@Transactional
-	public Inscription findInscriptionByChallengeId(int challengeId) throws DataAccessException {
+	public Collection<Inscription> findInscriptionsByChallengeId(int challengeId) throws DataAccessException {
 		
-		return inscriptionRepo.findInscriptionByChallengeId(challengeId);
+		return inscriptionRepo.findInscriptionsByChallengeId(challengeId);
+	}
+	
+	
+	@Transactional
+	public Collection<Inscription> findSubmittedInscriptions() {
+		
+		return inscriptionRepo.findSubmittedInscriptions();
+	}
+
+	
+	public Inscription findInscriptionByInscriptionId(int inscriptionId) {
+		
+		return inscriptionRepo.findById(inscriptionId).get();
+	}
+	
+
+	public Collection<Inscription> findAll() {
+		
+		return (Collection<Inscription>) this.inscriptionRepo.findAll();
+	}
+	
+
+	public Inscription findInscriptionByClientAndChallenge(Client client, Challenge challenge) {
+		
+		Collection<Inscription> inscriptions = this.findInscriptionsByChallengeId(challenge.getId());
+		Inscription inscription = inscriptions.stream().filter(i -> client.getInscriptions().contains(i)).findFirst().get();
+	   	
+		//If the endDate have passed, its fails
+	   	Calendar now = Calendar.getInstance();
+	   	if(challenge.getEndDate().before(now.getTime())) {
+	   		if(inscription.getStatus().equals(Status.PARTICIPATING) || inscription.getStatus().equals(Status.SUBMITTED)) {
+	   			inscription.setStatus(Status.FAILED);
+	   			this.saveInscription(inscription);
+	   		}
+	   	}
+		return inscription;
 	}
 	
 	@Transactional
@@ -47,9 +88,4 @@ public class InscriptionService {
 		inscriptionRepo.save(inscription);
 	}
 
-	@Transactional
-	public void deleteInscription(Inscription inscription) {
-		
-		inscriptionRepo.delete(inscription);
-	}
 }
