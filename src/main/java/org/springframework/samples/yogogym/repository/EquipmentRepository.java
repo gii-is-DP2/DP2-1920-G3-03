@@ -6,7 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.samples.yogogym.model.Equipment;
 
 public interface EquipmentRepository extends  CrudRepository<Equipment, String>{
-	
+		
 	@Query("SELECT equipment FROM Equipment equipment WHERE equipment.id=:id")
-	public Equipment findEquipmentByExerciseId(@Param("id") int id);
+	public Equipment findEquipmentById(@Param("id")int id);
 }

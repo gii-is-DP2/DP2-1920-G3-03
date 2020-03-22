@@ -32,16 +32,23 @@
     <br/>
     <br/>
     <h2>Equipment</h2>
-
-    <table class="table table-striped">
-            <tr>
-	           <td>
-                    <spring:url value="/mainMenu/equipments/{equipmentId}" var="equipmentUrl">
-                        <spring:param name="equipmentId" value="${exercise.equipment.id}"/>
-                    </spring:url>
-                    <a href="${fn:escapeXml(equipmentUrl)}"><c:out value="${exercise.equipment.name}"/></a>
-                </td>
-	        </tr>
-    </table>
+	
+	<c:choose>
+		<c:when test="${empty exercise.equipment}">
+			<h3>None</h3>
+		</c:when>
+		<c:otherwise>
+		    <table class="table table-striped">
+		            <tr>
+			           <td>
+		                    <spring:url value="/mainMenu/equipments/{equipmentId}" var="equipmentUrl">
+		                        <spring:param name="equipmentId" value="${exercise.equipment.id}"/>
+		                    </spring:url>
+		                    <a href="${fn:escapeXml(equipmentUrl)}"><c:out value="${exercise.equipment.name}"/></a>
+		                </td>
+			        </tr>
+		    </table>
+		</c:otherwise>
+	</c:choose>
 
 </petclinic:layout>

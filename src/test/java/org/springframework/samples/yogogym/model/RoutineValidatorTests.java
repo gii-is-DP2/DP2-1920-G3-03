@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.model;
+package org.springframework.samples.yogogym.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,18 +7,12 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.samples.yogogym.model.Routine;
-import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-/**
- * @author Michael Isvy Simple test to make sure that Bean Validation is working (useful
- * when upgrading to a new version of Hibernate Validator/ Bean Validation)
- */
-class ValidatorTests {
-
+public class RoutineValidatorTests {
+	
 	private Validator createValidator() {
 		LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
 		localValidatorFactoryBean.afterPropertiesSet();
@@ -81,30 +75,5 @@ class ValidatorTests {
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("repsPerWeek");
 		assertThat(violation.getMessage()).isEqualTo("no puede ser null");		
-	}
-	
-	/* ------------------------ ROUTINE LINE---------------------------------------------------------------*/
-	
-	@Ignore
-	void shouldNotValidateWhenRoutineLineRepsOrTimeEmpty()
-	{
-		RoutineLine routineLine = new RoutineLine();
-		
-		routineLine.setReps(null);
-		routineLine.setTime(null);
-		routineLine.setSeries(2);
-		routineLine.setWeight(6.0);
-						
-		Validator validator = createValidator();
-		Set<ConstraintViolation<RoutineLine>> constraintViolations = validator.validate(routineLine);
-		
-		assertThat(constraintViolations.size()).isEqualTo(2);
-		ConstraintViolation<RoutineLine> violation = constraintViolations.iterator().next();
-		
-		assertThat(violation.getPropertyPath().toString()).isEqualTo("reps");
-		assertThat(violation.getMessage()).isEqualTo("no puede ser null");
-		
-		assertThat(violation.getPropertyPath().toString()).isEqualTo("time");
-		assertThat(violation.getMessage()).isEqualTo("no puede ser null");	
 	}
 }
