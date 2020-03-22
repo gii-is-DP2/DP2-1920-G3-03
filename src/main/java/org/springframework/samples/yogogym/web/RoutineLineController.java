@@ -1,23 +1,30 @@
 
 package org.springframework.samples.yogogym.web;
 
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Trainer;
+import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.samples.yogogym.service.RoutineLineService;
 import org.springframework.samples.yogogym.service.RoutineService;
 import org.springframework.samples.yogogym.service.TrainerService;
+import org.springframework.samples.yogogym.service.TrainingService;
+import org.springframework.samples.yogogym.service.exceptions.TrainingNotFinished;
+import org.springframework.samples.yogogym.service.exceptions.TrainingRepAndTimeSetted;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -39,15 +46,17 @@ public class RoutineLineController {
 	private final ClientService clientService;
 	private final RoutineLineService routineLineService;
 	private final TrainerService trainerService;
+	private final TrainingService trainingService;
 	
 	@Autowired
 	public RoutineLineController(final RoutineService routineService, final ExerciseService exerciseService,
-			final ClientService clientService, final RoutineLineService routineLineService, final TrainerService trainerService) {
+			final ClientService clientService, final RoutineLineService routineLineService, final TrainerService trainerService, final TrainingService trainingService) {
 		this.routineService = routineService;
 		this.exerciseService = exerciseService;
 		this.clientService = clientService;
 		this.routineLineService = routineLineService;
 		this.trainerService = trainerService;
+		this.trainingService = trainingService;
 	
 	}
 
@@ -60,7 +69,10 @@ public class RoutineLineController {
 
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/create")
 	public String initRoutineLineCreateForm(@PathVariable("clientId") int clientId,
-			@PathVariable("routineId") int routineId, @PathVariable("trainerUsername")final String trainerUsername, final ModelMap model) {
+			@PathVariable("routineId") int routineId, @PathVariable("trainerUsername")final String trainerUsername, @PathVariable("trainingId")final int trainingId, final ModelMap model) {
+		
+		if(isTrainingFinished(trainingId))
+			return "exception";
 		
 		if(!isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
@@ -88,7 +100,10 @@ public class RoutineLineController {
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/create")
 	public String processRoutineLineCreationForm(@Valid RoutineLine routineLine,BindingResult result, @ModelAttribute("exercise.id")final int exerciseId,
 			@PathVariable("trainerUsername") String trainerUsername, @ModelAttribute("routineId") int routineId,
-			@PathVariable("clientId") int clientId, @PathVariable("trainingId") int trainingId, final ModelMap model) {
+			@PathVariable("clientId") int clientId, @PathVariable("trainingId") int trainingId, final ModelMap model) throws DataAccessException, TrainingNotFinished {
+		
+		if(isTrainingFinished(trainingId))
+			return "exception";
 		
 		if(!isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
@@ -120,7 +135,7 @@ public class RoutineLineController {
 			Routine routine = this.routineService.findRoutineById(routineId);
 			routine.getRoutineLine().add(routineLine);			
 
-			this.routineService.saveRoutine(routine);
+			this.routineService.saveRoutine(routine,trainingId);
 
 			return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId + "/trainings/"
 					+ trainingId + "/routines/" + routineId;
@@ -129,7 +144,10 @@ public class RoutineLineController {
 	
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/update")
 	public String initRoutineLineUpdateForm(@PathVariable("clientId") int clientId, @PathVariable("trainerUsername")final String trainerUsername,
-			@PathVariable("routineId") int routineId, @PathVariable("routineLineId") int routineLineId,final ModelMap model) {
+			@PathVariable("routineId") int routineId, @PathVariable("routineLineId") int routineLineId,@PathVariable("trainingId")final int trainingId,final ModelMap model) {
+		
+		if(isTrainingFinished(trainingId))
+			return "exception";
 		
 		if(!isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
@@ -157,8 +175,11 @@ public class RoutineLineController {
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/update")
 	public String processRoutineLineUpdateForm(@Valid RoutineLine routineLine,BindingResult result, @ModelAttribute("exercise.id")final int exerciseId,
 			@PathVariable("trainerUsername") String trainerUsername, @ModelAttribute("routineId") int routineId,
-			@PathVariable("clientId") int clientId, @PathVariable("trainingId") int trainingId,@PathVariable("routineLineId")final int routineLineId, final ModelMap model) {
-					
+			@PathVariable("clientId") int clientId, @PathVariable("trainingId") int trainingId,@PathVariable("routineLineId")final int routineLineId, final ModelMap model) throws DataAccessException, TrainingNotFinished, TrainingRepAndTimeSetted {
+				
+		if(isTrainingFinished(trainingId))
+			return "exception";
+		
 		if(!isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
 		
@@ -189,7 +210,7 @@ public class RoutineLineController {
 			Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
 			routineLine.setExercise(exercise);
 	
-			this.routineLineService.saveRoutineLine(routineLine);
+			this.routineLineService.saveRoutineLine(routineLine,trainingId);
 
 			return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId + "/trainings/"
 					+ trainingId + "/routines/" + routineId;
@@ -199,6 +220,9 @@ public class RoutineLineController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/delete")
 	public String deleteRoutineLine(@PathVariable("routineId")int routineId,@PathVariable("routineLineId")int routineLineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername, Model model)
 	{
+		if(isTrainingFinished(trainingId))
+			return "exception";
+		
 		if(!isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
 		
@@ -225,5 +249,15 @@ public class RoutineLineController {
 		Client client = this.clientService.findClientById(clientId);
 		
 		return trainer.getClients().contains(client);
+	}
+	
+	public Boolean isTrainingFinished(final int trainingId)
+	{
+		Calendar now = Calendar.getInstance();
+		Date actualDate = now.getTime();
+				
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		return training.getEndDate().before(actualDate);
 	}
 }

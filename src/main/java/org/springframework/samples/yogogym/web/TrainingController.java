@@ -69,6 +69,13 @@ public class TrainingController {
 		Client client = this.clientService.findClientById(clientId);
 		Training training = this.trainingService.findTrainingById(trainingId);
 
+		Calendar now = Calendar.getInstance();
+		Date date = now.getTime();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");		
+		String actualDate = dateFormat.format(date);
+		
+		model.addAttribute("actualDate", actualDate);
+		
 		model.addAttribute("client", client);
 		model.addAttribute("training", training);
 

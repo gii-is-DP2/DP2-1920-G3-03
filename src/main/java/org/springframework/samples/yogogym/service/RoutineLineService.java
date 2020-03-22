@@ -15,12 +15,17 @@
  */
 package org.springframework.samples.yogogym.service;
 
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.RoutineLine;
+import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.RoutineLineRepository;
+import org.springframework.samples.yogogym.service.exceptions.TrainingNotFinished;
+import org.springframework.samples.yogogym.service.exceptions.TrainingRepAndTimeSetted;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,10 +39,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class RoutineLineService {
 
 	private RoutineLineRepository routineLineRepository;
+	private TrainingService trainingService;
 
 	@Autowired
-	public RoutineLineService(RoutineLineRepository routineLineRepository) {
+	public RoutineLineService(RoutineLineRepository routineLineRepository, TrainingService trainingService) {
 		this.routineLineRepository = routineLineRepository;
+		this.trainingService = trainingService;
 	}
 	
 	@Transactional
@@ -55,8 +62,19 @@ public class RoutineLineService {
 		this.routineLineRepository.delete(routineLine);
 	}
 	
-	@Transactional
-	public void saveRoutineLine(RoutineLine routineLine) throws DataAccessException {
-		this.routineLineRepository.save(routineLine);
+	@Transactional(rollbackFor= {TrainingNotFinished.class, TrainingRepAndTimeSetted.class})
+	public void saveRoutineLine(RoutineLine routineLine, int trainingId) throws DataAccessException,TrainingNotFinished, TrainingRepAndTimeSetted {
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		Calendar cal = Calendar.getInstance();
+		Date actualDate = cal.getTime();
+		
+		if(training.getEndDate().before(actualDate))
+			throw new TrainingNotFinished();
+		else if(routineLine.getTime() != null && routineLine.getReps() != null)
+			throw new TrainingRepAndTimeSetted();
+		else
+			this.routineLineRepository.save(routineLine);
 	}
 }

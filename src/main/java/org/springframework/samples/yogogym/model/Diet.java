@@ -10,6 +10,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
+import org.springframework.samples.yogogym.model.Enums.DietType;
+
 import lombok.Data;
 
 @Entity

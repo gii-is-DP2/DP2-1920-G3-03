@@ -15,12 +15,16 @@
  */
 package org.springframework.samples.yogogym.service;
 
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Routine;
+import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.RoutineRepository;
+import org.springframework.samples.yogogym.service.exceptions.TrainingNotFinished;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,20 +38,40 @@ import org.springframework.transaction.annotation.Transactional;
 public class RoutineService {
 
 	private RoutineRepository routineRepository;
+	private TrainingService trainingService;
 
 	@Autowired
-	public RoutineService(RoutineRepository routineRepository) {
+	public RoutineService(RoutineRepository routineRepository, TrainingService trainingService) {
 		this.routineRepository = routineRepository;
+		this.trainingService = trainingService;
 	}
 	
-	@Transactional
-	public void saveRoutine(Routine routine) throws DataAccessException {
-		routineRepository.save(routine);
+	
+	@Transactional(rollbackFor= {TrainingNotFinished.class})
+	public void saveRoutine(Routine routine, int trainingId) throws DataAccessException, TrainingNotFinished {
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		Calendar cal = Calendar.getInstance();
+		Date actualDate = cal.getTime();
+		
+		if(training.getEndDate().before(actualDate))
+			throw new TrainingNotFinished();
+		else
+			routineRepository.save(routine);
 	}
 	
-	@Transactional
-	public void deleteRoutine(Routine routine) throws DataAccessException {
-		routineRepository.delete(routine);
+	@Transactional(rollbackFor= {TrainingNotFinished.class})
+	public void deleteRoutine(Routine routine, int trainingId) throws DataAccessException, TrainingNotFinished {
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		Calendar cal = Calendar.getInstance();
+		Date actualDate = cal.getTime();
+		
+		if(training.getEndDate().before(actualDate))
+			throw new TrainingNotFinished();
+		else
+			routineRepository.delete(routine);
 	}
 	
 	@Transactional
