@@ -1,7 +1,6 @@
 package org.springframework.samples.yogogym.web;
 
 
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Inscription;
-import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.service.ChallengeService;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.ExerciseService;
@@ -196,7 +194,7 @@ public class ChallengeController {
 	@GetMapping("/client/{clientUsername}/challenges")
 	public String listChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
 			
-		Client client = this.clientService.findClientByClientUsername(clientUsername);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 		List<Challenge> challenges = this.challengeService.findAllChallengesClients(client.getId(), client.getInscriptions());
 		modelMap.addAttribute("challenges", challenges);
 		
@@ -216,7 +214,7 @@ public class ChallengeController {
 	public String listMyChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
 			
 
-		Client client = this.clientService.findClientByClientUsername(clientUsername);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 		List<Inscription> inscriptions = client.getInscriptions();
 
 		modelMap.addAttribute("inscriptions", inscriptions);
@@ -228,17 +226,8 @@ public class ChallengeController {
 	public String showAndEditMyChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
 
 	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
-	   	Client client = this.clientService.findClientByClientUsername(clientUsername);
-	   	Collection<Inscription> inscriptions = this.inscriptionService.findInscriptionsByChallengeId(challengeId);
-	   	Inscription inscription = inscriptions.stream().filter(i -> client.getInscriptions().contains(i)).findFirst().get();
-	   	
-	   	Calendar now = Calendar.getInstance();
-	   	if(challenge.getEndDate().before(now.getTime())) {
-	   		if(inscription.getStatus().equals(Status.PARTICIPATING) || inscription.getStatus().equals(Status.SUBMITTED)) {
-	   			inscription.setStatus(Status.FAILED);
-	   			this.inscriptionService.saveInscription(inscription);
-	   		}
-	   	}
+	   	Client client = this.clientService.findClientByUsername(clientUsername);
+	   	Inscription inscription = this.inscriptionService.findInscriptionByClientAndChallenge(client,challenge);
 	   	
 	   	model.addAttribute("challenge", challenge);
 	   	model.addAttribute("inscription",inscription);

@@ -67,11 +67,6 @@ public class ClientService {
 		return this.clientRepository.findClientByUsername(username);
 	}
 
-	public Client findClientByClientUsername(String clientUsername) {
-		
-		return this.clientRepository.findClientByClientUsername(clientUsername);
-	}
-
 	public List<Client> findClientsWithOnlySubmittedInscriptions() {
 		
 		List<Client> clients = this.clientRepository.findClientsWithSubmittedInscriptions();

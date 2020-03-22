@@ -43,7 +43,7 @@ Como administrador quiero visualizar diagrama que me muestren cuanto son utiliza
 #### Escenarios:
 * **Visualizar diagrama general de máquinas, sistema con datos de la última semana:** Dado un administrador y un sistema con máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le mostrará el nombre de estas, cuantas veces han sido utilizadas en la última semana.
 * **Visualizar diagrama general de máquinas, sistema con datos del último mes:** Dado un administrador y un sistema con máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le mostrará el nombre de estas, cuantas veces han sido utilizadas en el último mes.
-* **Visualizar diagrama general de máquinas, sistema sin datos:** Dado un administrador y un sistema sin máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna y se le ofrecerá la posibilidad de añadir una. 
+* **Visualizar diagrama general de máquinas, sistema sin datos:** Dado un administrador y un sistema sin máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
 ---
 #### HU4 - Mostrar oraciones motivacionales diariamente
 Como administrador quiero que se muestren oraciones motivacionales diariamente para intentar motivar a los clientes y mejorar su estado de ánimo.
@@ -172,7 +172,7 @@ Como cliente quiero poder participar en los distintos retos propuestos por los p
 #### HU22 - Clasificación de los Retos
 Como cliente quiero poder ver la clasificación de mis retos, para poder ver en que posición me encuentro y que debo hacer para poder superar y subir al top.
 #### Escenarios
-* **Ver un la clasificación de un reto completado:** Dado un cliente, al pulsar el botón de "mis retos", aparecerá un listado de los retos completados, de tal forma que al seleccionar uno, podrá darle al botón "clasificación" y verá quienes son los primeros y en que puesto se encuentra dicho cliente.
+* **Ver un la clasificación de un reto completado:** Dado un cliente, al pulsar el botón de "Clasificación", aparecerá un listado de los retos completados, viendo también una clasificación semanal y global.
 ---
 #### HU23 - Añadir Playlist adaptada a mis entrenamientos
 Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis entrenamientos, es decir, adecuadas para el nivel de intensidad especificado, para poder motivarme y llevar un ritmo adecuado.
