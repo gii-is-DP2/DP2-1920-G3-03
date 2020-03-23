@@ -247,7 +247,7 @@ INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (1,3,'https://allame
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (2,0,null,2);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (3,0,null,3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (4,0,null,3);
-INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (5,0,'https://google.com',1);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (5,2,'https://google.com',1);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (6,1,'https://google.com',3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (7,0,'https://google.com',5);
 

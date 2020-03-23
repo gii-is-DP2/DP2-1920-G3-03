@@ -1,12 +1,9 @@
 package org.springframework.samples.yogogym.web;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Diet;
 import org.springframework.samples.yogogym.model.Trainer;
@@ -16,6 +13,13 @@ import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DietService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
+import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
+import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
+import org.springframework.samples.yogogym.service.exceptions.PastEndException;
+import org.springframework.samples.yogogym.service.exceptions.PastInitException;
+import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +27,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.validation.Valid;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -91,7 +94,7 @@ public class DietController {
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/diets/create")
 	public String processDietCreateForm(@Valid Diet diet, BindingResult result, @PathVariable("clientId") int clientId,
 			@PathVariable("trainerUsername") String trainerUsername, 
-			@RequestParam(value = "training", required = false) Integer trainingId, Model model) {
+			@RequestParam(value = "training", required = false) Integer trainingId, Model model) throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
 
 		Client client = this.clientService.findClientById(clientId);
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);

@@ -14,7 +14,7 @@
             	if(${training['new']}){
             		$("#initialDate").datepicker({dateFormat: 'yy/mm/dd'});
             	}
-            	if(${training.endDate>=actualDate||training.endDate==null||!hasErrors['endDate'].isEmpty()}){
+            	if(${training['new']||(!training['new']&&endDateAux>=actualDate)}){
             		$("#endDate").datepicker({dateFormat: 'yy/mm/dd'});
             	}
                
@@ -38,8 +38,7 @@
 				<input type="hidden" name="client" value="${client.nif}"/>
 				<yogogym:inputField label="Name" name="name"/>
 				<yogogym:inputField label="Initial Date" name="initialDate" readonly="${!training['new']}"/>
-	            <yogogym:inputField label="End Date" name="endDate" readonly="${training.endDate<actualDate}"/>
-	            
+	            <yogogym:inputField label="End Date" name="endDate" readonly="${!(training['new']||(!training['new']&&endDateAux>=actualDate))}"/>
             </div>
 			<div class="form-group">
 	            <div class="col-sm-offset-2 col-sm-10">

@@ -10,32 +10,42 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
 
-<table class="table table-striped">
-        <tr>
-            <th>Kcal in the last month</th>
-            <td><b><jstl:out value="${kcalMonth}"/></b></td>
-        </tr>
-</table>
-<div>
-	<canvas id="canvasBodyPartsMonth"></canvas>
-</div>
-<div>
-	<canvas id="canvasRepititionTypeMonth"></canvas>
-</div>
-<table class="table table-striped">
-        <tr>
-            <th>Kcal Historical</th>
-            <td><b><jstl:out value="${kcalAll}"/></b></td>
-        </tr>
-</table>
-<div>
-	<canvas id="canvasBodyPartsAll"></canvas>
-</div>
-<div>
-	<canvas id="canvasRepititionTypeAll"></canvas>
-</div>
-
+	<jstl:if test="${hasExerciseMonth}">
+		<table class="table table-striped">
+        	<tr>
+            	<th>Kcal in the last month</th>
+            	<td><b><jstl:out value="${kcalMonth}"/></b></td>
+        	</tr>
+		</table>
+		<div>
+			<canvas id="canvasBodyPartsMonth"></canvas>
+		</div>
+		<div>
+			<canvas id="canvasRepititionTypeMonth"></canvas>
+		</div>
+	</jstl:if>
+	<jstl:if test="${!hasExerciseMonth and hasExerciseAll}">
+		<b>You haven't exercises in the last month</b>
+	</jstl:if>
+	<jstl:if test="${hasExerciseAll}">
+		<table class="table table-striped">
+        	<tr>
+            	<th>Kcal Historical</th>
+            	<td><b><jstl:out value="${kcalAll}"/></b></td>
+        	</tr>
+		</table>
+		<div>
+			<canvas id="canvasBodyPartsAll"></canvas>
+		</div>
+		<div>
+			<canvas id="canvasRepititionTypeAll"></canvas>
+		</div>
+	</jstl:if>
+	<jstl:if test="${!hasExerciseAll}">
+		<b>You haven't exercises</b>
+	</jstl:if>
 <script>
+<jstl:if test="${hasExerciseMonth}">
 $(document).ready(function(){
 	var data = {
 			labels : [
@@ -78,7 +88,6 @@ $(document).ready(function(){
 				{
 					ticks : {
 						min : 0,
-						stepSize : 1,
 						autoSkip : true
 					}
 				}
@@ -99,6 +108,8 @@ $(document).ready(function(){
 		options : options
 	});
 });
+</jstl:if>
+<jstl:if test="${hasExerciseAll}">
 	$(document).ready(function(){
 		var data = {
 				labels : [
@@ -141,7 +152,6 @@ $(document).ready(function(){
 					{
 						ticks : {
 							min : 0,
-							stepSize : 1,
 							autoSkip : true
 						}
 					}
@@ -162,6 +172,8 @@ $(document).ready(function(){
 			options : options
 		});
 	});
+</jstl:if>
+<jstl:if test="${hasExerciseMonth}">
 		$(document).ready(function(){
 			var data = {
 					labels : [
@@ -204,7 +216,6 @@ $(document).ready(function(){
 						{
 							ticks : {
 								min : 0,
-								stepSize : 1,
 								autoSkip : true
 							}
 						}
@@ -225,6 +236,8 @@ $(document).ready(function(){
 				options : options
 			});
 		});
+</jstl:if>
+<jstl:if test="${hasExerciseAll}">
 			$(document).ready(function(){
 				var data = {
 						labels : [
@@ -267,7 +280,6 @@ $(document).ready(function(){
 							{
 								ticks : {
 									min : 0,
-									stepSize : 1,
 									autoSkip : true
 								}
 							}
@@ -288,6 +300,7 @@ $(document).ready(function(){
 					options : options
 				});
 			});
+</jstl:if>
 </script>
 
 </petclinic:layout>
