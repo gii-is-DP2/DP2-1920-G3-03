@@ -205,6 +205,20 @@ public class RoutineControllerTest {
 	
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
 	@Test
+	void testNotExistingRoutine() throws Exception
+	{
+		final int badId = 100;
+		// Wrong trainer
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}",testTrainerUsername,testClientId,testTrainingId,badId);
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create",testTrainerUsername,testClientId,badId);
+		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create",testTrainerUsername,testClientId,badId);
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/edit",testTrainerUsername,testClientId,testTrainingId,badId);
+		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/edit",testTrainerUsername,testClientId,testTrainingId,badId);
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/delete",testTrainerUsername,testClientId,testTrainingId,badId);
+	}
+	
+	@WithMockUser(username="trainer1", authorities= {"trainer"})
+	@Test
 	void testGetRoutines() throws Exception
 	{		
 		mockMvc.perform(get("/trainer/{trainerUsername}/routines",testTrainerUsername))
@@ -221,7 +235,7 @@ public class RoutineControllerTest {
 			.andExpect(view().name("trainer/routines/routineDetails"))
 			.andDo(print());
 	}
-			
+				
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
 	@Test
 	void testInitCreateRoutineForm() throws Exception
