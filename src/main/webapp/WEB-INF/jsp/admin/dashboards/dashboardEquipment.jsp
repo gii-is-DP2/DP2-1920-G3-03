@@ -9,17 +9,25 @@
 <script src="https://code.jquery.com/jquery-3.4.1.slim.js" integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
-<div>
-	<canvas id="canvasWeek"></canvas>
-</div>
-<div>
-	<canvas id="canvasMonth"></canvas>
-</div>
-	
-<spring:url value="/admin/equipment/new" var="equipmentUrl"/> 
-<a href="${fn:escapeXml(equipmentUrl)}" class="btn btn-default"> New equipment </a>
+	<jstl:if test="${hasEquipmentWeek}">
+		<div>
+			<canvas id="canvasWeek"></canvas>
+		</div>
+	</jstl:if>
+	<jstl:if test="${!hasEquipmentWeek and hasEquipmentMonth}">
+		<b>Equipment has not been used this week</b>
+	</jstl:if>
+	<jstl:if test="${hasEquipmentMonth}">
+		<div>
+			<canvas id="canvasMonth"></canvas>
+		</div>
+	</jstl:if>
+	<jstl:if test="${!hasEquipmentMonth}">
+		<b>Equipment has not been used this month</b><br/>
+	</jstl:if>
 
 <script>
+<jstl:if test="${hasEquipmentMonth}">
 $(document).ready(function(){
 	var data = {
 			labels : [
@@ -83,7 +91,8 @@ $(document).ready(function(){
 		options : options
 	});
 });
-
+</jstl:if>
+<jstl:if test="${hasEquipmentWeek}">
 	$(document).ready(function(){
 		var data = {
 				labels : [
@@ -147,7 +156,7 @@ $(document).ready(function(){
 			options : options
 		});
 	});
-
+</jstl:if>
 </script>
 
 </petclinic:layout>

@@ -17,9 +17,12 @@ package org.springframework.samples.yogogym.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
+import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,14 +67,13 @@ public class ClientService {
 		return this.clientRepository.findClientByUsername(username);
 	}
 
-	public Client findClientByClientUsername(String clientUsername) {
+	public List<Client> findClientsWithOnlySubmittedInscriptions() {
 		
-		return this.clientRepository.findClientByClientUsername(clientUsername);
-	}
-
-	public List<Client> findClientsWithSubmittedInscriptions() {
-		
-		return this.clientRepository.findClientsWithSubmittedInscriptions();
+		List<Client> clients = this.clientRepository.findClientsWithSubmittedInscriptions();
+		for(Client c : clients) {
+			c.setInscriptions(c.getInscriptions().stream().filter(i -> i.getStatus().equals(Status.SUBMITTED)).collect(Collectors.toList()));
+		}
+		return clients;
 	}
 
 	
@@ -79,6 +81,12 @@ public class ClientService {
 	public Collection<Client> findAllClient() throws DataAccessException {
 		return this.clientRepository.findAll();
 
+	}
+	
+	//Clasication
+	@Transactional
+	public List<Client> findClientsWithCompletedInscriptions(){
+		return this.clientRepository.findClientsWithCompletedInscriptions();
 	}
 	
 }
