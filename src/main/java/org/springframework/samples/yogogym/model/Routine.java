@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -28,6 +29,7 @@ public class Routine extends BaseEntity{
 
 	@Column(name="reps_per_week")
 	@NotNull
+	@Max(20)
 	protected Integer repsPerWeek;
 	
 	@OneToMany(cascade = CascadeType.ALL)

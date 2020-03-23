@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.model;
+package org.springframework.samples.yogogym.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+
 
 /**
  * @author Michael Isvy Simple test to make sure that Bean Validation is working (useful
@@ -107,4 +108,5 @@ class ValidatorTests {
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("time");
 		assertThat(violation.getMessage()).isEqualTo("no puede ser null");	
 	}
+
 }

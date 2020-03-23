@@ -47,20 +47,18 @@ public class EquipmentService {
 	}
 	
 	@Transactional
+	public Equipment findEquipmentById(int equipmentId)throws DataAccessException
+	{
+		return equipmentRepository.findEquipmentById(equipmentId);
+	}
+	
+	@Transactional
 	public Collection<Equipment> findAllEquipment() throws DataAccessException {
 		
 		Collection<Equipment> res = new ArrayList<>();
 		
 		for(Equipment m: this.equipmentRepository.findAll())
 			res.add(m);
-		
-		return res;		
-	}
-	
-	@Transactional
-	public Equipment findEquipmentByExerciseId(int exerciseId) throws DataAccessException {
-		
-		Equipment res = this.equipmentRepository.findEquipmentByExerciseId(exerciseId);
 		
 		return res;		
 	}
