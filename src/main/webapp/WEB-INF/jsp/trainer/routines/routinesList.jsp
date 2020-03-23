@@ -28,11 +28,20 @@
 					</c:forEach>
 				</ul>
 				
-				<spring:url value="/trainer/${trainerUsername}/clients/{clientId}/trainings/${training.id}/routines/create" var="routineAddUrl">
-					<spring:param name="clientId" value="${client.id}"/>
-				</spring:url>
-				<h3><a href="${fn:escapeXml(routineAddUrl)}">Add Routine</a></h3>
-			
+				<c:choose>
+					<c:when test="${training.endDate < actualDate}">
+						<spring:url value="/trainer/${trainerUsername}/clients/{clientId}/trainings/${training.id}/routines/create" var="routineAddUrl">
+							<spring:param name="clientId" value="${client.id}"/>
+						</spring:url>
+						<h3><a style="color:grey">Add Routine</a></h3>
+					</c:when>
+					<c:otherwise>
+						<spring:url value="/trainer/${trainerUsername}/clients/{clientId}/trainings/${training.id}/routines/create" var="routineAddUrl">
+							<spring:param name="clientId" value="${client.id}"/>
+						</spring:url>
+						<h3><a href="${fn:escapeXml(routineAddUrl)}">Add Routine</a></h3>					
+					</c:otherwise>
+				</c:choose>
 			</c:forEach>
 		</ul>
 				

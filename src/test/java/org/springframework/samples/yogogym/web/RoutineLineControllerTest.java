@@ -36,6 +36,7 @@ import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.samples.yogogym.service.RoutineLineService;
 import org.springframework.samples.yogogym.service.RoutineService;
 import org.springframework.samples.yogogym.service.TrainerService;
+import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -81,12 +82,15 @@ public class RoutineLineControllerTest {
 	@MockBean
 	private TrainerService trainerService;
 	
+	@MockBean
+	private TrainingService trainingService;
+	
 	@Autowired
 	private MockMvc mockMvc;
 		
 	@BeforeEach
 	void setUp()
-	{
+	{		
 		//Trainer 1
 		Exercise exercise = new Exercise();
 		exercise.setId(testExerciseId_t1);
@@ -155,6 +159,7 @@ public class RoutineLineControllerTest {
 		given(this.exerciseService.findAllExercise()).willReturn(allExercises);
 		given(this.routineService.findRoutineById(testRoutineId_t1)).willReturn(routine);
 		given(this.routineLineService.findRoutineLineById(testRoutineLineId_t1)).willReturn(routineLine);
+		given(this.trainingService.findTrainingById(testTrainingId_t1)).willReturn(training);
 		
 		//Trainer 2
 		Client client_t2 = new Client();
@@ -175,7 +180,7 @@ public class RoutineLineControllerTest {
 		trainer_t2.setClients(clients_t2);
 		
 		given(this.clientService.findClientById(testClientId_t2)).willReturn(client_t2);
-		given(this.trainerService.findTrainer(testTrainerUsername_t2)).willReturn(trainer_t2);		
+		given(this.trainerService.findTrainer(testTrainerUsername_t2)).willReturn(trainer_t2);	
 	}
 	
 	void testWrongAuth(int mode,String path,Object... uriVars) throws Exception

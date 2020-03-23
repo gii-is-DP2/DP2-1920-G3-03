@@ -28,7 +28,17 @@
 		
 	<h3>Routines</h3>
 	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/routines/create" var="routineAddurl" />
-	<h3><a href="${fn:escapeXml(routineAddurl)}">Add Routine</a></h3>
+	
+	<c:choose>
+		<c:when test="${training.endDate < actualDate}">
+			<h3><a style="color:grey">Add Routine</a></h3>
+		</c:when>
+		<c:otherwise>
+			<h3><a href="${fn:escapeXml(routineAddurl)}">Add Routine</a></h3>		
+		</c:otherwise>
+	</c:choose>
+	
+	
 	<ul>
 		<c:forEach var="routine" items="${training.routines}">
 			<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/routines/{routineId}" var="routineUrl">
