@@ -69,6 +69,7 @@ public class RoutineLineServiceTest {
 		Date newEndDate = cal.getTime();
 		Training training = this.trainingService.findTrainingById(trainingId);
 		training.setEndDate(newEndDate);
+		
 		try {
 			this.trainingService.saveTraining(training);
 		}
