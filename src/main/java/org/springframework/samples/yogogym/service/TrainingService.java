@@ -79,5 +79,5 @@ public class TrainingService {
 		
 		return res;		
 	}
-	
+
 }

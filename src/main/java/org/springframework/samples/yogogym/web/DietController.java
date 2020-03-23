@@ -56,45 +56,46 @@ public class DietController {
 	}
 
 	// GET
-	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/diets/{dietId}")
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}")
 	public String ClientDietDetails(@PathVariable("trainerUsername") String trainerUsername,
-			@PathVariable("clientId") int clientId, @PathVariable("dietId") int dietId, Model model) {
+			@PathVariable("clientId") int clientId, @PathVariable("dietId") int dietId, @PathVariable("trainingId") int trainingId, Model model) {
 		Client client = this.clientService.findClientById(clientId);
 		Diet diet = this.dietService.findDietById(dietId);
-
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
 		model.addAttribute("client", client);
 		model.addAttribute("diet", diet);
+		model.addAttribute("training", training);
 
 		return "trainer/diets/dietsDetails";
 	}
 
 	// POST
-	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/diets/create")
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create")
 	public String initDietCreateForm(@PathVariable("clientId") int clientId,
-	 @RequestParam(value = "training", required = false) Integer trainingId, Model model) {
+			@PathVariable("trainingId") int trainingId, Model model) {
 
 		Diet diet = new Diet();
 		Client client = this.clientService.findClientById(clientId);
+		Training training = this.trainingService.findTrainingById(trainingId);
 		List<DietType> dietTypes = Arrays.asList(DietType.values());
 
 		model.addAttribute("diet", diet);
 		model.addAttribute("client", client);
 		model.addAttribute("dietTypes", dietTypes);
+		model.addAttribute("training", training);
 
-		if (trainingId != null){
-			Training training = this.trainingService.findTrainingById(trainingId);
-			model.addAttribute("training", training);
-		}
 		return "trainer/diets/dietsCreateOrUpdate";
 	}
 
-	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/diets/create")
+	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create")
 	public String processDietCreateForm(@Valid Diet diet, BindingResult result, @PathVariable("clientId") int clientId,
 			@PathVariable("trainerUsername") String trainerUsername, 
-			@RequestParam(value = "training", required = false) Integer trainingId, Model model) {
+			@PathVariable("trainingId") int trainingId, Model model) {
 
 		Client client = this.clientService.findClientById(clientId);
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
+		Training training = this.trainingService.findTrainingById(trainingId);
 
 		Double HarrisBenedict = (10 * client.getWeight()) + (6.25 * client.getHeight()) - (5 * client.getAge()) + 5;
 		Double KatchMcArdle = 21.6 * (client.getWeight() - client.getWeight() * client.getFatPercentage() / 100) + 370;
@@ -130,21 +131,62 @@ public class DietController {
 		diet.setProtein(proteins.intValue());
 		diet.setCarb(carbs.intValue());
 		diet.setFat(fat.intValue());
+
 		if (result.hasErrors()) {
 			return "trainer/diets/dietsCreateOrUpdate";
 		} else {
-			client.getDiets().add(diet);
-			this.clientService.saveClient(client);
+			// client.getDiets().add(diet);
+			// this.clientService.saveClient(client);
+			
+			training.setDiet(diet);
+			this.trainingService.saveTraining(training);
+
 			this.dietService.saveDiet(diet);
 
-			//check if its linked to a training
-			if (trainingId != null){
-				Training training = this.trainingService.findTrainingById(trainingId);
-				training.setDiet(diet);
-				this.trainingService.saveTraining(training);
-			}
-
 			return "redirect:/trainer/" + trainer.getUser().getUsername() + "/diets";
+		}
+	}
+
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit")
+	public String initTrainingUpdateForm(@PathVariable("clientId") int clientId,
+			@PathVariable("trainingId") int trainingId, Model model) {
+
+		Diet diet = new Diet();
+		Client client = this.clientService.findClientById(clientId);
+		Training training = this.trainingService.findTrainingById(trainingId);
+		List<DietType> dietTypes = Arrays.asList(DietType.values());
+
+		
+		model.addAttribute("diet", diet);
+		model.addAttribute("client", client);
+		model.addAttribute("dietTypes", dietTypes);
+		model.addAttribute("training", training);
+
+		return "trainer/diets/dietsCreateOrUpdate";
+	}
+	
+	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit")
+	public String processTrainingUpdateForm(@Valid Diet diet, BindingResult result, @PathVariable("clientId") int clientId,
+			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,  Model model) {
+		
+		// Client client = this.clientService.findClientById(clientId);
+		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
+		Training training = this.trainingService.findTrainingById(trainingId);
+
+		if (result.hasErrors()) {
+			return "trainer/diets/dietsCreateOrUpdate";
+		} 
+		else {
+			// client.getDiets().add(diet);
+			// this.clientService.saveClient(client);
+			
+			training.setDiet(diet);
+			this.trainingService.saveTraining(training);
+
+			this.dietService.saveDiet(diet);
+
+			return "redirect:/trainer/" + trainer.getUser().getUsername() + "/clients/" + clientId +
+			 "/trainings/" + trainingId + "/diets/" + diet.getId();
 		}
 	}
 }
