@@ -46,3 +46,8 @@
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>Dashboard</span>
 </yogogym:menuItem>
+
+<yogogym:menuItem active="${name eq 'guilds'}" url="/client/${clientUsername}/guilds" title="Guild">
+	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+	<span>Guilds</span>
+</yogogym:menuItem>

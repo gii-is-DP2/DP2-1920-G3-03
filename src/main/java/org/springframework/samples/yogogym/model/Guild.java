@@ -5,6 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.URL;
 
 import lombok.Data;
 
@@ -12,6 +15,10 @@ import lombok.Data;
 @Data
 @Table(name = "guilds")
 public class Guild extends BaseEntity{
+	
+	@Column(name = "logo")
+	@NotEmpty
+	protected String logo;
 	
 	@Column(name = "name")
 	@NotEmpty
@@ -25,6 +32,4 @@ public class Guild extends BaseEntity{
 	@NotEmpty
 	protected String creator;
 	
-	@Transient
-	protected Integer points;
 }

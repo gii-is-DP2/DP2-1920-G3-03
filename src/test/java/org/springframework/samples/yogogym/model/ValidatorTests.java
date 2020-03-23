@@ -1,9 +1,7 @@
 package org.springframework.samples.yogogym.model;
 
 import java.util.Locale;
-
 import javax.validation.Validator;
-
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 public class ValidatorTests {
@@ -13,6 +11,5 @@ public class ValidatorTests {
 		LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
 		localValidatorFactoryBean.afterPropertiesSet();
 		return localValidatorFactoryBean;
-	}
-
+	}	
 }
