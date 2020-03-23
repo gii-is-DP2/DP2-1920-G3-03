@@ -10,10 +10,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,9 +120,13 @@ public class ChallengeControllerTest {
 		client1.setId(testClientId1);
 		client1.addInscription(inscription1);
 		
+		List<Inscription> inscriptions = new ArrayList<Inscription>();
+		inscriptions.add(inscription1);
+		
 		given(this.challengeService.findChallengeById(testChallengeId2)).willReturn(challenge2);
 		given(this.inscriptionService.findInscriptionByInscriptionId(testInscriptionId1)).willReturn(inscription1);
 		given(this.inscriptionService.findInscriptionByClientAndChallenge(client1, challenge2)).willReturn(inscription1);
+		given(this.inscriptionService.findInscriptionsByChallengeId(testChallengeId2)).willReturn(inscriptions);
 		given(this.clientService.findClientById(testClientId1)).willReturn(client1);
 		given(this.clientService.findClientByUsername(testClientUsername1)).willReturn(client1);
 	}
@@ -149,6 +154,7 @@ public class ChallengeControllerTest {
 				.andExpect(model().attribute("challenge", hasProperty("reward", is("Reward Test"))))
 				.andExpect(model().attribute("challenge", hasProperty("reps", is(100))))
 				.andExpect(model().attribute("challenge", hasProperty("weight", is(100.))))
+				.andExpect(model().attribute("isModifiable", true))
 				.andExpect(view().name("admin/challenges/challengeDetails"));
 	}
 	
@@ -167,7 +173,6 @@ public class ChallengeControllerTest {
 				.andExpect(model().attribute("challenge", hasProperty("reward", is("Reward Test"))))
 				.andExpect(model().attribute("challenge", hasProperty("reps", is(100))))
 				.andExpect(model().attribute("challenge", hasProperty("weight", is(100.))))
-				.andExpect(model().attribute("isModifiable", true))
 				.andExpect(view().name("admin/challenges/challengeDetails"));
 	}
 	
@@ -275,6 +280,16 @@ public class ChallengeControllerTest {
 	
 	@WithMockUser(value = "admin1", authorities = {"admin"})
 	@Test
+	void testInitUpdateChallengeFormWithInscriptions() throws Exception
+	{
+		mockMvc.perform(get("/admin/challenges/{challengeId}/edit",testChallengeId2))
+		.andExpect(status().isOk())
+		.andExpect(view().name("admin/challenges/challengeDetails"))
+		.andExpect(model().attributeExists("challenge"));
+	}
+	
+	@WithMockUser(value = "admin1", authorities = {"admin"})
+	@Test
 	void testProcessUpdateChallengeForm() throws Exception
 	{						
 		
@@ -318,10 +333,10 @@ public class ChallengeControllerTest {
 	}
 	
 	@WithMockUser(value = "admin1", authorities = {"admin"})
-	@Ignore
+	@Test
 	void testDeleteChallenge() throws Exception
 	{
-		mockMvc.perform(get("admin/challenges/{challengeId}/delete",testChallengeId1))
+		mockMvc.perform(get("/admin/challenges/{challengeId}/delete",testChallengeId1))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/admin/challenges"));
 	}

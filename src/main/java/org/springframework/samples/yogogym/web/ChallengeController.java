@@ -185,7 +185,7 @@ public class ChallengeController {
 		try {
 			this.challengeService.deleteChallenge(challenge);
 		}catch(ChallengeWithInscriptionsException ex){
-			return "/welcome";
+			return "exception";
 		}
 		
 		return "redirect:/admin/challenges";

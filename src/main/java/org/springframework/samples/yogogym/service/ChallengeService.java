@@ -24,7 +24,7 @@ public class ChallengeService {
 	@Autowired
 	private ChallengeRepository challengeRepo;
 	
-	@Autowired
+	@Autowired 
 	private InscriptionService inscriptionService;
 	
 	
