@@ -22,6 +22,8 @@ import org.springframework.samples.yogogym.service.GuildService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeWithInscriptionsException;
+import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
+import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -48,10 +50,6 @@ public class GuildController {
 		this.guildService = guildService;
 	}
 	
-	@InitBinder("guild")
-	public void initGuildBinder(WebDataBinder dataBinder) {
-		dataBinder.setValidator(new GuildValidator(guildService));
-	}
 	
 	@GetMapping("/client/{clientUsername}/guilds")
 	public String ClienGuildList(@PathVariable("clientUsername") String clientUsername, Model model) {
@@ -112,12 +110,20 @@ public class GuildController {
 			model.addAttribute("client", client);
 			model.addAttribute("guild", guild);
 			
-			
 			return "client/guilds/guildsCreateOrUpdate";
 		} else {
-			
+			try {
 			client.setGuild(guild);
 			this.guildService.saveGuild(guild);
+			}catch(Exception ex){
+				if(ex instanceof GuildSameNameException) {
+					result.rejectValue("name", "required: ", "There is already a guild with that name");
+				}else if (ex instanceof GuildSameCreatorException) {
+					result.rejectValue("creator", "required: ", "There is already a guild created by this creator");
+				}
+				return "client/guilds/guildsCreateOrUpdate";
+			}
+				
 			
 			
 			
@@ -152,11 +158,20 @@ public class GuildController {
 				
 				return "client/guilds/guildsCreateOrUpdate";
 			}else {
-				
+				try {
+					
 				guild.setId(guildId);
 				this.guildService.saveGuild(guild);
 				
-				
+				}catch(Exception ex){
+					if(ex instanceof GuildSameNameException) {
+						result.rejectValue("name", "required: ", "There is already a guild with that name");
+						
+					}else if (ex instanceof GuildSameCreatorException) {
+						result.rejectValue("creator", "required: ", "There is already a guild created by this creator");
+					}
+					return "client/guilds/guildsCreateOrUpdate";
+				}
 				return "redirect:/client/" + clientUsername + "/guilds";
 			}
 	}

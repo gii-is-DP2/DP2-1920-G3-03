@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.URL;
 
@@ -16,7 +17,7 @@ import lombok.Data;
 public class Guild extends BaseEntity{
 	
 	@Column(name = "logo")
-	@URL
+	@Pattern(regexp ="^https:\\/\\/.+$")
 	protected String logo;
 	
 	@Column(name = "name")
