@@ -1,12 +1,16 @@
 
 package org.springframework.samples.yogogym.web;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
@@ -16,6 +20,7 @@ import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.RoutineService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
+import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -58,6 +63,13 @@ public class RoutineController {
 		if(!isLoggedTrainer(trainerUsername))
 			return "exception";
 		
+		Calendar now = Calendar.getInstance();
+		Date date = now.getTime();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");		
+		String actualDate = dateFormat.format(date);
+		
+		model.addAttribute("actualDate", actualDate);
+		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		model.addAttribute("trainer", trainer);
 		
@@ -69,8 +81,15 @@ public class RoutineController {
 			@PathVariable("clientId") int clientId, @PathVariable("routineId") int routineId,
 			@PathVariable("trainingId") int trainingId, Model model) {
 		
-		if(!isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
+		if(!routineExist(routineId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
+		
+		Calendar now = Calendar.getInstance();
+		Date date = now.getTime();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");		
+		String actualDate = dateFormat.format(date);
+		
+		model.addAttribute("actualDate", actualDate);
 
 		Client client = this.clientService.findClientById(clientId);
 		Routine routine = this.routineService.findRoutineById(routineId);
@@ -84,9 +103,9 @@ public class RoutineController {
 	}
 
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create")
-	public String initRoutineCreateForm(@PathVariable("clientId") int clientId,@PathVariable("trainerUsername")final String trainerUsername, final Model model) {
+	public String initRoutineCreateForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId,@PathVariable("trainerUsername")final String trainerUsername, final Model model) {
 		
-		if(!isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
+		if(isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
 		
 		Client client = this.clientService.findClientById(clientId);
@@ -106,7 +125,7 @@ public class RoutineController {
 			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,
 			@PathVariable("clientId") int clientId,  final ModelMap model) {
 		
-		if(!isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
+		if(isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
 		
 		if (result.hasErrors()) {
@@ -130,7 +149,8 @@ public class RoutineController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/edit")
 	public String initEditRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername, ModelMap model)
 	{
-		if(!isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
+		
+		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
 		
 		Routine routine = this.routineService.findRoutineById(routineId);
@@ -145,9 +165,9 @@ public class RoutineController {
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/edit")
 	public String processRoutineEditForm(@Valid Routine routine, BindingResult result,
 			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,
-			@PathVariable("clientId") int clientId, @PathVariable("routineId")final int routineId, final ModelMap model) {
+			@PathVariable("clientId") int clientId, @PathVariable("routineId")final int routineId, final ModelMap model) throws DataAccessException, TrainingFinished {
 		
-		if(!isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
+		if(routineExist(routineId) || isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
 		
 		if (result.hasErrors()) {
@@ -162,7 +182,7 @@ public class RoutineController {
 			routine.setId(routineId);
 			routine.setRoutineLine(oldRoutine.getRoutineLine());
 			
-			this.routineService.saveRoutine(routine);
+			this.routineService.saveRoutine(routine,trainingId);
 			
 			return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId + "/trainings/"
 					+ trainingId + "/routines/" + routineId;
@@ -170,18 +190,24 @@ public class RoutineController {
 	}
 	
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/delete")
-	public String deleteRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername)
-	{
-		if(!isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
+	public String deleteRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername) throws DataAccessException, TrainingFinished
+	{		
+		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
 		
 		Routine routine = this.routineService.findRoutineById(routineId);
 		
-		this.routineService.deleteRoutine(routine);
+		this.routineService.deleteRoutine(routine,trainingId);
 		
 		return "redirect:/trainer/"+ trainerUsername + "/routines";
 	}
 	
+	//Security Utils Check
+	
+	public Boolean routineExist(final int routineId)
+	{
+		return this.routineService.findRoutineById(routineId) != null;
+	}
 	
 	public Boolean isLoggedTrainer(final String trainerUsername)
 	{		
@@ -200,6 +226,16 @@ public class RoutineController {
 		Client client = this.clientService.findClientById(clientId);
 		
 		return trainer.getClients().contains(client);
+	}
+	
+	public Boolean isTrainingFinished(final int trainingId)
+	{
+		Calendar now = Calendar.getInstance();
+		Date actualDate = now.getTime();
+				
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		return training.getEndDate().before(actualDate);
 	}
 
 }

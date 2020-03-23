@@ -10,6 +10,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
@@ -28,9 +30,11 @@ public class Challenge extends BaseEntity{
 	protected String description;
 	
 	@Column(name = "reward")
+	@NotEmpty
 	protected String reward;
 	
 	@Column(name = "points")
+	@NotNull
 	@Min(1)
 	protected Integer points;
 	
