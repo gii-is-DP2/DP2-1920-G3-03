@@ -1,6 +1,7 @@
 package org.springframework.samples.yogogym.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
@@ -141,7 +142,7 @@ public class GuildServiceTest {
 		Client c = this.clientService.findClientById(6);
 		Guild g = this.guildService.findGuildById(1);
 		this.guildService.joinGuild(c.getUser().getUsername(), g);
-		assertThat(c.getGuild().equals(g));
+		assertTrue(c.getGuild().equals(g));
 	}
 	
 	@Test
@@ -149,7 +150,7 @@ public class GuildServiceTest {
 		
 		Client c = this.clientService.findClientById(1);
 		this.guildService.leaveGuild(c.getUser().getUsername());
-		assertThat(c.getGuild() == null);
+		assertTrue(c.getGuild() == null);
 	}
 	
 	private Guild createGuildTesting() {
