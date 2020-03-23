@@ -19,7 +19,6 @@ public class RoutineValidatorTests {
 		return localValidatorFactoryBean;
 	}
 	
-	/* ------------------------ ROUTINE --------------------------------------------------------------------*/
 	@Test
 	void shouldNotValidateWhenRoutineNameEmpty()
 	{

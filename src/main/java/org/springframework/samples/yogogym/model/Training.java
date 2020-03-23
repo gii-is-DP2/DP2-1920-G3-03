@@ -13,6 +13,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -35,6 +36,7 @@ public class Training extends BaseEntity{
 	
 	@Column(name = "name")
 	@NotBlank
+	@Size(max=40)
 	protected String name;
 	
 	@OneToMany(cascade = CascadeType.ALL)
