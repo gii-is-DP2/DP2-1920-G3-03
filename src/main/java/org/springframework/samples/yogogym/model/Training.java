@@ -36,7 +36,7 @@ public class Training extends BaseEntity{
 	
 	@Column(name = "name")
 	@NotBlank
-	@Size(max=50)
+	@Size(max=40)
 	protected String name;
 	
 	@OneToMany(cascade = CascadeType.ALL)

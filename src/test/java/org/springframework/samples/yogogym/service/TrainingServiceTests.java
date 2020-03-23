@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class TrainingServiceTest {
+public class TrainingServiceTests {
 	
 	@Autowired
 	private TrainingService trainingService;
@@ -110,7 +110,7 @@ public class TrainingServiceTest {
 		List<Training> clientTrainingsList = (List<Training>) clientTrainings;
 		training = clientTrainingsList.get(clientTrainingsList.size()-1);
 		assertThat(training.getId().longValue()).isNotNull();
-		assertThat(training.getName()).isEqualTo("Nuevo Entrenamiento");
+		assertThat(training.getName()).isEqualTo("New Training");
 		assertThat(dateFormat.format(training.getInitialDate()))
 		.isEqualTo(dateFormat.format(initDate.getTime()));
 		assertThat(dateFormat.format(training.getEndDate()))
@@ -296,7 +296,7 @@ public class TrainingServiceTest {
 		List<Training> clientTrainingsList = (List<Training>) clientTrainings;
 		training = clientTrainingsList.get(clientTrainingsList.size()-1);
 		
-		String newName = "Nuevo Entrenamiento Actualizado";
+		String newName = "New Training Updated";
 		Calendar aux = (Calendar) now.clone();
 		aux.add(Calendar.DAY_OF_MONTH, 5);
 		Date newEndDate = aux.getTime();
@@ -324,7 +324,7 @@ public class TrainingServiceTest {
 		
 		Training training = this.trainingService.findTrainingById(TRAINING_ID);
 		
-		String newName = "Entrenamiento 1 Actualizado";
+		String newName = "Entrenamiento 1 Updated";
 		Calendar aux = (Calendar) now.clone();
 		aux.add(Calendar.DAY_OF_MONTH, -1);
 		Date newEndDate = aux.getTime();
@@ -352,7 +352,7 @@ public class TrainingServiceTest {
 		List<Training> clientTrainingsList = (List<Training>) clientTrainings;
 		Training afterCreateTraining = clientTrainingsList.get(clientTrainingsList.size()-1);
 		
-		String newName = "Nuevo Entrenamiento Actualizado";
+		String newName = "New Training Updated";
 		Calendar aux = (Calendar) now.clone();
 		aux.add(Calendar.DAY_OF_MONTH, 92);
 		Date newEndDate = aux.getTime();
@@ -382,7 +382,7 @@ public class TrainingServiceTest {
 		List<Training> clientTrainingsList = (List<Training>) clientTrainings;
 		Training afterCreateTraining = clientTrainingsList.get(clientTrainingsList.size()-1);
 		
-		String newName = "Nuevo Entrenamiento Actualizado";
+		String newName = "New Training Updated";
 		Calendar aux = (Calendar) now.clone();
 		aux.add(Calendar.DAY_OF_MONTH, 8);
 		Date newEndDate = aux.getTime();
@@ -427,7 +427,7 @@ public class TrainingServiceTest {
 		List<Training> clientTrainingsList = (List<Training>) clientTrainings;
 		Training afterCreateTraining = clientTrainingsList.get(clientTrainingsList.size()-1);
 		
-		String newName = "Nuevo Entrenamiento Actualizado";
+		String newName = "New Training Updated";
 		Calendar aux = (Calendar) now.clone();
 		aux.add(Calendar.DAY_OF_MONTH, 16);
 		Date newEndDate = aux.getTime();
@@ -470,7 +470,7 @@ public class TrainingServiceTest {
 		endDate.add(Calendar.DAY_OF_MONTH, addEndDate);
 		
 		Training training = new Training();
-		training.setName("Nuevo Entrenamiento");
+		training.setName("New Training");
 		training.setInitialDate(initDate.getTime());
 		training.setEndDate(endDate.getTime());
 		Client client = this.clientService.findClientById(CLIENT_ID);
