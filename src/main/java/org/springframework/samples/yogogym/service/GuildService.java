@@ -14,6 +14,7 @@ import org.springframework.samples.yogogym.repository.ClientRepository;
 import org.springframework.samples.yogogym.repository.GuildRepository;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeMore3Exception;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeSameNameException;
+import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Service;
@@ -52,8 +53,8 @@ public class GuildService {
 		return res;		
 	}
 	
-	@Transactional(rollbackFor = {GuildSameCreatorException.class, GuildSameNameException.class})
-	public void saveGuild(Guild guild) throws DataAccessException, GuildSameCreatorException, GuildSameNameException {
+	@Transactional(rollbackFor = {GuildSameCreatorException.class, GuildSameNameException.class, GuildLogoException.class})
+	public void saveGuild(Guild guild) throws DataAccessException, GuildSameCreatorException, GuildSameNameException, GuildLogoException {
 		
 		Collection<Guild> guilds = this.guildRepository.findAllGuilds();
 		
@@ -67,7 +68,11 @@ public class GuildService {
 				
 				throw new GuildSameCreatorException();
 
+			}else if(!guild.getLogo().startsWith("https://")){
+				
+				throw new GuildLogoException();
 			}else {
+		
 				this.guildRepository.save(guild);
 			}
 	}

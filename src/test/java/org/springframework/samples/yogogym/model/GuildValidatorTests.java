@@ -2,6 +2,7 @@ package org.springframework.samples.yogogym.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Locale;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -13,6 +14,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class GuildValidatorTests {
 	
 	private Validator createValidator() {
+		Locale.setDefault(new Locale("en","EN"));
 		LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
 		localValidatorFactoryBean.afterPropertiesSet();
 		return localValidatorFactoryBean;
@@ -35,7 +37,7 @@ public class GuildValidatorTests {
 		ConstraintViolation<Guild> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-		assertThat(violation.getMessage()).isEqualTo("name must not be empty");	
+		assertThat(violation.getMessage()).isEqualTo("must not be empty");	
 	}
 	
 	@Test
@@ -54,7 +56,7 @@ public class GuildValidatorTests {
 		ConstraintViolation<Guild> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-		assertThat(violation.getMessage()).isEqualTo("name must not be null");	
+		assertThat(violation.getMessage()).isEqualTo("must not be empty");	
 	}
 	
 	@Test
@@ -74,7 +76,7 @@ public class GuildValidatorTests {
 		ConstraintViolation<Guild> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("creator");
-		assertThat(violation.getMessage()).isEqualTo("u must assign a creator");	
+		assertThat(violation.getMessage()).isEqualTo("must not be empty");	
 	}
 	
 	@Test
@@ -94,7 +96,7 @@ public class GuildValidatorTests {
 		ConstraintViolation<Guild> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("creator");
-		assertThat(violation.getMessage()).isEqualTo("creator must not be null");	
+		assertThat(violation.getMessage()).isEqualTo("must not be empty");	
 	}
 	
 	@Test
@@ -114,7 +116,7 @@ public class GuildValidatorTests {
 		ConstraintViolation<Guild> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-		assertThat(violation.getMessage()).isEqualTo("description must not be empty");	
+		assertThat(violation.getMessage()).isEqualTo("must not be empty");	
 	}
 	
 	@Test
@@ -134,7 +136,7 @@ public class GuildValidatorTests {
 		ConstraintViolation<Guild> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-		assertThat(violation.getMessage()).isEqualTo("description must not be null");	
+		assertThat(violation.getMessage()).isEqualTo("must not be empty");	
 	}
 	
 	@Test
@@ -144,7 +146,7 @@ public class GuildValidatorTests {
 		
 		guild.setCreator("JCoboG");
 		guild.setLogo("");
-		guild.setDescription("");
+		guild.setDescription("Una descripcion");
 		guild.setName("Not the best Guild");
 		
 		Validator validator = createValidator();
@@ -154,7 +156,7 @@ public class GuildValidatorTests {
 		ConstraintViolation<Guild> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("logo");
-		assertThat(violation.getMessage()).isEqualTo("u must provide an icon");	
+		assertThat(violation.getMessage()).isEqualTo("must not be empty");	
 	}
 	
 	@Test
@@ -163,9 +165,9 @@ public class GuildValidatorTests {
 		Guild guild = new Guild();
 		
 		guild.setCreator("JCoboG");
-		guild.setLogo(null);
-		guild.setDescription("");
+		guild.setDescription("Una descripcion");
 		guild.setName("Not the best Guild");
+		guild.setLogo(null);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Guild>> constraintViolations = validator.validate(guild);
@@ -174,26 +176,8 @@ public class GuildValidatorTests {
 		ConstraintViolation<Guild> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("logo");
-		assertThat(violation.getMessage()).isEqualTo("the icon must not be null");	
+		assertThat(violation.getMessage()).isEqualTo("must not be empty");	
 	}
 	
-	@Test
-	void shouldNotValidateWhenGuildLogoNoStartWithHttps() {
-		
-		Guild guild = new Guild();
-		
-		guild.setCreator("JCoboG");
-		guild.setLogo("htp://google.es");
-		guild.setDescription("");
-		guild.setName("Not the best Guild");
-		
-		Validator validator = createValidator();
-		Set<ConstraintViolation<Guild>> constraintViolations = validator.validate(guild);
-		
-		assertThat(constraintViolations.size()).isEqualTo(1);
-		ConstraintViolation<Guild> violation = constraintViolations.iterator().next();
-		
-		assertThat(violation.getPropertyPath().toString()).isEqualTo("logo").doesNotStartWith("https://");
-		assertThat(violation.getMessage()).isEqualTo("u must provide an icon");	
-	}
+
 }

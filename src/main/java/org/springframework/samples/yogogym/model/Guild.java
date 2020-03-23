@@ -17,7 +17,7 @@ import lombok.Data;
 public class Guild extends BaseEntity{
 	
 	@Column(name = "logo")
-	@Pattern(regexp ="^https:\\/\\/.+$")
+	@NotEmpty
 	protected String logo;
 	
 	@Column(name = "name")

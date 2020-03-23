@@ -22,6 +22,7 @@ import org.springframework.samples.yogogym.service.GuildService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeWithInscriptionsException;
+import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Controller;
@@ -44,8 +45,7 @@ public class GuildController {
 	private final GuildService guildService;
 	
 	@Autowired
-	public GuildController(final ClientService clientService, final GuildService guildService,
-			final TrainingService trainingService) {
+	public GuildController(final ClientService clientService, final GuildService guildService) {
 		this.clientService = clientService;
 		this.guildService = guildService;
 	}
@@ -112,6 +112,7 @@ public class GuildController {
 			
 			return "client/guilds/guildsCreateOrUpdate";
 		} else {
+			
 			try {
 			client.setGuild(guild);
 			this.guildService.saveGuild(guild);
@@ -120,6 +121,8 @@ public class GuildController {
 					result.rejectValue("name", "required: ", "There is already a guild with that name");
 				}else if (ex instanceof GuildSameCreatorException) {
 					result.rejectValue("creator", "required: ", "There is already a guild created by this creator");
+				}else if(ex instanceof GuildLogoException) {
+					result.rejectValue("logo", "required: ", "The link must start with https://");
 				}
 				return "client/guilds/guildsCreateOrUpdate";
 			}
@@ -169,6 +172,9 @@ public class GuildController {
 						
 					}else if (ex instanceof GuildSameCreatorException) {
 						result.rejectValue("creator", "required: ", "There is already a guild created by this creator");
+						
+					}else if(ex instanceof GuildLogoException) {
+						result.rejectValue("logo", "required: ", "The link must start with https://");
 					}
 					return "client/guilds/guildsCreateOrUpdate";
 				}
