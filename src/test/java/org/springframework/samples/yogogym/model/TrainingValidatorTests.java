@@ -10,17 +10,10 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-class TrainingValidatorTests {
+class TrainingValidatorTests extends ValidatorTests{
 	
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-	private Validator createValidator() {
-		LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
-		localValidatorFactoryBean.afterPropertiesSet();
-		return localValidatorFactoryBean;
-	}
 	
 	@Test
 	void shouldNotValidateWhenTrainingNameEmpty() throws ParseException {
@@ -40,7 +33,7 @@ class TrainingValidatorTests {
 		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");		
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");		
 	}
 	
 	@Test
@@ -61,7 +54,7 @@ class TrainingValidatorTests {
 		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-		assertThat(violation.getMessage()).isEqualTo("el tamaño tiene que estar entre 0 y 40");		
+		assertThat(violation.getMessage()).isEqualTo("size must be between 0 and 40");		
 	}
 	
 	@Test
@@ -82,7 +75,7 @@ class TrainingValidatorTests {
 		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("initialDate");
-		assertThat(violation.getMessage()).isEqualTo("no puede ser null");		
+		assertThat(violation.getMessage()).isEqualTo("must not be null");		
 	}
 	
 	@Test
@@ -103,7 +96,7 @@ class TrainingValidatorTests {
 		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("endDate");
-		assertThat(violation.getMessage()).isEqualTo("no puede ser null");		
+		assertThat(violation.getMessage()).isEqualTo("must not be null");		
 	}
 	
 	@Test
@@ -123,7 +116,7 @@ class TrainingValidatorTests {
 		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("client");
-		assertThat(violation.getMessage()).isEqualTo("no puede ser null");		
+		assertThat(violation.getMessage()).isEqualTo("must not be null");		
 	}
 
 }
