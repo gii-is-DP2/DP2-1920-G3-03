@@ -69,7 +69,12 @@ public class RoutineLineServiceTest {
 		Date newEndDate = cal.getTime();
 		Training training = this.trainingService.findTrainingById(trainingId);
 		training.setEndDate(newEndDate);
-		this.trainingService.saveTraining(training);
+		try {
+			this.trainingService.saveTraining(training);
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
 		
 		//Get all of routineLine before adding
 		Collection<RoutineLine> beforeAdding = this.routineLineService.findAllRoutinesLines();
@@ -155,7 +160,12 @@ public class RoutineLineServiceTest {
 		//Update Training
 		Training training = this.trainingService.findTrainingById(trainingId);
 		training.setEndDate(newEndDate);
-		this.trainingService.saveTraining(training);
+		try {
+			this.trainingService.saveTraining(training);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		//Fetch exercise used by RoutineLine
 		Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
@@ -182,7 +192,12 @@ public class RoutineLineServiceTest {
 		//Update training
 		Training training = this.trainingService.findTrainingById(trainingId);
 		training.setEndDate(newEndDate);
-		this.trainingService.saveTraining(training);
+		try {
+			this.trainingService.saveTraining(training);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		//Fetch specified routineLine
 		RoutineLine routineLine = this.routineLineService.findRoutineLineById(routineLineId);

@@ -211,6 +211,11 @@ public class TrainingController {
 		else {
 			training.setClient(oldTraining.getClient());
 			training.setInitialDate(oldTraining.getInitialDate());
+			
+			if(oldTraining.getEndDate().before(now)) {
+				training.setEndDate(oldTraining.getEndDate());
+			}
+			
 			training.setDiet(oldTraining.getDiet());
 			training.setRoutines(oldTraining.getRoutines());
 			training.setId(trainingId);
