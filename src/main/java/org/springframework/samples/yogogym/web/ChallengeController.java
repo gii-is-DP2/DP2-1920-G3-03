@@ -246,7 +246,13 @@ public class ChallengeController {
 		
 	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
 	   	Client client = this.clientService.findClientByUsername(clientUsername);
-	   	Inscription inscription = this.inscriptionService.findInscriptionByClientAndChallenge(client,challenge);
+	   	Inscription inscription;
+	   	
+	   	if(client.getInscriptions().stream().anyMatch(i -> i.getChallenge().equals(challenge))) {
+	   		inscription = client.getInscriptions().stream().filter(i -> i.getChallenge().equals(challenge)).findFirst().get();
+	   	}else {
+	   		return "exception";
+	   	}
 	   	
 	   	model.addAttribute("challenge", challenge);
 	   	model.addAttribute("inscription",inscription);
