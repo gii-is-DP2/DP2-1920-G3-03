@@ -46,18 +46,27 @@ public class ClientServiceTest {
 	void shouldFindClientById(){
 		Client client = this.clientService.findClientById(1);
 		assertThat(client.getNif()).isEqualTo("12345678B");	
+		
+		client = this.clientService.findClientById(50);
+		assertThat(client).isNull();	
 	}
 	
 	@Test
 	void shouldFindClientByUsername(){
 		Client client = this.clientService.findClientByUsername("client1");
 		assertThat(client.getNif()).isEqualTo("12345678B");	
+		
+		client = this.clientService.findClientByUsername("client50");
+		assertThat(client).isNull();
 	}
 
 	@Test
 	void shouldFindClientByInscriptionId(){
 		Client client = this.clientService.findClientByInscriptionId(2);
 		assertThat(client.getNif()).isEqualTo("12345678B");	
+		
+		client = this.clientService.findClientByInscriptionId(50);
+		assertThat(client).isNull();	
 	}
 	
 	@Test
