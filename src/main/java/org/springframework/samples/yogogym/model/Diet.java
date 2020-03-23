@@ -28,7 +28,7 @@ public class Diet extends BaseEntity{
 	protected String description;
 	
 	@Column(name = "type")
-	// @NotEmpty
+	@NotEmpty
 	protected DietType type;
 
 	@Column(name = "kcal")
