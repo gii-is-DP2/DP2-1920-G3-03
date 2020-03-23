@@ -20,6 +20,12 @@ import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.RoutineService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
+import org.springframework.samples.yogogym.service.exceptions.EndBeforeInitException;
+import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.PastEndException;
+import org.springframework.samples.yogogym.service.exceptions.PastInitException;
+import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -123,8 +129,8 @@ public class RoutineController {
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create")
 	public String processRoutineCreationForm(@Valid Routine routine, BindingResult result,
 			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,
-			@PathVariable("clientId") int clientId,  final ModelMap model) {
-		
+			@PathVariable("clientId") int clientId,  final ModelMap model) throws DataAccessException, PastInitException, EndBeforeInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException {
+
 		if(isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
 		
