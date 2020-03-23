@@ -11,15 +11,7 @@ import javax.validation.Validator;
 import org.junit.jupiter.api.Test;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-public class GuildValidatorTests {
-	
-	private Validator createValidator() {
-		Locale.setDefault(new Locale("en","EN"));
-		LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
-		localValidatorFactoryBean.afterPropertiesSet();
-		return localValidatorFactoryBean;
-	
-}
+public class GuildValidatorTests extends ValidatorTests{
 
 	@Test
 	void shouldNotValidateWhenGuildNameEmpty() {
