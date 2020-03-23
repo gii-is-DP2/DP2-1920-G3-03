@@ -24,7 +24,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.RoutineRepository;
-import org.springframework.samples.yogogym.service.exceptions.TrainingNotFinished;
+import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,21 +47,21 @@ public class RoutineService {
 	}
 	
 	
-	@Transactional(rollbackFor= {TrainingNotFinished.class})
-	public void saveRoutine(Routine routine, int trainingId) throws DataAccessException, TrainingNotFinished {
+	@Transactional(rollbackFor= {TrainingFinished.class})
+	public void saveRoutine(Routine routine, int trainingId) throws DataAccessException, TrainingFinished {
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
 		Calendar cal = Calendar.getInstance();
 		Date actualDate = cal.getTime();
 		
 		if(training.getEndDate().before(actualDate))
-			throw new TrainingNotFinished();
+			throw new TrainingFinished();
 		else
 			routineRepository.save(routine);
 	}
 	
-	@Transactional(rollbackFor= {TrainingNotFinished.class})
-	public void deleteRoutine(Routine routine, int trainingId) throws DataAccessException, TrainingNotFinished {
+	@Transactional(rollbackFor= {TrainingFinished.class})
+	public void deleteRoutine(Routine routine, int trainingId) throws DataAccessException, TrainingFinished {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
@@ -69,7 +69,7 @@ public class RoutineService {
 		Date actualDate = cal.getTime();
 		
 		if(training.getEndDate().before(actualDate))
-			throw new TrainingNotFinished();
+			throw new TrainingFinished();
 		else
 			routineRepository.delete(routine);
 	}

@@ -20,7 +20,7 @@ import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.RoutineService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
-import org.springframework.samples.yogogym.service.exceptions.TrainingNotFinished;
+import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -81,7 +81,7 @@ public class RoutineController {
 			@PathVariable("clientId") int clientId, @PathVariable("routineId") int routineId,
 			@PathVariable("trainingId") int trainingId, Model model) {
 		
-		if(!isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
+		if(!routineExist(routineId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
 		
 		Calendar now = Calendar.getInstance();
@@ -150,7 +150,7 @@ public class RoutineController {
 	public String initEditRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername, ModelMap model)
 	{
 		
-		if(isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
+		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
 		
 		Routine routine = this.routineService.findRoutineById(routineId);
@@ -165,9 +165,9 @@ public class RoutineController {
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/edit")
 	public String processRoutineEditForm(@Valid Routine routine, BindingResult result,
 			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,
-			@PathVariable("clientId") int clientId, @PathVariable("routineId")final int routineId, final ModelMap model) throws DataAccessException, TrainingNotFinished {
+			@PathVariable("clientId") int clientId, @PathVariable("routineId")final int routineId, final ModelMap model) throws DataAccessException, TrainingFinished {
 		
-		if(isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
+		if(routineExist(routineId) || isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
 		
 		if (result.hasErrors()) {
@@ -190,9 +190,9 @@ public class RoutineController {
 	}
 	
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/delete")
-	public String deleteRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername) throws DataAccessException, TrainingNotFinished
+	public String deleteRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername) throws DataAccessException, TrainingFinished
 	{		
-		if(isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
+		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
 		
 		Routine routine = this.routineService.findRoutineById(routineId);
@@ -202,6 +202,12 @@ public class RoutineController {
 		return "redirect:/trainer/"+ trainerUsername + "/routines";
 	}
 	
+	//Security Utils Check
+	
+	public Boolean routineExist(final int routineId)
+	{
+		return this.routineService.findRoutineById(routineId) != null;
+	}
 	
 	public Boolean isLoggedTrainer(final String trainerUsername)
 	{		

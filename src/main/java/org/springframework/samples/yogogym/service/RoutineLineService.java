@@ -24,7 +24,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.RoutineLineRepository;
-import org.springframework.samples.yogogym.service.exceptions.TrainingNotFinished;
+import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.samples.yogogym.service.exceptions.TrainingRepAndTimeSetted;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,13 +57,8 @@ public class RoutineLineService {
 		return this.routineLineRepository.findAllRoutines();
 	}
 	
-	@Transactional
-	public void deleteRoutineLine(RoutineLine routineLine) throws DataAccessException {
-		this.routineLineRepository.delete(routineLine);
-	}
-	
-	@Transactional(rollbackFor= {TrainingNotFinished.class, TrainingRepAndTimeSetted.class})
-	public void saveRoutineLine(RoutineLine routineLine, int trainingId) throws DataAccessException,TrainingNotFinished, TrainingRepAndTimeSetted {
+	@Transactional(rollbackFor= {TrainingFinished.class})
+	public void deleteRoutineLine(RoutineLine routineLine,int trainingId) throws DataAccessException, TrainingFinished {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
@@ -71,7 +66,21 @@ public class RoutineLineService {
 		Date actualDate = cal.getTime();
 		
 		if(training.getEndDate().before(actualDate))
-			throw new TrainingNotFinished();
+			throw new TrainingFinished();
+		else
+			this.routineLineRepository.delete(routineLine);
+	}
+	
+	@Transactional(rollbackFor= {TrainingFinished.class, TrainingRepAndTimeSetted.class})
+	public void saveRoutineLine(RoutineLine routineLine, int trainingId) throws DataAccessException,TrainingFinished, TrainingRepAndTimeSetted {
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		Calendar cal = Calendar.getInstance();
+		Date actualDate = cal.getTime();
+		
+		if(training.getEndDate().before(actualDate))
+			throw new TrainingFinished();
 		else if(routineLine.getTime() != null && routineLine.getReps() != null)
 			throw new TrainingRepAndTimeSetted();
 		else

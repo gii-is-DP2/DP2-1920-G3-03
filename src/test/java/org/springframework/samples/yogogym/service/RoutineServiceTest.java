@@ -12,10 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.Training;
-import org.springframework.samples.yogogym.service.exceptions.TrainingNotFinished;
+import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
@@ -73,7 +72,14 @@ public class RoutineServiceTest {
 		training.getRoutines().add(newRoutine);	
 		
 		//Update Training
-		this.trainingService.saveTraining(training);
+		try
+		{
+			this.trainingService.saveTraining(training);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		
 		//Check all routine and all of a specific training after adding
 		Collection<Routine> afterAdding = this.routineService.findAllRoutines();
@@ -98,7 +104,7 @@ public class RoutineServiceTest {
 	}
 	
 	@Test
-	void shouldNotCreateRoutineTrainingFinished() throws DataAccessException, TrainingNotFinished{
+	void shouldNotCreateRoutineTrainingFinished(){
 		
 		//Create the routine to be added
 		Routine newRoutine = new Routine();
@@ -107,11 +113,11 @@ public class RoutineServiceTest {
 		newRoutine.setRepsPerWeek(4);
 		
 		//Update Training
-		assertThrows(TrainingNotFinished.class, ()->{this.routineService.saveRoutine(newRoutine, trainingId);});
+		assertThrows(TrainingFinished.class, ()->{this.routineService.saveRoutine(newRoutine, trainingId);});
 	}
 	
 	@Test
-	void shouldDeleteRoutine() throws DataAccessException, TrainingNotFinished{
+	void shouldDeleteRoutine(){
 		
 		final int routineId = 1;
 		final int trainingId = 1;
@@ -132,7 +138,14 @@ public class RoutineServiceTest {
 		//Bring all routines before deleting from the training containing the routine
 		Collection<Routine>beforeDeleteRoutinesTraining = this.routineService.findAllRoutinesFromTraining(trainingId);
 		
-		this.routineService.deleteRoutine(routine,trainingId);		
+		try
+		{
+			this.routineService.deleteRoutine(routine,trainingId);		
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		
 		//Bring all routines after deleting
 		Collection<Routine> afterDelete = this.routineService.findAllRoutines();
@@ -153,10 +166,10 @@ public class RoutineServiceTest {
 	}
 	
 	@Test
-	void shouldNotDeleteRoutine() throws DataAccessException, TrainingNotFinished{
+	void shouldNotDeleteRoutine(){
 				
 		//Get the specified routine (routineId)
 		Routine routine = this.routineService.findRoutineById(routineId);
-		assertThrows(TrainingNotFinished.class, ()->{this.routineService.saveRoutine(routine, trainingId);});
+		assertThrows(TrainingFinished.class, ()->{this.routineService.saveRoutine(routine, trainingId);});
 	}
 }

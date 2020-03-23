@@ -1,7 +1,5 @@
 package org.springframework.samples.yogogym.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -14,12 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Training;
-import org.springframework.samples.yogogym.service.exceptions.TrainingNotFinished;
+import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.samples.yogogym.service.exceptions.TrainingRepAndTimeSetted;
 import org.springframework.stereotype.Service;
 
@@ -43,23 +40,30 @@ public class RoutineLineServiceTest {
 	
 	@Test
 	void shouldFindRoutineLineById(){
+		//Finds specified RoutineLine
 		RoutineLine routineLine = this.routineLineService.findRoutineLineById(1);
-			
+		
+		//Check it fetchs something from the Database
 		Boolean notNull = routineLine != null;
+		//Check for time or reps to be valid ( > 0 && != null)
 		Boolean repsOrTimeNotEmptyAndGreaterThanMin = (routineLine.getReps() != null && routineLine.getReps() > 0) || (routineLine.getTime() != null && routineLine.getTime() >= 0);
-		Boolean seriesNotNull= routineLine.getSeries() != null && routineLine.getSeries() >= 0; 
+		//Check for series to be valid ( > 0 && != null)
+		Boolean seriesNotNull= routineLine.getSeries() != null && routineLine.getSeries() >= 0;
+		//Check for weight to be valid ( > 0 && != null)		
 		Boolean weightNotNull = routineLine.getWeight() != null && routineLine.getWeight() >= 0;
 		
+		//Check the fetched routine is the expected one
 		Boolean sameRepAndTime = routineLine.getReps() == null && routineLine.getTime().equals(2.0);
 		Boolean sameSeries = routineLine.getSeries().equals(1);
 		Boolean sameWeight = routineLine.getWeight().equals(0.0);
 		
-		assertThat(notNull && repsOrTimeNotEmptyAndGreaterThanMin && seriesNotNull && weightNotNull && sameRepAndTime && sameSeries && sameWeight);
+		assertTrue(notNull && repsOrTimeNotEmptyAndGreaterThanMin && seriesNotNull && weightNotNull && sameRepAndTime && sameSeries && sameWeight);
 	}
 	
 	@Test
-	void shouldCreateRoutineLine() throws DataAccessException, TrainingNotFinished{
-				
+	void shouldCreateRoutineLine(){
+		
+		//Set training a valid end date
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DAY_OF_MONTH, 1);
 		Date newEndDate = cal.getTime();
@@ -67,16 +71,21 @@ public class RoutineLineServiceTest {
 		training.setEndDate(newEndDate);
 		this.trainingService.saveTraining(training);
 		
+		//Get all of routineLine before adding
 		Collection<RoutineLine> beforeAdding = this.routineLineService.findAllRoutinesLines();
+		//Create routine collection of training
 		Collection<Routine> routines = new ArrayList<>();
-
+		//Fetch routine that will contain the routineLine
 		Routine routine = this.routineService.findRoutineById(routineId);
+		//Fetch exercise RoutineLine will have
 		Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
-		
+		//Add routine
 		routines.add(routine);
-				
+		
+		//Check routineLine size of the routine we are adding the routineLine
 		int rlFromRoutineBeforeAdding = routine.getRoutineLine().size();
 		
+		//Creating the RoutineLine
 		RoutineLine routineLine = new RoutineLine();
 		routineLine.setReps(10);
 		routineLine.setTime(null);
@@ -84,17 +93,31 @@ public class RoutineLineServiceTest {
 		routineLine.setWeight(5.0);
 		routineLine.setExercise(exercise);
 		
+		//Add routineLIne to the routine created before
 		routine.getRoutineLine().add(routineLine);
-		this.routineService.saveRoutine(routine,trainingId);
-				
+		//Save the routine
+		try
+		{
+			this.routineLineService.saveRoutineLine(routineLine,trainingId);			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		//Get of all routineLines after creation
 		Collection<RoutineLine> afterAdding = this.routineLineService.findAllRoutinesLines();
+		//Get all routineLines of the routine we said we were adding the RoutineLine
 		Collection<RoutineLine> rlFromRoutineAfterAdding = this.routineService.findRoutineById(routineId).getRoutineLine();
 			
+		//Check if size of all routineLine before creation < after creation
 		Boolean hasBeenAdded = beforeAdding.size() < afterAdding.size();
+		//Check if size of all routineLine before creation < after creation in the specified routine
 		Boolean hasBeenAddedToRoutine = rlFromRoutineBeforeAdding < rlFromRoutineAfterAdding.size();
 		
+		//Get the added routine
 		RoutineLine addedRoutineLine = new ArrayList<>(afterAdding).get(afterAdding.size()-1);
 		
+		//Check it contains what we declared before
 		Boolean sameReps = routineLine.getReps().equals(addedRoutineLine.getReps());
 		Boolean sameTime = routineLine.getTime() == addedRoutineLine.getTime();
 		Boolean sameSeries = routineLine.getSeries().equals(addedRoutineLine.getSeries());
@@ -105,39 +128,39 @@ public class RoutineLineServiceTest {
 	}
 	
 	@Test
-	void shouldNotCreateRoutineLineTrainingFinished() throws DataAccessException, TrainingNotFinished{
-				
-		Collection<Routine> routines = new ArrayList<>();
+	void shouldNotCreateRoutineLineTrainingFinished(){
 
-		Routine routine = this.routineService.findRoutineById(routineId);
+		//Fetch exercise used by RoutineLine
 		Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
-		routines.add(routine);
 		
+		//Create the routineLine
 		RoutineLine routineLine = new RoutineLine();
 		routineLine.setReps(10);
 		routineLine.setTime(null);
 		routineLine.setSeries(5);
 		routineLine.setWeight(5.0);
 		routineLine.setExercise(exercise);
-		
-		routine.getRoutineLine().add(routineLine);
-		
-		assertThrows(TrainingNotFinished.class,() -> {this.routineService.saveRoutine(routine,trainingId);});
+				
+		assertThrows(TrainingFinished.class,() -> {this.routineLineService.saveRoutineLine(routineLine,trainingId);});
 	}
 	
 	@Test
-	void shouldNotCreateRoutineLineTimeAndRepSetted() throws DataAccessException, TrainingNotFinished, TrainingRepAndTimeSetted{
+	void shouldNotCreateRoutineLineTimeAndRepSetted(){
 		
+		//Create new EndDate for Training
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DAY_OF_MONTH, 1);
 		Date newEndDate = cal.getTime();
 		
+		//Update Training
 		Training training = this.trainingService.findTrainingById(trainingId);
 		training.setEndDate(newEndDate);
 		this.trainingService.saveTraining(training);
 		
+		//Fetch exercise used by RoutineLine
 		Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
 		
+		//Create RoutineLine
 		RoutineLine routineLine = new RoutineLine();
 		routineLine.setReps(10);
 		routineLine.setTime(10.0);
@@ -151,48 +174,40 @@ public class RoutineLineServiceTest {
 	@Test
 	void shouldDeleteRoutineLine(){
 		
+		//Create new EndDate for Training
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DAY_OF_MONTH, 1);
 		Date newEndDate = cal.getTime();
 		
+		//Update training
 		Training training = this.trainingService.findTrainingById(trainingId);
 		training.setEndDate(newEndDate);
 		this.trainingService.saveTraining(training);
 		
+		//Fetch specified routineLine
 		RoutineLine routineLine = this.routineLineService.findRoutineLineById(routineLineId);
 		
-		Collection<RoutineLine> beforeDelete = this.routineLineService.findAllRoutinesLines();
+		try
+		{
+			this.routineLineService.deleteRoutineLine(routineLine,trainingId);
+		}catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		
-		this.routineLineService.deleteRoutineLine(routineLine);
-		
-		Collection<RoutineLine> afterDelete = this.routineLineService.findAllRoutinesLines();
-
-		Boolean hasBeenDeleted = beforeDelete.size() > afterDelete.size();
+		//Check that the routineLine do not exist
 		Boolean notExist = this.routineLineService.findRoutineLineById(routineLineId) == null;
-		
-		assertTrue(notExist && hasBeenDeleted);
+	
+		assertTrue(notExist);
 	}
 	
 	@Test
 	void shouldNotDeleteRoutineLineTrainingFinished()
 	{		
-		Calendar cal = Calendar.getInstance();
-		Date actualDate = cal.getTime();
-		
-		Training training = this.trainingService.findTrainingById(trainingId);
-	
+		//Fetch routineLine to be deleted
 		RoutineLine routineLine = this.routineLineService.findRoutineLineById(routineLineId);
-		
-		Collection<RoutineLine> beforeDelete = this.routineLineService.findAllRoutinesLines();
-		
-		this.routineLineService.deleteRoutineLine(routineLine);
-		
-		Collection<RoutineLine> afterDelete = this.routineLineService.findAllRoutinesLines();
-		
-		Boolean hasTrainingNotFinished = training.getEndDate().after(actualDate);
-		Boolean hasBeenDeleted = beforeDelete.size() > afterDelete.size();
-		Boolean notExist = this.routineLineService.findRoutineLineById(routineLineId) == null;
-		
-		assertFalse(hasTrainingNotFinished && notExist && hasBeenDeleted);
+
+		assertThrows(TrainingFinished.class,()->{this.routineLineService.deleteRoutineLine(routineLine,trainingId);});
+			
 	}
 }
