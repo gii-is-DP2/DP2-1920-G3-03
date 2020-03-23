@@ -33,7 +33,10 @@ public class InscriptionServiceTest {
 	@Test
 	void shouldFindInscriptionsByChallengeId(){
 		Collection<Inscription> inscriptions = this.inscriptionService.findInscriptionsByChallengeId(1);
-		assertThat(inscriptions.size()).isEqualTo(2);	
+		assertThat(inscriptions.size()).isEqualTo(2);
+		
+		inscriptions = this.inscriptionService.findInscriptionsByChallengeId(50);
+		assertThat(inscriptions.size()).isEqualTo(0);
 	}
 	
 	@Test

@@ -27,6 +27,7 @@ public class ChallengeService {
 	@Autowired
 	private InscriptionService inscriptionService;	
 	
+  
 	@Transactional
 	public Iterable<Challenge> findAll(){
 		
