@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Guild;
+import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Service;
@@ -101,6 +102,19 @@ public class GuildServiceTest {
 		
 		Assertions.assertThrows(GuildSameCreatorException.class, () ->{
 			this.guildService.saveGuild(g2);
+		});		
+
+	}
+	
+	@Test
+	void shouldNotSaveGuildWithBadURL() {
+		
+		Guild g1 = createGuildTesting();
+		
+		g1.setLogo("EstaUrlEstaMal.com");
+				
+		Assertions.assertThrows(GuildLogoException.class, () ->{
+			this.guildService.saveGuild(g1);
 		});		
 
 	}
