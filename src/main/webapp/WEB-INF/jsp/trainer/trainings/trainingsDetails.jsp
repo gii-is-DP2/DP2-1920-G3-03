@@ -47,16 +47,19 @@
 			<li><a href="${fn:escapeXml(routineUrl)}"><c:out value="${routine.name}"/></a></li>
 		</c:forEach>
 	</ul>
-	  
+
 	<h3>Diet</h3>
-	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/diets/create?training=${training.id}" var="dietAddurl" />
+	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/{trainingId}/diets/create" var="dietAddurl" >
+	<spring:param name="trainingId" value="${training.id}"/>
+	</spring:url>
+
 	<h3><a href="${fn:escapeXml(dietAddurl)}">Add Diet</a></h3>
 	<ul>
-		<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/diets/{dietId}" var="dietUrl">
+		<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/{trainingId}/diets/{dietId}" var="dietUrl">
 	       	<spring:param name="dietId" value="${training.diet.id}"/>
+			<spring:param name="trainingId" value="${training.id}"/>
 	    </spring:url>
 		<li><a href="${fn:escapeXml(dietUrl)}"><c:out value="${training.diet.name}"/></a></li>
 	</ul>
-		
 	
 </yogogym:layout>

@@ -173,6 +173,7 @@ public class TrainingService {
 			}
 		}
 	}
+
 	
 	@Transactional
 	public void deleteTraining(Training training) throws DataAccessException {

@@ -2,6 +2,7 @@ package org.springframework.samples.yogogym.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Diet;
+import org.springframework.samples.yogogym.model.Enums.*;
 import org.springframework.samples.yogogym.service.DietService;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -31,10 +32,10 @@ public class DietValidator implements Validator {
 		if (validar.getDescription().isEmpty()) {
 			errors.rejectValue("description", REQUIRED, "The description can not be empty");
 		}
-		// diet type not empty
-		if (validar.getType() == null) {
-			errors.rejectValue("type", REQUIRED, "The diet type can not be null");
-		}
+		// Type not null
+		// if (validar.getType() == null) {
+		// 	errors.rejectValue("type", REQUIRED, "The diet type can not be null");
+		// }
 		
 		// Kcals positive
 		if(validar.getKcal() != null) {
