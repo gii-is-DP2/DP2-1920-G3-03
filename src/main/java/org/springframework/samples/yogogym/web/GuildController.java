@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Diet;
@@ -23,6 +24,7 @@ import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeWithInscriptionsException;
 import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
+import org.springframework.samples.yogogym.service.exceptions.GuildNotUserException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Controller;
@@ -186,10 +188,15 @@ public class GuildController {
 	public String deleteGuild(@PathVariable("clientUsername") String clientUsername,@PathVariable("guildId") int guildId, RedirectAttributes redirectAttrs, Model model) {
 		
 		Guild guild = this.guildService.findGuildById(guildId);
-		
-		this.guildService.deleteGuild(guild);
 		redirectAttrs.addFlashAttribute("deleteMessage", "The Guild was deleted successfully");
-	
+		try {
+			this.guildService.deleteGuild(guild,clientUsername);
+		} catch (Exception ex) {
+			
+		if (ex instanceof GuildNotUserException ) {
+			return "exception";
+		}
+	}
 		return "redirect:/client/{clientUsername}/guilds";
 	}
 	
