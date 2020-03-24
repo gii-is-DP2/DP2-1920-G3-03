@@ -10,7 +10,7 @@
     <jsp:body>
 
     <c:choose>
-	    <c:when test="${diets['new']}">
+	    <c:when test="${diet['new']}">
             <h2>New Diet for <c:out value="${client.firstName} ${client.lastName}"/></h2>
 
             <h3>Diet Data</h3>

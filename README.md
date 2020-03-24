@@ -184,7 +184,9 @@ Como cliente quiero poder participar en los distintos retos propuestos por el gi
 #### HU22 - Clasificación de los Retos
 Como cliente quiero poder ver la clasificación de mis retos, para poder ver en que posición me encuentro y que debo hacer para poder superar y subir al top.
 #### Escenarios
-* **Ver un la clasificación de un reto completado:** Dado un cliente, al pulsar el botón de "Clasificación", aparecerá un listado de los retos completados, viendo también una clasificación semanal y global.
+* **Ver un la clasificación semanal e histórica con datos:** Dado un cliente, al pulsar el botón de "Clasificación", aparecerá un listado de los retos completados, viendo también una clasificación semanal y global.
+* **Ver un la clasificación histórica sin haber completado retos:** Dado un cliente sin retos completados, al pulsar el botón de "Clasificación", aparecerá una clasificación global.
+* **Ver un la clasificación de otro cliente:** Dado un cliente, intentar entrar en la clasificación de otro cliente cambiando la url, dando como resultado una redirección a la página de excepción.
 ---
 #### HU23 - Añadir Playlist adaptada a mis entrenamientos
 Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis entrenamientos, es decir, adecuadas para el nivel de intensidad especificado, para poder motivarme y llevar un ritmo adecuado.
