@@ -15,6 +15,7 @@ import org.springframework.samples.yogogym.repository.GuildRepository;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeMore3Exception;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeSameNameException;
 import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
+import org.springframework.samples.yogogym.service.exceptions.GuildNotUserException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Service;
@@ -76,17 +77,20 @@ public class GuildService {
 				this.guildRepository.save(guild);
 			}
 	}
-	
-	@Transactional
-	public void deleteGuild(Guild guild) throws DataAccessException {
+	@Transactional(rollbackFor = {GuildNotUserException.class})
+	public void deleteGuild(Guild guild, String clientUsername) throws DataAccessException ,GuildNotUserException{
 		
 		Collection<Client> clients = this.guildRepository.findClientsByGuild(guild);
+		if(!guild.getCreator().equals(clientUsername)){
+			throw new GuildNotUserException();
+		}else {
 		for(Client c: clients) {
 			c.setGuild(null);
 			this.clientRepository.save(c);
 		}
 		
 		this.guildRepository.delete(guild);
+		}
 	}
 	
 	@Transactional
