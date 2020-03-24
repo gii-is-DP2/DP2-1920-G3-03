@@ -1,6 +1,8 @@
 package org.springframework.samples.yogogym.web;
 
 import java.util.Date;
+import java.util.Locale;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,6 +47,8 @@ class TrainingControllerTests {
 	
 	private static final int CLIENT1_ID = 1;
 	private static final int CLIENT2_ID = 2;
+	private static final String NIF_1 = "12345678F";
+	private static final String NIF_2 = "12345678G";
 	
 	private static final int CLIENT1_TRAINING_ID = 1;
 	
@@ -62,6 +66,9 @@ class TrainingControllerTests {
 	
 	@MockBean
 	private TrainingService trainingService;
+	
+	@MockBean
+	private ClientFormatter clientFormatter;
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -82,6 +89,7 @@ class TrainingControllerTests {
 		userClient1.setEnabled(true);
 		client1.setUser(userClient1);
 		client1.setId(CLIENT1_ID);
+		client1.setNif(NIF_1);
 		
 		clientsTrainer1.add(client1);
 		
@@ -110,6 +118,7 @@ class TrainingControllerTests {
 		userClient2.setEnabled(true);
 		client2.setUser(userClient2);
 		client2.setId(CLIENT2_ID);
+		client2.setNif(NIF_2);
 		
 		clientsTrainer2.add(client2);
 		
@@ -125,6 +134,16 @@ class TrainingControllerTests {
 		given(this.trainerService.findTrainer(TRAINER1_USERNAME)).willReturn(trainer1);
 		given(this.trainerService.findTrainer(TRAINER2_USERNAME)).willReturn(trainer2);
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING_ID)).willReturn(training1);
+		try {
+			given(this.clientFormatter.parse(NIF_1, Locale.ENGLISH)).willReturn(client1);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			given(this.clientFormatter.parse(NIF_2, Locale.ENGLISH)).willReturn(client2);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -208,7 +227,8 @@ class TrainingControllerTests {
 		 		.andExpect(model().attributeExists("training"))
 				.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
 	}
-	 
+	
+	//TODO
 	@WithMockUser(username="trainer2", authorities= {"trainer"})
 	@Test
 	void testProcessTrainingCreationFormSuccess() throws Exception {
@@ -217,7 +237,7 @@ class TrainingControllerTests {
 			 	.param("name", "Training 2")
 			 	.param("initialDate", dateFormat.format(initialDate))
 			 	.param("endDate", dateFormat.format(endDate))
-			 	.param("client", "client2,"+CLIENT2_ID))
+			 	.param("client", "12345678F"))
 				.andExpect(status().is3xxRedirection())
 		 		.andExpect(view().name("redirect:/trainer/"+TRAINER2_USERNAME+"/trainings"));
 	}
@@ -230,7 +250,7 @@ class TrainingControllerTests {
 			 	.param("name", "")
 			 	.param("initialDate", dateFormat.format(initialDate))
 			 	.param("endDate", dateFormat.format(endDate))
-			 	.param("client", "client2,"+CLIENT2_ID))
+			 	.param("client", NIF_2))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
 				.andExpect(model().attributeHasFieldErrors("training", "name"))
@@ -265,7 +285,7 @@ class TrainingControllerTests {
     			.param("name", "Training 1 Updated")
     			.param("initialDate", dateFormat.format(initialDate))
 				.param("endDate", dateFormat.format(endDateUpdated))
-				.param("client", "client1,"+CLIENT1_ID))
+				.param("client", NIF_1))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}"));
 	}
@@ -278,7 +298,7 @@ class TrainingControllerTests {
 				.param("name", "")
 				.param("initialDate", dateFormat.format(initialDate))
 				.param("endDate", dateFormat.format(endDate))
-				.param("client", "client1,"+CLIENT1_ID))
+				.param("client", NIF_1))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
 				.andExpect(model().attributeHasFieldErrors("training", "name"))
