@@ -3,7 +3,6 @@ package org.springframework.samples.yogogym.web;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Diet;
 import org.springframework.samples.yogogym.model.Trainer;
@@ -13,13 +12,9 @@ import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DietService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
-import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
-import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
-import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
-import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
-import org.springframework.samples.yogogym.service.exceptions.PastEndException;
-import org.springframework.samples.yogogym.service.exceptions.PastInitException;
-import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,18 +45,26 @@ public class DietController {
 	// TRAINER
 
 	// LIST
-	@GetMapping("/trainer/{trainerUsername}/diets")
-	public String ClienDietList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
-		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
-		model.addAttribute("trainer", trainer);
+	// @GetMapping("/trainer/{trainerUsername}/diets")
+	// public String ClienDietList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
 
-		return "trainer/diets/dietsList";
-	}
+	// 	if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+	// 		return "exception";
+
+	// 	Trainer trainer = this.trainerService.findTrainer(trainerUsername);
+	// 	model.addAttribute("trainer", trainer);
+
+	// 	return "trainer/diets/dietsList";
+	// }
 
 	// GET
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}")
 	public String ClientDietDetails(@PathVariable("trainerUsername") String trainerUsername,
 			@PathVariable("clientId") int clientId, @PathVariable("dietId") int dietId, @PathVariable("trainingId") int trainingId, Model model) {
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
+			
 		Client client = this.clientService.findClientById(clientId);
 		Diet diet = this.dietService.findDietById(dietId);
 		Training training = this.trainingService.findTrainingById(trainingId);
@@ -75,8 +78,11 @@ public class DietController {
 
 	// POST
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create")
-	public String initDietCreateForm(@PathVariable("clientId") int clientId,
+	public String initDietCreateForm(@PathVariable("trainerUsername") String trainerUsername, @PathVariable("clientId") int clientId,
 			@PathVariable("trainingId") int trainingId, Model model) {
+
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
 
 		Diet diet = new Diet();
 		Client client = this.clientService.findClientById(clientId);
@@ -96,10 +102,107 @@ public class DietController {
 			@PathVariable("trainerUsername") String trainerUsername, 
 			@PathVariable("trainingId") int trainingId, Model model) {
 
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
 
+		if (result.hasErrors()) {
+			return "trainer/diets/dietsCreateOrUpdate";
+		} else {
+			Trainer trainer = this.trainerService.findTrainer(trainerUsername);
+			Training training = this.trainingService.findTrainingById(trainingId);
+
+			diet = generateDiet(diet, clientId);
+
+			this.dietService.saveDiet(diet);
+			training.setDiet(diet);
+
+			try {
+				this.trainingService.saveTraining(training);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return "redirect:/trainer/"+ trainer.getUser().getUsername() + "/clients/" + clientId + "/trainings/"+ training.getId();
+			
+		}
+	}
+
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit")
+	public String initDietUpdateForm(@PathVariable("trainerUsername") String trainerUsername, @PathVariable("clientId") int clientId,
+			@PathVariable("trainingId") int trainingId, @PathVariable("dietId") int dietId, Model model) {
+
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
+		
+		Diet diet = this.dietService.findDietById(dietId);
 		Client client = this.clientService.findClientById(clientId);
-		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		Training training = this.trainingService.findTrainingById(trainingId);
+		List<DietType> dietTypes = Arrays.asList(DietType.values());
+
+		
+		model.addAttribute("diet", diet);
+		model.addAttribute("client", client);
+		model.addAttribute("dietTypes", dietTypes);
+		model.addAttribute("training", training);
+
+		return "trainer/diets/dietsCreateOrUpdate";
+	}
+	
+	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit")
+	public String processDietUpdateForm(@PathVariable("trainerUsername") String trainerUsername, @Valid Diet diet, BindingResult result, @PathVariable("clientId") int clientId,
+			 @PathVariable("trainingId") int trainingId, @PathVariable("dietId") int dietId,  Model model) {
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+			return "exception";
+
+		if (result.hasErrors()) {
+			return "trainer/diets/dietsCreateOrUpdate";
+		} 
+		else {
+
+			diet.setId(dietId);
+			this.dietService.saveDiet(diet);
+
+			Training training = this.trainingService.findTrainingById(trainingId);
+			training.setDiet(diet);
+			
+			try {
+				this.trainingService.saveTraining(training);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId +
+			 "/trainings/" + trainingId + "/diets/" + diet.getId();
+		}
+	}
+
+	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		
+		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
+		Client client = this.clientService.findClientById(clientId);
+		
+		return isLoggedTrainer(trainerUsername)&&trainer.getClients().contains(client);
+	}
+	
+	private Boolean isLoggedTrainer(final String trainerUsername) {
+		
+		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username = "";
+		
+		if(principal instanceof UserDetails) {
+			username = ((UserDetails)principal).getUsername();
+		}
+		else {
+			username = principal.toString();
+		}
+		
+		return trainer.getUser().getUsername().equals(username);
+	}
+
+	private Diet generateDiet(Diet diet, Integer clientId){
+		Client client = this.clientService.findClientById(clientId);
+		
 
 		Double HarrisBenedict = (10 * client.getWeight()) + (6.25 * client.getHeight()) - (5 * client.getAge()) + 5;
 		Double KatchMcArdle = 21.6 * (client.getWeight() - client.getWeight() * client.getFatPercentage() / 100) + 370;
@@ -131,67 +234,16 @@ public class DietController {
 		
 		Double fat = (caloriasMantemiento - (proteins + carbs) * 4) / 9;
 
+		fat = (fat >= 0)? fat : 0;
+		caloriasMantemiento = (caloriasMantemiento >= 0)? caloriasMantemiento : 0;
+		proteins = (proteins >= 0)? proteins : 0;
+		carbs = (carbs >= 0)? carbs : 0;
+
 		diet.setKcal(caloriasMantemiento.intValue());
 		diet.setProtein(proteins.intValue());
 		diet.setCarb(carbs.intValue());
 		diet.setFat(fat.intValue());
 
-		if (result.hasErrors()) {
-			return "trainer/diets/dietsCreateOrUpdate";
-		} else {
-			// client.getDiets().add(diet);
-			// this.clientService.saveClient(client);
-			
-			training.setDiet(diet);
-			this.trainingService.saveTraining(training);
-
-			this.dietService.saveDiet(diet);
-
-			return "redirect:/trainer/"+ trainer.getUser().getUsername() + "/clients/" + client.getId() + "/trainings/"+ training.getId();
-			
-		}
-	}
-
-	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit")
-	public String initTrainingUpdateForm(@PathVariable("clientId") int clientId,
-			@PathVariable("trainingId") int trainingId, Model model) {
-
-		Diet diet = new Diet();
-		Client client = this.clientService.findClientById(clientId);
-		Training training = this.trainingService.findTrainingById(trainingId);
-		List<DietType> dietTypes = Arrays.asList(DietType.values());
-
-		
-		model.addAttribute("diet", diet);
-		model.addAttribute("client", client);
-		model.addAttribute("dietTypes", dietTypes);
-		model.addAttribute("training", training);
-
-		return "trainer/diets/dietsCreateOrUpdate";
-	}
-	
-	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit")
-	public String processTrainingUpdateForm(@Valid Diet diet, BindingResult result, @PathVariable("clientId") int clientId,
-			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,  Model model) {
-		
-		// Client client = this.clientService.findClientById(clientId);
-		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
-		Training training = this.trainingService.findTrainingById(trainingId);
-
-		if (result.hasErrors()) {
-			return "trainer/diets/dietsCreateOrUpdate";
-		} 
-		else {
-			// client.getDiets().add(diet);
-			// this.clientService.saveClient(client);
-			
-			training.setDiet(diet);
-			this.trainingService.saveTraining(training);
-
-			this.dietService.saveDiet(diet);
-
-			return "redirect:/trainer/" + trainer.getUser().getUsername() + "/clients/" + clientId +
-			 "/trainings/" + trainingId + "/diets/" + diet.getId();
-		}
+		return diet;
 	}
 }

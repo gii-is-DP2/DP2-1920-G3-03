@@ -13,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Guild;
 import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
+import org.springframework.samples.yogogym.service.exceptions.GuildNotUserException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Service;
@@ -123,17 +124,29 @@ public class GuildServiceTest {
 	@Test
 	void shouldDeleteGuild() {
 		
+		
 		Collection<Guild> guilds = this.guildService.findAllGuild();
 		int foundBefore = guilds.size();
-		
 		Guild guild = this.guildService.findGuildById(2);
+		try {
+			this.guildService.deleteGuild(guild,"client2");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	
-		this.guildService.deleteGuild(guild);
-		
 		guilds = this.guildService.findAllGuild();
 		int foundAfter = guilds.size();
 		
 		assertThat(foundBefore).isGreaterThan(foundAfter);
+	}
+	
+	@Test 
+	void shouldNotDeleteGuild() {
+		
+		Guild guild = this.guildService.findGuildById(2);
+		Assertions.assertThrows(GuildNotUserException.class, () ->{
+			this.guildService.deleteGuild(guild,"client4");
+		});
 	}
 	
 	@Test
