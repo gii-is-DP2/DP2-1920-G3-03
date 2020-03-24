@@ -10,19 +10,12 @@ import javax.validation.Validator;
 import org.junit.jupiter.api.Test;
 import org.springframework.samples.yogogym.model.Diet;
 import org.springframework.samples.yogogym.model.Enums.DietType;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
  * @author Michael Isvy Simple test to make sure that Bean Validation is working (useful
  * when upgrading to a new version of Hibernate Validator/ Bean Validation)
  */
-class ValidatorTestsDiet {
-  
-	private Validator createValidator() {
-		LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
-		localValidatorFactoryBean.afterPropertiesSet();
-		return localValidatorFactoryBean;
-	}
+class DietValidatorTests extends ValidatorTests{
 	
 	@Test
 	void shouldNotValidateWhenDietNameEmpty() {
@@ -36,7 +29,7 @@ class ValidatorTestsDiet {
 		ConstraintViolation<Diet> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");
+		assertThat(violation.getMessage()).isEqualTo("must not be empty");
 		
 	}
 	
@@ -52,7 +45,7 @@ class ValidatorTestsDiet {
 		ConstraintViolation<Diet> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");
+		assertThat(violation.getMessage()).isEqualTo("must not be empty");
 		
 	}
 	
@@ -68,7 +61,7 @@ class ValidatorTestsDiet {
 		ConstraintViolation<Diet> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");
+		assertThat(violation.getMessage()).isEqualTo("must not be empty");
 		
 	}
 	
@@ -84,7 +77,7 @@ class ValidatorTestsDiet {
 		ConstraintViolation<Diet> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");
+		assertThat(violation.getMessage()).isEqualTo("must not be empty");
 		
 	}
 	
@@ -117,7 +110,7 @@ class ValidatorTestsDiet {
 		ConstraintViolation<Diet> violation1 = constraintViolations.iterator().next();
 		
 		assertThat(violation1.getPropertyPath().toString()).isEqualTo("kcal");
-		assertThat(violation1.getMessage()).isEqualTo("tiene que ser mayor o igual que 0");
+		assertThat(violation1.getMessage()).isEqualTo("must be greater than or equal to 0");
 		
 	}
 	
@@ -133,7 +126,7 @@ class ValidatorTestsDiet {
 		ConstraintViolation<Diet> violation1 = constraintViolations.iterator().next();
 		
 		assertThat(violation1.getPropertyPath().toString()).isEqualTo("protein");
-		assertThat(violation1.getMessage()).isEqualTo("tiene que ser mayor o igual que 0");
+		assertThat(violation1.getMessage()).isEqualTo("must be greater than or equal to 0");
 		
 	}
 	@Test
@@ -148,7 +141,7 @@ class ValidatorTestsDiet {
 		ConstraintViolation<Diet> violation1 = constraintViolations.iterator().next();
 		
 		assertThat(violation1.getPropertyPath().toString()).isEqualTo("fat");
-		assertThat(violation1.getMessage()).isEqualTo("tiene que ser mayor o igual que 0");
+		assertThat(violation1.getMessage()).isEqualTo("must be greater than or equal to 0");
 		
 	}
 	@Test
@@ -163,7 +156,7 @@ class ValidatorTestsDiet {
 		ConstraintViolation<Diet> violation1 = constraintViolations.iterator().next();
 		
 		assertThat(violation1.getPropertyPath().toString()).isEqualTo("carb");
-		assertThat(violation1.getMessage()).isEqualTo("tiene que ser mayor o igual que 0");
+		assertThat(violation1.getMessage()).isEqualTo("must be greater than or equal to 0");
 		
 	}
 
