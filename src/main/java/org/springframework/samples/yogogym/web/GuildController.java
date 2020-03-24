@@ -1,8 +1,11 @@
 package org.springframework.samples.yogogym.web;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -106,33 +109,42 @@ public class GuildController {
 			@PathVariable("clientUsername") String clientUsername, final ModelMap model) {
 
 		Client client = this.clientService.findClientByUsername(clientUsername);
-	
+
+		Collection<Guild> guilds = this.guildService.findAllGuild();
+		
+		if(guild.getId() != null) {
+			guilds = guilds.stream().filter(c -> c.getId() != guild.getId()).collect(Collectors.toList());
+		}
+		
+		
+		
 		if (result.hasErrors()) {
 			
 			model.addAttribute("client", client);
 			model.addAttribute("guild", guild);
-			
 			return "client/guilds/guildsCreateOrUpdate";
-		} else {
 			
-			try {
-			client.setGuild(guild);
-			this.guildService.saveGuild(guild);
-			}catch(Exception ex){
-				if(ex instanceof GuildSameNameException) {
+		} else {
+		
+			model.addAttribute("guild", guild);
+			
+			if(guilds.stream().anyMatch(c->c.getName().equals(guild.getName()))) {
 					result.rejectValue("name", "required: ", "There is already a guild with that name");
-				}else if (ex instanceof GuildSameCreatorException) {
+					return "client/guilds/guildsCreateOrUpdate";
+			}else if (guilds.stream().anyMatch(c->c.getCreator().equals(guild.getCreator()))) {
 					result.rejectValue("creator", "required: ", "There is already a guild created by this creator");
-				}else if(ex instanceof GuildLogoException) {
+					return "client/guilds/guildsCreateOrUpdate";
+			}else if(!guild.getLogo().startsWith("https://")) {
 					result.rejectValue("logo", "required: ", "The link must start with https://");
-				}
-				return "client/guilds/guildsCreateOrUpdate";
+					return "client/guilds/guildsCreateOrUpdate";
+			}else {
+				client.setGuild(guild);
+				this.guildService.saveGuild(guild);
+				return "redirect:/client/" + clientUsername + "/guilds";
+			
 			}
 				
 			
-			
-			
-			return "redirect:/client/" + clientUsername + "/guilds";
 		}
 	}
 	
@@ -140,8 +152,10 @@ public class GuildController {
 	@GetMapping("client/{clientUsername}/guilds/{guildId}/edit")
 	public String initGuildEditForm(@PathVariable("clientUsername") String clientUsername,@PathVariable("guildId") int guildId,
 			final ModelMap model) {
-		
+	
 		Guild guild = this.guildService.findGuildById(guildId);
+		if(!guild.getCreator().equals(clientUsername)) 
+			return "exception";
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		guild.setCreator(clientUsername);
 		model.addAttribute("guild", guild);
@@ -154,49 +168,47 @@ public class GuildController {
 	@PostMapping("client/{clientUsername}/guilds/{guildId}/edit")
 	public String processGuildEditForm(@PathVariable("clientUsername") String clientUsername,
 			@PathVariable("guildId") int guildId, @Valid Guild guild,  BindingResult result,ModelMap model) {
-		
 			
-			if(result.hasErrors()) {
+		Collection<Guild> guilds = this.guildService.findAllGuild();
+			
+		if(guild.getId() != null) 
+			guilds = guilds.stream().filter(c -> c.getId() != guild.getId()).collect(Collectors.toList());
+		
+		if(result.hasErrors()) {
+				
 				model.put("guild", guild);
 				Client client = this.clientService.findClientByUsername(clientUsername);
 				model.addAttribute("client", client);
 				
 				return "client/guilds/guildsCreateOrUpdate";
-			}else {
-				try {
-					
-				guild.setId(guildId);
-				this.guildService.saveGuild(guild);
 				
-				}catch(Exception ex){
-					if(ex instanceof GuildSameNameException) {
+			}else {
+				model.addAttribute("guild", guild);
+				
+				}if(guilds.stream().anyMatch(c->c.getName().equals(guild.getName()))) {
 						result.rejectValue("name", "required: ", "There is already a guild with that name");
-						
-					}else if (ex instanceof GuildSameCreatorException) {
-						result.rejectValue("creator", "required: ", "There is already a guild created by this creator");
-						
-					}else if(ex instanceof GuildLogoException) {
+						return "client/guilds/guildsCreateOrUpdate";
+				}else if(!guild.getLogo().startsWith("https://")) {
 						result.rejectValue("logo", "required: ", "The link must start with https://");
-					}
-					return "client/guilds/guildsCreateOrUpdate";
+						return "client/guilds/guildsCreateOrUpdate";
+				}else {
+					guild.setId(guildId);
+					this.guildService.saveGuild(guild);
+					return "redirect:/client/" + clientUsername + "/guilds/"+guildId;
 				}
-				return "redirect:/client/" + clientUsername + "/guilds";
+				
 			}
-	}
+	
 	
 	@GetMapping("client/{clientUsername}/guilds/{guildId}/delete")
 	public String deleteGuild(@PathVariable("clientUsername") String clientUsername,@PathVariable("guildId") int guildId, RedirectAttributes redirectAttrs, Model model) {
 		
 		Guild guild = this.guildService.findGuildById(guildId);
 		redirectAttrs.addFlashAttribute("deleteMessage", "The Guild was deleted successfully");
-		try {
-			this.guildService.deleteGuild(guild,clientUsername);
-		} catch (Exception ex) {
-			
-		if (ex instanceof GuildNotUserException ) {
+		if(!guild.getCreator().equals(clientUsername))
 			return "exception";
-		}
-	}
+			
+		this.guildService.deleteGuild(guild,clientUsername);
 		return "redirect:/client/{clientUsername}/guilds";
 	}
 	
@@ -213,9 +225,12 @@ public class GuildController {
 	@GetMapping("client/{clientUsername}/guilds/{guildId}/leave")
 	public String leaveGuild(@PathVariable("clientUsername") String clientUsername, @PathVariable("guildId")int guildId, Model model){
 	
-		this.guildService.leaveGuild(clientUsername);
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		Guild guild = this.guildService.findGuildById(guildId);
+		if(!client.getGuild().equals(guild))
+			return "exception";
 		
+		this.guildService.leaveGuild(client,guild);
 		return "redirect:/client/{clientUsername}/guilds";
 	}
-	
 }

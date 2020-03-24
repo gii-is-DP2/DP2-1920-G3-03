@@ -54,36 +54,26 @@ public class GuildService {
 		return res;		
 	}
 	
-	@Transactional(rollbackFor = {GuildSameCreatorException.class, GuildSameNameException.class, GuildLogoException.class})
-	public void saveGuild(Guild guild) throws DataAccessException, GuildSameCreatorException, GuildSameNameException, GuildLogoException {
+	@Transactional
+	public void saveGuild(Guild guild) throws DataAccessException {
 		
 		Collection<Guild> guilds = this.guildRepository.findAllGuilds();
 		
 		if(guild.getId() != null) {
 			guilds = guilds.stream().filter(c -> c.getId() != guild.getId()).collect(Collectors.toList());
 		}
-			if(guilds.stream().anyMatch(c->c.getName().equals(guild.getName()))) {
-				throw new GuildSameNameException();
-				
-			}else if(guilds.stream().anyMatch(c->c.getCreator().equals(guild.getCreator()))) {
-				
-				throw new GuildSameCreatorException();
-
-			}else if(!guild.getLogo().startsWith("https://")){
-				
-				throw new GuildLogoException();
-			}else {
-		
+			if(guilds.stream().allMatch(c->!c.getName().equals(guild.getName()))&&
+			   guilds.stream().allMatch(c->!c.getCreator().equals(guild.getCreator()))&&
+			   guild.getLogo().startsWith("https://")) 
 				this.guildRepository.save(guild);
+					
 			}
-	}
-	@Transactional(rollbackFor = {GuildNotUserException.class})
-	public void deleteGuild(Guild guild, String clientUsername) throws DataAccessException ,GuildNotUserException{
+	
+	@Transactional
+	public void deleteGuild(Guild guild, String clientUsername) throws DataAccessException {
 		
 		Collection<Client> clients = this.guildRepository.findClientsByGuild(guild);
-		if(!guild.getCreator().equals(clientUsername)){
-			throw new GuildNotUserException();
-		}else {
+		if(guild.getCreator().equals(clientUsername)){
 		for(Client c: clients) {
 			c.setGuild(null);
 			this.clientRepository.save(c);
@@ -101,9 +91,8 @@ public class GuildService {
 	}
 	
 	@Transactional
-	public void leaveGuild(String clientUsername) throws DataAccessException{
-		
-		Client client = this.clientRepository.findClientByUsername(clientUsername);
+	public void leaveGuild(Client client,Guild guild) throws DataAccessException{
+		if(client.getGuild().equals(guild))
 		client.setGuild(null);
 	}
 }
