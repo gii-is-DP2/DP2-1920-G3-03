@@ -195,4 +195,38 @@ public class GuildControllerTests {
 		.andExpect(model().attributeHasFieldErrors("guild", "logo"))
 		.andExpect(view().name("client/guilds/guildsCreateOrUpdate"));
 	}
+	
+	void testWrongAuth(int mode,String path,Object... uriVars) throws Exception
+	{
+		if(mode == 0)
+		{
+			mockMvc.perform(get(path,uriVars))
+			.andExpect(status().isOk())
+			.andExpect(view().name("exception"));			
+		}
+		else
+		{
+			mockMvc.perform(post(path,uriVars))
+			.andExpect(status().isForbidden());
+		}
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Ignore
+	void testWrongAuthority() throws Exception
+	{
+		// Wrong client id
+				testWrongAuth(0,"/clients/{clientUsername}/guilds/{guildId}/delete",testClientUsername1,testGuildId2);
+				testWrongAuth(1,"/clients/{clientUsername}/guilds/{guildId}/delete",testClientUsername2,testGuildId1);
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Ignore
+	void testNotExistingGuild() throws Exception
+	{
+		final int badId = 100;
+		testWrongAuth(0,"/clients/{clientUsername}/guilds/{guildId}/update",testClientUsername1,badId);
+		testWrongAuth(1,"/clients/{clientUsername}/guilds/{guildId}/update",testClientUsername1,badId);
+	}
+	
 }
