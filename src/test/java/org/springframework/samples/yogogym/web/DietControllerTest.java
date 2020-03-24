@@ -25,15 +25,13 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Diet;
-import org.springframework.samples.yogogym.model.DietType;
+import org.springframework.samples.yogogym.model.Enums.*;
 import org.springframework.samples.yogogym.model.Routine;
-import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.User;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DietService;
-import org.springframework.samples.yogogym.service.RoutineService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
@@ -223,7 +221,7 @@ public class DietControllerTest {
 	{
 		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}",testTrainerUsername,testClientId,testTrainingId,testDietId))
 			.andExpect(status().isOk())
-			.andExpect(view().name("trainer/diets/dietDetails"))
+			.andExpect(view().name("trainer/diets/dietsDetails"))
 			.andDo(print());
 	}
 			
@@ -231,7 +229,7 @@ public class DietControllerTest {
 	@Test
 	void testInitCreateDietForm() throws Exception
 	{
-		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create",testTrainerUsername,testClientId,testTrainingId))
+		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId))
 		.andExpect(status().isOk())
 		.andExpect(view().name("trainer/diets/dietsCreateOrUpdate"))
 		.andExpect(model().attributeExists("diet"));
@@ -253,7 +251,7 @@ public class DietControllerTest {
 			.param("name", diet.getName())
 			.param("description", diet.getDescription())
 			.param("type",diet.getType().toString()))
-		.andExpect(status().is3xxRedirection())
+		.andExpect(status().isOk())
 		.andExpect(view().name("redirect:/trainer/"+ testTrainerUsername + "/clients/" + testClientId + "/trainings/"+testTrainingId));
 	}
 	

@@ -143,7 +143,8 @@ public class DietController {
 
 			this.dietService.saveDiet(diet);
 
-			return "redirect:/trainer/" + trainer.getUser().getUsername() + "/diets";
+			return "redirect:/trainer/"+ trainer.getUser().getUsername() + "/clients/" + client.getId() + "/trainings/"+ training.getId();
+			
 		}
 	}
 
