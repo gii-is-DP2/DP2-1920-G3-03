@@ -12,8 +12,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.Training;
+import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
+import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.PastEndException;
+import org.springframework.samples.yogogym.service.exceptions.PastInitException;
+import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +55,7 @@ public class RoutineServiceTest {
 	}
 	
 	@Test
-	void shouldCreateRoutine(){
+	void shouldCreateRoutine() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
 		
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DAY_OF_MONTH, 1);
@@ -130,7 +137,12 @@ public class RoutineServiceTest {
 		//Get the specified training that contained the deleted routine
 		Training training = this.trainingService.findTrainingById(trainingId);
 		training.setEndDate(newEndDate);
-		this.trainingService.saveTraining(training);
+		try {
+			this.trainingService.saveTraining(training);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		//Bring all routines before deleting
 		Collection<Routine> beforeDelete = this.routineService.findAllRoutines();

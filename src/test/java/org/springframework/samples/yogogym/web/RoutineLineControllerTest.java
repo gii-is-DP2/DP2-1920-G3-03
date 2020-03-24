@@ -232,6 +232,27 @@ public class RoutineLineControllerTest {
 		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/update",testTrainerUsername_t1,testClientId_t1,testTrainingId_t1,testRoutineId_t1,testRoutineLineId_t1);
 	}
 	
+	@WithMockUser(username="trainer1", authorities= {"trainer"})
+	@Test
+	void testNotExistingRoutine() throws Exception
+	{
+		final int badId = 100;
+		// Wrong trainer
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/create",testTrainerUsername_t1,testClientId_t1,testTrainingId_t1,badId);
+		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/create",testTrainerUsername_t1,testClientId_t1,testTrainingId_t1,badId);
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/update",testTrainerUsername_t1,testClientId_t1,testTrainingId_t1,badId,testRoutineLineId_t1);
+		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/update",testTrainerUsername_t1,testClientId_t1,testTrainingId_t1,badId,testRoutineLineId_t1);
+	}
+	
+	@WithMockUser(username="trainer1", authorities= {"trainer"})
+	@Test
+	void testNotExistingRoutineLine() throws Exception
+	{
+		final int badId = 100;
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/update",testTrainerUsername_t1,testClientId_t1,testTrainingId_t1,testRoutineId_t1,badId);
+		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/update",testTrainerUsername_t1,testClientId_t1,testTrainingId_t1,testRoutineId_t1,badId);
+	}
+	
 			
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
 	@Test

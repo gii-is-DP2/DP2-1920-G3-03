@@ -9,13 +9,21 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.samples.yogogym.model.Challenge;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
  * @author Michael Isvy Simple test to make sure that Bean Validation is working (useful
  * when upgrading to a new version of Hibernate Validator/ Bean Validation)
  */
-class ChallengeValidatorTests extends ValidatorTests{
+class ValidatorTestsChallenge {
   
+	private Validator createValidator() {
+		LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+		localValidatorFactoryBean.afterPropertiesSet();
+		return localValidatorFactoryBean;
+	}
+	
 	@Test
 	void shouldNotValidateWhenChallengeNameEmpty() {
 		Challenge c = CreateFilledChallenge();
@@ -28,7 +36,7 @@ class ChallengeValidatorTests extends ValidatorTests{
 		ConstraintViolation<Challenge> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-		assertThat(violation.getMessage()).isEqualTo("must not be empty");
+		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");
 		
 	}
 	
@@ -44,7 +52,7 @@ class ChallengeValidatorTests extends ValidatorTests{
 		ConstraintViolation<Challenge> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-		assertThat(violation.getMessage()).isEqualTo("must not be empty");
+		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");
 		
 	}
 	
@@ -60,7 +68,7 @@ class ChallengeValidatorTests extends ValidatorTests{
 		ConstraintViolation<Challenge> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-		assertThat(violation.getMessage()).isEqualTo("must not be empty");
+		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");
 		
 	}
 	
@@ -76,7 +84,7 @@ class ChallengeValidatorTests extends ValidatorTests{
 		ConstraintViolation<Challenge> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-		assertThat(violation.getMessage()).isEqualTo("must not be empty");
+		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");
 		
 	}
 	
@@ -92,7 +100,7 @@ class ChallengeValidatorTests extends ValidatorTests{
 		ConstraintViolation<Challenge> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("reward");
-		assertThat(violation.getMessage()).isEqualTo("must not be empty");
+		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");
 		
 	}
 	
@@ -108,7 +116,7 @@ class ChallengeValidatorTests extends ValidatorTests{
 		ConstraintViolation<Challenge> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("reward");
-		assertThat(violation.getMessage()).isEqualTo("must not be empty");
+		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");
 		
 	}
 	
@@ -124,7 +132,7 @@ class ChallengeValidatorTests extends ValidatorTests{
 		ConstraintViolation<Challenge> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("points");
-		assertThat(violation.getMessage()).isEqualTo("must not be null");
+		assertThat(violation.getMessage()).isEqualTo("no puede ser null");
 		
 	}
 	
@@ -140,7 +148,7 @@ class ChallengeValidatorTests extends ValidatorTests{
 		ConstraintViolation<Challenge> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("points");
-		assertThat(violation.getMessage()).isEqualTo("must be greater than or equal to 1");
+		assertThat(violation.getMessage()).isEqualTo("tiene que ser mayor o igual que 1");
 		
 	}
 	
@@ -156,7 +164,7 @@ class ChallengeValidatorTests extends ValidatorTests{
 		ConstraintViolation<Challenge> violation1 = constraintViolations.iterator().next();
 		
 		assertThat(violation1.getPropertyPath().toString()).isEqualTo("reps");
-		assertThat(violation1.getMessage()).isEqualTo("must be greater than or equal to 1");
+		assertThat(violation1.getMessage()).isEqualTo("tiene que ser mayor o igual que 1");
 		
 	}
 	
@@ -172,7 +180,7 @@ class ChallengeValidatorTests extends ValidatorTests{
 		ConstraintViolation<Challenge> violation1 = constraintViolations.iterator().next();
 		
 		assertThat(violation1.getPropertyPath().toString()).isEqualTo("weight");
-		assertThat(violation1.getMessage()).isEqualTo("must be greater than or equal to 0");
+		assertThat(violation1.getMessage()).isEqualTo("tiene que ser mayor o igual que 0");
 		
 	}
 	
