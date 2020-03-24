@@ -2,7 +2,6 @@ package org.springframework.samples.yogogym.web;
 
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
@@ -12,6 +11,8 @@ import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.service.ChallengeService;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.InscriptionService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -40,10 +41,7 @@ public class InscriptionController {
 	@GetMapping("/admin/inscriptions/submitted")
 	public String listSubmittedInscriptionsAdmin(ModelMap modelMap) {
 			
-		List<Client> clients = this.clientService.findClientsWithSubmittedInscriptions();
-		for(Client c : clients) {
-			c.setInscriptions(c.getInscriptions().stream().filter(i -> i.getStatus().equals(Status.SUBMITTED)).collect(Collectors.toList()));
-		}
+		List<Client> clients = this.clientService.findClientsWithOnlySubmittedInscriptions();
 		modelMap.addAttribute("clients",clients);
 		
 		return "admin/challenges/submittedInscriptionsList";
@@ -52,12 +50,13 @@ public class InscriptionController {
 	@GetMapping("/admin/inscriptions/submitted/{inscriptionId}")
 	public String showSubmittedInscriptionAdmin(@PathVariable("inscriptionId") int inscriptionId, Model model) {	  
 
-		Inscription i = this.inscriptionService.findInscriptionsByInscriptionId(inscriptionId);
-	   	Challenge c = this.challengeService.findChallengeById(i.getChallenge().getId()); 
 	    Client client = this.clientService.findClientByInscriptionId(inscriptionId);
-	   	
-	   	model.addAttribute("challenge", c);
-	    model.addAttribute("inscription", i);
+	    Inscription inscription = client.getInscriptions().stream().filter(i -> i.getId() == inscriptionId).findFirst().get();
+	    //Check it is submitted
+	    if(!inscription.getStatus().equals(Status.SUBMITTED))
+	    	return "exception";
+	    
+	    model.addAttribute("inscription", inscription);
 	    model.addAttribute("client", client);
 	   	
 	    return "admin/challenges/submittedChallengeDetails";
@@ -82,8 +81,11 @@ public class InscriptionController {
 	@GetMapping("/client/{clientUsername}/challenges/{challengeId}/inscription/create")
 	public String createInscriptionByChallengeId(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
 		
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
-		Client client = this.clientService.findClientByClientUsername(clientUsername);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 	   	Inscription inscription = new Inscription();
 	   	
 	   	inscription.setChallenge(challenge);
@@ -101,6 +103,9 @@ public class InscriptionController {
 	public String submitInscription(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, 
 									@PathVariable("inscriptionId") int inscriptionId, Inscription inscription, Model model) {	  
 		
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 		inscription.setChallenge(challenge);
 		inscription.setId(inscriptionId);
@@ -109,6 +114,15 @@ public class InscriptionController {
 	   	this.inscriptionService.saveInscription(inscription);
 	   	
 	    return "redirect:/client/"+clientUsername+"/challenges/mine/"+challengeId;
+	}
+	
+	
+	private boolean isLoggedPrincipal(String Username) {
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String principalUsername = ((UserDetails)principal).getUsername();
+		
+		return principalUsername.trim().toLowerCase().equals(Username.trim().toLowerCase());
 	}
 	
 }

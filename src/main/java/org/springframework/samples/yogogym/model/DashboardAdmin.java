@@ -8,6 +8,6 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "dashboards")
-public class Dashboard extends BaseEntity{
+public class DashboardAdmin extends BaseEntity{
 
 }

@@ -25,5 +25,11 @@
 	<p><b>carb:</b> <c:out value="${diet.carb}"/></p>
 	<p><b>fat:</b> <c:out value="${diet.fat}"/></p>
 			
-	
+	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/{trainingId}/diets/{dietId}/edit" var="dietUpdateurl" >
+	<spring:param name="trainingId" value="${training.id}"/>
+	<spring:param name="dietId" value="${diet.id}"/>
+	</spring:url>
+
+	<h3><a href="${fn:escapeXml(dietUpdateurl)}">Update Diet</a></h3>
+
 </yogogym:layout>

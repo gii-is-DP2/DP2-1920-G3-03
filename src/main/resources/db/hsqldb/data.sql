@@ -7,9 +7,9 @@ INSERT INTO admins VALUES (1, 'proyectowip@vekto.com','Vekto', 'Rino', '12345678
 
 /* GUILD */
 
-INSERT INTO guilds(id,creator,description,name) VALUES (1,'client1','Here we practice Calisthenics for everyone','Calisthenics');
-INSERT INTO guilds(id,creator,description,name) VALUES (2,'client2','Here we practice Weightlifting for everyone','Weightlifting');
-INSERT INTO guilds(id,creator,description,name) VALUES (3,'client3','Here we help you achieve your goals','Gym for Dummies');
+INSERT INTO guilds(id,creator,description,name,logo) VALUES (1,'client1','Here we practice Calisthenics for everyone','Calisthenics','https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/heria10-1566732385.jpg?crop=1.00xw:0.922xh;0,0.0778xh&resize=980:*');
+INSERT INTO guilds(id,creator,description,name,logo) VALUES (2,'client2','Here we practice Weightlifting for everyone','Weightlifting','https://www.iwf.net/wp-content/uploads/2017/12/DSC00237.jpg');
+INSERT INTO guilds(id,creator,description,name,logo) VALUES (3,'client3','Here we help you achieve your goals','Gym for Dummies','https://www.mobiefit.com/blog/wp-content/uploads/2017/06/shutterstock_326360432.jpg');
 
 /* CLIENT */
 
@@ -239,6 +239,7 @@ INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,r
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (2,'Challenge2','Desc challenge 2','2020-10-01','2020-10-02','Reward2',20,5,20,2);
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (3,'Challenge3','Desc challenge 3','2020-10-10','2020-10-15','Reward3',30,4,40,10);
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (4,'Challenge4','Desc challenge 4','2020-10-10','2020-10-15','Reward2',30,4,40,10);
+INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (5,'Challenge5','Desc challenge 5','2018-12-12','2019-01-01','Reward5',30,4,40,10);
 
 /* INSCRIPTION */
 
@@ -246,8 +247,9 @@ INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (1,3,'https://allame
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (2,0,null,2);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (3,0,null,3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (4,0,null,3);
-INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (5,0,'https://google.com',1);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (5,2,'https://google.com',1);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (6,1,'https://google.com',3);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (7,0,'https://google.com',5);
 
 /* CLIENT_INSCRIPTION */
 
@@ -257,6 +259,7 @@ INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,3);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (2,4);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (3,5);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (4,6);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,7);
 
 /* PHRASES */
 

@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -21,18 +22,21 @@ public class RoutineLine extends BaseEntity{
 	
 	@Column(name = "weight")
 	@Min(0)
+	@NotNull
 	protected Double weight;
 	
 	@Column(name = "time")
-	@Min(0)
+	@Min(1)
 	protected Double time;
 	
 	@Column(name = "series")
+	@NotNull
 	@Min(1)
 	protected Integer series;
 	
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, optional = false)
 	@JoinColumn(name = "exercise_id")
+	@NotNull
 	protected Exercise exercise;
 
 }

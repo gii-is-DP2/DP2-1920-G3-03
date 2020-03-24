@@ -1,10 +1,7 @@
 package org.springframework.samples.yogogym.web;
 
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -14,11 +11,15 @@ import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Inscription;
-import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.service.ChallengeService;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.samples.yogogym.service.InscriptionService;
+import org.springframework.samples.yogogym.service.exceptions.ChallengeMore3Exception;
+import org.springframework.samples.yogogym.service.exceptions.ChallengeSameNameException;
+import org.springframework.samples.yogogym.service.exceptions.ChallengeWithInscriptionsException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -49,7 +50,7 @@ public class ChallengeController {
 	
 	@InitBinder("challenge")
 	public void initChallengeBinder(WebDataBinder dataBinder) {
-		dataBinder.setValidator(new ChallengeValidator(challengeService));
+		dataBinder.setValidator(new ChallengeValidator());
 	}
 
 	
@@ -65,18 +66,18 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("/admin/challenges/{challengeId}")
-	public String showChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, Model model) {	  
+	public String showChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, Model model) {
 
-	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
-	   	model.addAttribute("challenge", challenge);
-	   	
-	 // If there are inscriptions, it cannot be edited or deleted
-	 Collection<Inscription> inscriptions = inscriptionService.findInscriptionsByChallengeId(challengeId);
-	 if(inscriptions.isEmpty()) {
-	 	model.addAttribute("isModifiable", true);
-	 }
-	   	
-	    return "admin/challenges/challengeDetails";
+		Challenge challenge = this.challengeService.findChallengeById(challengeId);
+		model.addAttribute("challenge", challenge);
+
+		// If there are inscriptions, it cannot be edited or deleted
+		Collection<Inscription> inscriptions = inscriptionService.findInscriptionsByChallengeId(challengeId);
+		if (inscriptions.isEmpty()) {
+			model.addAttribute("isModifiable", true);
+		}
+
+		return "admin/challenges/challengeDetails";
 	}
 	
 	@GetMapping("/admin/challenges/new")
@@ -103,11 +104,24 @@ public class ChallengeController {
 			return "/admin/challenges/challengesCreateOrUpdate";
 		}
 		else {
-			
-			Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
-			challenge.setExercise(exercise);
-			challengeService.saveChallenge(challenge);
-			
+			try{
+				Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
+				challenge.setExercise(exercise);
+				challengeService.saveChallenge(challenge);
+				
+            }catch(Exception ex){
+            	if(ex instanceof ChallengeSameNameException) {
+            		result.rejectValue("name", "required: ", "There is already a challenge with that name the same week");
+            	}
+            	else if(ex instanceof ChallengeMore3Exception) {
+            		result.rejectValue("initialDate", "required: ", "There must not be more than 3 challenges per week");
+            	}
+            	
+            	Collection<Exercise> exercises = this.exerciseService.findAllExercise();
+    			model.addAttribute("exercises",exercises);
+                return "/admin/challenges/challengesCreateOrUpdate";
+            }
+
 			return "redirect:/admin/challenges";
 		}
 	}
@@ -131,9 +145,10 @@ public class ChallengeController {
 	}
 	
 	@PostMapping("/admin/challenges/{challengeId}/edit")
-	public String processUpdateForm(@PathVariable("challengeId")int challengeId, @ModelAttribute("exerciseId")int exerciseId, @Valid Challenge challenge,  BindingResult result,ModelMap model) {
+	public String processUpdateForm(@PathVariable("challengeId")int challengeId, 
+			@ModelAttribute("exerciseId")int exerciseId, @Valid Challenge challenge,  BindingResult result,ModelMap model) {
 		
-		if (result.hasErrors()) {
+		if(result.hasErrors()) {
 			model.put("challenge",challenge);
 			Collection<Exercise> exercises = this.exerciseService.findAllExercise();
 			model.addAttribute("exercises",exercises);
@@ -141,10 +156,25 @@ public class ChallengeController {
 			return "/admin/challenges/challengesCreateOrUpdate";
 		}
 		else {
-			Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
-			challenge.setExercise(exercise);
-			challenge.setId(challengeId);
-			this.challengeService.saveChallenge(challenge);
+			try{
+				Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
+				challenge.setExercise(exercise);
+				challenge.setId(challengeId);
+				challengeService.saveChallenge(challenge);
+				
+            }catch(Exception ex){
+            	if(ex instanceof ChallengeSameNameException) {
+            		result.rejectValue("name", "required: ", "There is already a challenge with that name the same week");
+            	}
+            	else if(ex instanceof ChallengeMore3Exception) {
+            		result.rejectValue("initialDate", "required: ", "There must not be more than 3 challenges per week");
+            	}
+            	
+            	Collection<Exercise> exercises = this.exerciseService.findAllExercise();
+    			model.addAttribute("exercises",exercises);
+                return "/admin/challenges/challengesCreateOrUpdate";
+            }
+
 			return "redirect:/admin/challenges";
 		}
 	}
@@ -153,14 +183,11 @@ public class ChallengeController {
 	public String deleteChallenge(@PathVariable("challengeId") int challengeId, Model model) {
 		
 		Challenge challenge = challengeService.findChallengeById(challengeId);
-		Collection<Inscription> inscriptions = inscriptionService.findInscriptionsByChallengeId(challengeId);
-		
-		// If there are inscriptions, it cannot be deleted
-		if(!inscriptions.isEmpty()) {
-			return showChallengeByIdAdmin(challengeId,model);
+		try {
+			this.challengeService.deleteChallenge(challenge);
+		}catch(ChallengeWithInscriptionsException ex){
+			return "exception";
 		}
-		
-		this.challengeService.deleteChallenge(challenge);
 		
 		return "redirect:/admin/challenges";
 	}
@@ -170,29 +197,12 @@ public class ChallengeController {
 	@GetMapping("/client/{clientUsername}/challenges")
 	public String listChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
 			
-		List<Challenge> challenges = (List<Challenge>) challengeService.findAll();
-		Client client = this.clientService.findClientByClientUsername(clientUsername);
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
 		
-		//Only if the end date is posterior to today's
-		List<Challenge> challengesFiltered = new ArrayList<>();
-		Calendar now = Calendar.getInstance();
-		Date d = now.getTime();
-		for(Challenge c : challenges) {
-			if(c.getEndDate().after(d)) {
-				challengesFiltered.add(c);
-			}
-		}
-		//and they are not already inscribed:
-		if(client.getInscriptions() != null) {
-			for(Inscription i : client.getInscriptions()) {
-				Challenge c = i.getChallenge();
-				if(challengesFiltered.contains(c)) {
-					challengesFiltered.remove(c);
-				}
-			}
-		}
-		
-		modelMap.addAttribute("challenges", challengesFiltered);
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		List<Challenge> challenges = this.challengeService.findAllChallengesClients(client.getId(), client.getInscriptions());
+		modelMap.addAttribute("challenges", challenges);
 		
 		return "client/challenges/challengesList";
 	}
@@ -200,7 +210,15 @@ public class ChallengeController {
 	@GetMapping("/client/{clientUsername}/challenges/{challengeId}")
 	public String showChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
 
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
+	    //Not already inscribed
+	    Client client = this.clientService.findClientByUsername(clientUsername);
+	    if(client.getInscriptions().stream().anyMatch(i -> i.getChallenge().equals(challenge)))
+	    	return "exception";
+	  		
 	   	model.addAttribute("challenge", challenge);
 	   	
 	    return "client/challenges/challengeDetails";
@@ -209,8 +227,10 @@ public class ChallengeController {
 	@GetMapping("/client/{clientUsername}/challenges/mine")
 	public String listMyChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
 			
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
 
-		Client client = this.clientService.findClientByClientUsername(clientUsername);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 		List<Inscription> inscriptions = client.getInscriptions();
 
 		modelMap.addAttribute("inscriptions", inscriptions);
@@ -218,25 +238,34 @@ public class ChallengeController {
 		return "client/challenges/myChallengesList";
 	}
 	
+
 	@GetMapping("/client/{clientUsername}/challenges/mine/{challengeId}")
 	public String showAndEditMyChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
 
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
-	   	Client client = this.clientService.findClientByClientUsername(clientUsername);
-	   	Collection<Inscription> inscriptions = this.inscriptionService.findInscriptionsByChallengeId(challengeId);
-	   	Inscription inscription = inscriptions.stream().filter(i -> client.getInscriptions().contains(i)).findFirst().get();
+	   	Client client = this.clientService.findClientByUsername(clientUsername);
+	   	Inscription inscription;
 	   	
-	   	Calendar now = Calendar.getInstance();
-	   	if(challenge.getEndDate().before(now.getTime())) {
-	   		if(inscription.getStatus().equals(Status.PARTICIPATING) || inscription.getStatus().equals(Status.SUBMITTED)) {
-	   			inscription.setStatus(Status.FAILED);
-	   			this.inscriptionService.saveInscription(inscription);
-	   		}
+	   	if(client.getInscriptions().stream().anyMatch(i -> i.getChallenge().equals(challenge))) {
+	   		inscription = client.getInscriptions().stream().filter(i -> i.getChallenge().equals(challenge)).findFirst().get();
+	   	}else {
+	   		return "exception";
 	   	}
 	   	
 	   	model.addAttribute("challenge", challenge);
 	   	model.addAttribute("inscription",inscription);
 	   	
 	    return "client/challenges/myChallengeDetailsAndUpdate";
+	}
+	
+	private boolean isLoggedPrincipal(String Username) {
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String principalUsername = ((UserDetails)principal).getUsername();
+		
+		return principalUsername.trim().toLowerCase().equals(Username.trim().toLowerCase());
 	}
 }

@@ -34,7 +34,7 @@ public class EquipmentController {
 	public String findEquipmentDetailById(@PathVariable("equipmentId") int id,Model model) 
 	{	  
 		//Find equipment by Id
-	   	Equipment equipment = this.equipmentService.findEquipmentByExerciseId(id);
+	   	Equipment equipment = this.equipmentService.findEquipmentById(id);
 	   	model.addAttribute("equipment",equipment);
 	   	
 	    return "mainMenu/equipments/equipmentsDetails";

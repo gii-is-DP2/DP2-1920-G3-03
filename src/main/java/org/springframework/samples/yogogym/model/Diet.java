@@ -9,6 +9,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.samples.yogogym.model.Enums.DietType;
 
 import lombok.Data;
 
@@ -26,7 +29,7 @@ public class Diet extends BaseEntity{
 	protected String description;
 	
 	@Column(name = "type")
-	// @NotEmpty
+	// @NotNull
 	protected DietType type;
 
 	@Column(name = "kcal")

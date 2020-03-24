@@ -14,6 +14,24 @@
 	<p><b>Description:</b> <c:out value="${routine.description}"/></p>
 	<p><b>Repetitions Per Week:</b> <c:out value="${routine.repsPerWeek}"/></p>
 	<br>
+	
+	<c:choose>
+		<c:when test="${training.endDate < actualDate}">
+			<a style="color:grey">Edit Routine</a>
+			<br>
+			<a style="color:grey">Delete Routine</a>
+		</c:when>
+		<c:otherwise>
+
+			<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/edit" var="routineEditUrl" />
+			<a href="${fn:escapeXml(routineEditUrl)}">Edit Routine</a>
+			<br>
+			<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/delete" var="routineDeleteAddUrl" />
+			<a href="${fn:escapeXml(routineDeleteAddUrl)}">Delete Routine</a>
+		
+		</c:otherwise>
+	</c:choose>
+	<br>
 	<br>
 	
 	<h2>Line of Routines</h2>
@@ -23,11 +41,13 @@
         	<th style="text-align:center">Line</th>
             <th style="text-align:center">Repetitions</th>
             <th style="text-align:center">Time</th>
+            <th style="text-align:center">Series</th>
             <th style="text-align:center">Weight</th>
             <th>Exercise</th>
 			<th>Description</th>
 			<th>Kcal</th>
 			<th>Edit</th>
+			<th>Delete</th>
         </tr>
         </thead>
 	<c:forEach var="lineRoutine" items="${routine.routineLine}">
@@ -53,6 +73,7 @@
 	            		</c:otherwise>
 	            	</c:choose>
 	            </td>
+	            <td style="text-align:center"><c:out value="${lineRoutine.series}"/></td>
 	        	<td style="text-align:center"><c:out value="${lineRoutine.weight}"/></td>
 	        	<td>
 				<spring:url value="/mainMenu/exercises/{exerciseId}" var="exerciseUrl">
@@ -62,12 +83,42 @@
 				</td>
 				<td><c:out value="${lineRoutine.exercise.description}"/></td>
 				<td><c:out value="${lineRoutine.exercise.kcal}"/></td>
-				<td><a href="">Edit</a></td>
+				
+				<c:choose>
+					<c:when test="${training.endDate < actualDate}">
+							
+						<td><a style="color:grey">Edit</a></td>
+									
+						<td><a style="color:grey">Delete</a></td>
+						
+					</c:when>
+					<c:otherwise>
+						
+						<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/routineLine/{routineLineId}/update" var="routineLineUpdateUrl">
+							<spring:param name="routineLineId" value="${lineRoutine.id}"/>
+						</spring:url>	
+						<td><a href="${fn:escapeXml(routineLineUpdateUrl)}">Edit</a></td>
+						
+						<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/routineLine/{routineLineId}/delete" var="routineLineDeleteUrl">
+							<spring:param name="routineLineId" value="${lineRoutine.id}"/>
+						</spring:url>				
+						<td><a href="${fn:escapeXml(routineLineDeleteUrl)}">Delete</a></td>
+						
+					</c:otherwise>
+				</c:choose>			
 	        </tr>
 	</c:forEach>
 	</table>
+		
 	
-	<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/routineLine/create" var="routineLineAddUrl" />
-	<a href="${fn:escapeXml(routineLineAddUrl)}">Add Routine Line</a>
+	<c:choose>
+		<c:when test="${training.endDate < actualDate}">
+			<a style="color:grey">Add Routine Line</a>
+		</c:when>
+		<c:otherwise>
+			<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/routineLine/create" var="routineLineAddUrl" />
+			<a href="${fn:escapeXml(routineLineAddUrl)}">Add Routine Line</a>
+		</c:otherwise>
+	</c:choose>
 	
 </yogogym:layout>

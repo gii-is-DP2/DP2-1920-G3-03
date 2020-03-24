@@ -39,6 +39,10 @@ public class RoutineValidator implements Validator{
 		else if(validar.getRepsPerWeek() < 0) {
 			errors.rejectValue("repsPerWeek", REQUIRED, "The repetition per week must be positive");
 		}
+		// Reps per week less than 20
+		else if(validar.getRepsPerWeek() > 20) {
+			errors.rejectValue("repsPerWeek", REQUIRED, "The repetition per week cannot be greater than 20");
+		}
 		
 	}
 		

@@ -2,17 +2,18 @@ package org.springframework.samples.yogogym.service;
 
 
 
-import java.util.Collection;
-import java.util.Date;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Ignore;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.yogogym.model.Challenge;
+import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Equipment;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Inscription;
@@ -25,18 +26,58 @@ public class InscriptionServiceTest {
 
 	@Autowired
 	protected InscriptionService inscriptionService;
+	@Autowired
+	protected ClientService clientService;
 	
 	
 	@Test
 	void shouldFindInscriptionsByChallengeId(){
 		Collection<Inscription> inscriptions = this.inscriptionService.findInscriptionsByChallengeId(1);
-		assertThat(inscriptions.size()).isEqualTo(2);	
+		assertThat(inscriptions.size()).isEqualTo(2);
+		
+		inscriptions = this.inscriptionService.findInscriptionsByChallengeId(50);
+		assertThat(inscriptions.size()).isEqualTo(0);
 	}
 	
 	@Test
 	void shouldFindSubmittedInscriptions(){
 		Collection<Inscription> inscriptions = this.inscriptionService.findSubmittedInscriptions();
 		assertThat(inscriptions.size()).isEqualTo(1);	
+	}
+	
+	@Test
+	void shouldFindInscriptionsByInscriptionId(){
+		Inscription inscription = this.inscriptionService.findInscriptionByInscriptionId(1);
+		assertThat(inscription.getUrl()).isEqualTo("https://allamericanfitness.com/wp-content/uploads/2016/11/Treadmill-XR-Console.jpg");	
+	}
+	
+	@Test
+	void shouldFindAllInscriptions(){
+		Collection<Inscription> inscriptions = this.inscriptionService.findAll();
+		assertThat(inscriptions.size()).isEqualTo(7);	
+	}
+	
+	@Test
+	void shouldFindInscriptionByClientAndChallenge(){
+		
+		Client client = this.clientService.findClientById(1);
+		Challenge challenge = client.getInscriptions().get(1).getChallenge();
+		Inscription inscription = this.inscriptionService.findInscriptionByClientAndChallenge(client, challenge);
+		
+		assertThat(inscription.getId()).isEqualTo(2);
+	}
+	
+	@Test
+	void shouldFindInscriptionByClientAndChallengeAndFailedBecauseDate(){
+		
+		Client client = this.clientService.findClientById(1);
+		Challenge challenge = client.getInscriptions().get(3).getChallenge();
+		
+		assertThat(client.getInscriptions().get(3).getStatus()).isEqualTo(Status.PARTICIPATING);
+		
+		Inscription inscription = this.inscriptionService.findInscriptionByClientAndChallenge(client, challenge);
+		
+		assertThat(inscription.getStatus()).isEqualTo(Status.FAILED);
 	}
 	
 	@Test
@@ -77,33 +118,26 @@ public class InscriptionServiceTest {
 		
 		this.inscriptionService.saveInscription(i);
 		
-		i = this.inscriptionService.findInscriptionsByInscriptionId(found + 1);
+		i = this.inscriptionService.findInscriptionByInscriptionId(found + 1);
 		assertThat(i.getUrl()).isEqualTo("http://test.com");
 	}
 	
 	@Test
 	void shouldUpdateInscription() {
 		
-		Inscription i = this.inscriptionService.findInscriptionsByInscriptionId(1);
+		Inscription i = this.inscriptionService.findInscriptionByInscriptionId(1);
 		i.setUrl("https://TestUpdate.com");;
 		this.inscriptionService.saveInscription(i);;
 		
-		i = this.inscriptionService.findInscriptionsByInscriptionId(1);
+		i = this.inscriptionService.findInscriptionByInscriptionId(1);
 		assertThat(i.getUrl()).isEqualTo("https://TestUpdate.com");
 	}
 	
-	@Ignore
-	void shouldDeleteInscription() {
-		
-		Collection<Inscription> inscriptions = this.inscriptionService.findAll();
-		int foundBefore = inscriptions.size();
-		
-		Inscription i = this.inscriptionService.findInscriptionsByInscriptionId(1);
-		this.inscriptionService.deleteInscription(i);;
-		
-		inscriptions = this.inscriptionService.findAll();
-		int foundAfter = inscriptions.size();
-		
-		assertThat(foundBefore).isGreaterThan(foundAfter);
+	//Clasification
+	@Test
+	void shouldFindInscriptionByUsername() {
+		List<Inscription> inscription = this.inscriptionService.findInscriptionsByUsername("client3");
+		assertThat(inscription.size()).isEqualTo(1);
 	}
+
 }

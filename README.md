@@ -24,13 +24,13 @@ La aplicación web a desarrollar tiene como nombre YogoGym. El objetivo fundamen
 ## Historias de Usuario
 ### Administrador
 ---
-#### HU1 - Proponer retos semanales y mensuales 
-Como administrador quiero añadir retos semanales y mensuales al gimnasio para que los clientes puedan competir por lograrlos y obtengan beneficios en el gimnasio si lo hacen.
+#### HU1 - Proponer retos semanales
+Como administrador quiero añadir retos semanales al gimnasio, que los clientes puedan competir por lograrlos y obtener beneficios y puntos (para su gremio) en el gimnasio si los completan, para motivarlos a realizar ciertos ejercicios y crear un ambiente competitivo.
 #### Escenarios:
-* **Añadir reto semanal/mensual a semana/mes sin retos:** Dado un administrador y una semana/mes sin retos, cuando este intente añadir uno aportando la información necesaria, entonces el reto se añadirá a la semana/mes.
-* **Añadir reto semanal/mensual ya existente:** Dado un administrador y una semana/mes con retos pero no completa, cuando este intente añadir uno con la información de otro ya existente, entonces se le indicará que esto no es posible debido a que ya existe.
-* **Añadir reto semanal/mensual a semana/mes con 3 retos:** Dado un administrador y una semana/mes con 3 retos, cuando este intente añadir uno, entonces se le indicará que no es posible debido a que se ha llegado al máximo de retos.
-* **Añadir reto semanal/mensual a semana/mes actual o anterior:** Dado un administrador, cuando este intente añadir un reto a una semana/mes actual o anterior, entonces se le indicará que no es posible debido a que solo se puede añadir a semanas/meses posteriores.
+* **Añadir reto semanal a semana sin retos:** Dado un administrador y una semana [Semana 1 de 2022] sin retos, cuando este intente añadir uno aportando la información necesaria, entonces el reto se creará correctamente.
+* **Añadir reto semanal ya existente:** Dado un administrador y una semana con retos [Semana 1 de 2021], cuando este intente añadir uno con el nombre [ChallengeTest] de otro ya existente, entonces se le indicará que esto no es posible debido a que ya existe.
+* **Añadir reto semanal a semana con 3 retos:** Dado un administrador y una semana con 3 retos [Semana 2 de 2021], cuando este intente añadir uno, entonces se le indicará que no es posible debido a que se ha llegado al máximo de retos esa semana.
+* **Añadir reto semanal en fecha anterior:** Dado un administrador, cuando este intente añadir un reto en una fecha anterior [01/01/2020], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
 ---
 #### HU2 - Dashboard Retos
 Como administrador quiero visualizar diagramas que muestren, clasificados por individuales o gremios y semanales o mensuales, el éxito en los retos para poder adecuarlos en temática y dificultad correctamente.
@@ -43,7 +43,7 @@ Como administrador quiero visualizar diagrama que me muestren cuanto son utiliza
 #### Escenarios:
 * **Visualizar diagrama general de máquinas, sistema con datos de la última semana:** Dado un administrador y un sistema con máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le mostrará el nombre de estas, cuantas veces han sido utilizadas en la última semana.
 * **Visualizar diagrama general de máquinas, sistema con datos del último mes:** Dado un administrador y un sistema con máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le mostrará el nombre de estas, cuantas veces han sido utilizadas en el último mes.
-* **Visualizar diagrama general de máquinas, sistema sin datos:** Dado un administrador y un sistema sin máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna y se le ofrecerá la posibilidad de añadir una. 
+* **Visualizar diagrama general de máquinas, sistema sin datos:** Dado un administrador y un sistema sin máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
 ---
 #### HU4 - Mostrar oraciones motivacionales diariamente
 Como administrador quiero que se muestren oraciones motivacionales diariamente para intentar motivar a los clientes y mejorar su estado de ánimo.
@@ -96,19 +96,17 @@ Como entrenador quiero llevar el control de las dietas de los clientes en funci�
 * **Gestionar la dieta de un usuario:** Dado un entrenador que se dispone a gestionar la dieta de un usuario sin incumplir ninguna regla de negocio, cuando este usuario ya posee una. La operación de gestión se efectúa correctamente y esta queda disponible tanto por el usuario para poder visualizar los cambios como para el entrenador poder modificarlos en un futuro.
 ---
 #### HU12 - Añadir un entrenamiento 
-Como entrenador quiero añadir eun entrenamiento a nuestros clientes para poder facilitar el desarrollo físico del cliente.
+Como entrenador quiero añadir un entrenamiento a nuestros clientes para poder facilitar el desarrollo físico del cliente.
 #### Escenarios:
-* **Añadir entrenamiento a un usuario, se añade vacía:** Dado un entrenador que añade un entrenamiento a un usuario, cuando se intenta añadir vacío. La operación de añadir entrenamiento no se efectúa resultando en el sistema informando al entrenador que debe como mínimo introducir una rutina.
-* **Añadir entrenamiento a un usuario sin entrenamiento:** Dado un entrenador que añade un entrenamiento a un usuario, cuando este usuario no tiene ningun entrenamiento. La operación de añadir entrenamiento se efectúa correctamente y este queda disponible tanto por el usuario para poder visualizarla como para el entrenador poder modificarla.
-* **Añadir entrenamiento a un usuario el cual no entrenas:** Dado un entrenador que añade un entrenamiento a un usuario, cuando no entrenas a este usuario. La operación de añadir entrenamiento no se realiza. La vista muestra una excepción al entrenador de que no puede añadir un entrenamiento a un usuario el cual no entrena.
+* **Añadir entrenamiento a un usuario, sin introducir atributos:** Dado un entrenador que quiere añadir un entrenamiento sin nombre, ni fecha de inicio ni fecha de fin; a un usuario, cuando se intenta añadir el entrenamiento, entonces se vuelve a la vista de creación y se informa de que debe cumplimentar los campos.
+* **Añadir entrenamiento a un usuario, con atributos sin conflictos:** Dado un entrenador que quiere añadir un entrenamiento con  nombre "Nuevo Entrenamiento", fecha de inicio posterior a la actual y que no coincide con otro entrenamiento, y fecha de fin posterior a la actual y a la de inicio y que no coincide con otro entrenamiento; a un usuario, cuando se intenta añadir el entrenamiento, entonces se añade el entrenamiento al usuario y se vuelve a la vista de entrenamientos del entrenador.
+* **Añadir entrenamiento a un usuario, con fechas con conflictos:** Dado un entrenador que quiere añadir un entrenamiento con  nombre "Nuevo Entrenamiento", fecha de inicio anterior a la actual o que coincide con otro entrenamiento, y fecha de fin anterior a la de inicio o a la actual o que coincide con otro entrenamiento; a un usuario, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al usuario y se vuelve a la vista de creación y se informa de los errores presentes en las fechas.
 ---
-#### H13 - Gestionar el entrenamiento de nuestros clientes en función del número de rutinas y las características de estas
-Como entrenador quiero llevar el control de los entrenamitno en función del número de rutinas y las características de las rutinas para poder cambiar el entrenamiento adaptándolo de la mejor forma al cliente.
+#### HU13 - Gestionar el entrenamiento de nuestros clientes
+Como entrenador quiero llevar el control de los entrenamientos de mis clientes conociendo el estado de estos para poder modificar los periodos en los que transcurren y así adaptarlos de la mejor forma a los clientes.
 #### Escenarios:
-* **Gestionar el entrenamiento de un usuario sin que este tenga rutina:** Dado un entrenador que se dispone a gestionar el entrenamiento de un usuario, cuando ese usuario no posee ningun entrenamiento. La vista de encargada la gestión de entrenamientos notificará al entrenador de que el usuario indicado que no posee ningun entrenamiento y le ofertará la opción de crearla. 
-* **Gestionar el entrenamiento de un usuario cuyo usuario no entrenas:** Dado un entrenador que se dispone a gestionar el entrenamiento de un usuario, cuando no eres entrenador de ese usuario. La operación de gestión no se puede efectuar. El sistema limita a solo poder ver el entrenamiento que tiene el usuario deseado, pero no es manipulable por alguien que no sea su entrenador.
-* **Gestionar el entrenamiento de un usuario borrando todas las rutinas:** Dado un entrenador que se dispone a gestionar el entrenamiento, en este caso modificar, de un usuario, borrando todos los ejercicios, cuando el usuario posee un entrenamiento completo. La operación de gestión no se puede efectuar ya que debe existir un mínimo de 1 rutina por entrenamiento.
-* **Gestionar el entrenamiento de un usuario:** Dado un entrenador que se dispone a gestionar el entrenamiento de un usuario si incumplir ninguna regla de negocio, cuando este usuario ya posee uno. La operación de gestión se efectúa correctamente y esta queda disponible tanto por el usuario para poder visualizar los cambios como para el entrenador poder modificarlos en un futuro.
+* **Gestionar entrenamientos clientes, cliente con entrenamientos:** Dado un entrenador que se dispone a gestionar los entrenamientos de sus clientes, cuando accede a la vista de gestión de los entrenamientos, entonces se le listarán sus clientes junto con sus entrenamientos indicando de estos nombre y su estado, es decir, si está en curso o finalizado. 
+* **Gestionar entrenamiento en curso, fecha fin inválida:** Dado un entrenador que se dispone a gestionar el entrenamiento con nombre "Entrenamiento1", fecha de inicio igual o anterior a la actual y una fecha de fin posterior a la actual; de un cliente, cuando intenta actualizar la fecha de fin a una anterior a la actual, anterior a la de inicio o que coincide con otro entrenamiento, entonces se le devolverá a la vista de actualización informándole de los errores.
 ---
 ### Usuario
 ---
@@ -165,16 +163,18 @@ Como cliente quiero poder compartir mi progreso con otros usuarios, para poder p
 * **Compartir progreso sin foto ni comentario:** Dado un cliente, al darle a publicar, si no ha adjuntado foto ni ha escrito ningún comentario le saltará un aviso diciendo "si desea publicar debe adjuntar una foto o escribir un comentario".
 ---
 #### HU21 - Participar en  los Retos
-Como cliente quiero poder participar en los distintos retos propuestos por los profesores, para poder ganar puntos para mi gremio y para mi mismo y estar lo mas alto posible en la clasificación.
+Como cliente quiero poder participar en los distintos retos propuestos por el gimnasio, para poder ganar puntos para mi gremio y para mi mismo y estar lo mas alto posible en la clasificación.
 #### Escenarios
-* **Participar en un reto sin estar en ninguno:** Dado un cliente, pinchará en la sección "retos", verá un listado con los diferentes retos propuestos y seleccionará el que desee, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "aceptar reto", añadiendosele dicho reto a la sección "retos" pero con un estado "pendiente" hasta que adjunte una foto demostrando que lo ha completado.
-* **Participar en un reto estando registrado en uno o más:** Dado un cliente, pinchará en la sección "retos", verá un listado con los diferentes retos propuestos y en los que ya está registrado saldrá como "pendiente", seleccionará el que desee, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "aceptar reto", añadiendosele dicho reto a la sección "retos" pero con un estado "pendiente" hasta que adjunte una foto demostrando que lo ha completado.
-* **Participar en un reto cuando no hay retos:** Dado un cliente, pinchará en la sección "retos", si dicho usuario ha completado todos los retos, no le saldrá ningún reto en dicha lista, y aparecerá un mensaje diciendo "lo sentimos en estos momentos no hay nuevos retos, vuelve más tarde".
+* **Listar los retos en los que aún no me he inscrito:** Dado un cliente, pinchará en la sección "retos", verá un listado con los diferentes retos propuestos y seleccionará el que desee, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "inscribirme", añadiendosele dicho reto a la sección "mis retos" pero con un estado "participando" hasta que adjunte una foto demostrando que lo ha completado.
+**Listar los retos en los que participa:** Dado un cliente, pinchará en la sección "mis retos", verá un listado con los diferentes retos en los que se ha inscrito.
+* **Participar en un reto cuando no hay retos:** Dado un cliente, pinchará en la sección "retos", si dicho usuario ha completado todos los retos, no le saldrá ningún reto en dicha lista.
+* **Pedir confirmar un reto que ha completado:** Dado un cliente, pinchará en la sección "mis retos", si dicho usuario ha completado algún reto, pinchará sobre el, rellenara la url de la foto de prueba, y clickara en enviar. El administrador podrá ver esos retos enviados, y decidirá si han sido completados o fallados.
+* **Listar los retos en los que participo y la fecha límite del reto pasa antes de que el cliente lo envíe:** Dado un cliente y un reto con fecha de finalización [01/01/2019], sin que haya sido enviado, se pondrá automaticamente en fallado.
 ---
 #### HU22 - Clasificación de los Retos
 Como cliente quiero poder ver la clasificación de mis retos, para poder ver en que posición me encuentro y que debo hacer para poder superar y subir al top.
 #### Escenarios
-* **Ver un la clasificación de un reto completado:** Dado un cliente, al pulsar el botón de "mis retos", aparecerá un listado de los retos completados, de tal forma que al seleccionar uno, podrá darle al botón "clasificación" y verá quienes son los primeros y en que puesto se encuentra dicho cliente.
+* **Ver un la clasificación de un reto completado:** Dado un cliente, al pulsar el botón de "Clasificación", aparecerá un listado de los retos completados, viendo también una clasificación semanal y global.
 ---
 #### HU23 - Añadir Playlist adaptada a mis entrenamientos
 Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis entrenamientos, es decir, adecuadas para el nivel de intensidad especificado, para poder motivarme y llevar un ritmo adecuado.
@@ -190,28 +190,29 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | P2 | Carlos y Francisco José | 
 | P3 | Álvaro y José Manuel | 
 
-| Historia de Usuario | Sprint | Pareja asignada |
-| --- | --- | --- |
-| HU12 | 1 | P1 |
-| HU13 | 1 | P1 |
-| HU8 | 1 | P1 | 
-| HU9 | 1 | P1 |
-| HU10 | 1 | P2 |
-| HU11 | 1 | P2 |
-| HU15 | 1 | P1 |
-| HU16 | 1 | P2 |
-| HU18 | 1 | P3 |
-| HU19 | 1 | P1 |
-| HU21 | 1 | P3 |
-| HU22 | 1 | P3 |
-| HU1 | 1 | P3 |
-| HU3 | 1 | P3 |
-| HU5 | 1 | P2 |
-| HU4 | 1 | P2 |
-| HU14 | 2 | P2 |
-| HU17 | 2 | P3 |
-| HU2 | 2 | P3 |
-| HU6 | 2 | P1 |
-| HU20 | 3 | P2 |
-| HU23 | 3 | P1 |
-| HU7 | 3 | P3 |
+| Historia de Usuario | Sprint | Pareja asignada | Hecho |
+| --- | --- | --- | --- |
+| HU12 | 1 | P1 | Sí |
+| HU13 | 1 | P1 | --- |
+| HU8 | 1 | P1 | Sí | 
+| HU9 | 1 | P1 | --- |
+| HU10 | 1 | P2 | --- |
+| HU11 | 1 | P2 | --- |
+| HU14 | 1 | P2 | --- |
+| HU15 | 1 | P1 | Sí |
+| HU16 | 1 | P2 | --- |
+| HU18 | 1 | P3 | --- |
+| HU19 | 1 | P1 | --- |
+| HU21 | 1 | P3 | --- |
+| HU22 | 1 | P3 | --- |
+| HU1 | 1 | P3 | --- |
+| HU3 | 1 | P3 | --- |
+| HU5 | 1 | P2 | --- |
+| HU17 | 2 | P3 | --- |
+| HU20 | 2 | P2 | --- |
+| HU2 | 2 | P3 | --- |
+| HU6 | 2 | P1 | --- |
+| HU23 | 3 | P1 | --- |
+| HU4 | 3 | P2 | --- |
+| HU7 | 3 | P3 | --- |
+

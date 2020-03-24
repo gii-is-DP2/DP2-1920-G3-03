@@ -37,7 +37,17 @@
 	<span>My Challenges</span>
 </yogogym:menuItem>
 
+<yogogym:menuItem active="${name eq 'clasifications'}" url="/client/${clientUsername}/clasification" title="Clasification">
+	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+	<span>Clasification</span>
+</yogogym:menuItem>
+
 <yogogym:menuItem active="${name eq 'dashboards'}" url="/client/${clientUsername}/dashboard" title="Dashboard">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>Dashboard</span>
+</yogogym:menuItem>
+
+<yogogym:menuItem active="${name eq 'guilds'}" url="/client/${clientUsername}/guilds" title="Guild">
+	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+	<span>Guilds</span>
 </yogogym:menuItem>
