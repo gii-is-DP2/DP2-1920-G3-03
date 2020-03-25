@@ -1,3 +1,11 @@
-dist: trusty
 language: java
-jdk: oraclejdk8
+jdk:
+  - openjdk8
+script: ./mvnw clean install
+
+deploy:
+  provider: pages
+  github-token: $GITHUB_TOKEN
+  build_dir: build
+  on:
+    branch: deploy
