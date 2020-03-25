@@ -96,6 +96,10 @@ public class DietControllerTest {
 		user_client.setEnabled(true);
 		client.setUser(user_client);
 		client.setId(testClientId);
+		client.setAge(18);
+		client.setHeight(180.0);
+		client.setWeight(70.0);
+		client.setFatPercentage(20.0);
 		
 		Collection<Client> clients = new ArrayList<>();
 		clients.add(client);
@@ -135,7 +139,10 @@ public class DietControllerTest {
 		user_client_t2.setEnabled(true);
 		client_t2.setUser(user_client_t2);
 		client_t2.setId(testClientId_t2);
-		
+		client_t2.setAge(40);
+		client_t2.setHeight(160.0);
+		client_t2.setWeight(90.0);
+		client_t2.setFatPercentage(40.0);
 		Collection<Client> clients_t2 = new ArrayList<>();
 		clients_t2.add(client_t2);
 		
@@ -170,13 +177,11 @@ public class DietControllerTest {
 	void testWrongAuthority() throws Exception
 	{
 		// Authority is not trainer
-		// testWrongAuth(0,"/trainer/{trainerUsername}/diets",testTrainerUsername);
 		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}",testTrainerUsername,testClientId,testTrainingId,testDietId);
 		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId);
 		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId);
 		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId);
 		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId);
-		// testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/delete",testTrainerUsername,testClientId,testTrainingId,testRoutineId);
 	}
 	
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
@@ -184,12 +189,10 @@ public class DietControllerTest {
 	void testTrainerWrongClients() throws Exception
 	{
 		// Wrong client id
-		// testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}",testTrainerUsername,testClientId_t2,testTrainingId,testDietId);
 		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId_t2,testTrainingId);
 		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId_t2,testTrainingId);
 		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId_t2,testTrainingId,testDietId);
 		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId_t2,testTrainingId,testDietId);
-		// testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/delete",testTrainerUsername,testClientId_t2,testTrainingId,testDietId);
 	}
 	
 	@WithMockUser(username="trainer2", authorities= {"trainer"})
@@ -206,14 +209,6 @@ public class DietControllerTest {
 		// testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/delete",testTrainerUsername,testClientId,testTrainingId,testDietId);
 	}
 	
-	// @WithMockUser(username="trainer1", authorities= {"trainer"})
-	// @Test
-	// void testGetDiets() throws Exception
-	// {		
-	// 	mockMvc.perform(get("/trainer/{trainerUsername}/routines",testTrainerUsername))
-	// 	.andExpect(status().isOk())
-	// 	.andExpect(view().name("trainer/routines/routinesList"));
-	// }
 
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
 	@Test
@@ -235,26 +230,42 @@ public class DietControllerTest {
 		.andExpect(model().attributeExists("diet"));
 	}
 	
-	// @WithMockUser(username="trainer1", authorities= {"trainer"})
-	// @Test
-	// void testProcessDietCreateForm() throws Exception
-	// {		
+	void testProcessCorrectCreateDietForm(String name, String description, DietType dietType) throws Exception
+	{		
 		
-	// 	Diet diet= new Diet();
-	// 	diet.setName("Diet Test");
-	// 	diet.setDescription("Diet Description Test");
-	// 	diet.setType(DietType.MAINTENANCE);
+		Diet diet= new Diet();
+		diet.setName(name);
+		diet.setDescription(description);
+		diet.setType(dietType);
 		
-	// 	mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId)
-	// 		.with(csrf())
-	// 		.param("name", diet.getName())
-	// 		.param("description", diet.getDescription())
-	// 		.param("type",diet.getType().toString()))
-	// 	.andExpect(status().is3xxRedirection())
-	// 	.andExpect(view().name("redirect:/trainer/"+ testTrainerUsername + "/clients/" + testClientId + "/trainings/"+testTrainingId));
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId)
+			.with(csrf())
+			.param("name", diet.getName())
+			.param("description", diet.getDescription())
+			.param("type",diet.getType().toString()))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/trainer/"+ testTrainerUsername + "/clients/" + testClientId + "/trainings/"+testTrainingId));
 	
-	// }
+	}
+
+	void testProcessWrongCreateDietForm(String name, String description, DietType dietType) throws Exception
+	{		
+		
+		Diet diet= new Diet();
+		diet.setName(name);
+		diet.setDescription(description);
+		diet.setType(dietType);
+		
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId)
+			.with(csrf())
+			.param("name", diet.getName())
+			.param("description", diet.getDescription())
+			.param("type",diet.getType().toString()))
+		.andExpect(status().isOk())
+		.andExpect(view().name("trainer/diets/dietsCreateOrUpdate"));
 	
+	}
+
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
 	@Test
 	void testInitUpdateDietForm() throws Exception
@@ -265,20 +276,19 @@ public class DietControllerTest {
 		.andExpect(model().attributeExists("diet"));
 	}
 	
-	@WithMockUser(username="trainer1", authorities= {"trainer"})
-	@Test
-	void testProcessUpdateDietForm() throws Exception
+	void testProcessCorrectUpdateDietForm(String name, String description, DietType dietType, 
+	Integer kcal, Integer carb, Integer protein, Integer fat) throws Exception
 	{
 		
 		Diet d= new Diet();
-		d.setName("DietTest");
-		d.setDescription("Test");
-		
-		d.setType(DietType.MAINTENANCE);
-		d.setKcal(10);
-		d.setCarb(10);
-		d.setProtein(10);
-		d.setFat(10);
+		d.setName(name);
+		d.setDescription(description);
+		d.setType(dietType);
+
+		d.setKcal(kcal);
+		d.setCarb(carb);
+		d.setProtein(protein);
+		d.setFat(fat);
 		
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId)
 			.with(csrf())
@@ -293,13 +303,57 @@ public class DietControllerTest {
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/trainer/" + testTrainerUsername + "/clients/" + testClientId + "/trainings/" + testTrainingId + "/diets/" + testDietId));
 	}
+
+	void testProcessWrongUpdateDietForm(String name, String description, DietType dietType, 
+	Integer kcal, Integer carb, Integer protein, Integer fat) throws Exception
+	{
+		
+		Diet d= new Diet();
+		d.setName(name);
+		d.setDescription(description);
+		d.setType(dietType);
+
+		d.setKcal(kcal);
+		d.setCarb(carb);
+		d.setProtein(protein);
+		d.setFat(fat);
+		
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId)
+			.with(csrf())
+			.param("name", d.getName())
+			.param("description", d.getDescription())
+			.param("type",d.getType().toString())
+			.param("kcal",d.getKcal().toString())
+			.param("carb",d.getCarb().toString())
+			.param("protein",d.getProtein().toString())
+			.param("fat",d.getFat().toString()))
+
+		.andExpect(status().isOk())
+		.andExpect(view().name("trainer/diets/dietsCreateOrUpdate"));
+	}
+
 	
-	// @WithMockUser(username="trainer1", authorities= {"trainer"})
-	// @Test
-	// void testDeleteDiet() throws Exception
-	// {
-	// 	mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/delete",testTrainerUsername,testClientId,testTrainingId,testDietId))
-	// 	.andExpect(status().is3xxRedirection())
-	// 	.andExpect(view().name("redirect:/trainer/" + testTrainerUsername + "/diets"));
-	// }
+	@WithMockUser(username="trainer1", authorities= {"trainer"})
+	@Test
+	void testProcessCorrectCreateDietForm() throws Exception{
+		testProcessCorrectCreateDietForm("diet1", "description 1", DietType.DEFINITION);
+	}
+
+	@WithMockUser(username="trainer1", authorities= {"trainer"})
+	@Test
+	void testProcessWrongCreateDietForm() throws Exception{
+		testProcessWrongCreateDietForm(null, null, DietType.DEFINITION);
+	}
+	
+	@WithMockUser(username="trainer1", authorities= {"trainer"})
+	@Test
+	void testProcessCorrectUpdateDietForm() throws Exception{
+		testProcessCorrectUpdateDietForm("diet1", "description 1", DietType.DEFINITION, 10,10,10,10);
+	}
+
+	@WithMockUser(username="trainer1", authorities= {"trainer"})
+	@Test
+	void testProcessWrongtUpdateDietForm() throws Exception{
+		testProcessWrongUpdateDietForm("diet1", "description 1", DietType.DEFINITION, -10,-10,-10,-10);
+	}
 }
