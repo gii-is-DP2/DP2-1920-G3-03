@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -30,76 +31,110 @@ import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(value = ClasificationController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
 public class ClasificationControllerTests {
 
 	private static final String TEST_USERNAME = "client3";
 
-	@MockBean
-	private InscriptionService inscriptionService;
+	@Nested
+	@WebMvcTest(value = ClasificationController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class ClasificationWithChallengesTests {
 
-	@MockBean
-	private ClientService clientService;
+		@MockBean
+		private InscriptionService inscriptionService;
 
-	@Autowired
-	private MockMvc mockMvc;
+		@MockBean
+		private ClientService clientService;
 
-	@BeforeEach
-	void setup() {
-		Exercise sampleExercise = new Exercise();
-		sampleExercise.setName("prueba");
-		sampleExercise.setDescription("prueba");
-		Challenge sampleChallege = new Challenge();
-		sampleChallege.setName("prueba");
-		sampleChallege.setDescription("prueba");
-		sampleChallege.setReward("prueba");
-		sampleChallege.setPoints(3);
-		sampleChallege.setInitialDate(new Date());
-		sampleChallege.setExercise(sampleExercise);
-		Inscription sampleInscription = new Inscription();
-		sampleInscription.setStatus(Status.COMPLETED);
-		sampleInscription.setChallenge(sampleChallege);
-		Client sampleClient = new Client();
-		User sampleUser = new User();
-		sampleUser.setUsername("client3");
-		sampleUser.setEnabled(true);
-		List<Inscription> listSample = new ArrayList<Inscription>();
-		listSample.add(sampleInscription);
-		sampleClient.setInscriptions(listSample);
-		sampleClient.setUser(sampleUser);
-		List<Client> listSampleClient = new ArrayList<Client>();
-		listSampleClient.add(sampleClient);
+		@Autowired
+		private MockMvc mockMvc;
 
-		given(this.inscriptionService.findInscriptionsByUsername(TEST_USERNAME)).willReturn(listSample);
-		given(this.clientService.findClientsWithCompletedInscriptions()).willReturn(listSampleClient);
+		@BeforeEach
+		void setup() {
+			Exercise sampleExercise = new Exercise();
+			sampleExercise.setName("prueba");
+			sampleExercise.setDescription("prueba");
+			Challenge sampleChallege = new Challenge();
+			sampleChallege.setName("prueba");
+			sampleChallege.setDescription("prueba");
+			sampleChallege.setReward("prueba");
+			sampleChallege.setPoints(3);
+			sampleChallege.setInitialDate(new Date());
+			sampleChallege.setExercise(sampleExercise);
+			Inscription sampleInscription = new Inscription();
+			sampleInscription.setStatus(Status.COMPLETED);
+			sampleInscription.setChallenge(sampleChallege);
+			Client sampleClient = new Client();
+			User sampleUser = new User();
+			sampleUser.setUsername("client3");
+			sampleUser.setEnabled(true);
+			List<Inscription> listSample = new ArrayList<Inscription>();
+			listSample.add(sampleInscription);
+			sampleClient.setInscriptions(listSample);
+			sampleClient.setUser(sampleUser);
+			List<Client> listSampleClient = new ArrayList<Client>();
+			listSampleClient.add(sampleClient);
+
+			given(this.inscriptionService.findInscriptionsByUsername(TEST_USERNAME)).willReturn(listSample);
+			given(this.clientService.findClientsWithCompletedInscriptions()).willReturn(listSampleClient);
+		}
+
+		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
+		@Test
+		void testInitAllClasification() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/clasification", TEST_USERNAME)).andExpect(status().isOk())
+					.andExpect(view().name("client/clasifications/clasification"))
+					.andExpect(model().attribute("hasChallenge", true))
+					.andExpect(model().attribute("hasPositionWeek", true))
+					.andExpect(model().attribute("hasChallengeClasificationWeek", true))
+					.andExpect(model().attribute("hasChallengeClasificationAll", true));
+		}
+
+		@WithMockUser(username = "client1", authorities = { "client" })
+		@Test
+		void testInitClasificationWithoutMyChallenges() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/clasification", "client1")).andExpect(status().isOk())
+					.andExpect(view().name("client/clasifications/clasification"))
+					.andExpect(model().attribute("hasChallenge", false))
+					.andExpect(model().attribute("hasChallengeClasificationWeek", true))
+					.andExpect(model().attribute("hasChallengeClasificationAll", true));
+		}
+
+		@WithMockUser(username = "client1", authorities = { "client" })
+		@Test
+		void testWrongUsername() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/clasification", TEST_USERNAME)).andExpect(status().isOk())
+					.andExpect(view().name("exception"));
+		}
 	}
 
-	@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
-	@Test
-	void testInitAllClasification() throws Exception {
-		mockMvc.perform(get("/client/{clientUsername}/clasification", TEST_USERNAME)).andExpect(status().isOk())
-				.andExpect(view().name("client/clasifications/clasification"))
-				.andExpect(model().attribute("hasChallenge", true))
-				.andExpect(model().attribute("hasPositionWeek", true))
-				.andExpect(model().attribute("hasChallengeClasificationWeek", true))
-				.andExpect(model().attribute("hasChallengeClasificationAll", true));
-	}
+	@Nested
+	@WebMvcTest(value = ClasificationController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class ClasificationWithoutChallengesTests {
 
-	@WithMockUser(username = "client1", authorities = { "client" })
-	@Test
-	void testInitClasificationWithoutMyChallenges() throws Exception {
-		mockMvc.perform(get("/client/{clientUsername}/clasification", "client1")).andExpect(status().isOk())
-				.andExpect(view().name("client/clasifications/clasification"))
-				.andExpect(model().attribute("hasChallenge", false))
-				.andExpect(model().attribute("hasChallengeClasificationWeek", true))
-				.andExpect(model().attribute("hasChallengeClasificationAll", true));
-	}
+		@MockBean
+		private InscriptionService inscriptionService;
 
-	@WithMockUser(username = "client1", authorities = { "client" })
-	@Test
-	void testWrongUsername() throws Exception {
-		mockMvc.perform(get("/client/{clientUsername}/clasification", TEST_USERNAME)).andExpect(status().isOk())
-				.andExpect(view().name("exception"));
+		@MockBean
+		private ClientService clientService;
+
+		@Autowired
+		private MockMvc mockMvc;
+
+		@BeforeEach
+		void setup() {
+			given(this.inscriptionService.findInscriptionsByUsername(TEST_USERNAME))
+					.willReturn(new ArrayList<Inscription>());
+			given(this.clientService.findClientsWithCompletedInscriptions()).willReturn(new ArrayList<Client>());
+		}
+
+		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
+		@Test
+		void testInitClasificationWithoutChallenges() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/clasification", TEST_USERNAME)).andExpect(status().isOk())
+					.andExpect(view().name("client/clasifications/clasification"))
+					.andExpect(model().attribute("hasChallenge", false))
+					.andExpect(model().attribute("hasChallengeClasification", false));
+		}
 	}
 
 }
