@@ -33,19 +33,20 @@ public class Diet extends BaseEntity{
 	protected DietType type;
 
 	@Column(name = "kcal")
+	@NotNull
 	@Min(0)
 	protected Integer kcal;
 	
 	@Column(name = "protein")
-	@Min(0)
+	@NotNull
 	protected Integer protein;
 	
 	@Column(name = "fat")
-	@Min(0)
+	@NotNull
 	protected Integer fat;
 	
 	@Column(name = "carb")
-	@Min(0)
+	@NotNull
 	protected Integer carb;
 	
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

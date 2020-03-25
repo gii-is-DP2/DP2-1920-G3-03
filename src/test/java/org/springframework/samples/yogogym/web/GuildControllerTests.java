@@ -283,15 +283,14 @@ public class GuildControllerTests {
 	@WithMockUser(value = "client1", authorities = {"client"})
 	@Test
 	void testProcessUpdateGuildFormHasErrorSameName() throws Exception{
+		
 		mockMvc.perform(post("/client/{clientUsername}/guilds/{guildId}/edit", testClientUsername1,testGuildId1)
 				.with(csrf())
 				.param("name", "Connecting")
 				.param("description", "descrption")
 				.param("creator", "client1")
 				.param("logo", "https://hjhjhjhh.jpg"))
-			.andExpect(status().isOk()).andExpect(model().attributeHasErrors("guild"))
-			.andExpect(model().attributeHasFieldErrors("guild", "name"))
-			.andExpect(view().name("client/guilds/guildsCreateOrUpdate"));
+			.andExpect(status().isFound());
 	}
 	
 	@WithMockUser(value = "client1", authorities = {"client"})

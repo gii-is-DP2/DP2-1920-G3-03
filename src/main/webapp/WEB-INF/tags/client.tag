@@ -12,20 +12,24 @@
 	</c:set>
 </sec:authorize>
 
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Entrenamientos">
+<%-- SPRINT 2 
+
+<yogogym:menuItem active="${name eq 'vets'}" url="" title="Entrenamientos">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Mis Entrenamientos</span>
+	<span>My Trainings</span>
 </yogogym:menuItem>
 
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Rutinas">
+<yogogym:menuItem active="${name eq 'vets'}" url="" title="Rutinas">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Rutinas</span>
+	<span>My Rotuines</span>
 </yogogym:menuItem>
 
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Dietas">
+<yogogym:menuItem active="${name eq 'vets'}" url="" title="Dietas">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Dietas</span>
+	<span>My diets</span>
 </yogogym:menuItem>
+
+--%>
 
 <yogogym:menuItem active="${name eq 'newChallenges'}" url="/client/${clientUsername}/challenges" title="New Challenges">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>

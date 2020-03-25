@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -29,6 +30,7 @@ public class Routine extends BaseEntity{
 
 	@Column(name="reps_per_week")
 	@NotNull
+	@Min(1)
 	@Max(20)
 	protected Integer repsPerWeek;
 	

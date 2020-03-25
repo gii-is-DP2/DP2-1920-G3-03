@@ -84,7 +84,7 @@ public class ClientServiceTest {
 	@Test
 	void shouldFindAllClients(){
 		Collection<Client> clients = (Collection<Client>) this.clientService.findAllClient();
-		assertThat(clients.size()).isEqualTo(10);
+		assertThat(clients.size()).isEqualTo(11);
 	}
 
 }

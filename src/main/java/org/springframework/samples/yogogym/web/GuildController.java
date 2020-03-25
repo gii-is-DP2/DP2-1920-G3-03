@@ -1,43 +1,22 @@
 package org.springframework.samples.yogogym.web;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.model.Diet;
-import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Guild;
 import org.springframework.samples.yogogym.model.Inscription;
-import org.springframework.samples.yogogym.model.Routine;
-import org.springframework.samples.yogogym.model.RoutineLine;
-import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.GuildService;
-import org.springframework.samples.yogogym.service.TrainerService;
-import org.springframework.samples.yogogym.service.TrainingService;
-import org.springframework.samples.yogogym.service.exceptions.ChallengeWithInscriptionsException;
-import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
-import org.springframework.samples.yogogym.service.exceptions.GuildNotUserException;
-import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
-import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -142,9 +121,7 @@ public class GuildController {
 				this.guildService.saveGuild(guild);
 				return "redirect:/client/" + clientUsername + "/guilds";
 			
-			}
-				
-			
+			}		
 		}
 	}
 	
@@ -166,38 +143,40 @@ public class GuildController {
 	}
 	
 	@PostMapping("client/{clientUsername}/guilds/{guildId}/edit")
-	public String processGuildEditForm(@PathVariable("clientUsername") String clientUsername,
-			@PathVariable("guildId") int guildId, @Valid Guild guild,  BindingResult result,ModelMap model) {
+	public String processGuildEditForm(@Valid Guild guild,  BindingResult result,@PathVariable("clientUsername") String clientUsername,
+			@PathVariable("guildId") int guildId, ModelMap model) {
 			
-		Collection<Guild> guilds = this.guildService.findAllGuild();
-			
-		if(guild.getId() != null) 
-			guilds = guilds.stream().filter(c -> c.getId() != guild.getId()).collect(Collectors.toList());
-		
 		if(result.hasErrors()) {
 				
-				model.put("guild", guild);
-				Client client = this.clientService.findClientByUsername(clientUsername);
-				model.addAttribute("client", client);
-				
-				return "client/guilds/guildsCreateOrUpdate";
-				
-			}else {
-				model.addAttribute("guild", guild);
-				
-				}if(guilds.stream().anyMatch(c->c.getName().equals(guild.getName()))) {
-						result.rejectValue("name", "required: ", "There is already a guild with that name");
-						return "client/guilds/guildsCreateOrUpdate";
-				}else if(!guild.getLogo().startsWith("https://")) {
-						result.rejectValue("logo", "required: ", "The link must start with https://");
-						return "client/guilds/guildsCreateOrUpdate";
-				}else {
-					guild.setId(guildId);
-					this.guildService.saveGuild(guild);
-					return "redirect:/client/" + clientUsername + "/guilds/"+guildId;
+			guild.setId(guildId);
+			model.put("guild", guild);
+			Client client = this.clientService.findClientByUsername(clientUsername);
+			model.addAttribute("client", client);
+			
+			return "client/guilds/guildsCreateOrUpdate";
+			
+		}else {
+		
+			Collection<Guild> guilds = this.guildService.findAllGuild();
+			
+			guild.setId(guildId);
+			
+			if(checkGuildNotSameName(guild,guilds))
+			{
+				if(!guild.getLogo().startsWith("https://")) {
+					result.rejectValue("logo", "required: ", "The link must start with https://");
+					return "client/guilds/guildsCreateOrUpdate";
 				}
-				
+				this.guildService.saveGuild(guild);
+				return "redirect:/client/" + clientUsername + "/guilds/"+guildId;
 			}
+			else
+			{
+				result.rejectValue("name", "required: ", "There is already a guild with that name");
+				return "client/guilds/guildsCreateOrUpdate";
+			}
+		}				
+	}
 	
 	
 	@GetMapping("client/{clientUsername}/guilds/{guildId}/delete")
@@ -232,5 +211,26 @@ public class GuildController {
 		
 		this.guildService.leaveGuild(client,guild);
 		return "redirect:/client/{clientUsername}/guilds";
+	}
+	
+	Boolean checkGuildNotSameName(final Guild guild, Collection<Guild> guilds)
+	{
+		Boolean res = true;		
+			
+		//Para Sprint 2 cambiar a un método de service y realziar respectivas pruebas
+		Error:
+		for(Guild g: guilds)
+		{
+			if(g.getId() != guild.getId())
+			{
+				if(g.getName().trim().toLowerCase().equals(guild.getName().trim().toLowerCase()))
+				{	
+					res = false;
+					break Error;
+				}
+			}
+		}
+
+		return res;
 	}
 }

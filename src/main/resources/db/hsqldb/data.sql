@@ -4,6 +4,7 @@ INSERT INTO users(username,password,enabled) VALUES ('admin1','admin1999',TRUE);
 INSERT INTO authorities VALUES (1,'admin','admin1');
 INSERT INTO authorities VALUES (2,'client','admin1');
 INSERT INTO admins VALUES (1, 'proyectowip@vekto.com','Vekto', 'Rino', '12345678A','admin1');
+INSERT INTO clients VALUES (11, 'admin@admin.com', 'Admin', 'Admin', '12345678A',20,20.0,183.0,80.0,null,'admin1');
 
 /* GUILD */
 

@@ -2,7 +2,6 @@ package org.springframework.samples.yogogym.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Diet;
-import org.springframework.samples.yogogym.model.Enums.*;
 import org.springframework.samples.yogogym.service.DietService;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
