@@ -10,7 +10,7 @@ import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Training;
 
 public interface DashboardClientRepository extends CrudRepository<DashboardClient, Integer>{
-	
+		
 	@Query("SELECT t FROM Client c left join c.trainings t WHERE c.id = :id")
 	List<Training> findIdTrainingByClient(@Param("id") int id);
 	
