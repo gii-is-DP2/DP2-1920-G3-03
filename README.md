@@ -121,18 +121,24 @@ Como entrenador quiero llevar el control de los entrenamientos de mis clientes c
 ### Usuario
 ---
 #### HU5 - Crear y eliminar gremios
-Como cliente quiero poder crear clases y asignarla a monitores, para poder administrar los horarios, que los clientes puedan apuntarse a ellas y los monitores sepan que clases deben impartir.
+Como cliente quiero poder crear gremios, para que en un futuro puedan inscribirse otros clientes e ir adquiriendo puntos para recibir futuras recompensas, también quiero poder actualizar y eliminar aquel gremio que he creado.
 #### Escenarios:
-* **Crear una clase en un horario vacío:** Dado un administrador, este crea una clase asignandole un título, tipo, monitor asignado, horario, la sala y el equipamiento del que dispone.
-* **Crear una clase en una sala y horario ya ocupado:** Dado un administrador, el sistema deberá avisarle de que esa sala con ese horario ya está ocupado por otra clase.
-* **Crear una clase y asignarla a un monitor ya ocupado:** Dado un administrador, el sistema deberá avisarle de que ese monitor ya está ocupado en ese horario en cualquiera de las salas.
+* **Crear un gremio:** Dado un cliente, quiero poder crear un gremio, para ello en la vista donde podemos observar todos los gremios existentes, aparecerá un botón para poder crear tú propio gremio, para ello debemos introducir un nombre, una descripción y una url, la cuál será la imagen de nuestro gremio. El creador se selecciona automáticamente, pasando a ser el nombre de dicho usuario que está creando dicho gremio.
+* **Crear un gremio sin introducir atributos:** Dado un cliente, al intentar crear un gremio, si este no introduce valores en los campos nombre, descripción y logo, saltará una excepción en aquellos campos que se encuentren vacíos y deberá cumplimentarlos.
+* **Crear un gremio introduciendo el mismo nombre que otro gremio:** Dado un cliente, al intentar crear un gremio, si introduce un nombre que posee otro gremio le saltará una excepción, la cuál le informará de que ya existe otro gremio con dicho nombre.
+* **Crear un gremio siendo un usuario con otro gremio ya creado por él mismo:** Dado un cliente, al intentar crear un gremio si este ya ha creado un gremio, saltará una excepción en el campo de creador, informando de que dicho usuario ya posee un gremio creado por él, ya que un usuario solo puede tener un gremio.
+* **Crear un gremio con una mal url:** Dado un cliente, al intentar crear un gremio, si este introduce en el campo de logo una url que no comienze por "https://" lanzará una excepción.
+* **Actualizar un gremio:** Dado un cliente, al introducirse en aquel gremio creado por el mismo, aparecerá un botón de editar, en el cuál podrá cambiar el nombre, la descripción o el logo.
+Actualizar posee exactamente las mismas restricciones que crear.
+* **Eliminar un gremio:** Dado un cliente, al intentar crear su gremio, en la vista de la información de dicho gremio aparecerá un botón de eliminar, al pulsarlo se eliminará dicho gremio.
+* **Eliminar un gremio sin ser el creador:** Dado un cliente, al intentar eliminar un gremio que no ha sido creado por él, le lanzará a una página de error, y dicha acción no se llevará a cabo.
 ---
 #### HU14 - Apuntarme y salirme de gremios
-Como cliente quiero poder apuntarme a las clases que me interesen, para poder asistir a ellas y saber el horario en las que se imparten.
+Como cliente quiero poder unirme a gremios para poder formar parte de una comunidad y participar para poder recibir premios, y poder salirme de aquel gremio al que me haya unido.
 #### Escenarios:
-* **Apuntarse a una clase con huecos disponibles:** Dado un cliente y una clase sin el aforo completo, el cliente le da a inscribirse, se registra, y aumenta en uno el número de asistentes a esa clase.
-* **Apuntarse a una clase sin huecos disponibles:** Dado un cliente y una clase sin huecos disponibles, el cliente le da a inscribirse, y salta un aviso de que el aforo ya está completo.
-* **Apuntarse a una clase en el mismo horario que otra:** Dado un cliente y una clase con horario igual a otra que ya esté inscrito, le da a inscribirse y le salta un aviso diciendo que se solapa el horario con otra clase.
+* **Unirse a un gremio:** Como cliente, al intentar unirme a un gremio, primero veremos la lista con todos los gremios creados, acto seguido al seleccionar la que más nos interese podremos ver toda la información de la misma, y al pulsar el botón de unirnos, pasaremos a formar parte de dicho gremio.
+* **Abandonar un gremio:** Como cliente, al salirme de un gremio, primero iremos a la vista de nuestro gremio dándonos toda la información de la misma, y pulsaremos sobre el botón de abandonar este gremio, de tal forma que ya no formaremos parte de dicho gremio y nos podremos unir a otro diferente si lo deseamos.
+* **Abandonar un gremio al que no pertecenes:** Como cliente, al intentar abandonar un gremio al que no pertenezco nos llevará a una página de excepción, no realizandose ninguna acción.
 ---
 #### HU15 - Consultar todos los ejercicios disponibles
 Como cliente quiero consultar todos los ejercicios disponible para poder coger ideas y realizar mis propias rutinas y entrenamientos.
@@ -210,7 +216,7 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | HU9 | 1 | P1 | --- |
 | HU10 | 1 | P2 | --- |
 | HU11 | 1 | P2 | --- |
-| HU14 | 1 | P2 | --- |
+| HU14 | 1 | P2 | Sí |
 | HU15 | 1 | P1 | Sí |
 | HU16 | 1 | P2 | --- |
 | HU18 | 1 | P3 | --- |
@@ -219,7 +225,7 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | HU22 | 1 | P3 | --- |
 | HU1 | 1 | P3 | --- |
 | HU3 | 1 | P3 | --- |
-| HU5 | 1 | P2 | --- |
+| HU5 | 1 | P2 | Sí |
 | HU17 | 2 | P3 | --- |
 | HU20 | 2 | P2 | --- |
 | HU2 | 2 | P3 | --- |
