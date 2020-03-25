@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -106,6 +107,9 @@ public class DietController {
 			return "exception";
 
 		if (result.hasErrors()) {
+			List<DietType> dietTypes = Arrays.asList(DietType.values());
+			model.addAttribute("dietTypes", dietTypes);
+
 			return "trainer/diets/dietsCreateOrUpdate";
 		} else {
 			Trainer trainer = this.trainerService.findTrainer(trainerUsername);
@@ -150,12 +154,17 @@ public class DietController {
 	
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit")
 	public String processDietUpdateForm(@PathVariable("trainerUsername") String trainerUsername, @Valid Diet diet, BindingResult result, @PathVariable("clientId") int clientId,
-			 @PathVariable("trainingId") int trainingId, @PathVariable("dietId") int dietId,  Model model) {
+			 @PathVariable("trainingId") int trainingId, @PathVariable("dietId") int dietId, ModelMap model) {
 		
 		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
 			return "exception";
 
+		diet.setId(dietId);
+	
 		if (result.hasErrors()) {
+			List<DietType> dietTypes = Arrays.asList(DietType.values());
+			model.put("dietTypes", dietTypes);
+			model.put("diet", diet);
 			return "trainer/diets/dietsCreateOrUpdate";
 		} 
 		else {
