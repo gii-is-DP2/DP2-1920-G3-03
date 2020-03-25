@@ -130,31 +130,37 @@ public class TrainingController {
 		} else {
 			try {
 				this.trainingService.saveTraining(training);
-			} catch (PastInitException e) {
-				result.rejectValue("initialDate", null, "The initial date cannot be in the past");
+			} 
+			catch (Exception e) {
+				if(e instanceof PastInitException) {
+					result.rejectValue("initialDate", null, "The initial date cannot be in the past");
+				}
+				else if (e instanceof PastEndException) {
+					result.rejectValue("endDate", null, "The end date cannot be in the past");
+				}
+				else if (e instanceof EndBeforeEqualsInitException) {
+					result.rejectValue("endDate", null, "The end date must be after the initial date");
+				}
+				else if (e instanceof LongerThan90DaysException) {
+					result.rejectValue("endDate", null, "The training cannot be longer than 90 days");
+				}
+				else if (e instanceof InitInTrainingException) {
+					InitInTrainingException ex = (InitInTrainingException) e;
+					result.rejectValue("initialDate", null, "The training cannot start in a period "
+						+ "with other training (The other training is from " + ex.getInitAssoc() + " to " + ex.getEndAssoc() + ")");
+				}
+				else if (e instanceof EndInTrainingException) {
+					EndInTrainingException ex = (EndInTrainingException) e;
+					result.rejectValue("endDate", null, "The training cannot end in a period "
+						+ "with other training (The other training is from " + ex.getInitAssoc() + " to " + ex.getEndAssoc() + ")");
+				}
+				else if (e instanceof PeriodIncludingTrainingException) {
+					PeriodIncludingTrainingException ex = (PeriodIncludingTrainingException) e;
+					result.rejectValue("endDate", null, "The training cannot be in a period "
+						+ "which includes another training (The other training is from " + ex.getInitAssoc() + " to " + ex.getEndAssoc() + ")");
+				}
 				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (PastEndException e) {
-				result.rejectValue("endDate", null, "The end date cannot be in the past");
-				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (EndBeforeEqualsInitException e) {
-				result.rejectValue("endDate", null, "The end date must be after the initial date");
-				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (LongerThan90DaysException e) {
-				result.rejectValue("endDate", null, "The training cannot be longer than 90 days");
-				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (InitInTrainingException e) {
-				result.rejectValue("initialDate", null, "The training cannot start in a period "
-					+ "with other training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
-				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (EndInTrainingException e) {
-				result.rejectValue("endDate", null, "The training cannot end in a period "
-					+ "with other training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
-				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (PeriodIncludingTrainingException e) {
-				result.rejectValue("endDate", null, "The training cannot be in a period "
-					+ "which includes another training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
-				return "trainer/trainings/trainingCreateOrUpdate";
-			}
+			} 
 			
 			Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 			return "redirect:/trainer/" + trainer.getUser().getUsername() + "/trainings";
@@ -221,29 +227,35 @@ public class TrainingController {
 			training.setId(trainingId);
 			try {
 				this.trainingService.saveTraining(training);
-			} catch (PastInitException e) {
-				result.rejectValue("initialDate", null, "The initial date cannot be in the past");
-				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (PastEndException e) {
-				result.rejectValue("endDate", null, "The end date cannot be in the past");
-				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (EndBeforeEqualsInitException e) {
-				result.rejectValue("endDate", null, "The end date must be after the initial date");
-				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (LongerThan90DaysException e) {
-				result.rejectValue("endDate", null, "The training cannot be longer than 90 days");
-				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (InitInTrainingException e) {
-				result.rejectValue("initialDate", null, "The training cannot start in a period "
-					+ "with other training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
-				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (EndInTrainingException e) {
-				result.rejectValue("endDate", null, "The training cannot end in a period "
-					+ "with other training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
-				return "trainer/trainings/trainingCreateOrUpdate";
-			} catch (PeriodIncludingTrainingException e) {
-				result.rejectValue("endDate", null, "The training cannot be in a period "
-					+ "which includes another training (The other training is from " + e.getInitAssoc() + " to " + e.getEndAssoc() + ")");
+			} 
+			catch (Exception e) {
+				if(e instanceof PastInitException) {
+					result.rejectValue("initialDate", null, "The initial date cannot be in the past");
+				}
+				else if (e instanceof PastEndException) {
+					result.rejectValue("endDate", null, "The end date cannot be in the past");
+				}
+				else if (e instanceof EndBeforeEqualsInitException) {
+					result.rejectValue("endDate", null, "The end date must be after the initial date");
+				}
+				else if (e instanceof LongerThan90DaysException) {
+					result.rejectValue("endDate", null, "The training cannot be longer than 90 days");
+				}
+				else if (e instanceof InitInTrainingException) {
+					InitInTrainingException ex = (InitInTrainingException) e;
+					result.rejectValue("initialDate", null, "The training cannot start in a period "
+						+ "with other training (The other training is from " + ex.getInitAssoc() + " to " + ex.getEndAssoc() + ")");
+				}
+				else if (e instanceof EndInTrainingException) {
+					EndInTrainingException ex = (EndInTrainingException) e;
+					result.rejectValue("endDate", null, "The training cannot end in a period "
+						+ "with other training (The other training is from " + ex.getInitAssoc() + " to " + ex.getEndAssoc() + ")");
+				}
+				else if (e instanceof PeriodIncludingTrainingException) {
+					PeriodIncludingTrainingException ex = (PeriodIncludingTrainingException) e;
+					result.rejectValue("endDate", null, "The training cannot be in a period "
+						+ "which includes another training (The other training is from " + ex.getInitAssoc() + " to " + ex.getEndAssoc() + ")");
+				}
 				return "trainer/trainings/trainingCreateOrUpdate";
 			}
 			
