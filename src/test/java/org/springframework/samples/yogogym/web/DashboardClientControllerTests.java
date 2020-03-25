@@ -97,6 +97,7 @@ public class DashboardClientControllerTests {
 			sampleTraining.setClient(sampleClient);
 			List<Training> sampleListTraining = new ArrayList<Training>();
 			sampleListTraining.add(sampleTraining);
+			sampleClient.setTrainings(sampleListTraining);
 			List<Integer> listRoutineByTraining = new ArrayList<Integer>();
 			listRoutineByTraining.add(1);
 
@@ -196,6 +197,7 @@ public class DashboardClientControllerTests {
 			sampleTraining2.setClient(sampleClient2);
 			List<Training> sampleListTraining = new ArrayList<Training>();
 			sampleListTraining.add(sampleTraining2);
+			sampleClient2.setTrainings(sampleListTraining);
 			List<Integer> listRoutineByTraining = new ArrayList<Integer>();
 			listRoutineByTraining.add(2);
 
@@ -270,6 +272,7 @@ public class DashboardClientControllerTests {
 			sampleTraining2.setClient(sampleClient2);
 			List<Training> sampleListTraining = new ArrayList<Training>();
 			sampleListTraining.add(sampleTraining2);
+			sampleClient2.setTrainings(sampleListTraining);
 			List<Integer> listRoutineByTraining = new ArrayList<Integer>();
 			listRoutineByTraining.add(2);
 
@@ -338,6 +341,7 @@ public class DashboardClientControllerTests {
 			sampleTraining2.setClient(sampleClient2);
 			List<Training> sampleListTraining = new ArrayList<Training>();
 			sampleListTraining.add(sampleTraining2);
+			sampleClient2.setTrainings(sampleListTraining);
 			List<Integer> listRoutineByTraining = new ArrayList<Integer>();
 			listRoutineByTraining.add(2);
 
@@ -395,6 +399,7 @@ public class DashboardClientControllerTests {
 			sampleTraining2.setClient(sampleClient2);
 			List<Training> sampleListTraining = new ArrayList<Training>();
 			sampleListTraining.add(sampleTraining2);
+			sampleClient2.setTrainings(sampleListTraining);
 			List<Integer> listRoutineByTraining = new ArrayList<Integer>();
 			listRoutineByTraining.add(2);
 
