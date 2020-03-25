@@ -201,7 +201,7 @@ public class ChallengeControllerTest {
 			.param("reward","Reward")
 			.param("reps","10")
 			.param("weight","10.")
-			.param("exerciseId","1"))
+			.param("exercise.id","1"))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/admin/challenges"));
 	}
@@ -219,7 +219,7 @@ public class ChallengeControllerTest {
 				.param("reward","")
 				.param("reps","10")
 				.param("weight","10.")
-				.param("exerciseId","1"))
+				.param("exercise.id","1"))
 				.andExpect(status().isOk()).andExpect(model().attributeHasErrors("challenge"))
 				.andExpect(model().attributeHasFieldErrors("challenge", "name"))
 				.andExpect(model().attributeHasFieldErrors("challenge", "description"))
@@ -243,7 +243,7 @@ public class ChallengeControllerTest {
 				.param("reward","Reward")
 				.param("reps","10")
 				.param("weight","10.")
-				.param("exerciseId","1"))
+				.param("exercise.id","1"))
 				.andExpect(status().isOk()).andExpect(model().attributeHasErrors("challenge"))
 				.andExpect(model().attributeHasFieldErrors("challenge", "initialDate"))
 				.andExpect(view().name("/admin/challenges/challengesCreateOrUpdate"));
@@ -262,7 +262,7 @@ public class ChallengeControllerTest {
 				.param("reward","Reward")
 				.param("reps","10")
 				.param("weight","10.")
-				.param("exerciseId","1"))
+				.param("exercise.id","1"))
 				.andExpect(status().isOk()).andExpect(model().attributeHasErrors("challenge"))
 				.andExpect(model().attributeHasFieldErrors("challenge", "endDate"))
 				.andExpect(view().name("/admin/challenges/challengesCreateOrUpdate"));
@@ -303,7 +303,7 @@ public class ChallengeControllerTest {
 			.param("reward","Reward")
 			.param("reps","10")
 			.param("weight","10.")
-			.param("exerciseId","1"))
+			.param("exercise.id","1"))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/admin/challenges"));
 	}
@@ -321,7 +321,7 @@ public class ChallengeControllerTest {
 				.param("reward","")
 				.param("reps","10")
 				.param("weight","10.")
-				.param("exerciseId","1"))
+				.param("exercise.id","1"))
 				.andExpect(status().isOk()).andExpect(model().attributeHasErrors("challenge"))
 				.andExpect(model().attributeHasFieldErrors("challenge", "name"))
 				.andExpect(model().attributeHasFieldErrors("challenge", "description"))

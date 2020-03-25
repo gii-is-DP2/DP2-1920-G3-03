@@ -14,17 +14,14 @@
 	<span>Submitted Inscriptions</span>
 </yogogym:menuItem>
 					
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Clases">
-	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Clases</span>
-</yogogym:menuItem>
-					
 <yogogym:menuItem active="${name eq 'dashboard'}" url="/admin/dashboard" title="Dashboard">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>Dashboard</span>
 </yogogym:menuItem>	
-					
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets" title="Empleados">
+
+<%--
+<yogogym:menuItem active="${name eq 'vets'}" url="/" title="Empleados">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Empleados</span>
+	<span>Trainers</span>
 </yogogym:menuItem>
+ --%>

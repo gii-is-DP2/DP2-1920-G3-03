@@ -80,24 +80,7 @@ class DietValidatorTests extends ValidatorTests{
 		assertThat(violation.getMessage()).isEqualTo("must not be empty");
 		
 	}
-	
-	
-	// @Test
-	// void shouldNotValidateWhenDietTypeNull() {
-	// 	Diet d= CreateFilledDiet();
-	// 	d.setType(null);
 		
-	// 	Validator validator = createValidator();
-	// 	Set<ConstraintViolation<Diet>> constraintViolations = validator.validate(d);
-		
-	// 	assertThat(constraintViolations.size()).isEqualTo(1);
-	// 	ConstraintViolation<Diet> violation = constraintViolations.iterator().next();
-		
-	// 	assertThat(violation.getPropertyPath().toString()).isEqualTo("type");
-	// 	assertThat(violation.getMessage()).isEqualTo("no puede ser null");
-		
-	// }
-	
 	@Test
 	void shouldNotValidateWhenKcalNotPositive() {
 		Diet d= CreateFilledDiet();

@@ -8,16 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Guild;
-import org.springframework.samples.yogogym.model.Inscription;
-import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.repository.ClientRepository;
 import org.springframework.samples.yogogym.repository.GuildRepository;
-import org.springframework.samples.yogogym.service.exceptions.ChallengeMore3Exception;
-import org.springframework.samples.yogogym.service.exceptions.ChallengeSameNameException;
-import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
-import org.springframework.samples.yogogym.service.exceptions.GuildNotUserException;
-import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
-import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
