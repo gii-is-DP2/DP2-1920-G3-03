@@ -44,6 +44,12 @@ Como administrador quiero visualizar diagrama que me muestren cuanto son utiliza
 * **Visualizar diagrama general de máquinas, sistema con datos de la última semana:** Dado un administrador y un sistema con máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le mostrará el nombre de estas, cuantas veces han sido utilizadas en la última semana.
 * **Visualizar diagrama general de máquinas, sistema con datos del último mes:** Dado un administrador y un sistema con máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le mostrará el nombre de estas, cuantas veces han sido utilizadas en el último mes.
 * **Visualizar diagrama general de máquinas, sistema sin datos:** Dado un administrador y un sistema sin máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
+* **Visualizar diagrama general de máquinas, sistema sin equipamiento:** Dado un administrador y un sistema sin máquinas usadas, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
+* **Visualizar diagrama general de máquinas, sistema sin ejercicio:** Dado un administrador y un sistema sin ejercicio, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
+* **Visualizar diagrama general de máquinas, sistema sin línea de rutina:** Dado un administrador y un sistema sin líneas de rutinas, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
+* **Visualizar diagrama general de máquinas, sistema sin rutinas:** Dado un administrador y un sistema sin rutinas, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
+* **Visualizar diagrama general de máquinas, sistema con fechas de hace de dos meses:** Dado un administrador y un sistema con entrenamientos de hace dos meses, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
+* **Visualizar diagrama general de máquinas, sistema con fechas de dos días después:** Dado un administrador y un sistema con entrenamientos de dos días después, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
 ---
 #### HU4 - Mostrar oraciones motivacionales diariamente
 Como administrador quiero que se muestren oraciones motivacionales diariamente para intentar motivar a los clientes y mejorar su estado de ánimo.
@@ -203,8 +209,13 @@ Como cliente quiero seguir a otros usuarios para copiar su entrenamiento.
 #### HU18- Dashboard Cliente
 Como cliente quiero poder tener un dashboard donde poder ver el Historial de actividades, Calorías quemadas y otros datos relacionados con mi entrenamiento.
 #### Escenarios:
-* **Suficientes datos que mostrar:** Dado un cliente con actividades realizadas se le mostrarán datos sobre su historial.
-* **Sin datos para mostrar:** Dado un cliente sin actividades realizadas se le mostrarán posibles actividades a realizar para empezar a hacer ejercicio.
+* **Ver dashboard con datos:** Dado un cliente, al pulsar el botón de "Dashboard", aparecerá las kcal gastadas este mes y un histórico, además de dos gráficas (mensual e histórico).
+* **Ver dashboard sin datos:** Dado un cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de ejercicios registrados.
+* **Ver dashboard de otro cliente:** Dado un cliente, cambiando la url para ver su dashboard, se redirigirá a una vista de excepción.
+* **Ver dashboard sin datos de este mes:** Dado un cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de ejercicios registrados este mes y justo abajo las gráficas y kcal del histórico.
+* **Ver dashboard sin ejercicios:** Dado un cliente y un sistema en el que no tenga ejercicios, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de ejercicios registrados.
+* **Ver dashboard sin líneas de rutinas:** Dado un cliente y un sistema en el que no tenga líneas de rutina, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de ejercicios registrados.
+* **Ver dashboard sin rutinas:** Dado un cliente y un sistema en el que no tenga rutinas, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de ejercicios registrados.
 ---
 #### HU19 - Personalizar mi entrenamiento
 Como cliente quiero poder personalizar mi entrenamiento para actualizarlo o personalizarlo a mi gusto.
@@ -235,6 +246,7 @@ Como cliente quiero poder ver la clasificación de mis retos, para poder ver en 
 * **Ver un la clasificación semanal e histórica con datos:** Dado un cliente, al pulsar el botón de "Clasificación", aparecerá un listado de los retos completados, viendo también una clasificación semanal y global.
 * **Ver un la clasificación histórica sin haber completado retos:** Dado un cliente sin retos completados, al pulsar el botón de "Clasificación", aparecerá una clasificación global.
 * **Ver un la clasificación de otro cliente:** Dado un cliente, intentar entrar en la clasificación de otro cliente cambiando la url, dando como resultado una redirección a la página de excepción.
+* **Ver un la clasificación sin retos:** Dado un cliente y un sistema sin retos completados, al pulsar el botón de "Clasificación", aparecerá un mensaje de que no hay retos completados.
 ---
 #### HU23 - Añadir Playlist adaptada a mis entrenamientos
 Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis entrenamientos, es decir, adecuadas para el nivel de intensidad especificado, para poder motivarme y llevar un ritmo adecuado.
