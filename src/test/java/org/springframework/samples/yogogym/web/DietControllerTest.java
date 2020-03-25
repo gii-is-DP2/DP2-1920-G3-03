@@ -54,8 +54,7 @@ public class DietControllerTest {
 	
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	Calendar testInitialTrainingDate = Calendar.getInstance();
-	Calendar testEndTrainingDate = testInitialTrainingDate;
-	
+		
 	//Trainer 2
 	private static final String testTrainerUsername_t2 = "trainer2";
 	
@@ -113,8 +112,8 @@ public class DietControllerTest {
 				
 		Date initialDate = testInitialTrainingDate.getTime();
 		
-		testEndTrainingDate.add(Calendar.DAY_OF_MONTH, 1);
-		Date endDate = testEndTrainingDate.getTime();
+		testInitialTrainingDate.add(Calendar.DAY_OF_MONTH, 1);
+		Date endDate = testInitialTrainingDate.getTime();
 		
 		Collection<Routine> routines = new ArrayList<>();
 		
@@ -237,12 +236,20 @@ public class DietControllerTest {
 		diet.setName(name);
 		diet.setDescription(description);
 		diet.setType(dietType);
+		diet.setKcal(10);
+		diet.setCarb(10);
+		diet.setProtein(10);
+		diet.setFat(10);
 		
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId)
 			.with(csrf())
 			.param("name", diet.getName())
 			.param("description", diet.getDescription())
-			.param("type",diet.getType().toString()))
+			.param("type",diet.getType().toString())
+			.param("carb", diet.getCarb().toString())
+			.param("protein", diet.getProtein().toString())
+			.param("kcal", diet.getKcal().toString())
+			.param("fat", diet.getFat().toString()))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/trainer/"+ testTrainerUsername + "/clients/" + testClientId + "/trainings/"+testTrainingId));
 	
