@@ -24,13 +24,13 @@ La aplicación web a desarrollar tiene como nombre YogoGym. El objetivo fundamen
 ## Historias de Usuario
 ### Administrador
 ---
-#### HU1 - Proponer retos semanales y mensuales 
-Como administrador quiero añadir retos semanales y mensuales al gimnasio para que los clientes puedan competir por lograrlos y obtengan beneficios en el gimnasio si lo hacen.
+#### HU1 - Proponer retos semanales
+Como administrador quiero añadir retos semanales al gimnasio, que los clientes puedan competir por lograrlos y obtener beneficios y puntos (para su gremio) en el gimnasio si los completan, para motivarlos a realizar ciertos ejercicios y crear un ambiente competitivo.
 #### Escenarios:
-* **Añadir reto semanal/mensual a semana/mes sin retos:** Dado un administrador y una semana/mes sin retos, cuando este intente añadir uno aportando la información necesaria, entonces el reto se añadirá a la semana/mes.
-* **Añadir reto semanal/mensual ya existente:** Dado un administrador y una semana/mes con retos pero no completa, cuando este intente añadir uno con la información de otro ya existente, entonces se le indicará que esto no es posible debido a que ya existe.
-* **Añadir reto semanal/mensual a semana/mes con 3 retos:** Dado un administrador y una semana/mes con 3 retos, cuando este intente añadir uno, entonces se le indicará que no es posible debido a que se ha llegado al máximo de retos.
-* **Añadir reto semanal/mensual a semana/mes actual o anterior:** Dado un administrador, cuando este intente añadir un reto a una semana/mes actual o anterior, entonces se le indicará que no es posible debido a que solo se puede añadir a semanas/meses posteriores.
+* **Añadir reto semanal a semana sin retos:** Dado un administrador y una semana [Semana 1 de 2022] sin retos, cuando este intente añadir uno aportando la información necesaria, entonces el reto se creará correctamente.
+* **Añadir reto semanal ya existente:** Dado un administrador y una semana con retos [Semana 1 de 2021], cuando este intente añadir uno con el nombre [ChallengeTest] de otro ya existente, entonces se le indicará que esto no es posible debido a que ya existe.
+* **Añadir reto semanal a semana con 3 retos:** Dado un administrador y una semana con 3 retos [Semana 2 de 2021], cuando este intente añadir uno, entonces se le indicará que no es posible debido a que se ha llegado al máximo de retos esa semana.
+* **Añadir reto semanal en fecha anterior:** Dado un administrador, cuando este intente añadir un reto en una fecha anterior [01/01/2020], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
 ---
 #### HU2 - Dashboard Retos
 Como administrador quiero visualizar diagramas que muestren, clasificados por individuales o gremios y semanales o mensuales, el éxito en los retos para poder adecuarlos en temática y dificultad correctamente.
@@ -96,33 +96,49 @@ Como entrenador quiero llevar el control de las dietas de los clientes en funci�
 * **Gestionar la dieta de un usuario:** Dado un entrenador que se dispone a gestionar la dieta de un usuario sin incumplir ninguna regla de negocio, cuando este usuario ya posee una. La operación de gestión se efectúa correctamente y esta queda disponible tanto por el usuario para poder visualizar los cambios como para el entrenador poder modificarlos en un futuro.
 ---
 #### HU12 - Añadir un entrenamiento 
-Como entrenador quiero añadir un entrenamiento a nuestros clientes para poder facilitar el desarrollo físico del cliente.
+Como entrenador quiero añadir entrenamientos a nuestros clientes para poder organizar sus actividades y sus dietas, facilitando su desarrollo físico.
 #### Escenarios:
-* **Añadir entrenamiento a un usuario, sin introducir atributos:** Dado un entrenador que quiere añadir un entrenamiento sin nombre, ni fecha de inicio ni fecha de fin; a un usuario, cuando se intenta añadir el entrenamiento, entonces se vuelve a la vista de creación y se informa de que debe cumplimentar los campos.
-* **Añadir entrenamiento a un usuario, con atributos sin conflictos:** Dado un entrenador que quiere añadir un entrenamiento con  nombre "Nuevo Entrenamiento", fecha de inicio posterior a la actual y que no coincide con otro entrenamiento, y fecha de fin posterior a la actual y a la de inicio y que no coincide con otro entrenamiento; a un usuario, cuando se intenta añadir el entrenamiento, entonces se añade el entrenamiento al usuario y se vuelve a la vista de entrenamientos del entrenador.
-* **Añadir entrenamiento a un usuario, con fechas con conflictos:** Dado un entrenador que quiere añadir un entrenamiento con  nombre "Nuevo Entrenamiento", fecha de inicio anterior a la actual o que coincide con otro entrenamiento, y fecha de fin anterior a la de inicio o a la actual o que coincide con otro entrenamiento; a un usuario, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al usuario y se vuelve a la vista de creación y se informa de los errores presentes en las fechas.
+* **Añadir entrenamiento a un usuario, con atributos sin conflictos:** Dado un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin dentro de 7 días desde la actual; a un usuario, cuando se intenta añadir el entrenamiento, entonces se añade el entrenamiento al cliente y se redirige a la vista de detalles del entrenamiento.
+* **Añadir entrenamiento a un cliente, sin introducir atributos:** Dado un entrenador que quiere añadir un entrenamiento sin nombre, ni fecha de inicio ni fecha de fin; a un cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento y se redirige a la vista de creación informando de que debe cumplimentar los campos.
+* **Añadir entrenamiento a un cliente, fecha de inicio un día antes de la actual:** Dado un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio 1 día antes de la actual, y fecha de fin dentro de 7 días desde la actual; a un cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de inicio no debe estar en el pasado.
+* **Añadir entrenamiento a un cliente, fecha de fin un día antes de la de inicio:** Dado un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin 1 día antes de la actual; a un cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de fin debe ser posterior a la de inicio.
+* **Añadir entrenamiento a un cliente, fecha de fin igual a la de inicio:** Dado un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin igual a la actual; a un cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de fin debe ser posterior a la de inicio.
+* **Añadir entrenamiento a un cliente, fecha de inicio coincidiendo con otro entrenamiento:** Dado un cliente con un entrenamiento que comienza en la fecha actual y finaliza dentro de 7 días desde la actual; y un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de dentro de 8 días; a ese cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de inicio no puede coincidir con otro entrenamiento.
+* **Añadir entrenamiento a un cliente, fecha de fin coincidiendo con otro entrenamiento:** Dado un cliente con un entrenamiento que comienza dentro de 1 día y finaliza dentro de 7 desde la actual; y un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin dentro de 7 días desde la actual; a ese cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de fin no puede coincidir con otro entrenamiento.
+* **Añadir entrenamiento a un cliente, entrenamiento incluyendo otro:** Dado un cliente con un entrenamiento que se inicia dentro de 1 día desde la actual y finaliza dentro de 7 días desde la actual; y un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin dentro de 8 días; a ese cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que el entrenamiento no puede incluir a otro.
 ---
 #### HU13 - Gestionar el entrenamiento de nuestros clientes
 Como entrenador quiero llevar el control de los entrenamientos de mis clientes conociendo el estado de estos para poder modificar los periodos en los que transcurren y así adaptarlos de la mejor forma a los clientes.
 #### Escenarios:
-* **Gestionar entrenamientos clientes, cliente con entrenamientos:** Dado un entrenador que se dispone a gestionar los entrenamientos de sus clientes, cuando accede a la vista de gestión de los entrenamientos, entonces se le listarán sus clientes junto con sus entrenamientos indicando de estos nombre y su estado, es decir, si está en curso o finalizado. 
-* **Gestionar entrenamiento en curso, fecha fin inválida:** Dado un entrenador que se dispone a gestionar el entrenamiento con nombre "Entrenamiento1", fecha de inicio igual o anterior a la actual y una fecha de fin posterior a la actual; de un cliente, cuando intenta actualizar la fecha de fin a una anterior a la actual, anterior a la de inicio o que coincide con otro entrenamiento, entonces se le devolverá a la vista de actualización informándole de los errores.
+* **Gestionar entrenamientos clientes, entrenador con cliente:** Dado un entrenador que se dispone a gestionar los entrenamientos de sus clientes, cuando accede a la vista de gestión de los entrenamientos, entonces se le listarán sus clientes junto con sus entrenamientos indicando de estos: nombre y su estado, es decir, si está en curso o finalizado. 
+* **Gestionar entrenamientos clientes, cliente con entrenamientos:** Dado un entrenador que se dispone a gestionar el entrenamiento de un cliente, cuando accede a la vista de gestión del entrenamiento, entonces se le mostrará la siguiente información del entrenamiento: nombre, fecha inicio, fecha fin, un listado de sus rutinas, su dieta y botones para redireccionar a la edición y borrado de la información general del entrenamiento. 
+* **Gestionar entrenamiento en curso, nombre vacío:** Dado un entrenador que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual y fecha de fin dentro de 7 días desde la actual; de un cliente, cuando intenta actualizar el nombre y la fecha de fin a vacío, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que esos campos no pueden estar vacíos.
+* **Gestionar entrenamiento en curso, fecha fin anterior a la de inicio:** Dado un entrenador que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual y fecha de fin dentro de 7 días desde la actual; de un cliente, cuando intenta actualizar la fecha de fin a una un día antes de la actual, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que la fecha de fin no puede ser anterior a la de inicio.
+* **Gestionar entrenamiento en curso, fecha fin coincide con otro entrenamiento:** Dado un cliente con un entrenamiento que se inicia dentro de 8 días desde la actual y finaliza dentro de 15 días desde la actual; y un entrenador que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual y fecha de fin dentro de 7 días desde la actual; de un cliente, cuando intenta actualizar la fecha de fin a una dentro de 8 días desde la actual, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que la fecha de fin no puede coincidir con otro entrenamiento.
+* **Gestionar entrenamiento en curso, entrenamiento incluye otro:** Dado un cliente con un entrenamiento que se inicia dentro de 8 días desde la actual y finaliza dentro de 15 días desde la actual; y un entrenador que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual y fecha de fin dentro de 7 días desde la actual; de un cliente, cuando intenta actualizar la fecha de fin a una dentro de 16 días desde la actual, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que el entrenamiento no puede incluir otro.
+* **Gestionar entrenamiento en curso, fecha fin anterior a la actual:** Dado un entrenador que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio 7 días antes de la actual y fecha de fin dentro de 7 días desde la actual; de un cliente, cuando intenta actualizar la fecha de fin a la de ayer, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que no se puede finalizar el entrenamiento en el pasado
 ---
 ### Usuario
 ---
 #### HU5 - Crear y eliminar gremios
-Como cliente quiero poder crear clases y asignarla a monitores, para poder administrar los horarios, que los clientes puedan apuntarse a ellas y los monitores sepan que clases deben impartir.
+Como cliente quiero poder crear gremios, para que en un futuro puedan inscribirse otros clientes e ir adquiriendo puntos para recibir futuras recompensas, también quiero poder actualizar y eliminar aquel gremio que he creado.
 #### Escenarios:
-* **Crear una clase en un horario vacío:** Dado un administrador, este crea una clase asignandole un título, tipo, monitor asignado, horario, la sala y el equipamiento del que dispone.
-* **Crear una clase en una sala y horario ya ocupado:** Dado un administrador, el sistema deberá avisarle de que esa sala con ese horario ya está ocupado por otra clase.
-* **Crear una clase y asignarla a un monitor ya ocupado:** Dado un administrador, el sistema deberá avisarle de que ese monitor ya está ocupado en ese horario en cualquiera de las salas.
+* **Crear un gremio:** Dado un cliente, quiero poder crear un gremio, para ello en la vista donde podemos observar todos los gremios existentes, aparecerá un botón para poder crear tú propio gremio, para ello debemos introducir un nombre, una descripción y una url, la cuál será la imagen de nuestro gremio. El creador se selecciona automáticamente, pasando a ser el nombre de dicho usuario que está creando dicho gremio.
+* **Crear un gremio sin introducir atributos:** Dado un cliente, al intentar crear un gremio, si este no introduce valores en los campos nombre, descripción y logo, saltará una excepción en aquellos campos que se encuentren vacíos y deberá cumplimentarlos.
+* **Crear un gremio introduciendo el mismo nombre que otro gremio:** Dado un cliente, al intentar crear un gremio, si introduce un nombre que posee otro gremio le saltará una excepción, la cuál le informará de que ya existe otro gremio con dicho nombre.
+* **Crear un gremio siendo un usuario con otro gremio ya creado por él mismo:** Dado un cliente, al intentar crear un gremio si este ya ha creado un gremio, saltará una excepción en el campo de creador, informando de que dicho usuario ya posee un gremio creado por él, ya que un usuario solo puede tener un gremio.
+* **Crear un gremio con una mal url:** Dado un cliente, al intentar crear un gremio, si este introduce en el campo de logo una url que no comienze por "https://" lanzará una excepción.
+* **Actualizar un gremio:** Dado un cliente, al introducirse en aquel gremio creado por el mismo, aparecerá un botón de editar, en el cuál podrá cambiar el nombre, la descripción o el logo.
+Actualizar posee exactamente las mismas restricciones que crear.
+* **Eliminar un gremio:** Dado un cliente, al intentar crear su gremio, en la vista de la información de dicho gremio aparecerá un botón de eliminar, al pulsarlo se eliminará dicho gremio.
+* **Eliminar un gremio sin ser el creador:** Dado un cliente, al intentar eliminar un gremio que no ha sido creado por él, le lanzará a una página de error, y dicha acción no se llevará a cabo.
 ---
 #### HU14 - Apuntarme y salirme de gremios
-Como cliente quiero poder apuntarme a las clases que me interesen, para poder asistir a ellas y saber el horario en las que se imparten.
+Como cliente quiero poder unirme a gremios para poder formar parte de una comunidad y participar para poder recibir premios, y poder salirme de aquel gremio al que me haya unido.
 #### Escenarios:
-* **Apuntarse a una clase con huecos disponibles:** Dado un cliente y una clase sin el aforo completo, el cliente le da a inscribirse, se registra, y aumenta en uno el número de asistentes a esa clase.
-* **Apuntarse a una clase sin huecos disponibles:** Dado un cliente y una clase sin huecos disponibles, el cliente le da a inscribirse, y salta un aviso de que el aforo ya está completo.
-* **Apuntarse a una clase en el mismo horario que otra:** Dado un cliente y una clase con horario igual a otra que ya esté inscrito, le da a inscribirse y le salta un aviso diciendo que se solapa el horario con otra clase.
+* **Unirse a un gremio:** Como cliente, al intentar unirme a un gremio, primero veremos la lista con todos los gremios creados, acto seguido al seleccionar la que más nos interese podremos ver toda la información de la misma, y al pulsar el botón de unirnos, pasaremos a formar parte de dicho gremio.
+* **Abandonar un gremio:** Como cliente, al salirme de un gremio, primero iremos a la vista de nuestro gremio dándonos toda la información de la misma, y pulsaremos sobre el botón de abandonar este gremio, de tal forma que ya no formaremos parte de dicho gremio y nos podremos unir a otro diferente si lo deseamos.
+* **Abandonar un gremio al que no pertecenes:** Como cliente, al intentar abandonar un gremio al que no pertenezco nos llevará a una página de excepción, no realizandose ninguna acción.
 ---
 #### HU15 - Consultar todos los ejercicios disponibles
 Como cliente quiero consultar todos los ejercicios disponible para poder coger ideas y realizar mis propias rutinas y entrenamientos.
@@ -163,16 +179,20 @@ Como cliente quiero poder compartir mi progreso con otros usuarios, para poder p
 * **Compartir progreso sin foto ni comentario:** Dado un cliente, al darle a publicar, si no ha adjuntado foto ni ha escrito ningún comentario le saltará un aviso diciendo "si desea publicar debe adjuntar una foto o escribir un comentario".
 ---
 #### HU21 - Participar en  los Retos
-Como cliente quiero poder participar en los distintos retos propuestos por los profesores, para poder ganar puntos para mi gremio y para mi mismo y estar lo mas alto posible en la clasificación.
+Como cliente quiero poder participar en los distintos retos propuestos por el gimnasio, para poder ganar puntos para mi gremio y para mi mismo y estar lo mas alto posible en la clasificación.
 #### Escenarios
-* **Participar en un reto sin estar en ninguno:** Dado un cliente, pinchará en la sección "retos", verá un listado con los diferentes retos propuestos y seleccionará el que desee, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "aceptar reto", añadiendosele dicho reto a la sección "retos" pero con un estado "pendiente" hasta que adjunte una foto demostrando que lo ha completado.
-* **Participar en un reto estando registrado en uno o más:** Dado un cliente, pinchará en la sección "retos", verá un listado con los diferentes retos propuestos y en los que ya está registrado saldrá como "pendiente", seleccionará el que desee, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "aceptar reto", añadiendosele dicho reto a la sección "retos" pero con un estado "pendiente" hasta que adjunte una foto demostrando que lo ha completado.
-* **Participar en un reto cuando no hay retos:** Dado un cliente, pinchará en la sección "retos", si dicho usuario ha completado todos los retos, no le saldrá ningún reto en dicha lista, y aparecerá un mensaje diciendo "lo sentimos en estos momentos no hay nuevos retos, vuelve más tarde".
+* **Listar los retos en los que aún no me he inscrito:** Dado un cliente, pinchará en la sección "retos", verá un listado con los diferentes retos propuestos y seleccionará el que desee, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "inscribirme", añadiendosele dicho reto a la sección "mis retos" pero con un estado "participando" hasta que adjunte una foto demostrando que lo ha completado.
+**Listar los retos en los que participa:** Dado un cliente, pinchará en la sección "mis retos", verá un listado con los diferentes retos en los que se ha inscrito.
+* **Participar en un reto cuando no hay retos:** Dado un cliente, pinchará en la sección "retos", si dicho usuario ha completado todos los retos, no le saldrá ningún reto en dicha lista.
+* **Pedir confirmar un reto que ha completado:** Dado un cliente, pinchará en la sección "mis retos", si dicho usuario ha completado algún reto, pinchará sobre el, rellenara la url de la foto de prueba, y clickara en enviar. El administrador podrá ver esos retos enviados, y decidirá si han sido completados o fallados.
+* **Listar los retos en los que participo y la fecha límite del reto pasa antes de que el cliente lo envíe:** Dado un cliente y un reto con fecha de finalización [01/01/2019], sin que haya sido enviado, se pondrá automaticamente en fallado.
 ---
 #### HU22 - Clasificación de los Retos
 Como cliente quiero poder ver la clasificación de mis retos, para poder ver en que posición me encuentro y que debo hacer para poder superar y subir al top.
 #### Escenarios
-* **Ver un la clasificación de un reto completado:** Dado un cliente, al pulsar el botón de "Clasificación", aparecerá un listado de los retos completados, viendo también una clasificación semanal y global.
+* **Ver un la clasificación semanal e histórica con datos:** Dado un cliente, al pulsar el botón de "Clasificación", aparecerá un listado de los retos completados, viendo también una clasificación semanal y global.
+* **Ver un la clasificación histórica sin haber completado retos:** Dado un cliente sin retos completados, al pulsar el botón de "Clasificación", aparecerá una clasificación global.
+* **Ver un la clasificación de otro cliente:** Dado un cliente, intentar entrar en la clasificación de otro cliente cambiando la url, dando como resultado una redirección a la página de excepción.
 ---
 #### HU23 - Añadir Playlist adaptada a mis entrenamientos
 Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis entrenamientos, es decir, adecuadas para el nivel de intensidad especificado, para poder motivarme y llevar un ritmo adecuado.
@@ -188,28 +208,29 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | P2 | Carlos y Francisco José | 
 | P3 | Álvaro y José Manuel | 
 
-| Historia de Usuario | Sprint | Pareja asignada |
-| --- | --- | --- |
-| HU12 | 1 | P1 |
-| HU13 | 1 | P1 |
-| HU8 | 1 | P1 | 
-| HU9 | 1 | P1 |
-| HU10 | 1 | P2 |
-| HU11 | 1 | P2 |
-| HU15 | 1 | P1 |
-| HU16 | 1 | P2 |
-| HU18 | 1 | P3 |
-| HU19 | 1 | P1 |
-| HU21 | 1 | P3 |
-| HU22 | 1 | P3 |
-| HU1 | 1 | P3 |
-| HU3 | 1 | P3 |
-| HU5 | 1 | P2 |
-| HU4 | 1 | P2 |
-| HU14 | 2 | P2 |
-| HU17 | 2 | P3 |
-| HU2 | 2 | P3 |
-| HU6 | 2 | P1 |
-| HU20 | 3 | P2 |
-| HU23 | 3 | P1 |
-| HU7 | 3 | P3 |
+| Historia de Usuario | Sprint | Pareja asignada | Hecho |
+| --- | --- | --- | --- |
+| HU12 | 1 | P1 | Sí |
+| HU13 | 1 | P1 | Sí |
+| HU8 | 1 | P1 | Sí | 
+| HU9 | 1 | P1 | Sí |
+| HU10 | 1 | P2 | --- |
+| HU11 | 1 | P2 | --- |
+| HU14 | 1 | P2 | Sí |
+| HU15 | 1 | P1 | Sí |
+| HU16 | 1 | P2 | --- |
+| HU18 | 1 | P3 | Sí |
+| HU19 | 1 | P1 | Sí |
+| HU21 | 1 | P3 | Sí |
+| HU22 | 1 | P3 | Sí |
+| HU1 | 1 | P3 | Sí |
+| HU3 | 1 | P3 | Sí |
+| HU5 | 1 | P2 | Sí |
+| HU17 | 2 | P3 | --- |
+| HU20 | 2 | P2 | --- |
+| HU2 | 2 | P3 | --- |
+| HU6 | 2 | P1 | --- |
+| HU23 | 3 | P1 | --- |
+| HU4 | 3 | P2 | --- |
+| HU7 | 3 | P3 | --- |
+

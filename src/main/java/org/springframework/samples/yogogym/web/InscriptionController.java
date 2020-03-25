@@ -11,6 +11,8 @@ import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.service.ChallengeService;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.InscriptionService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -50,7 +52,10 @@ public class InscriptionController {
 
 	    Client client = this.clientService.findClientByInscriptionId(inscriptionId);
 	    Inscription inscription = client.getInscriptions().stream().filter(i -> i.getId() == inscriptionId).findFirst().get();
-	   	
+	    //Check it is submitted
+	    if(!inscription.getStatus().equals(Status.SUBMITTED))
+	    	return "exception";
+	    
 	    model.addAttribute("inscription", inscription);
 	    model.addAttribute("client", client);
 	   	
@@ -76,6 +81,9 @@ public class InscriptionController {
 	@GetMapping("/client/{clientUsername}/challenges/{challengeId}/inscription/create")
 	public String createInscriptionByChallengeId(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
 		
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 		Client client = this.clientService.findClientByUsername(clientUsername);
 	   	Inscription inscription = new Inscription();
@@ -95,6 +103,9 @@ public class InscriptionController {
 	public String submitInscription(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, 
 									@PathVariable("inscriptionId") int inscriptionId, Inscription inscription, Model model) {	  
 		
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 		inscription.setChallenge(challenge);
 		inscription.setId(inscriptionId);
@@ -103,6 +114,15 @@ public class InscriptionController {
 	   	this.inscriptionService.saveInscription(inscription);
 	   	
 	    return "redirect:/client/"+clientUsername+"/challenges/mine/"+challengeId;
+	}
+	
+	
+	private boolean isLoggedPrincipal(String Username) {
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String principalUsername = ((UserDetails)principal).getUsername();
+		
+		return principalUsername.trim().toLowerCase().equals(Username.trim().toLowerCase());
 	}
 	
 }

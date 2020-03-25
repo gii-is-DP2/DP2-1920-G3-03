@@ -33,7 +33,10 @@ public class InscriptionServiceTest {
 	@Test
 	void shouldFindInscriptionsByChallengeId(){
 		Collection<Inscription> inscriptions = this.inscriptionService.findInscriptionsByChallengeId(1);
-		assertThat(inscriptions.size()).isEqualTo(2);	
+		assertThat(inscriptions.size()).isEqualTo(2);
+		
+		inscriptions = this.inscriptionService.findInscriptionsByChallengeId(50);
+		assertThat(inscriptions.size()).isEqualTo(0);
 	}
 	
 	@Test
@@ -128,22 +131,6 @@ public class InscriptionServiceTest {
 		
 		i = this.inscriptionService.findInscriptionByInscriptionId(1);
 		assertThat(i.getUrl()).isEqualTo("https://TestUpdate.com");
-	}
-	
-
-	@Ignore
-	void shouldDeleteInscription() {
-		
-		Collection<Inscription> inscriptions = this.inscriptionService.findAll();
-		int foundBefore = inscriptions.size();
-		
-		Inscription i = this.inscriptionService.findInscriptionsByInscriptionId(1);
-		this.inscriptionService.deleteInscription(i);;
-		
-		inscriptions = this.inscriptionService.findAll();
-		int foundAfter = inscriptions.size();
-		
-		assertThat(foundBefore).isGreaterThan(foundAfter);
 	}
 	
 	//Clasification
