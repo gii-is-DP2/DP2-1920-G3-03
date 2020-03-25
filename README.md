@@ -85,7 +85,8 @@ Como entrenador quiero llevar el control de las rutinas para poder cambiar la ru
 * **Gestionar una rutina a un cliente con atributos con conflictos:** Dado un entrenador que intenta gestionar una rutina, en el caso de editar, cuando intenta editar la rutina y:
   - Deja los atributos nombre, descripción o repeticiones por semana vacíos
   - Repeticiones por semana tiene un valor inferior a 1
-La vista redirecciona al entrenador a la misma vista de editar indicándole el error/es y atributo/os que provocan el conflicto.
+  
+  La vista redirecciona al entrenador a la misma vista de editar indicándole el error/es y atributo/os que provocan el conflicto.
 ---
 #### HU24 - Añadir línea de rutinas a los entrenamientos
 Como entrenador quiero añadir líneas de rutinas a nuestros clientes para facilitar el seguimiento de la rutina
@@ -98,6 +99,7 @@ Como entrenador quiero añadir líneas de rutinas a nuestros clientes para facil
   - Series de la línea de rutina debe ser superior a 1.
   - Peso debe ser 0 o un número positivo
   - Ejercicio no nulo
+
 En cuanto alguno de estos conflictos se cumplan, se redirige al entrenador a la vista de añadir vista indicándole los errores y atributos en conflicto.
 * **Añadir una línea de rutina a un cliente, cuando el entrenamiento al que pertenece esa rutina ha finalizado:** Dado un entrenador que intenta añadir una rutina, cuando un entrenamiento ha finalizado, la vista no le deja hacer redirección a los controles de gestión de rutas (añadir, editar y borrar). En el caso que intente acceder desde la URL, se le redirige a la vista de error.
 * **Añadir una línea de rutina a un cliente que no entrena:** Dado un entrenador que quiere añadir una rutina a un cliente que no entrena, desde las opciones mostradas, este no puede acceder a otros clientes salvo los suyos. En el caso que intente a través de URL, se le redirecciona a la vista de error.
@@ -112,6 +114,7 @@ Como entrenador quiero llevar el control de las líneas de rutinas para poder ca
 	- Series de la línea de rutina debe ser superior a 1.
 	- Peso debe ser 0 o un número positivo
 	- Ejercicio no nulo
+
 En caso de que salte alguna de estas restricciones, la vista redirige al entrenador a la misma vista de actualizar indicándole el error y atributo que provoca el conflicto.
 * **Gestionar una línea de rutina a un cliente, cuando el entrenamiento al que pertenece esa línea de rutina ha finalizado:** Dado un entrenador que intenta gestionar una línea de rutina, cuando un entrenamiento ha finalizado, la vista no le deja hacer redirección a los controles de gestión de rutas (añadir, editar y borrar). En el caso que intente acceder desde la URL, se le redirige a la vista de error.
 * **Gestionar una línea de rutina a un cliente que no entrena:** Dado un entrenador que quiere añadir una línea de rutina a un cliente que no entrena, desde las opciones mostradas, este no puede acceder a otros clientes salvo los suyos. En el caso que intente a través de URL, se le redirecciona a la vista de error.
