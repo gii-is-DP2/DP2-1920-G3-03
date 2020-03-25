@@ -17,13 +17,11 @@ package org.springframework.samples.yogogym.service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
@@ -127,41 +125,38 @@ public class TrainingService {
 			}	
 		}
 		if (anyException) {
-			// Period without other trainings
-			List<Training> associatedTrainings = training.getClient().getTrainings()
-				.stream().sorted(Comparator.comparing(Training::getInitialDate)).collect(Collectors.toList());
-			for(Training t : associatedTrainings) {
-				if(training.isNew()||!t.getId().equals(training.getId())) {
-					
-					Date initDateAssoc = t.getInitialDate();
-					String initAssoc = dateFormat.format(initDateAssoc);
-					Date endDateAssoc = t.getEndDate();
-					String endAssoc = dateFormat.format(endDateAssoc);
-
-					Boolean initInPeriod = initialDate.compareTo(initDateAssoc)>=0&&initialDate.compareTo(endDateAssoc)<=0;
-					Boolean endInPeriod = endDate.compareTo(initDateAssoc)>=0&&endDate.compareTo(endDateAssoc)<=0;
-					Boolean initAssocInPeriod = initDateAssoc.compareTo(initialDate)>=0&&initDateAssoc.compareTo(endDate)<=0;
-					Boolean endAssocInPeriod = endDateAssoc.compareTo(initialDate)>=0&&endDateAssoc.compareTo(endDate)<=0;
-					
-					if(initInPeriod) {
-						anyException=false;
-						throw new InitInTrainingException(initAssoc,endAssoc);
-					}
-					else if(endInPeriod) {
-						anyException=false;
-						throw new EndInTrainingException(initAssoc,endAssoc);
-					}
-					else if(initAssocInPeriod && endAssocInPeriod) {
-						anyException=false;
-						throw new PeriodIncludingTrainingException(initAssoc,endAssoc);
-					}
-					if(!anyException) {
-						break;
-					}
-				}
+			// Concurrent trainings?
+			int trainingId = -1;
+			if(!training.isNew()) {
+				trainingId = training.getId();
+			}
+			
+			Collection<Training> concurrentInit = this.trainingRepository.countConcurrentTrainingsForInit(training.getClient().getId(), 
+				trainingId, training.getInitialDate());
+			Collection<Training> concurrentEnd = this.trainingRepository.countConcurrentTrainingsForEnd(training.getClient().getId(), 
+				trainingId, training.getEndDate());
+			Collection<Training> concurrentIncluding = this.trainingRepository.countConcurrentTrainingsForIncluding(training.getClient().getId(), 
+				trainingId, training.getInitialDate(), training.getEndDate());
+			
+			if(concurrentInit.size()>0) {
+				anyException=false;
+				List<Training> aux = new ArrayList<Training>(concurrentInit);
+				Training t = aux.get(0);
+				throw new InitInTrainingException(dateFormat.format(t.getInitialDate()),dateFormat.format(t.getEndDate()));
+			}
+			else if(concurrentEnd.size()>0){
+				anyException=false;
+				List<Training> aux = new ArrayList<Training>(concurrentEnd);
+				Training t = aux.get(0);
+				throw new EndInTrainingException(dateFormat.format(t.getInitialDate()),dateFormat.format(t.getEndDate()));
+			}
+			else if(concurrentIncluding.size()>0) {
+				anyException=false;
+				List<Training> aux = new ArrayList<Training>(concurrentIncluding);
+				Training t = aux.get(0);
+				throw new PeriodIncludingTrainingException(dateFormat.format(t.getInitialDate()),dateFormat.format(t.getEndDate()));
 			}
 		}
-		
 		if(anyException) {
 			// Checking if it is create or update
 			if(training.isNew()) {
