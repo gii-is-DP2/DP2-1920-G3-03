@@ -51,17 +51,25 @@ public class ChallengeServiceTest {
 	@Test
 	void shouldSaveChallenge() {
 		
-		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAll();
+		List<Challenge> challenges = (List<Challenge>) this.challengeService.findAll();
 		int found = challenges.size();
 		Challenge c = createTestingChallenge();
-		
+		c.setId(found + 1);
 		try {
 			this.challengeService.saveChallenge(c);
 		} catch (Exception ex) {
 			//ex.printStackTrace();
 		}
-		c = this.challengeService.findChallengeById(found + 5);
-		assertThat(c.getName()).isEqualTo("ChallengeTest");
+		
+		List<Challenge> afterAdding = (List<Challenge>) this.challengeService.findAll();
+		int newSize = afterAdding.size();
+		
+		Challenge addedChallenge = afterAdding.get(newSize-1);
+		
+		assertThat(c.getName()).isEqualTo(addedChallenge.getName());
+		assertThat(c.getDescription()).isEqualTo(addedChallenge.getDescription());		
+		
+		assertThat(found).isLessThan(newSize);
 	}
 	
 	@Test
