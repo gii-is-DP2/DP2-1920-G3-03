@@ -53,7 +53,7 @@ public class ChallengeServiceTest {
 	void shouldSaveChallenge() {
 		
 		List<Challenge> challenges = (List<Challenge>) this.challengeService.findAll();
-        int found = challenges.size();
+		int found = challenges.size();
 		Challenge c = createTestingChallenge();
 		c.setId(found + 1);
 		try {
@@ -68,7 +68,13 @@ public class ChallengeServiceTest {
 		Challenge addedChallenge = afterAdding.get(newSize-1);
 		
 		assertThat(c.getName()).isEqualTo(addedChallenge.getName());
-		assertThat(c.getDescription()).isEqualTo(addedChallenge.getDescription());		
+		assertThat(c.getDescription()).isEqualTo(addedChallenge.getDescription());
+		assertThat(c.getInitialDate()).isEqualTo(addedChallenge.getInitialDate());	
+		assertThat(c.getEndDate()).isEqualTo(addedChallenge.getEndDate());	
+		assertThat(c.getPoints()).isEqualTo(addedChallenge.getPoints());	
+		assertThat(c.getReward()).isEqualTo(addedChallenge.getReward());
+		assertThat(c.getWeight()).isEqualTo(addedChallenge.getWeight());
+		assertThat(c.getExercise()).isEqualTo(addedChallenge.getExercise());		
 		
 		assertThat(found).isLessThan(newSize);
 	}
