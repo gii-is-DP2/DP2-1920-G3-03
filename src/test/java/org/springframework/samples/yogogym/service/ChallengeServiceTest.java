@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,7 @@ public class ChallengeServiceTest {
 	void shouldSaveChallenge() {
 		
 		List<Challenge> challenges = (List<Challenge>) this.challengeService.findAll();
-		int found = challenges.size();
+        int found = challenges.size();
 		Challenge c = createTestingChallenge();
 		c.setId(found + 1);
 		try {
