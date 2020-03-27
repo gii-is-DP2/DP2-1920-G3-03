@@ -129,19 +129,19 @@ En caso de que salte alguna de estas restricciones, la vista redirige al entrena
 #### HU10 - Añadir dietas alimenticias a los entrenamientos
 Como entrenador quiero realizar dietas a los clientes para mejorar su evolución física, haciéndola más eficiente.
 #### Escenarios:
-* **Añadir una dieta a un cliente que no posee una dieta:** Dado un entrenador que se dispone a añadir una dieta a un usuario con nombre "Dieta 1", descripción "Descripción dieta 1" y tipo "VOLUME" se autogenera la dieta en función de los datos del cliente, se le añade al entrenamiento y se redirige a la vista de detalles del entrenamiento.
-* **Añadir una dieta a un cliente que posee una dieta:** Dado un entrenador que se dispone a añadir una dieta a un usuario con nombre "Dieta 1", descripción "Descripción dieta 1" y tipo "VOLUME" se autogenera la dieta en función de los datos del cliente, se sustituye a la que tenía previamente entrenamiento y se redirige a la vista de detalles del entrenamiento.
-* **Añadir una dieta a un usuario, sin datos completos:** Dado un entrenador que añade una dieta a un usuario, cuando se intenta añadir sin rellenar todos los datos. La operación de añadir dieta no se efectúa resultando en el sistema informando al entrenador que debe rellenar la información correspondiente a "Name", "Description", "Type".
-* **Añadir una dieta a un usuario el cual no entrenas:** Dado un entrenador que intenta añadir una dieta a un usuario, cuando no entrenas a este usuario. La operación de añadir dieta no se realiza. La vista muestra una excepción al entrenador.
+* **Añadir una dieta a un cliente que no posee una dieta:** Dado un entrenador que se dispone a añadir una dieta a un cliente con nombre "Dieta 1", descripción "Descripción dieta 1" y tipo "VOLUME" se autogenera la dieta en función de los datos del cliente, se le añade al entrenamiento y se redirige a la vista de detalles del entrenamiento.
+* **Añadir una dieta a un cliente que posee una dieta:** Dado un entrenador que se dispone a añadir una dieta a un cliente con nombre "Dieta 1", descripción "Descripción dieta 1" y tipo "VOLUME" se autogenera la dieta en función de los datos del cliente, se sustituye a la que tenía previamente entrenamiento y se redirige a la vista de detalles del entrenamiento.
+* **Añadir una dieta a un cliente, sin datos completos:** Dado un entrenador que añade una dieta a un cliente, cuando se intenta añadir sin rellenar todos los datos. La operación de añadir dieta no se efectúa resultando en el sistema informando al entrenador que debe rellenar la información correspondiente a "Name", "Description", "Type".
+* **Añadir una dieta a un cliente el cual no entrenas:** Dado un entrenador que intenta añadir una dieta a un cliente, cuando no entrenas a este cliente. La operación de añadir dieta no se realiza. La vista muestra una excepción al entrenador.
 * **Añadir una dieta a un entrenamiento que no existe:** Dado un entrenador que intenta añadir una dieta a un entrenamiento que no existe, la operación de añadir dieta no se realiza. La vista muestra una excepción al entrenador.
 ---
 #### HU11 - Gestionar la dieta alimenticia de los entrenamientos en función de kilocalorías, nutrientes esenciales, peso y porcentaje de grasa
 Como entrenador quiero llevar el control de las dietas de los clientes en función de cantidad de kilocalorías, nutrientes esenciales, peso y porcentaje de grasa para poder cambiar las cosas necesarias con el fin de mejorar le evolución del cliente
 #### Escenarios:
-* **Gestionar la dieta de un usuario:** Dado un entrenador que se dispone a actualizar la dieta de un usuario sin incumplir ninguna regla de negocio, cuando este usuario ya posee una. La operación de gestión se efectúa correctamente y esta queda disponible tanto por el usuario para poder visualizar los cambios como para el entrenador poder modificarlos en un futuro.
-* **Gestionar la dieta de un usuario, sin datos completos:** Dado un entrenador que añade una dieta a un usuario, cuando se intenta añadir sin rellenar todos los datos la operación de añadir dieta no se efectúa resultando en el sistema informando al entrenador que debe rellenar la información correspondiente a "Name", "Description", "Type", "kcal", "protein", "carb", "fat".
-* **Gestionar la dieta de un usuario, con datos erróneos:** Dado un entrenador que añade una dieta a un usuario, cuando se intenta añadir con datos erróneos la operación de añadir dieta no se efectúa resultando en el sistema informando al entrenador que debe cumplir la restricciones correspondientes a "kcal", "protein", "carb", "fat".
-* **Gestionar la dieta de un usuario cuyo usuario no entrenas:** Dado un entrenador que intenta actualizar la dieta a un usuario, cuando no entrena a este usuario. La operación de añadir dieta no se realiza. La vista muestra una excepción al entrenador.
+* **Gestionar la dieta de un cliente:** Dado un entrenador que se dispone a actualizar la dieta de un cliente sin incumplir ninguna regla de negocio, cuando este cliente ya posee una. La operación de gestión se efectúa correctamente y esta queda disponible tanto por el cliente para poder visualizar los cambios como para el entrenador poder modificarlos en un futuro.
+* **Gestionar la dieta de un cliente, sin datos completos:** Dado un entrenador que añade una dieta a un cliente, cuando se intenta añadir sin rellenar todos los datos la operación de añadir dieta no se efectúa resultando en el sistema informando al entrenador que debe rellenar la información correspondiente a "Name", "Description", "Type", "kcal", "protein", "carb", "fat".
+* **Gestionar la dieta de un cliente, con datos erróneos:** Dado un entrenador que añade una dieta a un cliente, cuando se intenta añadir con datos erróneos la operación de añadir dieta no se efectúa resultando en el sistema informando al entrenador que debe cumplir la restricciones correspondientes a "kcal", "protein", "carb", "fat".
+* **Gestionar la dieta de un cliente cuyo cliente no entrenas:** Dado un entrenador que intenta actualizar la dieta a un cliente, cuando no entrena a este cliente. La operación de añadir dieta no se realiza. La vista muestra una excepción al entrenador.
 * **Gestionar la dieta a un entrenamiento que no existe:** Dado un entrenador que intenta gestionar la dieta a un entrenamiento que no existe, la operación de gestionar dieta no se realiza. La vista muestra una excepción al entrenador.
 ---
 #### HU12 - Añadir un entrenamiento 
@@ -170,15 +170,15 @@ Como entrenador quiero llevar el control de los entrenamientos de mis clientes c
 * **Gestionar entrenamiento en curso, entrenamiento incluye otro:** Dado un cliente con nombre de usuario "client1", con un entrenamiento que se inicia dentro de 8 días desde la actual y finaliza dentro de 15 días desde la actual; y un entrenador con nombre de usuario "trainer1" que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual y fecha de fin dentro de 7 días desde la actual; de ese cliente, cuando intenta actualizar la fecha de fin a una dentro de 16 días desde la actual, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que el entrenamiento no puede incluir otro.
 * **Gestionar entrenamiento en curso, fecha fin anterior a la actual:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio 7 días antes de la actual y fecha de fin dentro de 7 días desde la actual; de uno de sus clientes con nombre de usuario "client1", cuando intenta actualizar la fecha de fin a la de ayer, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que no se puede finalizar el entrenamiento en el pasado
 ---
-### Usuario
+### Cliente
 ---
 #### HU5 - Crear y eliminar gremios
 Como cliente quiero poder crear gremios, para que en un futuro puedan inscribirse otros clientes e ir adquiriendo puntos para recibir futuras recompensas, también quiero poder actualizar y eliminar aquel gremio que he creado.
 #### Escenarios:
-* **Crear un gremio:** Dado un cliente, quiero poder crear un gremio, para ello en la vista donde podemos observar todos los gremios existentes, aparecerá un botón para poder crear tú propio gremio, para ello debemos introducir un nombre, una descripción y una url, la cuál será la imagen de nuestro gremio. El creador se selecciona automáticamente, pasando a ser el nombre de dicho usuario que está creando dicho gremio.
+* **Crear un gremio:** Dado un cliente, quiero poder crear un gremio, para ello en la vista donde podemos observar todos los gremios existentes, aparecerá un botón para poder crear tú propio gremio, para ello debemos introducir un nombre, una descripción y una url, la cuál será la imagen de nuestro gremio. El creador se selecciona automáticamente, pasando a ser el nombre de dicho cliente que está creando dicho gremio.
 * **Crear un gremio sin introducir atributos:** Dado un cliente, al intentar crear un gremio, si este no introduce valores en los campos nombre, descripción y logo, saltará una excepción en aquellos campos que se encuentren vacíos y deberá cumplimentarlos.
 * **Crear un gremio introduciendo el mismo nombre que otro gremio:** Dado un cliente, al intentar crear un gremio, si introduce un nombre que posee otro gremio le saltará una excepción, la cuál le informará de que ya existe otro gremio con dicho nombre.
-* **Crear un gremio siendo un usuario con otro gremio ya creado por él mismo:** Dado un cliente, al intentar crear un gremio si este ya ha creado un gremio, saltará una excepción en el campo de creador, informando de que dicho usuario ya posee un gremio creado por él, ya que un usuario solo puede tener un gremio.
+* **Crear un gremio siendo un cliente con otro gremio ya creado por él mismo:** Dado un cliente, al intentar crear un gremio si este ya ha creado un gremio, saltará una excepción en el campo de creador, informando de que dicho cliente ya posee un gremio creado por él, ya que un cliente solo puede tener un gremio.
 * **Crear un gremio con una mal url:** Dado un cliente, al intentar crear un gremio, si este introduce en el campo de logo una url que no comienze por "https://" lanzará una excepción.
 * **Actualizar un gremio:** Dado un cliente, al introducirse en aquel gremio creado por el mismo, aparecerá un botón de editar, en el cuál podrá cambiar el nombre, la descripción o el logo.
 Actualizar posee exactamente las mismas restricciones que crear.
@@ -204,11 +204,11 @@ Como cliente quiero poder tener dietas personalizadas según mi tipo de entrenam
 * **Cliente con entrenamiento asignado:** Dado un cliente con un entrenamiento asignado se le asignará la dieta que mejor complemente su entrenamiento.
 * **Cliente sin entrenamiento asignado:** Dado un cliente sin un entrenamiento asignado no se le permitirá acceder a esta función y se le pedirá que consiga un entrenamiento antes de acceder.
 ---
-#### HU17 - Copiar entrenamiento de otro usuario
-Como cliente quiero seguir a otros usuarios para copiar su entrenamiento.
+#### HU17 - Copiar entrenamiento de otro cliente
+Como cliente quiero seguir a otros clientes para copiar su entrenamiento.
 #### Escenarios:
-* **Usuarios con perfil público:** Dado un cliente con perfil público se permitirá que otros clientes le sigan.
-* **Usuarios con perfil privado:** Dado un cliente con perfil privado no se permitirá que otros clientes le sigan.
+* **Clientes con perfil público:** Dado un cliente con perfil público se permitirá que otros clientes le sigan.
+* **Clientes con perfil privado:** Dado un cliente con perfil privado no se permitirá que otros clientes le sigan.
 ---
 #### HU18- Dashboard Cliente
 Como cliente quiero poder tener un dashboard donde poder ver el Historial de actividades, Calorías quemadas y otros datos relacionados con mi entrenamiento.
@@ -228,11 +228,11 @@ Como cliente quiero poder personalizar mi entrenamiento para actualizarlo o pers
 * **Sin permiso para edición:** Dado un cliente con un entrenamiento que  no puede ser editado no se le permitirá actualizarlo.
 ---
 #### HU20 - Compartir progreso
-Como cliente quiero poder compartir mi progreso con otros usuarios, para poder poder ver su avance y poder compararlos con mis resultados.
+Como cliente quiero poder compartir mi progreso con otros clientes, para poder poder ver su avance y poder compararlos con mis resultados.
 #### Escenarios:
-* **Compartir progreso sin foto pero con comentario:** Dado un cliente, escribe un mensaje declarando su progreso, le da a publicar y se publica en su perfil, publicandose también en el perfil de los usuarios que tenga agregados como amigos.
-* **Compartir progreso con foto pero sin comentario:** Dado un cliente, adjunta una foto, le da a enviar y se publica en su perfil, publicandose también en el perfil de los usuarios que tenga agregados como amigos.
-* **Compartir progreso con foto y con comentario:** Dado un cliente, escribe un mensaje declarando su progreso, adjunta una foto, le da a publicar y se publica en su perfil, publicandose también en el perfil de los usuarios que tenga agregados como amigos.
+* **Compartir progreso sin foto pero con comentario:** Dado un cliente, escribe un mensaje declarando su progreso, le da a publicar y se publica en su perfil, publicandose también en el perfil de los clientes que tenga agregados como amigos.
+* **Compartir progreso con foto pero sin comentario:** Dado un cliente, adjunta una foto, le da a enviar y se publica en su perfil, publicandose también en el perfil de los clientes que tenga agregados como amigos.
+* **Compartir progreso con foto y con comentario:** Dado un cliente, escribe un mensaje declarando su progreso, adjunta una foto, le da a publicar y se publica en su perfil, publicandose también en el perfil de los clientes que tenga agregados como amigos.
 * **Compartir progreso sin foto ni comentario:** Dado un cliente, al darle a publicar, si no ha adjuntado foto ni ha escrito ningún comentario le saltará un aviso diciendo "si desea publicar debe adjuntar una foto o escribir un comentario".
 ---
 #### HU21 - Participar en  los Retos
@@ -240,8 +240,8 @@ Como cliente quiero poder participar en los distintos retos propuestos por el gi
 #### Escenarios
 * **Listar los retos en los que aún no me he inscrito:** Dado un cliente[client1], pinchará en la sección "new challenges", verá un listado con los diferentes retos propuestos y seleccionará el que desee, por ejemplo, el challenge descrito en la HU01, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "inscribe me", añadiendosele dicho reto a la sección "my challenges" pero con un estado "participating" hasta que adjunte una foto[url] demostrando que lo ha completado y pasará al estado "submitted".
 **Listar los retos en los que participa:** Dado un cliente[client1],  pinchará en la sección "my challenges", verá un listado con los diferentes retos en los que se ha inscrito.
-* **Participar en un reto cuando no hay retos:** Dado un cliente[client1], , pinchará en la sección "new challenges", si dicho usuario se ha inscrito en todos los retos disponibles, no le saldrá ningún reto en dicha lista.
-* **Pedir confirmar un reto que ha completado:** Dado un cliente[client1], , pinchará en la sección "my challenges", si dicho usuario ha completado algún reto, pinchará sobre el[Challenge descrito anteriormente], rellenara la url de la foto de prueba[https://test.com], y clickara en enviar. El administrador[admin1] podrá ver esos retos enviados, y decidirá si han sido completados o fallados en base a la url proporcionada.
+* **Participar en un reto cuando no hay retos:** Dado un cliente[client1], , pinchará en la sección "new challenges", si dicho cliente se ha inscrito en todos los retos disponibles, no le saldrá ningún reto en dicha lista.
+* **Pedir confirmar un reto que ha completado:** Dado un cliente[client1], , pinchará en la sección "my challenges", si dicho cliente ha completado algún reto, pinchará sobre el[Challenge descrito anteriormente], rellenara la url de la foto de prueba[https://test.com], y clickara en enviar. El administrador[admin1] podrá ver esos retos enviados, y decidirá si han sido completados o fallados en base a la url proporcionada.
 * **Listar los retos en los que participo y la fecha límite del reto pasa antes de que el cliente lo envíe:** Dado un cliente[client1],  y un reto con fecha de finalización [12/12/2018], sin que haya sido enviado, se pondrá automaticamente en fallado.
 ---
 #### HU22 - Clasificación de los Retos
