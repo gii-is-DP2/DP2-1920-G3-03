@@ -22,6 +22,7 @@ La aplicación web a desarrollar tiene como nombre YogoGym. El objetivo fundamen
 * Frase
 
 ## Historias de Usuario
+### **Solo se encuentran actualizadas las historias de usuario finalizadas en el [Product Backlog](https://docs.google.com/spreadsheets/d/1-mP7vgruDpIj8CKCvBVDqFyz_7dwrxKCtpqvso2JObE/edit#gid=0). El resto requieren de modificación.**
 ### Administrador
 ---
 #### HU1 - Proponer retos semanales
