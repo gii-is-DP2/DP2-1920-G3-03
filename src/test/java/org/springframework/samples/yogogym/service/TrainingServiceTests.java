@@ -1,6 +1,7 @@
 package org.springframework.samples.yogogym.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -12,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -139,21 +142,18 @@ public class TrainingServiceTests {
 		
 	}
 	
-	@Test
+	@ParameterizedTest
+	@ValueSource(ints = {-1,0})
 	@Transactional
-	public void shouldNotInsertTrainingDueToEndBeforeEqualsInit() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
+	public void shouldNotInsertTrainingDueToEndBeforeEqualsInit(int addEndDate) throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
 		
 		Collection<Training> allTrainings = this.trainingService.findAllTrainings();
 		int foundAll = allTrainings.size();
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		int foundClient = clientTrainings.size();
 		
-		Training training = createSampleTraining(0,-1);
+		Training training = createSampleTraining(0,addEndDate);
 		
-		assertThrows(EndBeforeEqualsInitException.class, ()->this.trainingService.saveTraining(training));
-		
-		Calendar endDate = (Calendar) now.clone();
-		training.setEndDate(endDate.getTime());
 		assertThrows(EndBeforeEqualsInitException.class, ()->this.trainingService.saveTraining(training));
 		
 		allTrainings = this.trainingService.findAllTrainings();
@@ -183,9 +183,10 @@ public class TrainingServiceTests {
 		
 	}
 	
-	@Test
+	@ParameterizedTest
+	@ValueSource(ints = {0,1,6,7})
 	@Transactional
-	public void shouldNotInsertTrainingDueToInitInTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
+	public void shouldNotInsertTrainingDueToInitInTraining(int addInitialDate) throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
 		
 		Collection<Training> allTrainings = this.trainingService.findAllTrainings();
 		int foundAll = allTrainings.size();
@@ -195,22 +196,7 @@ public class TrainingServiceTests {
 		Training training = createSampleTraining(0,7);
 		this.trainingService.saveTraining(training);
 		
-		Training training2 = createSampleTraining(0,14);
-		assertThrows(InitInTrainingException.class, ()->this.trainingService.saveTraining(training2));
-		
-		Calendar initDate = (Calendar) now.clone();
-		initDate.add(Calendar.DAY_OF_MONTH, 1);
-		training2.setInitialDate(initDate.getTime());
-		assertThrows(InitInTrainingException.class, ()->this.trainingService.saveTraining(training2));
-		
-		initDate = (Calendar) now.clone();
-		initDate.add(Calendar.DAY_OF_MONTH, 6);
-		training2.setInitialDate(initDate.getTime());
-		assertThrows(InitInTrainingException.class, ()->this.trainingService.saveTraining(training2));
-		
-		initDate = (Calendar) now.clone();
-		initDate.add(Calendar.DAY_OF_MONTH, 7);
-		training2.setInitialDate(initDate.getTime());
+		Training training2 = createSampleTraining(addInitialDate,14);
 		assertThrows(InitInTrainingException.class, ()->this.trainingService.saveTraining(training2));
 		
 		allTrainings = this.trainingService.findAllTrainings();
@@ -219,9 +205,10 @@ public class TrainingServiceTests {
 		assertThat(clientTrainings.size()).isNotEqualTo(foundClient+2);
 	}
 	
-	@Test
+	@ParameterizedTest
+	@ValueSource(ints = {7,8,13,14})
 	@Transactional
-	public void shouldNotInsertTrainingDueToEndInTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
+	public void shouldNotInsertTrainingDueToEndInTraining(int addEndDate) throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
 		
 		Collection<Training> allTrainings = this.trainingService.findAllTrainings();
 		int foundAll = allTrainings.size();
@@ -231,22 +218,7 @@ public class TrainingServiceTests {
 		Training training = createSampleTraining(7,14);
 		this.trainingService.saveTraining(training);
 		
-		Training training2 = createSampleTraining(0,7);
-		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(training2));
-		
-		Calendar endDate = (Calendar) now.clone();
-		endDate.add(Calendar.DAY_OF_MONTH, 8);
-		training2.setEndDate(endDate.getTime());
-		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(training2));
-		
-		endDate = (Calendar) now.clone();
-		endDate.add(Calendar.DAY_OF_MONTH, 13);
-		training2.setEndDate(endDate.getTime());
-		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(training2));
-		
-		endDate = (Calendar) now.clone();
-		endDate.add(Calendar.DAY_OF_MONTH, 14);
-		training2.setEndDate(endDate.getTime());
+		Training training2 = createSampleTraining(0,addEndDate);
 		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(training2));
 		
 		allTrainings = this.trainingService.findAllTrainings();
@@ -293,7 +265,7 @@ public class TrainingServiceTests {
 		clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		assertThat(clientTrainings.size()).isEqualTo(foundClient+1);
 		
-		List<Training> clientTrainingsList = (List<Training>) clientTrainings;
+		List<Training> clientTrainingsList = new ArrayList<Training>(clientTrainings);
 		training = clientTrainingsList.get(clientTrainingsList.size()-1);
 		
 		String newName = "New Training Updated";
@@ -312,7 +284,7 @@ public class TrainingServiceTests {
 		clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		assertThat(clientTrainings.size()).isEqualTo(foundClient+1);
 		
-		clientTrainingsList = (List<Training>) clientTrainings;
+		clientTrainingsList = new ArrayList<Training>(clientTrainings);
 		training = clientTrainingsList.get(clientTrainingsList.size()-1);
 		assertThat(training.getName()).isEqualTo(newName);
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo(dateFormat.format(newEndDate));
@@ -349,7 +321,7 @@ public class TrainingServiceTests {
 		this.trainingService.saveTraining(training);
 		
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
-		List<Training> clientTrainingsList = (List<Training>) clientTrainings;
+		List<Training> clientTrainingsList = new ArrayList<Training>(clientTrainings);
 		Training afterCreateTraining = clientTrainingsList.get(clientTrainingsList.size()-1);
 		
 		String newName = "New Training Updated";
@@ -364,14 +336,17 @@ public class TrainingServiceTests {
 		
 		assertThrows(LongerThan90DaysException.class, ()->this.trainingService.saveTraining(auxTraining));
 		
-		training = this.trainingService.findTrainingById(TRAINING_ID);
+		clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
+		clientTrainingsList = new ArrayList<Training>(clientTrainings);
+		training = clientTrainingsList.get(clientTrainingsList.size()-1);
 		assertThat(training.getName()).isNotEqualTo(newName);
 		assertThat(dateFormat.format(training.getEndDate())).isNotEqualTo(dateFormat.format(newEndDate));
 	}
 	
-	@Test
+	@ParameterizedTest
+	@ValueSource(ints = {8,9,14,15})
 	@Transactional
-	public void shouldNotUpdateTrainingDueToEndInTraining() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
+	public void shouldNotUpdateTrainingDueToEndInTraining(int addEndDate) throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
 		
 		Training training2 = createSampleTraining(8,15);
 		this.trainingService.saveTraining(training2);
@@ -379,12 +354,12 @@ public class TrainingServiceTests {
 		this.trainingService.saveTraining(training);
 		
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
-		List<Training> clientTrainingsList = (List<Training>) clientTrainings;
+		List<Training> clientTrainingsList =  new ArrayList<Training>(clientTrainings);
 		Training afterCreateTraining = clientTrainingsList.get(clientTrainingsList.size()-1);
 		
 		String newName = "New Training Updated";
 		Calendar aux = (Calendar) now.clone();
-		aux.add(Calendar.DAY_OF_MONTH, 8);
+		aux.add(Calendar.DAY_OF_MONTH, addEndDate);
 		Date newEndDate = aux.getTime();
 		
 		Training auxTraining = new Training();
@@ -394,23 +369,11 @@ public class TrainingServiceTests {
 		
 		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(auxTraining));
 		
-		aux = (Calendar) now.clone();
-		aux.add(Calendar.DAY_OF_MONTH, 9);
-		newEndDate = aux.getTime();
-		auxTraining.setEndDate(newEndDate);
-		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(auxTraining));
-		
-		aux = (Calendar) now.clone();
-		aux.add(Calendar.DAY_OF_MONTH, 14);
-		newEndDate = aux.getTime();
-		auxTraining.setEndDate(newEndDate);
-		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(auxTraining));
-		
-		aux = (Calendar) now.clone();
-		aux.add(Calendar.DAY_OF_MONTH, 15);
-		newEndDate = aux.getTime();
-		auxTraining.setEndDate(newEndDate);
-		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(auxTraining));
+		clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
+		clientTrainingsList = new ArrayList<Training>(clientTrainings);
+		training = clientTrainingsList.get(clientTrainingsList.size()-1);
+		assertThat(training.getName()).isNotEqualTo(newName);
+		assertThat(dateFormat.format(training.getEndDate())).isNotEqualTo(dateFormat.format(newEndDate));
 		
 	}
 	
@@ -439,6 +402,11 @@ public class TrainingServiceTests {
 		
 		assertThrows(PeriodIncludingTrainingException.class, ()->this.trainingService.saveTraining(auxTraining));
 		
+		clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
+		clientTrainingsList = new ArrayList<Training>(clientTrainings);
+		training = clientTrainingsList.get(clientTrainingsList.size()-1);
+		assertThat(training.getName()).isNotEqualTo(newName);
+		assertThat(dateFormat.format(training.getEndDate())).isNotEqualTo(dateFormat.format(newEndDate));
 	}
 	
 	@Test
@@ -461,6 +429,12 @@ public class TrainingServiceTests {
 		assertThat(clientTrainings.size()).isEqualTo(foundClient-1);
 	}
 	
+	/**
+	 * <p>Creates a sample Training whose initial and end date are by default the actual date. Also, its 
+	 * client is the one with the id CLIENT_ID.</p>
+	 * @param addInitDate : Days added to the training's initial date. 
+	 * @param addEndDate : Days added to the training's end date. 
+	 */
 	private Training createSampleTraining(int addInitDate, int addEndDate) {
 		
 		Calendar initDate = (Calendar) now.clone();

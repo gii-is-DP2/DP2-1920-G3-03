@@ -237,7 +237,6 @@ class TrainingControllerTests {
 				.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
 	}
 	
-	//TODO
 	@WithMockUser(username="trainer2", authorities= {"trainer"})
 	@Test
 	void testProcessTrainingCreationFormSuccess() throws Exception {
@@ -454,13 +453,12 @@ class TrainingControllerTests {
     }
     
     /**
-     * 
-     * <p>Performs a post with a sample training. It's used to check try/catch in controller tests.</p>
-     * <p>The <code>selectErrorField<code> must be >=0 for "endDate" and <0 for "initialDate".</p>
-     * <p>The <code>selectMode<code> must be >=0 for "create" and <0 for "edit". If the mode selected
-     * is create it will be applied for Client2 and if it's edit it will be applied to Client1 and Training1.</p> 
-     * 
-    */
+     * <p>Performs a post with a sample training which has no errors. It's used to check try/catch in controller tests.</p>
+     * @param selectErrorField : Must be greater or equals to 0 for "endDate" and less than 0 for "initialDate"
+     * @param selectMode : Must be greater or equals to 0 for "create" and less than 0 for "edit". If the mode selected
+     * is create it will be applied for Client2 and if it's edit it will be applied to Client1 and Training1.
+     * @throws Exception
+     */
     private void performSamplePost(int selectErrorField, int selectMode) throws Exception {
     	
     	String errorField;
