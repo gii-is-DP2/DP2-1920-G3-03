@@ -144,27 +144,30 @@ Como entrenador quiero llevar el control de las dietas de los clientes en funci�
 * **Gestionar la dieta a un entrenamiento que no existe:** Dado un entrenador que intenta gestionar la dieta a un entrenamiento que no existe, la operación de gestionar dieta no se realiza. La vista muestra una excepción al entrenador.
 ---
 #### HU12 - Añadir un entrenamiento 
-Como entrenador quiero añadir entrenamientos a nuestros clientes para poder organizar sus actividades y sus dietas, facilitando su desarrollo físico.
+Como entrenador quiero añadir entrenamientos a mis clientes para poder organizar sus actividades y sus dietas, facilitando su desarrollo físico.
 #### Escenarios:
-* **Añadir entrenamiento a un usuario, con atributos sin conflictos:** Dado un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin dentro de 7 días desde la actual; a un usuario, cuando se intenta añadir el entrenamiento, entonces se añade el entrenamiento al cliente y se redirige a la vista de detalles del entrenamiento.
-* **Añadir entrenamiento a un cliente, sin introducir atributos:** Dado un entrenador que quiere añadir un entrenamiento sin nombre, ni fecha de inicio ni fecha de fin; a un cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento y se redirige a la vista de creación informando de que debe cumplimentar los campos.
-* **Añadir entrenamiento a un cliente, fecha de inicio un día antes de la actual:** Dado un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio 1 día antes de la actual, y fecha de fin dentro de 7 días desde la actual; a un cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de inicio no debe estar en el pasado.
-* **Añadir entrenamiento a un cliente, fecha de fin un día antes de la de inicio:** Dado un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin 1 día antes de la actual; a un cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de fin debe ser posterior a la de inicio.
-* **Añadir entrenamiento a un cliente, fecha de fin igual a la de inicio:** Dado un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin igual a la actual; a un cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de fin debe ser posterior a la de inicio.
-* **Añadir entrenamiento a un cliente, fecha de inicio coincidiendo con otro entrenamiento:** Dado un cliente con un entrenamiento que comienza en la fecha actual y finaliza dentro de 7 días desde la actual; y un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de dentro de 8 días; a ese cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de inicio no puede coincidir con otro entrenamiento.
-* **Añadir entrenamiento a un cliente, fecha de fin coincidiendo con otro entrenamiento:** Dado un cliente con un entrenamiento que comienza dentro de 1 día y finaliza dentro de 7 desde la actual; y un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin dentro de 7 días desde la actual; a ese cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de fin no puede coincidir con otro entrenamiento.
-* **Añadir entrenamiento a un cliente, entrenamiento incluyendo otro:** Dado un cliente con un entrenamiento que se inicia dentro de 1 día desde la actual y finaliza dentro de 7 días desde la actual; y un entrenador que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin dentro de 8 días; a ese cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que el entrenamiento no puede incluir a otro.
+* **Añadir entrenamiento a un cliente que él no entrena:** Dado un entrenador con nombre de usuario "trainer1", que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin dentro de 7 días desde la actual; a un cliente que él no entrena con nombre de usuario "client2", cuando intenta acceder a la vista de creación a través de la URL, entonces se le redireccionará a la vista de error.
+* **Añadir entrenamiento a uno de sus clientes, con atributos sin errores:** Dado un entrenador con nombre de usuario "trainer1", que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin dentro de 7 días desde la actual; a uno de sus clientes con nombre de usuario "client1", cuando se intenta añadir el entrenamiento, entonces se añade el entrenamiento al cliente y se redirige a la vista de detalles del entrenamiento.
+* **Añadir entrenamiento a uno de sus clientes, sin introducir atributos:** Dado un entrenador con nombre de usuario "trainer1", que quiere añadir un entrenamiento sin nombre, ni fecha de inicio, ni fecha de fin; a uno de sus clientes con nombre de usuario "client1", cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento y se redirige a la vista de creación informando de que debe cumplimentar los campos.
+* **AAñadir entrenamiento a uno de sus clientes, fecha de inicio un día antes de la actual:** Dado un entrenador con nombre de usuario "trainer1", que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio 1 día antes de la actual, y fecha de fin dentro de 7 días desde la actual; a uno de sus clientes con nombre de usuario "client1", cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de inicio no debe estar en el pasado.
+* **Añadir entrenamiento a uno de sus clientes, fecha de fin un día antes de la de inicio:** Dado un entrenador con nombre de usuario "trainer1", que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin 1 día antes de la actual; a uno de sus clientes con nombre de usuario "client1", cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de fin debe ser posterior a la de inicio.
+* **Añadir entrenamiento a uno de sus clientes, fecha de fin igual a la de inicio:** Dado un entrenador con nombre de usuario "trainer1", que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin igual a la actual; a uno de sus clientes con nombre de usuario "client1", cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de fin debe ser posterior a la de inicio.
+* **Añadir entrenamiento a uno de sus clientes, fecha de inicio coincidiendo con otro entrenamiento:** Dado un cliente con nombre de usuario "client1", con un entrenamiento que comienza en la fecha actual y finaliza dentro de 7 días desde la actual; y su entrenador con nombre de usuario "trainer1" que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de dentro de 8 días; a ese cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de inicio no puede coincidir con otro entrenamiento.
+* **Añadir entrenamiento a uno de sus clientes, fecha de fin coincidiendo con otro entrenamiento:** Dado un cliente con nombre de usuario "client1", con un entrenamiento que comienza dentro de 1 día y finaliza dentro de 7 desde la actual; y su entrenador con nombre de usuario "trainer1" que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin dentro de 7 días desde la actual; a ese cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que la fecha de fin no puede coincidir con otro entrenamiento.
+* **Añadir entrenamiento a uno de sus clientes, entrenamiento incluyendo otro:** Dado un cliente con nombre de usuario "client1", con un entrenamiento que se inicia dentro de 1 día desde la actual y finaliza dentro de 7 días desde la actual; y su entrenador con nombre de usuario "trainer1" que quiere añadir un entrenamiento con nombre "Nuevo Entrenamiento", fecha de inicio igual a la actual, y fecha de fin dentro de 8 días; a ese cliente, cuando se intenta añadir el entrenamiento, entonces no se añade el entrenamiento al cliente y se redirige a la vista de creación informando de que el entrenamiento no puede incluir a otro.
 ---
 #### HU13 - Gestionar el entrenamiento de nuestros clientes
 Como entrenador quiero llevar el control de los entrenamientos de mis clientes conociendo el estado de estos para poder modificar los periodos en los que transcurren y así adaptarlos de la mejor forma a los clientes.
 #### Escenarios:
-* **Gestionar entrenamientos clientes, entrenador con cliente:** Dado un entrenador que se dispone a gestionar los entrenamientos de sus clientes, cuando accede a la vista de gestión de los entrenamientos, entonces se le listarán sus clientes junto con sus entrenamientos indicando de estos: nombre y su estado, es decir, si está en curso o finalizado. 
-* **Gestionar entrenamientos clientes, cliente con entrenamientos:** Dado un entrenador que se dispone a gestionar el entrenamiento de un cliente, cuando accede a la vista de gestión del entrenamiento, entonces se le mostrará la siguiente información del entrenamiento: nombre, fecha inicio, fecha fin, un listado de sus rutinas, su dieta y botones para redireccionar a la edición y borrado de la información general del entrenamiento. 
-* **Gestionar entrenamiento en curso, nombre vacío:** Dado un entrenador que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual y fecha de fin dentro de 7 días desde la actual; de un cliente, cuando intenta actualizar el nombre y la fecha de fin a vacío, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que esos campos no pueden estar vacíos.
-* **Gestionar entrenamiento en curso, fecha fin anterior a la de inicio:** Dado un entrenador que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual y fecha de fin dentro de 7 días desde la actual; de un cliente, cuando intenta actualizar la fecha de fin a una un día antes de la actual, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que la fecha de fin no puede ser anterior a la de inicio.
-* **Gestionar entrenamiento en curso, fecha fin coincide con otro entrenamiento:** Dado un cliente con un entrenamiento que se inicia dentro de 8 días desde la actual y finaliza dentro de 15 días desde la actual; y un entrenador que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual y fecha de fin dentro de 7 días desde la actual; de un cliente, cuando intenta actualizar la fecha de fin a una dentro de 8 días desde la actual, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que la fecha de fin no puede coincidir con otro entrenamiento.
-* **Gestionar entrenamiento en curso, entrenamiento incluye otro:** Dado un cliente con un entrenamiento que se inicia dentro de 8 días desde la actual y finaliza dentro de 15 días desde la actual; y un entrenador que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual y fecha de fin dentro de 7 días desde la actual; de un cliente, cuando intenta actualizar la fecha de fin a una dentro de 16 días desde la actual, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que el entrenamiento no puede incluir otro.
-* **Gestionar entrenamiento en curso, fecha fin anterior a la actual:** Dado un entrenador que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio 7 días antes de la actual y fecha de fin dentro de 7 días desde la actual; de un cliente, cuando intenta actualizar la fecha de fin a la de ayer, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que no se puede finalizar el entrenamiento en el pasado
+* **Gestionar entrenamientos de sus clientes:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a gestionar los entrenamientos de sus clientes, cuando accede a la vista de gestión de entrenamientos, entonces se le listarán sus clientes junto con sus entrenamientos indicando de estos: nombre y su estado, es decir, si está en curso o finalizado.
+* **Gestionar entrenamientos de clientes que no entrena:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a gestionar los entrenamientos de clientes que no entrena, cuando intenta acceder a la vista de gestión de entrenamientos de otro entrenador con nombre de usuario "trainer2" a través de la URL, entonces se le redireccionará a la vista de error.
+* **Gestionar entrenamiento de uno de sus clientes:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a gestionar el entrenamiento de uno de sus clientes con nombre de usuario "client1", cuando accede a la vista de gestión del entrenamiento, entonces se le mostrará la siguiente información del entrenamiento: nombre, fecha inicio, fecha fin, un listado de sus rutinas, su dieta y enlaces para redireccionar a la edición y borrado de la información general del entrenamiento. 
+* **Gestionar entrenamiento de un cliente que no entrena:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a gestionar el entrenamiento de un cliente que no entrena con nombre de usuario "client2", cuando accede a la vista de gestión del entrenamiento a través de la URL, entonces se le redireccionará a la vista de error.
+* **Gestionar entrenamiento en curso, nombre vacío:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual y fecha de fin dentro de 7 días desde la actual; de uno de sus clientes con nombre de usuario "client1", cuando intenta actualizar el nombre y la fecha de fin a vacío, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que esos campos no pueden estar vacíos.
+* **Gestionar entrenamiento en curso, fecha fin anterior a la de inicio:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual y fecha de fin dentro de 7 días desde la actual; de uno de sus clientes con nombre de usuario "client1", cuando intenta actualizar la fecha de fin a la de ayer, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que la fecha de fin no puede ser anterior a la de inicio.
+* **Gestionar entrenamiento en curso, fecha fin coincide con otro entrenamiento:** Dado un cliente con nombre de usuario "client1", con un entrenamiento que se inicia dentro de 8 días desde la actual y finaliza dentro de 15 días desde la actual; y un entrenador con nombre de usuario "trainer1" que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual y fecha de fin dentro de 7 días desde la actual; de ese cliente, cuando intenta actualizar la fecha de fin a una dentro de 8 días desde la actual, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que la fecha de fin no puede coincidir con otro entrenamiento.
+* **Gestionar entrenamiento en curso, entrenamiento incluye otro:** Dado un cliente con nombre de usuario "client1", con un entrenamiento que se inicia dentro de 8 días desde la actual y finaliza dentro de 15 días desde la actual; y un entrenador con nombre de usuario "trainer1" que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual y fecha de fin dentro de 7 días desde la actual; de ese cliente, cuando intenta actualizar la fecha de fin a una dentro de 16 días desde la actual, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que el entrenamiento no puede incluir otro.
+* **Gestionar entrenamiento en curso, fecha fin anterior a la actual:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio 7 días antes de la actual y fecha de fin dentro de 7 días desde la actual; de uno de sus clientes con nombre de usuario "client1", cuando intenta actualizar la fecha de fin a la de ayer, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que no se puede finalizar el entrenamiento en el pasado
 ---
 ### Usuario
 ---
@@ -262,29 +265,30 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | P2 | Carlos y Francisco José | 
 | P3 | Álvaro y José Manuel | 
 
-| Historia de Usuario | Sprint | Pareja asignada | Hecho |
+| Historia de Usuario | Sprint | Pareja asignada | Estado |
 | --- | --- | --- | --- |
-| HU12 | 1 | P1 | Sí |
-| HU13 | 1 | P1 | Sí |
-| HU8 | 1 | P1 | Sí | 
-| HU9 | 1 | P1 | Sí |
-| HU10 | 1 | P2 | --- |
-| HU11 | 1 | P2 | --- |
-| HU14 | 1 | P2 | Sí |
-| HU15 | 1 | P1 | Sí |
-| HU16 | 1 | P2 | --- |
-| HU18 | 1 | P3 | Sí |
-| HU19 | 1 | P1 | Sí |
-| HU21 | 1 | P3 | Sí |
-| HU22 | 1 | P3 | Sí |
-| HU1 | 1 | P3 | Sí |
-| HU3 | 1 | P3 | Sí |
-| HU5 | 1 | P2 | Sí |
-| HU17 | 2 | P3 | --- |
-| HU20 | 2 | P2 | --- |
-| HU2 | 2 | P3 | --- |
-| HU6 | 2 | P1 | --- |
-| HU23 | 3 | P1 | --- |
-| HU4 | 3 | P2 | --- |
-| HU7 | 3 | P3 | --- |
-
+| HU1 | 1 | P3 | Finalizada |
+| HU3 | 1 | P3 | Finalizada |
+| HU4 | 1 | P2 | Sin Comenzar |
+| HU5 | 1 | P2 | Finalizada |
+| HU8 | 1 | P1 | Finalizada |
+| HU9 | 1 | P1 | Finalizada |
+| HU10 | 1 | P2 | Finalizada |
+| HU11 | 1 | P2 | Finalizada |
+| HU12 | 1 | P1 | Finalizada |
+| HU13 | 1 | P1 | Finalizada |
+| HU14 | 1 | P2 | Finalizada |
+| HU15 | 1 | P1 | Finalizada |
+| HU18 | 1 | P3 | Finalizada |
+| HU21 | 1 | P3 | Finalizada |
+| HU22 | 1 | P3 | Finalizada |
+| HU24 | 1 | P1 | Finalizada |
+| HU25 | 1 | P1 | Finalizada |
+| HU2 | 2 | P3 | Sin Comenzar |
+| HU6 | 2 | P2 | Sin Comenzar |
+| HU16 | 2 | P3 | Sin Comenzar |
+| HU17 | 2 | P2 | Sin Comenzar |
+| HU19 | 2 | P1 | Sin Comenzar |
+| HU7 | 3 | P3 | Sin Comenzar |
+| HU20 | 3 | P2 | Sin Comenzar |
+| HU23 | 3 | P1 | Sin Comenzar |
