@@ -1,11 +1,16 @@
 package org.springframework.samples.yogogym.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collection;
 
+import javax.transaction.Transactional;
+
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -51,5 +56,23 @@ public class DietServiceTest {
 		assertThat(c.getName()).isEqualTo("DietTest");
 	}
 	
+	@ParameterizedTest
+	@ValueSource(ints = {-1,-2,-3,-4})
+	@Transactional
+	public void shouldNotCreateDietBecauseLessThanZero(int kcal) throws Exception {
+
+		Diet c = new Diet();
+		
+		c.setName("DietTest");
+		c.setDescription("Test");
+		c.setKcal(kcal);
+		c.setCarb(1);
+		c.setProtein(1);
+		c.setFat(1);
+		c.setType(DietType.DEFINITION);
+		
+		assertThrows(Exception.class, ()->this.dietService.saveDiet(c));
+		
+	}
 
 }
