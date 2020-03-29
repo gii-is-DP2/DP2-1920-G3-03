@@ -30,6 +30,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 
 /**
@@ -42,6 +43,7 @@ import lombok.Data;
  */
 @Entity
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "clients")
 public class Client extends Person {
 	

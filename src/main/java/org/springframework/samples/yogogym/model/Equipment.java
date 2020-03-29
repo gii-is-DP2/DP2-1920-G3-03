@@ -7,8 +7,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name = "equipments")
 public class Equipment extends BaseEntity {

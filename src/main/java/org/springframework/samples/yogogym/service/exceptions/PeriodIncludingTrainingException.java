@@ -1,5 +1,6 @@
 package org.springframework.samples.yogogym.service.exceptions;
 
+@SuppressWarnings("serial")
 public class PeriodIncludingTrainingException extends Exception{
 	
 	private String initAssoc;

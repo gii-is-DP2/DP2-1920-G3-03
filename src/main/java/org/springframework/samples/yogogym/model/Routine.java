@@ -14,9 +14,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "routines")
 public class Routine extends BaseEntity{
 

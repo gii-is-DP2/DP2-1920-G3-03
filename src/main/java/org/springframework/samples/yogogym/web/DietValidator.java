@@ -8,6 +8,7 @@ import org.springframework.validation.Validator;
 
 public class DietValidator implements Validator {
 
+	@SuppressWarnings("unused")
 	private DietService dietService;
 
 	@Autowired

@@ -6,9 +6,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "phrases")
 public class Phrase extends BaseEntity{
 
