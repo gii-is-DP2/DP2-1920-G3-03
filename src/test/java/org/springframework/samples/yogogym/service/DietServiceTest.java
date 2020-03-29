@@ -1,19 +1,14 @@
 package org.springframework.samples.yogogym.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import static org.junit.Assert.fail;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
-
 import javax.transaction.Transactional;
-
-import org.junit.Ignore;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -109,7 +104,22 @@ public class DietServiceTest {
 		c.setFat(1);
 		c.setType(DietType.DEFINITION);
 		
-		assertThrows(Exception.class, ()->this.dietService.saveDiet(c));
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		Calendar cal = Calendar.getInstance();
+		training.setInitialDate(cal.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+		Date newDate = cal.getTime();
+		training.setEndDate(newDate);
+		
+		try {
+			this.trainingService.saveTraining(training);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		assertThrows(Exception.class, ()->this.dietService.saveDiet(c,training.getId()));
 		
 	}
 
