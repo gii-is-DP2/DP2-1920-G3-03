@@ -10,7 +10,7 @@ En este primer _sprint_ el grupo de trabajo DP2-1920-G3-03 ha decidió optar al 
 
 En este _sprint_ las parejas han realizado sus historias de usuario asignadas, haciendo antes un modelo conceptual para aclarar las ideas de la aplicación web. Aquí vemos una tabla con los estados de las historias de usuario y el estado del proyecto, especificando también la historia de usuario realizada por cada pareja:
 
-![](https://github.com/gii-is-DP2/DP2-1920-G3-03/blob/master/imagesDocumentation/ProductBacklog.jpg)
+![](https://github.com/gii-is-DP2/DP2-1920-G3-03/blob/develop/imagesDocumentation/ProductBacklog.jpg)
 
 En la primera reunión se definió correctamente el modelo conceptual, de forma que se aclaró la implementación para todo el grupo. El resto de reuniones han sido seguimientos de lo realizado y si se ha encontrado algún problema a la hora de hacer alguna historia de usuario. En cuanto a estas, se redefinen cuando es implementada añadiendo correctamente los escenarios.
 
@@ -30,4 +30,4 @@ Las horas realizadas por cada miembro del equipo de trabajo son guardadas en una
 
 **Horas dedicadas por cada miembro hasta el 30/3/2020**
 
-![](https://github.com/gii-is-DP2/DP2-1920-G3-03/blob/master/imagesDocumentation/Horas2.PNG)
+![](https://github.com/gii-is-DP2/DP2-1920-G3-03/blob/develop/imagesDocumentation/Horas2.jpg)
