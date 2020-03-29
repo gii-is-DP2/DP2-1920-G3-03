@@ -22,6 +22,11 @@ La aplicación web a desarrollar tiene como nombre YogoGym. El objetivo fundamen
 * Inscripción
 * Gremio
 * Frase
+#### Entidades de soporte:
+* Autoridades
+* Entidad Base
+* Tablero de control de Administrador
+* Tablero de control de Cliente
 
 ## Historias de Usuario
 
