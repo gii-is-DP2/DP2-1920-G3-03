@@ -4,12 +4,19 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>  
 
-<petclinic:layout pageName="home">
-    <h2><fmt:message key="welcome"/></h2>
-    <div class="row">
-        <div class="col-md-12">
-            <spring:url value="/resources/images/pets.png" htmlEscape="true" var="petsImage"/>
-            <img class="img-responsive" src="${petsImage}"/>
-        </div>
+<yogogym:layout pageName="home">
+
+	<div class="container">
+    	<div class="row">    	
+			<h1 class="text-center"><fmt:message key="welcome"/></h1>
+    	</div>
     </div>
-</petclinic:layout>
+       
+    <div class="container">
+	    <div class="row">
+	      
+	            <spring:url value="/resources/images/pets.png" htmlEscape="true" var="petsImage"/>
+	            <img class="img-responsive" style="display: block;  margin-left: auto;  margin-right: auto;  width: 30%;" src="${petsImage}"/>
+	    </div>
+    </div>
+</yogogym:layout>
