@@ -34,16 +34,9 @@
             	<yogogym:inputField label="Points" name="points"/>
             	<yogogym:inputField label="Repetitions" name="reps"/>
             	<yogogym:inputField label="Weight" name="weight"/>  
+		       <yogogym:selectField label="Exercise" name="exercise.id" size="" map="${exercises}"/>
             </div>
-            
-            <h3>Exercise</h3>
-            
-            <select id="exerciseId" name="exerciseId" required="required">
-				<c:forEach var="exercise" items="${exercises}">
-					<option value="${exercise.id}" selected="${exercise.id == challenge.exercise.id}">${exercise.name}</option>
-				</c:forEach>
-			</select>
-
+         
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button class="btn btn-default" type="submit">Save Challenge</button>

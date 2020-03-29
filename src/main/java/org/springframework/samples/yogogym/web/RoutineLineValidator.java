@@ -9,6 +9,7 @@ import org.springframework.validation.Validator;
 
 public class RoutineLineValidator implements Validator{
 
+	@SuppressWarnings("unused")
 	private final RoutineLineService routineLineService;
 	
 	private static final String REQUIRED = "required: ";

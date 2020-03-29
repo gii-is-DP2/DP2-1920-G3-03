@@ -13,13 +13,16 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "trainings")
 public class Training extends BaseEntity{
 	
@@ -35,6 +38,7 @@ public class Training extends BaseEntity{
 	
 	@Column(name = "name")
 	@NotBlank
+	@Size(max=40)
 	protected String name;
 	
 	@OneToMany(cascade = CascadeType.ALL)

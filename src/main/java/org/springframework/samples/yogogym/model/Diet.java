@@ -9,11 +9,16 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.samples.yogogym.model.Enums.DietType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "diets")
 public class Diet extends BaseEntity{
 	
@@ -26,22 +31,26 @@ public class Diet extends BaseEntity{
 	protected String description;
 	
 	@Column(name = "type")
-	// @NotEmpty
+	// @NotNull
 	protected DietType type;
 
 	@Column(name = "kcal")
+	@NotNull
 	@Min(0)
 	protected Integer kcal;
 	
 	@Column(name = "protein")
+	@NotNull
 	@Min(0)
 	protected Integer protein;
 	
 	@Column(name = "fat")
+	@NotNull
 	@Min(0)
 	protected Integer fat;
 	
 	@Column(name = "carb")
+	@NotNull
 	@Min(0)
 	protected Integer carb;
 	

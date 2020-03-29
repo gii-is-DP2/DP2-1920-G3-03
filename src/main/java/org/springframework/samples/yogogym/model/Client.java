@@ -30,6 +30,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 
 /**
@@ -42,6 +43,7 @@ import lombok.Data;
  */
 @Entity
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "clients")
 public class Client extends Person {
 	
@@ -67,9 +69,6 @@ public class Client extends Person {
 
 	@OneToMany(cascade = CascadeType.ALL)
 	protected Collection<Training> trainings;
-
-	@OneToMany(cascade = CascadeType.ALL)
-	protected Collection<Diet> diets;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	protected Guild guild;

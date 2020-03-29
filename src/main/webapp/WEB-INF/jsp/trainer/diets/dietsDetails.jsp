@@ -16,7 +16,7 @@
 	<p><b>height:</b> <c:out value="${client.height}"/></p>
 	<p><b>age:</b> <c:out value="${client.age}"/></p>
 	<p><b>fatPercentage:</b> <c:out value="${client.fatPercentage}"/></p>
-	
+	<br>
 	<h3>Diet name: <c:out value="${diet.name}"/></h3>
 	<p><b>Description:</b> <c:out value="${diet.description}"/></p>
 	<p><b>Type:</b> <c:out value="${diet.type}"/></p>
@@ -25,5 +25,11 @@
 	<p><b>carb:</b> <c:out value="${diet.carb}"/></p>
 	<p><b>fat:</b> <c:out value="${diet.fat}"/></p>
 			
-	
+	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/{trainingId}/diets/{dietId}/edit" var="dietUpdateurl" >
+	<spring:param name="trainingId" value="${training.id}"/>
+	<spring:param name="dietId" value="${diet.id}"/>
+	</spring:url>
+
+	<h3><a href="${fn:escapeXml(dietUpdateurl)}">Update Diet</a></h3>
+
 </yogogym:layout>

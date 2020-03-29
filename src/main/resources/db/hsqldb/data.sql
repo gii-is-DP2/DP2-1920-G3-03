@@ -4,55 +4,56 @@ INSERT INTO users(username,password,enabled) VALUES ('admin1','admin1999',TRUE);
 INSERT INTO authorities VALUES (1,'admin','admin1');
 INSERT INTO authorities VALUES (2,'client','admin1');
 INSERT INTO admins VALUES (1, 'proyectowip@vekto.com','Vekto', 'Rino', '12345678A','admin1');
+INSERT INTO clients VALUES (11, 'admin@admin.com', 'Admin', 'Admin', '12345678A',20,20.0,183.0,80.0,null,'admin1');
 
 /* GUILD */
 
-INSERT INTO guilds(id,creator,description,name) VALUES (1,'client1','Here we practice Calisthenics for everyone','Calisthenics');
-INSERT INTO guilds(id,creator,description,name) VALUES (2,'client2','Here we practice Weightlifting for everyone','Weightlifting');
-INSERT INTO guilds(id,creator,description,name) VALUES (3,'client3','Here we help you achieve your goals','Gym for Dummies');
+INSERT INTO guilds(id,creator,description,name,logo) VALUES (1,'client1','Here we practice Calisthenics for everyone','Calisthenics','https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/heria10-1566732385.jpg?crop=1.00xw:0.922xh;0,0.0778xh&resize=980:*');
+INSERT INTO guilds(id,creator,description,name,logo) VALUES (2,'client2','Here we practice Weightlifting for everyone','Weightlifting','https://www.iwf.net/wp-content/uploads/2017/12/DSC00237.jpg');
+INSERT INTO guilds(id,creator,description,name,logo) VALUES (3,'client3','Here we help you achieve your goals','Gym for Dummies','https://www.mobiefit.com/blog/wp-content/uploads/2017/06/shutterstock_326360432.jpg');
 
 /* CLIENT */
 
 
 INSERT INTO users(username,password,enabled) VALUES ('client1','client1999',TRUE);
 INSERT INTO authorities VALUES (3,'client','client1');
-INSERT INTO clients VALUES (1, 'marantle@yogogym.com','Martin', 'Antonio Lera', '12345678B',18,20.0,1.83,80.0,1,'client1');
+INSERT INTO clients VALUES (1, 'marantle@yogogym.com','Martin', 'Antonio Lera', '12345678B',18,20.0,183.0,80.0,1,'client1');
 
 INSERT INTO users(username,password,enabled) VALUES ('client2','client1999',TRUE);
 INSERT INTO authorities VALUES (4,'client','client2');
-INSERT INTO clients VALUES (2, 'fejasa@yogogym.com','Federico', 'Javier Saco', '12345678C',18,20.0,1.90,95.3,2,'client2');
+INSERT INTO clients VALUES (2, 'fejasa@yogogym.com','Federico', 'Javier Saco', '12345678C',18,20.0,190.0,95.3,2,'client2');
 
 INSERT INTO users(username,password,enabled) VALUES ('client3','client1999',TRUE);
 INSERT INTO authorities VALUES (5,'client','client3');
-INSERT INTO clients VALUES (3, 'juengue@yogogym.com','Julio', 'Enrique Guerrero', '12345678D',18,20.0,1.77,110.7,3,'client3');
+INSERT INTO clients VALUES (3, 'juengue@yogogym.com','Julio', 'Enrique Guerrero', '12345678D',18,20.0,177.0,110.7,3,'client3');
 
 INSERT INTO users(username,password,enabled) VALUES ('client4','client1999',TRUE);
 INSERT INTO authorities VALUES (6,'client','client4');
-INSERT INTO clients VALUES (4, 'anjomi@yogogym.com','Andrés', 'José Michelena', '12345678E',18,20.0,1.68,74.3, null ,'client4');
+INSERT INTO clients VALUES (4, 'anjomi@yogogym.com','Andrés', 'José Michelena', '12345678E',18,20.0,168.0,74.3, null ,'client4');
 
 INSERT INTO users(username,password,enabled) VALUES ('client5','client1999',TRUE);
 INSERT INTO authorities VALUES (7,'client','client5');
-INSERT INTO clients VALUES (5, 'caresro@yogogym.com','Carmelina', 'Esteso Rodríguez', '12345678F',18,20.0,1.70,83.7,1,'client5');
+INSERT INTO clients VALUES (5, 'caresro@yogogym.com','Carmelina', 'Esteso Rodríguez', '12345678F',18,20.0,170.0,83.7,1,'client5');
 
 INSERT INTO users(username,password,enabled) VALUES ('client6','client1999',TRUE);
 INSERT INTO authorities VALUES (8,'client','client6');
-INSERT INTO clients VALUES (6, 'soviob@yogogym.com','Sofia', 'Victoria Obeso', '12345678G',18,20.0,1.75,63.4,2,'client6');
+INSERT INTO clients VALUES (6, 'soviob@yogogym.com','Sofia', 'Victoria Obeso', '12345678G',18,20.0,175.0,63.4,2,'client6');
 
 INSERT INTO users(username,password,enabled) VALUES ('client7','client1999',TRUE);
 INSERT INTO authorities VALUES (9,'client','client7');
-INSERT INTO clients VALUES (7, 'anmamu@yogogym.com','Ana', 'Maria Muniesa', '12345678H',18,20.0,1.56,54.2,3,'client7');
+INSERT INTO clients VALUES (7, 'anmamu@yogogym.com','Ana', 'Maria Muniesa', '12345678H',18,20.0,156.0,54.2,3,'client7');
 
 INSERT INTO users(username,password,enabled) VALUES ('client8','client1999',TRUE);
 INSERT INTO authorities VALUES (10,'client','client8');
-INSERT INTO clients VALUES (8, 'lusoba@yogogym.com','Luisa', 'Soledad Basurto', '12345678I',18,20.0,1.63,75.6, null ,'client8');
+INSERT INTO clients VALUES (8, 'lusoba@yogogym.com','Luisa', 'Soledad Basurto', '12345678I',18,20.0,163.0,75.6, null ,'client8');
 
 INSERT INTO users(username,password,enabled) VALUES ('client9','client1999',TRUE);
 INSERT INTO authorities VALUES (11,'client','client9');
-INSERT INTO clients VALUES (9, 'caralfe@yogogym.com','Carmen', 'Alejandra Fernandez', '12345678J',18,20.0,1.70,72.4,1,'client9');
+INSERT INTO clients VALUES (9, 'caralfe@yogogym.com','Carmen', 'Alejandra Fernandez', '12345678J',18,20.0,170.0,72.4,1,'client9');
 
 INSERT INTO users(username,password,enabled) VALUES ('client10','client1999',TRUE);
 INSERT INTO authorities VALUES (12,'client','client10');
-INSERT INTO clients VALUES (10, 'trinimon@yogogym.com','Trinidad', 'Maria Montosa', '12345678K',18,20.0,1.69,83.5,2,'client10');
+INSERT INTO clients VALUES (10, 'trinimon@yogogym.com','Trinidad', 'Maria Montosa', '12345678K',18,20.0,169.0,83.5,2,'client10');
 
 
 /* TRAINER */
@@ -247,7 +248,7 @@ INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (1,3,'https://allame
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (2,0,null,2);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (3,0,null,3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (4,0,null,3);
-INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (5,0,'https://google.com',1);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (5,2,'https://google.com',1);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (6,1,'https://google.com',3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (7,0,'https://google.com',5);
 

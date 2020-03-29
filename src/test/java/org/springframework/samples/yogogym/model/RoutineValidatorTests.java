@@ -8,18 +8,9 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.samples.yogogym.model.Routine;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-public class RoutineValidatorTests {
-	
-	private Validator createValidator() {
-		LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
-		localValidatorFactoryBean.afterPropertiesSet();
-		return localValidatorFactoryBean;
-	}
-	
-	/* ------------------------ ROUTINE --------------------------------------------------------------------*/
+public class RoutineValidatorTests extends  ValidatorTests{
+		
 	@Test
 	void shouldNotValidateWhenRoutineNameEmpty()
 	{
@@ -29,14 +20,14 @@ public class RoutineValidatorTests {
 		routine.setDescription("Desc 1");
 		routine.setRepsPerWeek(1);
 		
-		Validator validator = createValidator();
+		Validator validator = RoutineValidatorTests.createValidator();
 		Set<ConstraintViolation<Routine>> constraintViolations = validator.validate(routine);
 		
 		assertThat(constraintViolations.size()).isEqualTo(1);
 		ConstraintViolation<Routine> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");		
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");		
 	}
 	
 	@Test
@@ -48,14 +39,14 @@ public class RoutineValidatorTests {
 		routine.setDescription("");
 		routine.setRepsPerWeek(1);
 		
-		Validator validator = createValidator();
+		Validator validator = RoutineValidatorTests.createValidator();
 		Set<ConstraintViolation<Routine>> constraintViolations = validator.validate(routine);
 		
 		assertThat(constraintViolations.size()).isEqualTo(1);
 		ConstraintViolation<Routine> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-		assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");		
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");		
 	}
 	
 	@Test
@@ -67,13 +58,13 @@ public class RoutineValidatorTests {
 		routine.setDescription("Desc 1");
 		routine.setRepsPerWeek(null);
 		
-		Validator validator = createValidator();
+		Validator validator = RoutineValidatorTests.createValidator();
 		Set<ConstraintViolation<Routine>> constraintViolations = validator.validate(routine);
 		
 		assertThat(constraintViolations.size()).isEqualTo(1);
 		ConstraintViolation<Routine> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("repsPerWeek");
-		assertThat(violation.getMessage()).isEqualTo("no puede ser null");		
+		assertThat(violation.getMessage()).isEqualTo("must not be null");		
 	}
 }

@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,10 @@ public class InscriptionServiceTest {
 	@Test
 	void shouldFindInscriptionsByChallengeId(){
 		Collection<Inscription> inscriptions = this.inscriptionService.findInscriptionsByChallengeId(1);
-		assertThat(inscriptions.size()).isEqualTo(2);	
+		assertThat(inscriptions.size()).isEqualTo(2);
+		
+		inscriptions = this.inscriptionService.findInscriptionsByChallengeId(50);
+		assertThat(inscriptions.size()).isEqualTo(0);
 	}
 	
 	@Test
@@ -129,4 +133,11 @@ public class InscriptionServiceTest {
 		assertThat(i.getUrl()).isEqualTo("https://TestUpdate.com");
 	}
 	
+	//Clasification
+	@Test
+	void shouldFindInscriptionByUsername() {
+		List<Inscription> inscription = this.inscriptionService.findInscriptionsByUsername("client3");
+		assertThat(inscription.size()).isEqualTo(1);
+	}
+
 }

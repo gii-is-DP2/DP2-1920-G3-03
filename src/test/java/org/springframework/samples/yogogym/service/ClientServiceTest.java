@@ -5,6 +5,7 @@ package org.springframework.samples.yogogym.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,18 +46,27 @@ public class ClientServiceTest {
 	void shouldFindClientById(){
 		Client client = this.clientService.findClientById(1);
 		assertThat(client.getNif()).isEqualTo("12345678B");	
+		
+		client = this.clientService.findClientById(50);
+		assertThat(client).isNull();	
 	}
 	
 	@Test
 	void shouldFindClientByUsername(){
 		Client client = this.clientService.findClientByUsername("client1");
 		assertThat(client.getNif()).isEqualTo("12345678B");	
+		
+		client = this.clientService.findClientByUsername("client50");
+		assertThat(client).isNull();
 	}
 
 	@Test
 	void shouldFindClientByInscriptionId(){
 		Client client = this.clientService.findClientByInscriptionId(2);
 		assertThat(client.getNif()).isEqualTo("12345678B");	
+		
+		client = this.clientService.findClientByInscriptionId(50);
+		assertThat(client).isNull();	
 	}
 	
 	@Test
@@ -66,10 +76,15 @@ public class ClientServiceTest {
 	}
 	
 	@Test
-	void shouldFindAllClients(){
-		Collection<Client> clients = (Collection<Client>) this.clientService.findAllClient();
-		assertThat(clients.size()).isEqualTo(10);
+	void shouldFindClientsWithOnlyCompletedInscriptions() {
+		List<Client> clients = this.clientService.findClientsWithCompletedInscriptions();
+		assertThat(clients.size()).isEqualTo(1);
 	}
 	
-	
+	@Test
+	void shouldFindAllClients(){
+		Collection<Client> clients = (Collection<Client>) this.clientService.findAllClient();
+		assertThat(clients.size()).isEqualTo(11);
+	}
+
 }

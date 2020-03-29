@@ -3,15 +3,19 @@ package org.springframework.samples.yogogym.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
-
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "guilds")
 public class Guild extends BaseEntity{
+	
+	@Column(name = "logo")
+	@NotEmpty
+	protected String logo;
 	
 	@Column(name = "name")
 	@NotEmpty
@@ -25,6 +29,4 @@ public class Guild extends BaseEntity{
 	@NotEmpty
 	protected String creator;
 	
-	@Transient
-	protected Integer points;
 }

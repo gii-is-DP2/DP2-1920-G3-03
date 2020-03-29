@@ -3,6 +3,8 @@ package org.springframework.samples.yogogym.web;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.validation.Valid;
 
@@ -18,6 +20,8 @@ import org.springframework.samples.yogogym.service.InscriptionService;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeMore3Exception;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeSameNameException;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeWithInscriptionsException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -50,7 +54,6 @@ public class ChallengeController {
 	public void initChallengeBinder(WebDataBinder dataBinder) {
 		dataBinder.setValidator(new ChallengeValidator());
 	}
-
 	
 	// ADMIN:
 	
@@ -84,20 +87,44 @@ public class ChallengeController {
 		Challenge c = new Challenge();
 
 		Collection<Exercise> exercises = this.exerciseService.findAllExercise();
+		Map<Integer,String> selectVals = new TreeMap<>();
+		
+		String value = "";
+		for(Exercise e:exercises)
+		{
+			value = e.getName();
+			
+			if(e.getEquipment() != null)
+				value = value.concat(", Equipment: "+e.getEquipment().getName());
+			
+			selectVals.put(e.getId(), value);
+		}
 				
 		modelMap.addAttribute("challenge", c);
-		modelMap.addAttribute("exercises",exercises);
+		modelMap.addAttribute("exercises",selectVals);
 		
 		return "/admin/challenges/challengesCreateOrUpdate";
 	}
 	
 	@PostMapping("/admin/challenges/new")
-	public String processCreationForm(@ModelAttribute("exerciseId")int exerciseId ,@Valid Challenge challenge,BindingResult result, ModelMap model) {
+	public String processCreationForm(@ModelAttribute("exercise.id")int exerciseId ,@Valid Challenge challenge,BindingResult result, ModelMap model) {
 		
 		if(result.hasErrors()) {
 			model.put("challenge",challenge);
 			Collection<Exercise> exercises = this.exerciseService.findAllExercise();
-			model.addAttribute("exercises",exercises);
+			Map<Integer,String> selectVals = new TreeMap<>();
+			
+			String value = "";
+			for(Exercise e:exercises)
+			{
+				value = e.getName();
+				
+				if(e.getEquipment() != null)
+					value = value.concat(", Equipment: "+e.getEquipment().getName());
+				
+				selectVals.put(e.getId(), value);
+			}
+			model.addAttribute("exercises",selectVals);
 			
 			return "/admin/challenges/challengesCreateOrUpdate";
 		}
@@ -129,6 +156,18 @@ public class ChallengeController {
 		
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 		Collection<Exercise> exercises = this.exerciseService.findAllExercise();
+		Map<Integer,String> selectVals = new TreeMap<>();
+		
+		String value = "";
+		for(Exercise e:exercises)
+		{
+			value = e.getName();
+			
+			if(e.getEquipment() != null)
+				value = value.concat(", Equipment: "+e.getEquipment().getName());
+			
+			selectVals.put(e.getId(), value);
+		}
 		
 		// If there are inscriptions, it cannot be edited
 		Collection<Inscription> inscriptions = inscriptionService.findInscriptionsByChallengeId(challengeId);
@@ -137,18 +176,32 @@ public class ChallengeController {
 		}
 					
 		model.addAttribute(challenge);
-		model.addAttribute("exercises",exercises);
+		model.addAttribute("exercises",selectVals);
 		
 		return "/admin/challenges/challengesCreateOrUpdate";
 	}
 	
 	@PostMapping("/admin/challenges/{challengeId}/edit")
-	public String processUpdateForm(@PathVariable("challengeId")int challengeId, @ModelAttribute("exerciseId")int exerciseId, @Valid Challenge challenge,  BindingResult result,ModelMap model) {
+	public String processUpdateForm(@PathVariable("challengeId")int challengeId, 
+			@ModelAttribute("exercise.id")int exerciseId, @Valid Challenge challenge,  BindingResult result,ModelMap model) {
 		
 		if(result.hasErrors()) {
 			model.put("challenge",challenge);
 			Collection<Exercise> exercises = this.exerciseService.findAllExercise();
-			model.addAttribute("exercises",exercises);
+			Map<Integer,String> selectVals = new TreeMap<>();
+			
+			String value = "";
+			for(Exercise e:exercises)
+			{
+				value = e.getName();
+				
+				if(e.getEquipment() != null)
+					value = value.concat(", Equipment: "+e.getEquipment().getName());
+				
+				selectVals.put(e.getId(), value);
+			}
+			
+			model.addAttribute("exercises",selectVals);
 			
 			return "/admin/challenges/challengesCreateOrUpdate";
 		}
@@ -183,7 +236,7 @@ public class ChallengeController {
 		try {
 			this.challengeService.deleteChallenge(challenge);
 		}catch(ChallengeWithInscriptionsException ex){
-			return "/welcome";
+			return "exception";
 		}
 		
 		return "redirect:/admin/challenges";
@@ -194,6 +247,9 @@ public class ChallengeController {
 	@GetMapping("/client/{clientUsername}/challenges")
 	public String listChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
 			
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		List<Challenge> challenges = this.challengeService.findAllChallengesClients(client.getId(), client.getInscriptions());
 		modelMap.addAttribute("challenges", challenges);
@@ -204,7 +260,15 @@ public class ChallengeController {
 	@GetMapping("/client/{clientUsername}/challenges/{challengeId}")
 	public String showChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
 
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
+	    //Not already inscribed
+	    Client client = this.clientService.findClientByUsername(clientUsername);
+	    if(client.getInscriptions().stream().anyMatch(i -> i.getChallenge().equals(challenge)))
+	    	return "exception";
+	  		
 	   	model.addAttribute("challenge", challenge);
 	   	
 	    return "client/challenges/challengeDetails";
@@ -213,8 +277,11 @@ public class ChallengeController {
 	@GetMapping("/client/{clientUsername}/challenges/mine")
 	public String listMyChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
 			
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
 
 		Client client = this.clientService.findClientByUsername(clientUsername);
+		
 		List<Inscription> inscriptions = client.getInscriptions();
 
 		modelMap.addAttribute("inscriptions", inscriptions);
@@ -222,16 +289,34 @@ public class ChallengeController {
 		return "client/challenges/myChallengesList";
 	}
 	
+
 	@GetMapping("/client/{clientUsername}/challenges/mine/{challengeId}")
 	public String showAndEditMyChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
 
-	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+	
+		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 	   	Client client = this.clientService.findClientByUsername(clientUsername);
-	   	Inscription inscription = this.inscriptionService.findInscriptionByClientAndChallenge(client,challenge);
+	   	Inscription inscription;
+	   	
+	   	if(client.getInscriptions().stream().anyMatch(i -> i.getChallenge().equals(challenge))) {
+	   		inscription = client.getInscriptions().stream().filter(i -> i.getChallenge().equals(challenge)).findFirst().get();
+	   	}else {
+	   		return "exception";
+	   	}
 	   	
 	   	model.addAttribute("challenge", challenge);
 	   	model.addAttribute("inscription",inscription);
 	   	
 	    return "client/challenges/myChallengeDetailsAndUpdate";
+	}
+	
+	private boolean isLoggedPrincipal(String Username) {
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String principalUsername = ((UserDetails)principal).getUsername();
+		
+		return principalUsername.trim().toLowerCase().equals(Username.trim().toLowerCase());
 	}
 }

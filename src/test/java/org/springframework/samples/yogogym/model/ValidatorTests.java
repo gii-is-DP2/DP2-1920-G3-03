@@ -1,9 +1,15 @@
 package org.springframework.samples.yogogym.model;
 
-/**
- * @author Michael Isvy Simple test to make sure that Bean Validation is working (useful
- * when upgrading to a new version of Hibernate Validator/ Bean Validation)
- */
-class ValidatorTests {
+import java.util.Locale;
+import javax.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+public class ValidatorTests {
+	
+	protected static Validator createValidator() {
+		Locale.setDefault(new Locale("en","EN"));
+		LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+		localValidatorFactoryBean.afterPropertiesSet();
+		return localValidatorFactoryBean;
+	}	
 }

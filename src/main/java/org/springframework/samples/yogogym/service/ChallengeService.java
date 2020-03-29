@@ -25,10 +25,9 @@ public class ChallengeService {
 	private ChallengeRepository challengeRepo;
 	
 	@Autowired
-	private InscriptionService inscriptionService;
+	private InscriptionService inscriptionService;	
 	
-	
-	
+  
 	@Transactional
 	public Iterable<Challenge> findAll(){
 		
@@ -118,5 +117,7 @@ public class ChallengeService {
 		int week2 = Cal.get(GregorianCalendar.WEEK_OF_YEAR);
 		return week == week2;
 	}
+	
+
 
 }
