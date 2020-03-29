@@ -68,9 +68,6 @@ public class Client extends Person {
 	@OneToMany(cascade = CascadeType.ALL)
 	protected Collection<Training> trainings;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	protected Collection<Diet> diets;
-
 	@ManyToOne(cascade = CascadeType.ALL)
 	protected Guild guild;
 	

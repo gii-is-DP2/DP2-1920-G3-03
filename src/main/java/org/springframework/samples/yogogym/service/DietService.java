@@ -17,12 +17,16 @@ package org.springframework.samples.yogogym.service;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Diet;
+import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.DietRepository;
+import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,15 +40,26 @@ import org.springframework.transaction.annotation.Transactional;
 public class DietService {
 
 	private DietRepository dietRepository;
+	private TrainingService trainingService;
 
 	@Autowired
-	public DietService(DietRepository dietRepository) {
+	public DietService(DietRepository dietRepository,TrainingService trainingService) {
 		this.dietRepository = dietRepository;
+		this.trainingService = trainingService;
 	}
 	
 	@Transactional
-	public void saveDiet(Diet Diet) throws DataAccessException {
-		dietRepository.save(Diet);
+	public void saveDiet(Diet diet, int trainingId) throws TrainingFinished{
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		Calendar cal = Calendar.getInstance();
+		Date actualDate = cal.getTime();
+		
+		if(training.getEndDate().before(actualDate))
+			throw new TrainingFinished();
+		else		
+			dietRepository.save(diet);
 	}
 	
 	@Transactional

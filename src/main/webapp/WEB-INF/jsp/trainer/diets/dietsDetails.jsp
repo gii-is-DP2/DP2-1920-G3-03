@@ -16,7 +16,7 @@
 	<p><b>height:</b> <c:out value="${client.height}"/></p>
 	<p><b>age:</b> <c:out value="${client.age}"/></p>
 	<p><b>fatPercentage:</b> <c:out value="${client.fatPercentage}"/></p>
-	
+	<br>
 	<h3>Diet name: <c:out value="${diet.name}"/></h3>
 	<p><b>Description:</b> <c:out value="${diet.description}"/></p>
 	<p><b>Type:</b> <c:out value="${diet.type}"/></p>

@@ -37,8 +37,8 @@
 				<input type="hidden" name="id" id="id" class="form-control" value="${training.id}"/>
 				<input type="hidden" name="client" value="${client.nif}"/>
 				<yogogym:inputField label="Name" name="name"/>
-				<yogogym:inputField label="Initial Date" name="initialDate" readonly="${!training['new']}"/>
-	            <yogogym:inputField label="End Date" name="endDate" readonly="${!(training['new']||(!training['new']&&endDateAux>=actualDate))}"/>
+				<yogogym:inputField label="Initial Date" name="initialDate" readonly="${!training['new']}" pattern="^\d{4}\/\d{2}\/\d{2}$" placeholder="yyyy/MM/dd"/>
+	            <yogogym:inputField label="End Date" name="endDate" readonly="${!(training['new']||(!training['new']&&endDateAux>=actualDate))}" pattern="^\d{4}\/\d{2}\/\d{2}$" placeholder="yyyy/MM/dd"/>
             </div>
 			<div class="form-group">
 	            <div class="col-sm-offset-2 col-sm-10">

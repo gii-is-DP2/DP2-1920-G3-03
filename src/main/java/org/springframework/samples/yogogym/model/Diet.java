@@ -33,18 +33,22 @@ public class Diet extends BaseEntity{
 	protected DietType type;
 
 	@Column(name = "kcal")
+	@NotNull
 	@Min(0)
 	protected Integer kcal;
 	
 	@Column(name = "protein")
+	@NotNull
 	@Min(0)
 	protected Integer protein;
 	
 	@Column(name = "fat")
+	@NotNull
 	@Min(0)
 	protected Integer fat;
 	
 	@Column(name = "carb")
+	@NotNull
 	@Min(0)
 	protected Integer carb;
 	

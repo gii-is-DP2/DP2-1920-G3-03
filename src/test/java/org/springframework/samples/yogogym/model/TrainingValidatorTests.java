@@ -16,11 +16,70 @@ class TrainingValidatorTests extends ValidatorTests{
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	@Test
+	void shouldValidate() throws ParseException {
+		
+		Training training = new Training();
+		
+		training.setName("New Training");
+		training.setInitialDate(dateFormat.parse("2020-01-01"));
+		training.setEndDate(dateFormat.parse("2020-01-14"));
+		Client client = new Client();
+		training.setClient(client);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Training>> constraintViolations = validator.validate(training);
+		
+		assertThat(constraintViolations.size()).isEqualTo(0);	
+	}
+	
+	@Test
 	void shouldNotValidateWhenTrainingNameEmpty() throws ParseException {
 		
 		Training training = new Training();
 		
 		training.setName("");
+		training.setInitialDate(dateFormat.parse("2020-01-01"));
+		training.setEndDate(dateFormat.parse("2020-01-14"));
+		Client client = new Client();
+		training.setClient(client);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Training>> constraintViolations = validator.validate(training);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
+		
+		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");		
+	}
+	
+	@Test
+	void shouldNotValidateWhenTrainingNameBlank() throws ParseException {
+		
+		Training training = new Training();
+		
+		training.setName("   ");
+		training.setInitialDate(dateFormat.parse("2020-01-01"));
+		training.setEndDate(dateFormat.parse("2020-01-14"));
+		Client client = new Client();
+		training.setClient(client);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Training>> constraintViolations = validator.validate(training);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
+		
+		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");		
+	}
+	
+	@Test
+	void shouldNotValidateWhenTrainingNameNull() throws ParseException {
+		
+		Training training = new Training();
+		
+		training.setName(null);
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
 		Client client = new Client();

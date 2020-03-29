@@ -41,8 +41,8 @@ public class DashboardClientController {
 		if (isTheRealUser(usernameClient)) {
 			Client client = this.clientService.findClientByUsername(usernameClient);
 			if (client != null) {
-				List<Training> listTraining = this.dashboardClientService.listTrainingByClient(client.getId());
-				if (!listTraining.isEmpty()) {
+				List<Training> listTraining = new ArrayList<>(client.getTrainings());
+				if (!client.getTrainings().isEmpty()) {
 					dashboard(listTraining, 28, "Month", model);
 					dashboard(listTraining, null, "All", model);
 				} else {

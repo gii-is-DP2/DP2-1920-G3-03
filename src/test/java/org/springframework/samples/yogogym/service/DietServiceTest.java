@@ -3,11 +3,18 @@ package org.springframework.samples.yogogym.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import static org.junit.Assert.fail;
+
+
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+
 
 import javax.transaction.Transactional;
 
 import org.junit.Ignore;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -15,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.yogogym.model.Diet;
+import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.DietType;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +31,11 @@ public class DietServiceTest {
 
 	@Autowired
 	protected DietService dietService;
+	
+	@Autowired 
+	protected TrainingService trainingService;
+	
+	private final int trainingId = 1;
 	
 	@Test
 	void shouldFindAllDiets(){
@@ -36,8 +49,24 @@ public class DietServiceTest {
 		assertThat(diet.getName()).isEqualTo("Dieta 2");	
 	}
 	
-	@Ignore
+	@Test
 	void shouldCreateDiet() {
+		
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+		Date newDate = cal.getTime();
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+		training.setEndDate(newDate);
+		
+		try
+		{
+			this.trainingService.saveTraining(training);
+		}
+		catch(Exception e)
+		{
+			e.getStackTrace();
+		}
 		
 		Collection<Diet> diets = (Collection<Diet>) this.dietService.findAllDiet();
 		int found = diets.size();
@@ -50,8 +79,17 @@ public class DietServiceTest {
 		c.setProtein(1);
 		c.setFat(1);
 		c.setType(DietType.DEFINITION);
-
-		this.dietService.saveDiet(c);
+		
+		try
+		{
+			this.dietService.saveDiet(c,training.getId());			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
 		c = this.dietService.findDietById(found + 1);
 		assertThat(c.getName()).isEqualTo("DietTest");
 	}

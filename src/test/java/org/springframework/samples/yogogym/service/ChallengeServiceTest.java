@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -51,17 +52,31 @@ public class ChallengeServiceTest {
 	@Test
 	void shouldSaveChallenge() {
 		
-		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAll();
+		List<Challenge> challenges = (List<Challenge>) this.challengeService.findAll();
 		int found = challenges.size();
 		Challenge c = createTestingChallenge();
-		
+		c.setId(found + 1);
 		try {
 			this.challengeService.saveChallenge(c);
 		} catch (Exception ex) {
 			//ex.printStackTrace();
 		}
-		c = this.challengeService.findChallengeById(found + 5);
-		assertThat(c.getName()).isEqualTo("ChallengeTest");
+		
+		List<Challenge> afterAdding = (List<Challenge>) this.challengeService.findAll();
+		int newSize = afterAdding.size();
+		
+		Challenge addedChallenge = afterAdding.get(newSize-1);
+		
+		assertThat(c.getName()).isEqualTo(addedChallenge.getName());
+		assertThat(c.getDescription()).isEqualTo(addedChallenge.getDescription());
+		assertThat(c.getInitialDate()).isEqualTo(addedChallenge.getInitialDate());	
+		assertThat(c.getEndDate()).isEqualTo(addedChallenge.getEndDate());	
+		assertThat(c.getPoints()).isEqualTo(addedChallenge.getPoints());	
+		assertThat(c.getReward()).isEqualTo(addedChallenge.getReward());
+		assertThat(c.getWeight()).isEqualTo(addedChallenge.getWeight());
+		assertThat(c.getExercise()).isEqualTo(addedChallenge.getExercise());		
+		
+		assertThat(found).isLessThan(newSize);
 	}
 	
 	@Test

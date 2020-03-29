@@ -9,9 +9,16 @@
 
 <yogogym:layout pageName="guildsCreateOrUpdate">
 
-<h3>Create a new Guild</h3>
-	
-	<form:form modelAttribute="guild" class="form-horizontal">
+	<c:choose>
+		<c:when test="${guild['new']}">
+			<h3>Create a new Guild</h3>
+		 </c:when>
+		 <c:otherwise>
+		    <h3>Update a new Guild</h3>
+		 </c:otherwise>
+	</c:choose>
+    
+    <form:form modelAttribute="guild" class="form-horizontal">
 	
 		<div class="form-group has-feedback">
 			<yogogym:inputField label="Creator" name="creator" readonly="true"/>
@@ -21,7 +28,15 @@
 		</div>
 	
         <div class="col-sm-offset-2 col-sm-10">
-            <button class="btn btn-default" type="submit">Save the Guild</button>
+            
+            <c:choose>
+				<c:when test="${guild['new']}">
+					<button class="btn btn-default" type="submit">Save the Guild</button>
+				 </c:when>
+				 <c:otherwise>
+				    <button class="btn btn-default" type="submit">Update the Guild</button>
+				 </c:otherwise>
+			</c:choose>
         </div>
        
 	</form:form>

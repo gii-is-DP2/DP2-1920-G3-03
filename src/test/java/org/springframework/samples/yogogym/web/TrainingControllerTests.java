@@ -1,6 +1,8 @@
 package org.springframework.samples.yogogym.web;
 
 import java.util.Date;
+import java.util.Locale;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,6 +10,7 @@ import java.util.Collection;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Trainer;
@@ -16,6 +19,13 @@ import org.springframework.samples.yogogym.model.User;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
+import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
+import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
+import org.springframework.samples.yogogym.service.exceptions.PastEndException;
+import org.springframework.samples.yogogym.service.exceptions.PastInitException;
+import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -27,6 +37,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -45,6 +56,8 @@ class TrainingControllerTests {
 	
 	private static final int CLIENT1_ID = 1;
 	private static final int CLIENT2_ID = 2;
+	private static final String NIF_1 = "12345678F";
+	private static final String NIF_2 = "12345678G";
 	
 	private static final int CLIENT1_TRAINING_ID = 1;
 	
@@ -62,6 +75,9 @@ class TrainingControllerTests {
 	
 	@MockBean
 	private TrainingService trainingService;
+	
+	@MockBean
+	private ClientFormatter clientFormatter;
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -82,6 +98,7 @@ class TrainingControllerTests {
 		userClient1.setEnabled(true);
 		client1.setUser(userClient1);
 		client1.setId(CLIENT1_ID);
+		client1.setNif(NIF_1);
 		
 		clientsTrainer1.add(client1);
 		
@@ -110,6 +127,7 @@ class TrainingControllerTests {
 		userClient2.setEnabled(true);
 		client2.setUser(userClient2);
 		client2.setId(CLIENT2_ID);
+		client2.setNif(NIF_2);
 		
 		clientsTrainer2.add(client2);
 		
@@ -125,6 +143,16 @@ class TrainingControllerTests {
 		given(this.trainerService.findTrainer(TRAINER1_USERNAME)).willReturn(trainer1);
 		given(this.trainerService.findTrainer(TRAINER2_USERNAME)).willReturn(trainer2);
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING_ID)).willReturn(training1);
+		try {
+			given(this.clientFormatter.parse(NIF_1, Locale.ENGLISH)).willReturn(client1);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		try {
+			given(this.clientFormatter.parse(NIF_2, Locale.ENGLISH)).willReturn(client2);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -208,7 +236,7 @@ class TrainingControllerTests {
 		 		.andExpect(model().attributeExists("training"))
 				.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
 	}
-	 
+	
 	@WithMockUser(username="trainer2", authorities= {"trainer"})
 	@Test
 	void testProcessTrainingCreationFormSuccess() throws Exception {
@@ -217,24 +245,90 @@ class TrainingControllerTests {
 			 	.param("name", "Training 2")
 			 	.param("initialDate", dateFormat.format(initialDate))
 			 	.param("endDate", dateFormat.format(endDate))
-			 	.param("client", "client2,"+CLIENT2_ID))
+			 	.param("client", "12345678F"))
 				.andExpect(status().is3xxRedirection())
 		 		.andExpect(view().name("redirect:/trainer/"+TRAINER2_USERNAME+"/trainings"));
 	}
 	
 	@WithMockUser(username="trainer2", authorities= {"trainer"})
 	@Test
-	void testProcessTrainingCreationFormHasErrors() throws Exception {
+	void testProcessTrainingCreationFormHasErrorsEmptyParameters() throws Exception {
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER2_USERNAME,CLIENT2_ID)
 			 	.with(csrf())
 			 	.param("name", "")
-			 	.param("initialDate", dateFormat.format(initialDate))
-			 	.param("endDate", dateFormat.format(endDate))
-			 	.param("client", "client2,"+CLIENT2_ID))
+			 	.param("initialDate", "")
+			 	.param("endDate", "")
+			 	.param("client", NIF_2))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
 				.andExpect(model().attributeHasFieldErrors("training", "name"))
+				.andExpect(model().attributeHasFieldErrors("training", "initialDate"))
+				.andExpect(model().attributeHasFieldErrors("training", "endDate"))
+				.andExpect(model().errorCount(3))
 				.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
+	}
+	
+	@WithMockUser(username="trainer2", authorities= {"trainer"})
+	@Test
+	void testProcessTrainingCreationFormHasErrorsPastInitDate() throws Exception {
+		
+		doThrow(new PastInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		
+		performSamplePost(-1,0);
+	}
+	
+	@WithMockUser(username="trainer2", authorities= {"trainer"})
+	@Test
+	void testProcessTrainingCreationFormHasErrorsPastEnd() throws Exception {
+		
+		doThrow(new PastEndException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		
+		performSamplePost(0,0);
+	}
+	
+	@WithMockUser(username="trainer2", authorities= {"trainer"})
+	@Test
+	void testProcessTrainingCreationFormHasErrorsEndBeforeEqualsInit() throws Exception {
+		
+		doThrow(new EndBeforeEqualsInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		
+		performSamplePost(0,0);
+	}
+	
+	@WithMockUser(username="trainer2", authorities= {"trainer"})
+	@Test
+	void testProcessTrainingCreationFormHasErrorsLongerThan90Days() throws Exception {
+		
+		doThrow(new LongerThan90DaysException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		
+		performSamplePost(0,0);
+	}
+	
+	@WithMockUser(username="trainer2", authorities= {"trainer"})
+	@Test
+	void testProcessTrainingCreationFormHasErrorsInitInTraining() throws Exception {
+		
+		doThrow(new InitInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		
+		performSamplePost(-1,0);
+	}
+	
+	@WithMockUser(username="trainer2", authorities= {"trainer"})
+	@Test
+	void testProcessTrainingCreationFormHasErrorsEndInTraining() throws Exception {
+		
+		doThrow(new EndInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		
+		performSamplePost(0,0);
+	}
+	
+	@WithMockUser(username="trainer2", authorities= {"trainer"})
+	@Test
+	void testProcessTrainingCreationFormHasErrorsPeriodIncludingTraining() throws Exception {
+		
+		doThrow(new PeriodIncludingTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		
+		performSamplePost(0,0);
 	}
 	
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
@@ -265,25 +359,90 @@ class TrainingControllerTests {
     			.param("name", "Training 1 Updated")
     			.param("initialDate", dateFormat.format(initialDate))
 				.param("endDate", dateFormat.format(endDateUpdated))
-				.param("client", "client1,"+CLIENT1_ID))
+				.param("client", NIF_1))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}"));
 	}
 
     @WithMockUser(username="trainer1", authorities= {"trainer"})
 	@Test
-	void testProcessTrainingUpdateFormHasErrorsName() throws Exception {
+	void testProcessTrainingUpdateFormHasErrorsEmptyParameters() throws Exception {
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit", TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING_ID)
 				.with(csrf())	
 				.param("name", "")
 				.param("initialDate", dateFormat.format(initialDate))
-				.param("endDate", dateFormat.format(endDate))
-				.param("client", "client1,"+CLIENT1_ID))
+				.param("endDate", "")
+				.param("client", NIF_1))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
 				.andExpect(model().attributeHasFieldErrors("training", "name"))
+				.andExpect(model().attributeHasFieldErrors("training", "endDate"))
+				.andExpect(model().errorCount(2))
 				.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
 	}
+    
+    @WithMockUser(username="trainer1", authorities= {"trainer"})
+   	@Test
+   	void testProcessTrainingUpdateFormHasErrorsPastInitDate() throws Exception {
+   		
+   		doThrow(new PastInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		
+   		performSamplePost(-1,-1);
+   	}
+   	
+    @WithMockUser(username="trainer1", authorities= {"trainer"})
+   	@Test
+   	void testProcessTrainingUpdateFormHasErrorsPastEnd() throws Exception {
+   		
+   		doThrow(new PastEndException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		
+   		performSamplePost(0,-1);
+   	}
+   	
+    @WithMockUser(username="trainer1", authorities= {"trainer"})
+   	@Test
+   	void testProcessTrainingUpdateFormHasErrorsEndBeforeEqualsInit() throws Exception {
+   		
+   		doThrow(new EndBeforeEqualsInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		
+   		performSamplePost(0,-1);
+   	}
+   	
+    @WithMockUser(username="trainer1", authorities= {"trainer"})
+   	@Test
+   	void testProcessTrainingUpdateFormHasErrorsLongerThan90Days() throws Exception {
+   		
+   		doThrow(new LongerThan90DaysException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		
+   		performSamplePost(0,-1);
+   	}
+   	
+    @WithMockUser(username="trainer1", authorities= {"trainer"})
+   	@Test
+   	void testProcessTrainingUpdateFormHasErrorsInitInTraining() throws Exception {
+   		
+   		doThrow(new InitInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		
+   		performSamplePost(-1,-1);
+   	}
+   	
+    @WithMockUser(username="trainer1", authorities= {"trainer"})
+   	@Test
+   	void testProcessTrainingUpdateFormHasErrorsEndInTraining() throws Exception {
+   		
+   		doThrow(new EndInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		
+   		performSamplePost(0,-1);
+   	}
+   	
+    @WithMockUser(username="trainer1", authorities= {"trainer"})
+   	@Test
+   	void testProcessTrainingUpdateFormHasErrorsPeriodIncludingTraining() throws Exception {
+   		
+   		doThrow(new PeriodIncludingTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		
+   		performSamplePost(0,-1);
+   	}
     
     @WithMockUser(username="trainer1", authorities= {"trainer"})
 	@Test
@@ -291,6 +450,52 @@ class TrainingControllerTests {
     	mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete", TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING_ID))
     			.andExpect(status().is3xxRedirection())
     			.andExpect(view().name("redirect:/trainer/{trainerUsername}/trainings"));
+    }
+    
+    /**
+     * <p>Performs a post with a sample training which has no errors. It's used to check try/catch in controller tests.</p>
+     * @param selectErrorField : Must be greater or equals to 0 for "endDate" and less than 0 for "initialDate"
+     * @param selectMode : Must be greater or equals to 0 for "create" and less than 0 for "edit". If the mode selected
+     * is create it will be applied for Client2 and if it's edit it will be applied to Client1 and Training1.
+     * @throws Exception
+     */
+    private void performSamplePost(int selectErrorField, int selectMode) throws Exception {
+    	
+    	String errorField;
+    	if(selectErrorField>=0) {
+    		errorField = "endDate";
+    	}
+    	else {
+    		errorField = "initialDate";
+    	}
+    	if(selectMode>=0) {
+    		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER2_USERNAME,CLIENT2_ID)
+    		 	.with(csrf())
+    		 	.param("name", "Training 2")
+    		 	.param("initialDate", dateFormat.format(initialDate))
+    		 	.param("endDate", dateFormat.format(endDate))
+    		 	.param("client", NIF_2))
+    			.andExpect(status().isOk())
+    			.andExpect(model().attributeHasErrors("training"))
+    			.andExpect(model().attributeHasFieldErrors("training", errorField))
+    			.andExpect(model().errorCount(1))
+    			.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
+    	}
+    	else {
+    		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit", TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING_ID)
+    		 	.with(csrf())
+    		 	.param("name", "Training 1 Updated")
+    		 	.param("initialDate", dateFormat.format(initialDate))
+    		 	.param("endDate", dateFormat.format(endDate))
+    		 	.param("client", NIF_1))
+    			.andExpect(status().isOk())
+    			.andExpect(model().attributeHasErrors("training"))
+    			.andExpect(model().attributeHasFieldErrors("training", errorField))
+    			.andExpect(model().errorCount(1))
+    			.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
+    	}
+    	
+    	
     }
 	 
 }

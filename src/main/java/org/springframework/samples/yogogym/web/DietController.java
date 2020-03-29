@@ -1,6 +1,9 @@
 package org.springframework.samples.yogogym.web;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Client;
@@ -44,19 +47,25 @@ public class DietController {
 	}
 
 	// TRAINER
+	
+	@GetMapping("/trainer/{trainerUsername}/diets")
+	public String ClienDietList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
 
-	// LIST
-	// @GetMapping("/trainer/{trainerUsername}/diets")
-	// public String ClienDietList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
-
-	// 	if(!isClientOfLoggedTrainer(clientId,trainerUsername))
-	// 		return "exception";
-
-	// 	Trainer trainer = this.trainerService.findTrainer(trainerUsername);
-	// 	model.addAttribute("trainer", trainer);
-
-	// 	return "trainer/diets/dietsList";
-	// }
+		if(!isLoggedTrainer(trainerUsername))
+			return "exception";
+		
+		Calendar now = Calendar.getInstance();
+		Date date = now.getTime();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");		
+		String actualDate = dateFormat.format(date);
+		
+		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
+		
+		model.addAttribute("actualDate", actualDate);
+		model.addAttribute("trainer", trainer);
+		
+		return "trainer/diets/dietsList";
+	 }
 
 	// GET
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}")
@@ -103,7 +112,7 @@ public class DietController {
 			@PathVariable("trainerUsername") String trainerUsername, 
 			@PathVariable("trainingId") int trainingId, Model model) {
 
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername) || isTrainingFinished(trainingId))
 			return "exception";
 
 		if (result.hasErrors()) {
@@ -116,8 +125,7 @@ public class DietController {
 			Training training = this.trainingService.findTrainingById(trainingId);
 
 			diet = generateDiet(diet, clientId);
-
-			this.dietService.saveDiet(diet);
+						
 			training.setDiet(diet);
 
 			try {
@@ -142,7 +150,6 @@ public class DietController {
 		Client client = this.clientService.findClientById(clientId);
 		Training training = this.trainingService.findTrainingById(trainingId);
 		List<DietType> dietTypes = Arrays.asList(DietType.values());
-
 		
 		model.addAttribute("diet", diet);
 		model.addAttribute("client", client);
@@ -169,9 +176,7 @@ public class DietController {
 		} 
 		else {
 
-			diet.setId(dietId);
-			this.dietService.saveDiet(diet);
-
+			diet.setId(dietId);		
 			Training training = this.trainingService.findTrainingById(trainingId);
 			training.setDiet(diet);
 			
@@ -207,6 +212,16 @@ public class DietController {
 		}
 		
 		return trainer.getUser().getUsername().equals(username);
+	}
+	
+	public Boolean isTrainingFinished(final int trainingId)
+	{
+		Calendar now = Calendar.getInstance();
+		Date actualDate = now.getTime();
+				
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		return training.getEndDate().before(actualDate);
 	}
 
 	private Diet generateDiet(Diet diet, Integer clientId){

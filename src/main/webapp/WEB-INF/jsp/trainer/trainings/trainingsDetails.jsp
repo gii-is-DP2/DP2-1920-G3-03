@@ -52,14 +52,26 @@
 	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/{trainingId}/diets/create" var="dietAddurl" >
 	<spring:param name="trainingId" value="${training.id}"/>
 	</spring:url>
+	
+	<c:choose>
+		<c:when test="${training.endDate < actualDate}">
+			<h3><a style="color:grey">Add Diet</a></h3>
+		</c:when>
+		<c:otherwise>
+			<h3><a href="${fn:escapeXml(dietAddurl)}">Add Diet</a></h3>	
+		</c:otherwise>
+	</c:choose>
 
-	<h3><a href="${fn:escapeXml(dietAddurl)}">Add Diet</a></h3>
+	
 	<ul>
-		<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/{trainingId}/diets/{dietId}" var="dietUrl">
-	       	<spring:param name="dietId" value="${training.diet.id}"/>
-			<spring:param name="trainingId" value="${training.id}"/>
-	    </spring:url>
-		<li><a href="${fn:escapeXml(dietUrl)}"><c:out value="${training.diet.name}"/></a></li>
+		
+		<c:if test="${!empty training.diet}">
+			<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/{trainingId}/diets/{dietId}" var="dietUrl">
+		       	<spring:param name="dietId" value="${training.diet.id}"/>
+				<spring:param name="trainingId" value="${training.id}"/>
+		    </spring:url>
+			<li><a href="${fn:escapeXml(dietUrl)}"><c:out value="${training.diet.name}"/></a></li>
+		</c:if>
 	</ul>
 	
 </yogogym:layout>

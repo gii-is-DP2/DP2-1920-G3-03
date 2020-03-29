@@ -3,6 +3,8 @@ package org.springframework.samples.yogogym.web;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.validation.Valid;
 
@@ -52,7 +54,6 @@ public class ChallengeController {
 	public void initChallengeBinder(WebDataBinder dataBinder) {
 		dataBinder.setValidator(new ChallengeValidator());
 	}
-
 	
 	// ADMIN:
 	
@@ -86,20 +87,44 @@ public class ChallengeController {
 		Challenge c = new Challenge();
 
 		Collection<Exercise> exercises = this.exerciseService.findAllExercise();
+		Map<Integer,String> selectVals = new TreeMap<>();
+		
+		String value = "";
+		for(Exercise e:exercises)
+		{
+			value = e.getName();
+			
+			if(e.getEquipment() != null)
+				value = value.concat(", Equipment: "+e.getEquipment().getName());
+			
+			selectVals.put(e.getId(), value);
+		}
 				
 		modelMap.addAttribute("challenge", c);
-		modelMap.addAttribute("exercises",exercises);
+		modelMap.addAttribute("exercises",selectVals);
 		
 		return "/admin/challenges/challengesCreateOrUpdate";
 	}
 	
 	@PostMapping("/admin/challenges/new")
-	public String processCreationForm(@ModelAttribute("exerciseId")int exerciseId ,@Valid Challenge challenge,BindingResult result, ModelMap model) {
+	public String processCreationForm(@ModelAttribute("exercise.id")int exerciseId ,@Valid Challenge challenge,BindingResult result, ModelMap model) {
 		
 		if(result.hasErrors()) {
 			model.put("challenge",challenge);
 			Collection<Exercise> exercises = this.exerciseService.findAllExercise();
-			model.addAttribute("exercises",exercises);
+			Map<Integer,String> selectVals = new TreeMap<>();
+			
+			String value = "";
+			for(Exercise e:exercises)
+			{
+				value = e.getName();
+				
+				if(e.getEquipment() != null)
+					value = value.concat(", Equipment: "+e.getEquipment().getName());
+				
+				selectVals.put(e.getId(), value);
+			}
+			model.addAttribute("exercises",selectVals);
 			
 			return "/admin/challenges/challengesCreateOrUpdate";
 		}
@@ -131,6 +156,18 @@ public class ChallengeController {
 		
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 		Collection<Exercise> exercises = this.exerciseService.findAllExercise();
+		Map<Integer,String> selectVals = new TreeMap<>();
+		
+		String value = "";
+		for(Exercise e:exercises)
+		{
+			value = e.getName();
+			
+			if(e.getEquipment() != null)
+				value = value.concat(", Equipment: "+e.getEquipment().getName());
+			
+			selectVals.put(e.getId(), value);
+		}
 		
 		// If there are inscriptions, it cannot be edited
 		Collection<Inscription> inscriptions = inscriptionService.findInscriptionsByChallengeId(challengeId);
@@ -139,19 +176,32 @@ public class ChallengeController {
 		}
 					
 		model.addAttribute(challenge);
-		model.addAttribute("exercises",exercises);
+		model.addAttribute("exercises",selectVals);
 		
 		return "/admin/challenges/challengesCreateOrUpdate";
 	}
 	
 	@PostMapping("/admin/challenges/{challengeId}/edit")
 	public String processUpdateForm(@PathVariable("challengeId")int challengeId, 
-			@ModelAttribute("exerciseId")int exerciseId, @Valid Challenge challenge,  BindingResult result,ModelMap model) {
+			@ModelAttribute("exercise.id")int exerciseId, @Valid Challenge challenge,  BindingResult result,ModelMap model) {
 		
 		if(result.hasErrors()) {
 			model.put("challenge",challenge);
 			Collection<Exercise> exercises = this.exerciseService.findAllExercise();
-			model.addAttribute("exercises",exercises);
+			Map<Integer,String> selectVals = new TreeMap<>();
+			
+			String value = "";
+			for(Exercise e:exercises)
+			{
+				value = e.getName();
+				
+				if(e.getEquipment() != null)
+					value = value.concat(", Equipment: "+e.getEquipment().getName());
+				
+				selectVals.put(e.getId(), value);
+			}
+			
+			model.addAttribute("exercises",selectVals);
 			
 			return "/admin/challenges/challengesCreateOrUpdate";
 		}
@@ -231,6 +281,7 @@ public class ChallengeController {
 			return "exception";
 
 		Client client = this.clientService.findClientByUsername(clientUsername);
+		
 		List<Inscription> inscriptions = client.getInscriptions();
 
 		modelMap.addAttribute("inscriptions", inscriptions);
@@ -244,8 +295,8 @@ public class ChallengeController {
 
 		if(!isLoggedPrincipal(clientUsername))
 			return "exception";
-		
-	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
+	
+		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 	   	Client client = this.clientService.findClientByUsername(clientUsername);
 	   	Inscription inscription;
 	   	

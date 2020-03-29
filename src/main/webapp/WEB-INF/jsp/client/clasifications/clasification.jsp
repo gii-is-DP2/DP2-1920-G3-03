@@ -85,7 +85,7 @@
 			<canvas id="canvasClasificationAll"></canvas>
 		</div>
 	</c:if>
-    <c:if test="${!hasChallengeClasificationAll}">
+    <c:if test="${!hasChallengeClasification}">
 		No one has completed challenges
 	</c:if>
 </petclinic:layout>

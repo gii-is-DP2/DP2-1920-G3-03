@@ -3,6 +3,7 @@ package org.springframework.samples.yogogym.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.jupiter.api.Assertions;
@@ -74,15 +75,15 @@ public class GuildServiceTest {
 		g2.setName("Name");
 		
 		
-		try {
-			this.guildService.saveGuild(g1);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+		this.guildService.saveGuild(g1);
+		Collection<Guild> guilds = this.guildService.findAllGuild();
+		int foundBefore = guilds.size();
 		
-		Assertions.assertThrows(GuildSameNameException.class, () ->{
-			this.guildService.saveGuild(g2);
-		});		
+		this.guildService.saveGuild(g2);
+		guilds = this.guildService.findAllGuild();
+		int foundAfter = guilds.size();
+		
+		assertThat(foundBefore).isEqualTo(foundAfter);		
 
 	}
 	
@@ -96,28 +97,33 @@ public class GuildServiceTest {
 		g2.setCreator("CarlosD");
 		g2.setName("GymPrueba");
 		
-		try {
-			this.guildService.saveGuild(g1);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+		this.guildService.saveGuild(g1);
+		Collection<Guild> guilds = this.guildService.findAllGuild();
+		int foundBefore = guilds.size();
 		
-		Assertions.assertThrows(GuildSameCreatorException.class, () ->{
-			this.guildService.saveGuild(g2);
-		});		
-
+		this.guildService.saveGuild(g2);
+		guilds = this.guildService.findAllGuild();
+		int foundAfter = guilds.size();
+		
+		assertThat(foundBefore).isEqualTo(foundAfter);	
 	}
 	
 	@Test
 	void shouldNotSaveGuildWithBadURL() {
 		
-		Guild g1 = createGuildTesting();
+		Collection<Guild> guilds = this.guildService.findAllGuild();
+		int foundBefore = guilds.size();
 		
+		Guild g1 = createGuildTesting();
 		g1.setLogo("EstaUrlEstaMal.com");
 				
-		Assertions.assertThrows(GuildLogoException.class, () ->{
-			this.guildService.saveGuild(g1);
-		});		
+		this.guildService.saveGuild(g1);
+		
+		guilds = this.guildService.findAllGuild();
+		int foundAfter = guilds.size();
+		
+		assertThat(foundBefore).isEqualTo(foundAfter);
+			
 
 	}
 	
@@ -144,9 +150,14 @@ public class GuildServiceTest {
 	void shouldNotDeleteGuild() {
 		
 		Guild guild = this.guildService.findGuildById(2);
-		Assertions.assertThrows(GuildNotUserException.class, () ->{
-			this.guildService.deleteGuild(guild,"client4");
-		});
+		Client c = this.clientService.findClientById(4);
+		Collection <Guild> guilds = this.guildService.findAllGuild();
+		int foundBefore = guilds.size();
+		this.guildService.deleteGuild(guild,c.getUser().getUsername());
+		guilds = this.guildService.findAllGuild();
+		int foundAfter = guilds.size();
+		
+		assertThat(foundBefore).isEqualTo(foundAfter);	
 	}
 	
 	@Test
@@ -161,9 +172,25 @@ public class GuildServiceTest {
 	@Test
 	void shouldLeaveGuild() {
 		
-		Client c = this.clientService.findClientById(1);
-		this.guildService.leaveGuild(c.getUser().getUsername());
+		Client c = this.clientService.findClientById(5);
+		Guild g = this.guildService.findGuildById(1);
+		try {
+		this.guildService.leaveGuild(c,g);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	
 		assertTrue(c.getGuild() == null);
+	}
+	
+	@Test 
+	void shouldNotLeaveGuild() {
+		
+		Guild guild = this.guildService.findGuildById(1);
+		Client c = this.clientService.findClientById(6);
+		this.guildService.leaveGuild(c, guild);
+		
+		assertTrue(c.getGuild() != null);
 	}
 	
 	private Guild createGuildTesting() {
