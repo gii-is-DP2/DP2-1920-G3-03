@@ -135,7 +135,6 @@ Como entrenador quiero realizar rutinas a nuestros clientes para facilitar el de
 Como entrenador quiero llevar el control de las rutinas para poder cambiar la rutina adaptándola de la mejor forma al cliente y corregir errores.
 
 #### Escenarios:
-<<<<<<< HEAD
 * **Gestionar la rutina de un usuario sin que este tenga rutina:** Dado un entrenador que se dispone a gestionar la rutina de un usuario, cuando ese usuario no posee ninguna rutina. La vista de encargada la gestión de rutinas notificará al entrenador de que el usuario indicado que no posee ninguna rutina y le ofertará la opción de crearla. 
 * **Gestionar la rutina de un usuario cuyo usuario no entrenas:** Dado un entrenador que se dispone a gestionar la rutina de un usuario, cuando no eres entrenador de ese usuario. La operación de gestión no se puede efectuar. El sistema limita a solo poder ver la rutina que tiene el usuario deseado, pero no es manipulable por alguien que no sea su entrenador.
 * **Gestionar la rutina de un usuario borrando todos los ejercicios:** Dado un entrenador que se dispone a gestionar la rutina, en este caso modificar, de un usuario, borrando todos los ejercicios, cuando el usuario posee una rutina completa. La operación de gestión no se puede efectuar ya que debe existir un mínimo de 3 actividades por rutina.
@@ -157,8 +156,7 @@ Como entrenador quiero llevar el control de las rutinas para poder cambiar la ru
   - Repeticiones por semana tiene un valor inferior a 1
 
   La vista redirecciona al entrenador a la misma vista de editar indicándole el error/es y atributo/os que provocan el conflicto.
-
->>>>>>> release/1.0.0
+  
 ---
 
 #### HU24 - Añadir línea de rutinas a los entrenamientos
