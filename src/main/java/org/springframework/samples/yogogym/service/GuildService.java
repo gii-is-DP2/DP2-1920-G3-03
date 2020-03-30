@@ -10,6 +10,9 @@ import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Guild;
 import org.springframework.samples.yogogym.repository.ClientRepository;
 import org.springframework.samples.yogogym.repository.GuildRepository;
+import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
+import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
+import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +41,7 @@ public class GuildService {
 		Guild res = this.guildRepository.findGuildById(guildId);
 		return res;		
 	}
-	
+	 
 	@Transactional
 	public Collection<Client> findAllClientesByGuild(Guild guild) throws DataAccessException {
 		
@@ -46,20 +49,25 @@ public class GuildService {
 		return res;		
 	}
 	
-	@Transactional
-	public void saveGuild(Guild guild) throws DataAccessException {
+	@Transactional(rollbackFor = {GuildSameNameException.class,GuildSameCreatorException.class,GuildLogoException.class})
+	public void saveGuild(Guild guild) throws DataAccessException, GuildSameNameException, GuildSameCreatorException, GuildLogoException {
 		
 		Collection<Guild> guilds = this.guildRepository.findAllGuilds();
 		
 		if(guild.getId() != null) {
 			guilds = guilds.stream().filter(c -> c.getId() != guild.getId()).collect(Collectors.toList());
 		}
-			if(guilds.stream().allMatch(c->!c.getName().equals(guild.getName()))&&
-			   guilds.stream().allMatch(c->!c.getCreator().equals(guild.getCreator()))&&
-			   guild.getLogo().startsWith("https://")) 
-				this.guildRepository.save(guild);
-					
+			if(guilds.stream().anyMatch(c->c.getName().equals(guild.getName()))){
+				throw new GuildSameNameException();
+			}else if(guilds.stream().anyMatch(c->c.getCreator().equals(guild.getCreator()))) {
+				throw new GuildSameCreatorException();
+			}else if(!guild.getLogo().startsWith("https://")){
+				throw new GuildLogoException();
+			}else {
+			   
+				this.guildRepository.save(guild);	
 			}
+	}
 	
 	@Transactional
 	public void deleteGuild(Guild guild, String clientUsername) throws DataAccessException {
