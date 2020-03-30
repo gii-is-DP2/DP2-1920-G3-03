@@ -15,6 +15,7 @@ import java.util.Collection;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -28,9 +29,14 @@ import org.springframework.samples.yogogym.model.User;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.GuildService;
 import org.springframework.samples.yogogym.service.TrainerService;
+import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
+import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
+import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.Mockito.*;
 
 @WebMvcTest(value = GuildController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes = WebSecurityConfigurer.class),
@@ -119,7 +125,26 @@ public class GuildControllerTests {
 		given(this.clientService.findClientByUsername(testClientUsername2)).willReturn(client2);
 		given(this.trainerService.findTrainer(testTrainerUsername)).willReturn(trainer);
 	}
-
+	
+	void testWrongAuth(int mode,String path,Object... uriVars) throws Exception {
+		if(mode == 0) {
+			mockMvc.perform(get(path,uriVars))
+			.andExpect(status().isOk())
+			.andExpect(view().name("exception"));			
+		}
+		else {
+			mockMvc.perform(post(path,uriVars))
+			.andExpect(status().isForbidden());
+		}
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testWrongAuthority() throws Exception {
+		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}/edit",testClientUsername2,testGuildId1);
+		testWrongAuth(1,"/client/{clientUsername}/guilds/{guildId}/edit",testClientUsername2,testGuildId1);
+		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}/delete",testClientUsername2,testGuildId1);
+	}
 	//HU5 - CRUD DE GREMIOS
 	@WithMockUser(value = "CarlosD", authorities = {"client"})
 	@Test
@@ -128,7 +153,7 @@ public class GuildControllerTests {
 			.andExpect(view().name("client/guilds/guildsList"));
 	}
 	
-	@WithMockUser(value = "CarlosD", authorities = {"client"})
+	@WithMockUser(value = "client1", authorities = {"client"})
 	@Test
 	void testShowGuildByIdClient() throws Exception {
 		mockMvc.perform(get("/client/{clientUsername}/guilds/{guildId}",testClientUsername1, testClientId1)).andExpect(status().isOk())
@@ -180,46 +205,42 @@ public class GuildControllerTests {
 			.andExpect(view().name("client/guilds/guildsCreateOrUpdate"));
 	}
 	
+	 private void processCreateError(String errorField, String name, String description, String creator, String logo) throws Exception {
+			
+	   		mockMvc.perform(post("/client/{clientUsername}/guilds/create", testClientUsername2)
+					.with(csrf())
+					.param("name", name)
+					.param("description", description)
+					.param("creator", creator)
+					.param("logo", logo))
+				.andExpect(status().isOk()).andExpect(model().attributeHasErrors("guild"))
+				.andExpect(model().attributeHasFieldErrors("guild", errorField))
+				.andExpect(model().errorCount(1))
+				.andExpect(view().name("client/guilds/guildsCreateOrUpdate"));
+		}
+	
 	@WithMockUser(username = "client1", authorities = {"client"})
 	@Test
 	void testProcessCreateGuildHasErrorSameCreator() throws Exception {
-		mockMvc.perform(post("/client/{clientUsername}/guilds/create", testClientUsername1)
-				.with(csrf())
-				.param("name", "Guild Test 1")
-				.param("description", "This is an example 1")
-				.param("creator", testClientUsername1)
-				.param("logo", "https://omega2001.es/wp-content/uploads/2016/02/red-informatica-1080x675.jpg"))
-		.andExpect(status().isOk()).andExpect(model().attributeHasErrors("guild"))
-		.andExpect(model().attributeHasFieldErrors("guild", "creator"))
-		.andExpect(view().name("client/guilds/guildsCreateOrUpdate"));
+		doThrow(new GuildSameCreatorException()).when(this.guildService).saveGuild(Mockito.any(Guild.class));
+		processCreateError("creator", "Bad Creator Create", "This is a bad url create", "client1", "https.//goofdUrl.jpg");
+	
 	}
 	
 	@WithMockUser(username = "client4", authorities = {"client"})
 	@Test
 	void testProcessCreateGuildHasErrorSameName() throws Exception {
-		mockMvc.perform(post("/client/{clientUsername}/guilds/create", testClientUsername2)
-				.with(csrf())
-				.param("name", "Connecting")
-				.param("description", "This is an example 2")
-				.param("creator", testClientUsername2)
-				.param("logo", "https://omega2001.es/wp-content/uploads/2016/02/red-informatica-1080x675.jpg"))
-		.andExpect(status().isOk()).andExpect(model().attributeHasErrors("guild"))
-		.andExpect(model().attributeHasFieldErrors("guild", "name"))
-		.andExpect(view().name("client/guilds/guildsCreateOrUpdate"));
+		doThrow(new GuildSameNameException()).when(this.guildService).saveGuild(Mockito.any(Guild.class));
+		processCreateError("name", "Connecting", "This is a bad name create", "client3", "https.//goofdUrl.jpg");
+	
 	}
 	
-	@WithMockUser(username = "client4", authorities = {"client"})
+	@WithMockUser(username = "client1", authorities = {"client"})
 	@Test
 	void testProcessCreateGuildHasErrorBadURL() throws Exception {
-		mockMvc.perform(post("/client/{clientUsername}/guilds/create", "client4")
-				.with(csrf())
-				.param("name", "Texting Guild 3")
-				.param("description", "This is an example 3")
-				.param("creator", "client4")
-				.param("logo", "amigo"))
-		.andExpect(status().isOk()).andExpect(model().attributeHasErrors("guild"))
-		.andExpect(model().attributeHasFieldErrors("guild", "logo"))
-		.andExpect(view().name("client/guilds/guildsCreateOrUpdate"));
+		doThrow(new GuildLogoException()).when(this.guildService).saveGuild(Mockito.any(Guild.class));
+		processCreateError("logo", "Bad Url Create", "This is a bad url create", "client3", "badUrl.jpg");
+		
 	}
 	//DELETE
 	@WithMockUser(value = "client1", authorities = {"client"})
@@ -231,13 +252,6 @@ public class GuildControllerTests {
 		.andExpect(view().name("redirect:/client/{clientUsername}/guilds"));
 	}
 	
-	@WithMockUser(value = "client5", authorities = {"client"})
-	@Test
-	void testDeleteGuildYouAreNotTheCreatorError() throws Exception{
-		
-		mockMvc.perform(get("/client/{clientUsername}/guilds/{guildId}/delete","client5",testGuildId1))
-		.andExpect(view().name("exception"));
-	}
 	//UPDATE
 	@WithMockUser(value = "client1", authorities = {"client"})
 	@Test
@@ -278,39 +292,32 @@ public class GuildControllerTests {
 			.andExpect(view().name("client/guilds/guildsCreateOrUpdate"));
 	}
 	
+	 private void processUpdateError(String errorField, String name, String description, String creator, String logo) throws Exception {
+			
+ 		mockMvc.perform(post("/client/{clientUsername}/guilds/{guildId}/edit", testClientUsername1,testGuildId1)
+				.with(csrf())
+				.param("name", name)
+				.param("description", description)
+				.param("creator", creator)
+				.param("logo", logo))
+			.andExpect(status().isOk())
+			.andExpect(view().name("client/guilds/guildsCreateOrUpdate"));
+	}
+	
 	@WithMockUser(value = "client1", authorities = {"client"})
 	@Test
 	void testProcessUpdateGuildFormHasErrorSameName() throws Exception{
+		doThrow(new GuildSameNameException()).when(this.guildService).saveGuild(Mockito.any(Guild.class));
+		processUpdateError("name", "Connecting", "This is a bad name test", "client1", "https://thisIsAGoodURL.png");
 		
-		mockMvc.perform(post("/client/{clientUsername}/guilds/{guildId}/edit", testClientUsername1,testGuildId1)
-				.with(csrf())
-				.param("name", "Connecting")
-				.param("description", "descrption")
-				.param("creator", "client1")
-				.param("logo", "https://hjhjhjhh.jpg"))
-			.andExpect(status().isFound());
 	}
 	
 	@WithMockUser(value = "client1", authorities = {"client"})
 	@Test
 	void testProcessUpdateGuildFormHasErrorBadURL() throws Exception{
-		mockMvc.perform(post("/client/{clientUsername}/guilds/{guildId}/edit", testClientUsername1,testGuildId1)
-				.with(csrf())
-				.param("name", "Testin")
-				.param("description", "descrption")
-				.param("creator", "client1")
-				.param("logo", "jhjhjhh.jpg"))
-			.andExpect(status().isOk()).andExpect(model().attributeHasErrors("guild"))
-			.andExpect(model().attributeHasFieldErrors("guild", "logo"))
-			.andExpect(view().name("client/guilds/guildsCreateOrUpdate"));
-	}
-	
-	@WithMockUser(value="client3", authorities = {"client"})
-	@Test
-	void testProcessUpdateGuildFormNotGuildCreatorError() throws Exception{
-		mockMvc.perform(get("/client/{clientUsername}/guilds/{guildId}/edit", "client4",testGuildId1))
-		.andExpect(status().isOk())
-		.andExpect(view().name("exception"));
+		doThrow(new GuildLogoException()).when(this.guildService).saveGuild(Mockito.any(Guild.class));
+		processUpdateError("logo", "Title Bad URL", "This is a bad url test", "client1", "thisIsABadURL.png");
+		
 	}
 	
 	//HU14 - UNIRSE Y SALIRSE DE LOS GREMIOS
@@ -340,5 +347,7 @@ public class GuildControllerTests {
 		.andExpect(status().isOk())
 		.andExpect(view().name("exception"));
 	}
+
 }
+
 

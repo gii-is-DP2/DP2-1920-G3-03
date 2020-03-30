@@ -2,7 +2,7 @@
 
 ## Nivel a alcanzar
 
-En este primer _sprint_ el grupo de trabajo DP2-1920-G3-03 ha decidió optar al nivel de aplicación 2, contando para ello con 19 entidades y 25 historias de usuario. El nivel de sprint al que se opta es el 8, añadiendo para ello el 66% de las historias de usuario, sus pruebas unitarias, la automatización con _Travis CI_.
+En este primer _sprint_ el grupo de trabajo DP2-1920-G3-03 ha decidió optar al nivel de aplicación 2, contando para ello con 19 entidades y 25 historias de usuario. El nivel de sprint al que se opta es el 9, añadiendo para ello el 66% de las historias de usuario, sus pruebas unitarias, la automatización con _Travis CI_, la implementación de una API con la que mostrar oraciones y pruebas parametrizadas.
 
 ---
 
