@@ -8,7 +8,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.samples.yogogym.model.Diet;
 import org.springframework.samples.yogogym.model.Enums.DietType;
 
 /**
