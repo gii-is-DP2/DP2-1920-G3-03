@@ -5,14 +5,21 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Guild;
+import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
+import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
+import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 public class GuildServiceTest {
 
@@ -68,17 +75,14 @@ public class GuildServiceTest {
 		g1.setName("Name");
 		g2.setName("Name");
 		
-		
+		try{
 		this.guildService.saveGuild(g1);
-		Collection<Guild> guilds = this.guildService.findAllGuild();
-		int foundBefore = guilds.size();
-		
-		this.guildService.saveGuild(g2);
-		guilds = this.guildService.findAllGuild();
-		int foundAfter = guilds.size();
-		
-		assertThat(foundBefore).isEqualTo(foundAfter);		
-
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		Assertions.assertThrows(GuildSameNameException.class, () ->{
+			this.guildService.saveGuild(g2);
+		});	
 	}
 	
 	@Test
@@ -91,34 +95,26 @@ public class GuildServiceTest {
 		g2.setCreator("CarlosD");
 		g2.setName("GymPrueba");
 		
-		this.guildService.saveGuild(g1);
-		Collection<Guild> guilds = this.guildService.findAllGuild();
-		int foundBefore = guilds.size();
-		
-		this.guildService.saveGuild(g2);
-		guilds = this.guildService.findAllGuild();
-		int foundAfter = guilds.size();
-		
-		assertThat(foundBefore).isEqualTo(foundAfter);	
+		try{
+			this.guildService.saveGuild(g1);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			Assertions.assertThrows(GuildSameCreatorException.class, () ->{
+				this.guildService.saveGuild(g2);
+			});	
 	}
 	
 	@Test
 	void shouldNotSaveGuildWithBadURL() {
 		
-		Collection<Guild> guilds = this.guildService.findAllGuild();
-		int foundBefore = guilds.size();
-		
+	
 		Guild g1 = createGuildTesting();
 		g1.setLogo("EstaUrlEstaMal.com");
 				
-		this.guildService.saveGuild(g1);
-		
-		guilds = this.guildService.findAllGuild();
-		int foundAfter = guilds.size();
-		
-		assertThat(foundBefore).isEqualTo(foundAfter);
-			
-
+		Assertions.assertThrows(GuildLogoException.class, () ->{
+			this.guildService.saveGuild(g1);
+		});
 	}
 	
 	@Test
