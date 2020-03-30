@@ -42,7 +42,9 @@
 	    <c:otherwise>
 	    
 	        <h2>Editing Diet for <c:out value="${client.firstName} ${client.lastName}"/></h2>
-            <form:form modelAttribute="diet" id="dietForm">
+            <form:form modelAttribute="diet" id="dietForm" class="form-horizontal">
+            
+            <div class="form-group has-feedback">
                 <fmt:message var="name" key="name"/>
                 <fmt:message var="description" key="description"/>
                 <fmt:message var="type" key="type"/>
@@ -64,6 +66,8 @@
                         <button class="btn btn-default" type="submit"><fmt:message key="saveDiet"/></button>
                     </div>
                 </div>
+                
+            </div>    
             </form:form>
 
 	    </c:otherwise>

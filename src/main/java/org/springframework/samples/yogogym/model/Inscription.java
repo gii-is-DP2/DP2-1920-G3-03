@@ -10,9 +10,11 @@ import org.hibernate.validator.constraints.URL;
 import org.springframework.samples.yogogym.model.Enums.Status;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "inscriptions")
 public class Inscription extends BaseEntity{
 

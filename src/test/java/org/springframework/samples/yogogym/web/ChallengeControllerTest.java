@@ -3,6 +3,7 @@ package org.springframework.samples.yogogym.web;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -33,6 +35,8 @@ import org.springframework.samples.yogogym.service.ChallengeService;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.samples.yogogym.service.InscriptionService;
+import org.springframework.samples.yogogym.service.exceptions.ChallengeMore3Exception;
+import org.springframework.samples.yogogym.service.exceptions.ChallengeSameNameException;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -132,6 +136,7 @@ public class ChallengeControllerTest {
 	}
 	
 	// ADMIN:
+	
 	
 	@WithMockUser(value = "admin1", authorities = {"admin"})
 	@Test
@@ -268,6 +273,53 @@ public class ChallengeControllerTest {
 				.andExpect(view().name("/admin/challenges/challengesCreateOrUpdate"));
 	}
 	
+	@WithMockUser(username="admin1", authorities= {"admin"})
+	@Test
+	void testProcessChallengeCreationFormHasErrorsSameName() throws Exception {
+		
+		doThrow(new ChallengeSameNameException()).when(this.challengeService).saveChallenge(Mockito.any(Challenge.class));
+		
+		mockMvc.perform(post("/admin/challenges/new")
+				.with(csrf())
+				.param("name", "Test")
+				.param("description", "Test")
+				.param("initialDate", "2090/01/01")
+				.param("endDate", "2090/01/02")
+				.param("points", "10")
+				.param("reward","Reward")
+				.param("reps","10")
+				.param("weight","10.")
+				.param("exercise.id","1"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeHasFieldErrors("challenge", "name"))
+			.andExpect(view().name("/admin/challenges/challengesCreateOrUpdate"));
+		
+	}
+	
+	@WithMockUser(username="admin1", authorities= {"admin"})
+	@Test
+	void testProcessChallengeCreationFormHasErrorsMore3() throws Exception {
+		
+		doThrow(new ChallengeMore3Exception()).when(this.challengeService).saveChallenge(Mockito.any(Challenge.class));
+		
+		mockMvc.perform(post("/admin/challenges/new")
+				.with(csrf())
+				.param("name", "Test")
+				.param("description", "Test")
+				.param("initialDate", "2090/01/01")
+				.param("endDate", "2090/01/02")
+				.param("points", "10")
+				.param("reward","Reward")
+				.param("reps","10")
+				.param("weight","10.")
+				.param("exercise.id","1"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeHasFieldErrors("challenge", "initialDate"))
+			.andExpect(view().name("/admin/challenges/challengesCreateOrUpdate"));
+		
+	}
+	
+	
 	@WithMockUser(value = "admin1", authorities = {"admin"})
 	@Test
 	void testInitUpdateChallengeForm() throws Exception
@@ -306,6 +358,52 @@ public class ChallengeControllerTest {
 			.param("exercise.id","1"))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/admin/challenges"));
+	}
+	
+	@WithMockUser(username="admin1", authorities= {"admin"})
+	@Test
+	void testProcessUpdateChallengeFormHasErrorsSameName() throws Exception {
+		
+		doThrow(new ChallengeSameNameException()).when(this.challengeService).saveChallenge(Mockito.any(Challenge.class));
+		
+		mockMvc.perform(post("/admin/challenges/{challengeId}/edit",testChallengeId1)
+				.with(csrf())
+				.param("name", "Test Update")
+				.param("description", "Test")
+				.param("initialDate", "2090/01/01")
+				.param("endDate", "2090/01/02")
+				.param("points", "10")
+				.param("reward","Reward")
+				.param("reps","10")
+				.param("weight","10.")
+				.param("exercise.id","1"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeHasFieldErrors("challenge", "name"))
+			.andExpect(view().name("/admin/challenges/challengesCreateOrUpdate"));
+		
+	}
+	
+	@WithMockUser(username="admin1", authorities= {"admin"})
+	@Test
+	void testProcessUpdateChallengeFormHasErrorsMore3() throws Exception {
+		
+		doThrow(new ChallengeMore3Exception()).when(this.challengeService).saveChallenge(Mockito.any(Challenge.class));
+		
+		mockMvc.perform(post("/admin/challenges/{challengeId}/edit",testChallengeId1)
+				.with(csrf())
+				.param("name", "Test Update")
+				.param("description", "Test")
+				.param("initialDate", "2090/01/01")
+				.param("endDate", "2090/01/02")
+				.param("points", "10")
+				.param("reward","Reward")
+				.param("reps","10")
+				.param("weight","10.")
+				.param("exercise.id","1"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeHasFieldErrors("challenge", "initialDate"))
+			.andExpect(view().name("/admin/challenges/challengesCreateOrUpdate"));
+		
 	}
 	
 	@WithMockUser(value = "admin1", authorities = {"admin"})

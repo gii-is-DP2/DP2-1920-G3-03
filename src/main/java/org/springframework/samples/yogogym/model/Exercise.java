@@ -16,9 +16,11 @@ import org.springframework.samples.yogogym.model.Enums.Intensity;
 import org.springframework.samples.yogogym.model.Enums.RepetitionType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "exercises")
 public class Exercise extends BaseEntity {
 

@@ -10,9 +10,11 @@ import javax.validation.constraints.NotNull;
 import org.springframework.samples.yogogym.model.Enums.FoodType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "foods")
 public class Food extends BaseEntity{
 	
