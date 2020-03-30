@@ -18,4 +18,5 @@
 	            <img class="img-responsive" style="display: block;  margin-left: auto;  margin-right: auto;  width: 30%;" src="${petsImage}"/>
 	    </div>
         </div>
+
 </yogogym:layout>
