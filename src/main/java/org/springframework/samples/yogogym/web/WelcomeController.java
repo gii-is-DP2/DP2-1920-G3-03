@@ -12,9 +12,15 @@ public class WelcomeController {
 	
 	  @GetMapping({"/","/welcome"})
 	  public String welcome(RestTemplate restTemplate, Model model) {	    
-		Quote quote = restTemplate.getForObject("https://api.kanye.rest", Quote.class);
-
-		model.addAttribute("quote", quote);
+		  try {
+			Quote quote = restTemplate.getForObject("https://api.kany.rest", Quote.class);
+			model.addAttribute("quote", quote);
+		  } catch (Exception e) {
+			  //TODO: handle exception
+			Quote quote = new Quote();
+			quote.setQuote("Just because our API fails doesnt mean you can fail too");
+			model.addAttribute("quote", quote);
+		  }	
 
 	    return "welcome";
 	  }
