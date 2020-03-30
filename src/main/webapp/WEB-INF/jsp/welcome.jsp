@@ -12,7 +12,7 @@
 			<h1 class="text-center"><fmt:message key="welcome"/></h1>
     	        </div> 
 				<div class="row">
-			<h2 class="text-center"> <c:out value="${quote.quote}"/> </h2>
+			<h2 class="text-center"> Kanye West: <c:out value="${quote.quote}"/> </h2>
 				</div> 
 
         </div>
