@@ -13,7 +13,7 @@ public class WelcomeController {
 	  @GetMapping({"/","/welcome"})
 	  public String welcome(RestTemplate restTemplate, Model model) {	    
 		  try {
-			Quote quote = restTemplate.getForObject("https://api.kany.rest", Quote.class);
+			Quote quote = restTemplate.getForObject("https://api.kanye.rest", Quote.class);
 			model.addAttribute("quote", quote);
 		  } catch (Exception e) {
 			  //TODO: handle exception
