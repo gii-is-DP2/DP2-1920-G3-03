@@ -89,6 +89,52 @@ public class ClasificationControllerTests {
 					.andExpect(model().attribute("hasChallengeClasificationAll", true));
 		}
 
+	}
+	
+	@Nested
+	@WebMvcTest(value = ClasificationController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class ClasificationWithChallengesTests2 {
+
+		@MockBean
+		private InscriptionService inscriptionService;
+
+		@MockBean
+		private ClientService clientService;
+
+		@Autowired
+		private MockMvc mockMvc;
+
+		@BeforeEach
+		void setup() {
+			Exercise sampleExercise = new Exercise();
+			sampleExercise.setName("prueba");
+			sampleExercise.setDescription("prueba");
+			Challenge sampleChallege = new Challenge();
+			sampleChallege.setName("prueba");
+			sampleChallege.setDescription("prueba");
+			sampleChallege.setReward("prueba");
+			sampleChallege.setPoints(3);
+			sampleChallege.setInitialDate(new Date());
+			sampleChallege.setExercise(sampleExercise);
+			Inscription sampleInscription = new Inscription();
+			sampleInscription.setStatus(Status.COMPLETED);
+			sampleInscription.setChallenge(sampleChallege);
+			Client sampleClient = new Client();
+			User sampleUser = new User();
+			sampleUser.setUsername("client3");
+			sampleUser.setEnabled(true);
+			List<Inscription> listSample = new ArrayList<Inscription>();
+			listSample.add(sampleInscription);
+			sampleClient.setInscriptions(listSample);
+			sampleClient.setUser(sampleUser);
+			List<Client> listSampleClient = new ArrayList<Client>();
+			listSampleClient.add(sampleClient);
+
+			given(this.inscriptionService.findInscriptionsByUsername(TEST_USERNAME)).willReturn(listSample);
+			given(this.clientService.findClientsWithCompletedInscriptions()).willReturn(listSampleClient);
+		}
+
+
 		@WithMockUser(username = "client1", authorities = { "client" })
 		@Test
 		void testInitClasificationWithoutMyChallenges() throws Exception {
