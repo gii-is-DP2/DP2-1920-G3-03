@@ -26,6 +26,10 @@
             <th>Intensity</th>
             <td><c:out value="${exercise.intensity}"/></td>
         </tr>
+        <tr>
+            <th>Repetition Type</th>
+            <td><c:out value="${exercise.repetitionType}"/></td>
+        </tr>
     </table>
 
     <br/>

@@ -24,6 +24,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.RoutineLineRepository;
+import org.springframework.samples.yogogym.service.exceptions.ExerciseNotCorrectRepetitionType;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.samples.yogogym.service.exceptions.TrainingRepAndTimeSetted;
 import org.springframework.stereotype.Service;
@@ -72,7 +73,7 @@ public class RoutineLineService {
 	}
 	
 	@Transactional(rollbackFor= {TrainingFinished.class, TrainingRepAndTimeSetted.class})
-	public void saveRoutineLine(RoutineLine routineLine, int trainingId) throws DataAccessException,TrainingFinished, TrainingRepAndTimeSetted {
+	public void saveRoutineLine(RoutineLine routineLine, int trainingId) throws DataAccessException,TrainingFinished, TrainingRepAndTimeSetted, ExerciseNotCorrectRepetitionType {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
@@ -83,7 +84,31 @@ public class RoutineLineService {
 			throw new TrainingFinished();
 		else if(routineLine.getTime() != null && routineLine.getReps() != null)
 			throw new TrainingRepAndTimeSetted();
+		else if(!isCorrectRepetitionType(routineLine))
+			throw new ExerciseNotCorrectRepetitionType();
 		else
 			this.routineLineRepository.save(routineLine);
+	}
+	
+
+	protected Boolean isCorrectRepetitionType(RoutineLine routineLine)
+	{
+		Boolean res = true;
+		
+		switch(routineLine.getExercise().getRepetitionType())
+		{
+			case REPS:				
+				if(routineLine.getTime() != null)
+					return false;				
+				break;
+			case TIME:				
+				if(routineLine.getReps() != null)
+					return false;				
+				break;
+			case TIME_AND_REPS:				
+				return res;
+		}		
+		
+		return res;
 	}
 }
