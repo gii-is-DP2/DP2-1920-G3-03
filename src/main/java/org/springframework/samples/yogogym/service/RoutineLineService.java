@@ -26,7 +26,7 @@ import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.RoutineLineRepository;
 import org.springframework.samples.yogogym.service.exceptions.ExerciseNotCorrectRepetitionType;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
-import org.springframework.samples.yogogym.service.exceptions.TrainingRepAndTimeSetted;
+import org.springframework.samples.yogogym.service.exceptions.RoutineLineRepAndTimeSetted;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,8 +72,8 @@ public class RoutineLineService {
 			this.routineLineRepository.delete(routineLine);
 	}
 	
-	@Transactional(rollbackFor= {TrainingFinished.class, TrainingRepAndTimeSetted.class})
-	public void saveRoutineLine(RoutineLine routineLine, int trainingId) throws DataAccessException,TrainingFinished, TrainingRepAndTimeSetted, ExerciseNotCorrectRepetitionType {
+	@Transactional(rollbackFor= {TrainingFinished.class, RoutineLineRepAndTimeSetted.class})
+	public void saveRoutineLine(RoutineLine routineLine, int trainingId) throws DataAccessException,TrainingFinished, RoutineLineRepAndTimeSetted, ExerciseNotCorrectRepetitionType {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
@@ -83,7 +83,7 @@ public class RoutineLineService {
 		if(training.getEndDate().before(actualDate))
 			throw new TrainingFinished();
 		else if(routineLine.getTime() != null && routineLine.getReps() != null)
-			throw new TrainingRepAndTimeSetted();
+			throw new RoutineLineRepAndTimeSetted();
 		else if(!isCorrectRepetitionType(routineLine))
 			throw new ExerciseNotCorrectRepetitionType();
 		else
