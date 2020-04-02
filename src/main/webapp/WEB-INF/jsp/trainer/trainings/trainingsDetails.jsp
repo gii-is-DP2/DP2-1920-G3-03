@@ -15,12 +15,15 @@
 	<p><b>Starts:</b> <c:out value="${training.initialDate}"/></p>
 	<p><b>Ends:</b> <c:out value="${training.endDate}"/></p>
 	<br>
-	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/edit" var="trainingEditUrl" />
-	<a href="${fn:escapeXml(trainingEditUrl)}">Edit Training</a>
-	<br>
-	<br>
-	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/delete" var="trainingDeleteUrl" />
-	<a href="${fn:escapeXml(trainingDeleteUrl)}">Delete Training</a>
+	
+	<c:if test="${training.editingPermission!='CLIENT'}">
+		<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/edit" var="trainingEditUrl" />
+		<a href="${fn:escapeXml(trainingEditUrl)}">Edit Training</a>
+		<br>
+		<br>
+		<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/delete" var="trainingDeleteUrl" />
+		<a href="${fn:escapeXml(trainingDeleteUrl)}">Delete Training</a>
+	</c:if>
 	
 	<br>
 	<br>
@@ -29,15 +32,16 @@
 	<h3>Routines</h3>
 	<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/routines/create" var="routineAddurl" />
 	
-	<c:choose>
-		<c:when test="${training.endDate < actualDate}">
-			<h3><a style="color:grey">Add Routine</a></h3>
-		</c:when>
-		<c:otherwise>
-			<h3><a href="${fn:escapeXml(routineAddurl)}">Add Routine</a></h3>		
-		</c:otherwise>
-	</c:choose>
-	
+	<c:if test="${training.editingPermission!='CLIENT'}">
+		<c:choose>
+			<c:when test="${training.endDate < actualDate}">
+				<h3><a style="color:grey">Add Routine</a></h3>
+			</c:when>
+			<c:otherwise>
+				<h3><a href="${fn:escapeXml(routineAddurl)}">Add Routine</a></h3>		
+			</c:otherwise>
+		</c:choose>
+	</c:if>
 	
 	<ul>
 		<c:forEach var="routine" items="${training.routines}">
@@ -53,14 +57,16 @@
 	<spring:param name="trainingId" value="${training.id}"/>
 	</spring:url>
 	
-	<c:choose>
-		<c:when test="${training.endDate < actualDate}">
-			<h3><a style="color:grey">Add Diet</a></h3>
-		</c:when>
-		<c:otherwise>
-			<h3><a href="${fn:escapeXml(dietAddurl)}">Add Diet</a></h3>	
-		</c:otherwise>
-	</c:choose>
+	<c:if test="${training.editingPermission!='CLIENT'}">
+		<c:choose>
+			<c:when test="${training.endDate < actualDate}">
+				<h3><a style="color:grey">Add Diet</a></h3>
+			</c:when>
+			<c:otherwise>
+				<h3><a href="${fn:escapeXml(dietAddurl)}">Add Diet</a></h3>	
+			</c:otherwise>
+		</c:choose>
+	</c:if>
 
 	
 	<ul>

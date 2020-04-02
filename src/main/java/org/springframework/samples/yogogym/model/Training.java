@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.yogogym.model.Enums.EditingPermission;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,6 +26,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 @Table(name = "trainings")
 public class Training extends BaseEntity{
+	
+	@Column(name = "name")
+	@NotBlank
+	@Size(max=40)
+	protected String name;
 	
 	@Column(name = "initialDate")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
@@ -36,10 +42,9 @@ public class Training extends BaseEntity{
 	@NotNull
 	protected Date endDate;
 	
-	@Column(name = "name")
-	@NotBlank
-	@Size(max=40)
-	protected String name;
+	@Column(name = "editingPermission")
+	@NotNull
+	protected EditingPermission editingPermission;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "training_id")

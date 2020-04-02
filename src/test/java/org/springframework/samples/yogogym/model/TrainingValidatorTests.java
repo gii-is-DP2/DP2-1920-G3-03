@@ -10,6 +10,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.samples.yogogym.model.Enums.EditingPermission;
 
 class TrainingValidatorTests extends ValidatorTests{
 	
@@ -23,6 +24,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setName("New Training");
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
+		training.setEditingPermission(EditingPermission.BOTH);
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -40,6 +42,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setName("");
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
+		training.setEditingPermission(EditingPermission.BOTH);
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -61,6 +64,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setName("   ");
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
+		training.setEditingPermission(EditingPermission.BOTH);
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -82,6 +86,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setName(null);
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
+		training.setEditingPermission(EditingPermission.BOTH);
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -103,6 +108,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setName("This training name has more than forty characters");
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
+		training.setEditingPermission(EditingPermission.BOTH);
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -124,6 +130,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setName("New Training");
 		training.setInitialDate(null);
 		training.setEndDate(dateFormat.parse("2020-01-14"));
+		training.setEditingPermission(EditingPermission.BOTH);
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -145,6 +152,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setName("New Training");
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(null);
+		training.setEditingPermission(EditingPermission.BOTH);
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -159,6 +167,28 @@ class TrainingValidatorTests extends ValidatorTests{
 	}
 	
 	@Test
+	void shouldNotValidateWhenEditingPermissionNull() throws ParseException {
+		
+		Training training = new Training();
+		
+		training.setName("New Training");
+		training.setInitialDate(dateFormat.parse("2020-01-01"));
+		training.setEndDate(dateFormat.parse("2020-01-14"));
+		training.setEditingPermission(null);
+		Client client = new Client();
+		training.setClient(client);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Training>> constraintViolations = validator.validate(training);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
+		
+		assertThat(violation.getPropertyPath().toString()).isEqualTo("editingPermission");
+		assertThat(violation.getMessage()).isEqualTo("must not be null");		
+	}
+	
+	@Test
 	void shouldNotValidateWhenTrainingClientNull() throws ParseException {
 		
 		Training training = new Training();
@@ -166,6 +196,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setName("New Training");
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
+		training.setEditingPermission(EditingPermission.BOTH);
 		training.setClient(null);
 		
 		Validator validator = createValidator();

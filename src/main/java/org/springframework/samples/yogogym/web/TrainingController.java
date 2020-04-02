@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
+import org.springframework.samples.yogogym.model.Enums.EditingPermission;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
@@ -175,6 +176,11 @@ public class TrainingController {
 			return "exception";
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		if(training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+			return "exception";
+		}
+		
 		Client client = this.clientService.findClientById(clientId);
 		
 		Date now = new Date();
@@ -198,6 +204,11 @@ public class TrainingController {
 			return "exception";
 		
 		Training oldTraining = this.trainingService.findTrainingById(trainingId);
+		
+		if(oldTraining.getEditingPermission().equals(EditingPermission.CLIENT)) {
+			return "exception";
+		}
+		
 		Client client = this.clientService.findClientById(clientId);
 		Date now = new Date();
 		now = new Date(now.getYear(), now.getMonth(), now.getDate());
@@ -270,7 +281,8 @@ public class TrainingController {
 			return "exception";
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
-		if(training!=null) {
+		
+		if(training!=null&&!training.getEditingPermission().equals(EditingPermission.CLIENT)) {
 			this.trainingService.deleteTraining(training);
 			redirectAttrs.addFlashAttribute("deleteMessage", "The training was deleted successfully");
 			return "redirect:/trainer/{trainerUsername}/trainings";

@@ -22,6 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Training;
+import org.springframework.samples.yogogym.model.Enums.EditingPermission;
 import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
 import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
 import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
@@ -447,6 +448,7 @@ public class TrainingServiceTests {
 		training.setName("New Training");
 		training.setInitialDate(initDate.getTime());
 		training.setEndDate(endDate.getTime());
+		training.setEditingPermission(EditingPermission.BOTH);
 		Client client = this.clientService.findClientById(CLIENT_ID);
 		training.setClient(client);
 		
