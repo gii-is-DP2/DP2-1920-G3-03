@@ -101,6 +101,14 @@ public class TrainingService {
 		
 		Boolean anyException = true;
 
+		// No training ending in the past
+		if(!training.isNew()) {
+			Training oldTraining = this.trainingRepository.findTrainingById(training.getId());
+			if(endDate.before(now) && !endDate.equals(oldTraining.getEndDate())){
+				anyException = false;
+				throw new PastEndException();
+			}	
+		}
 		// Training starting in the past?
 		if(training.isNew() && initialDate.before(now)) {
 			anyException = false;
@@ -116,14 +124,7 @@ public class TrainingService {
 			anyException = false;
 			throw new LongerThan90DaysException();
 		}
-		// No training ending in the past
-		if(!training.isNew()) {
-			Training oldTraining = this.trainingRepository.findTrainingById(training.getId());
-			if(endDate.before(now) && !endDate.equals(oldTraining.getEndDate())){
-				anyException = false;
-				throw new PastEndException();
-			}	
-		}
+		
 		if (anyException) {
 			// Concurrent trainings?
 			int trainingId = -1;
