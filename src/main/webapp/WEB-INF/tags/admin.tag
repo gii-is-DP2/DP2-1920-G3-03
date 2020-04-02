@@ -14,9 +14,14 @@
 	<span>Submitted Inscriptions</span>
 </yogogym:menuItem>
 					
-<yogogym:menuItem active="${name eq 'dashboard'}" url="/admin/dashboard" title="Dashboard">
+<yogogym:menuItem active="${name eq 'equipmentDashboard'}" url="/admin/dashboardEquipment" title="Equipment Dashboard">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Dashboard</span>
+	<span>Equipment Dashboard</span>
+</yogogym:menuItem>	
+
+<yogogym:menuItem active="${name eq 'challengesDashboard'}" url="/admin/dashboardChallenges" title="Challenges Dashboard">
+	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+	<span>Challenges Dashboard</span>
 </yogogym:menuItem>	
 
 <%--
