@@ -449,6 +449,7 @@ public class TrainingServiceTests {
 		training.setInitialDate(initDate.getTime());
 		training.setEndDate(endDate.getTime());
 		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor("trainer1");
 		Client client = this.clientService.findClientById(CLIENT_ID);
 		training.setClient(client);
 		
