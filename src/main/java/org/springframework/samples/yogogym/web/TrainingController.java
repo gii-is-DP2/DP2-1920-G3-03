@@ -119,8 +119,9 @@ public class TrainingController {
 			@PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername,
 			ModelMap model) {
 		
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername)) {
 			return "exception";
+		}
 		
 		Client client = this.clientService.findClientById(clientId);
 		model.addAttribute("client", client);
@@ -129,6 +130,9 @@ public class TrainingController {
 			model.put("training", training);
 			return "trainer/trainings/trainingCreateOrUpdate";
 		} else {
+			if(!training.getAuthor().equals(trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+				return "exception";
+			}
 			try {
 				this.trainingService.saveTraining(training);
 			} 
@@ -172,12 +176,9 @@ public class TrainingController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit")
 	public String initTrainingUpdateForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, Model model) {
 		
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
-			return "exception";
-		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
-		if(training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
 			return "exception";
 		}
 		
@@ -200,15 +201,12 @@ public class TrainingController {
 	public String processTrainingUpdateForm(@Valid Training training, BindingResult result, 
 		@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, ModelMap model) {
 		
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
-			return "exception";
-		
 		Training oldTraining = this.trainingService.findTrainingById(trainingId);
 		
-		if(oldTraining.getEditingPermission().equals(EditingPermission.CLIENT)) {
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||oldTraining.getEditingPermission().equals(EditingPermission.CLIENT)) {
 			return "exception";
 		}
-		
+
 		Client client = this.clientService.findClientById(clientId);
 		Date now = new Date();
 		now = new Date(now.getYear(), now.getMonth(), now.getDate());
@@ -226,16 +224,17 @@ public class TrainingController {
 			return "trainer/trainings/trainingCreateOrUpdate";
 		} 
 		else {
-			training.setClient(oldTraining.getClient());
-			training.setInitialDate(oldTraining.getInitialDate());
 			
-			if(oldTraining.getEndDate().before(now)) {
-				training.setEndDate(oldTraining.getEndDate());
+			if(oldTraining.getEndDate().before(now)||!training.getAuthor().equals(oldTraining.getAuthor())||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+				return "exception";
 			}
 			
+			training.setClient(oldTraining.getClient());
+			training.setInitialDate(oldTraining.getInitialDate());
 			training.setDiet(oldTraining.getDiet());
 			training.setRoutines(oldTraining.getRoutines());
 			training.setId(trainingId);
+			
 			try {
 				this.trainingService.saveTraining(training);
 			} 
@@ -277,11 +276,12 @@ public class TrainingController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete")
 	public String processDeleteTrainingForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername,RedirectAttributes redirectAttrs) {
 		
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
-			return "exception";
-		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+			return "exception";
+		}
+			
 		if(training!=null&&!training.getEditingPermission().equals(EditingPermission.CLIENT)) {
 			this.trainingService.deleteTraining(training);
 			redirectAttrs.addFlashAttribute("deleteMessage", "The training was deleted successfully");

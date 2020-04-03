@@ -46,6 +46,10 @@ public class Training extends BaseEntity{
 	@NotNull
 	protected EditingPermission editingPermission;
 	
+	@Column(name = "author")
+	@NotBlank
+	protected String author;
+	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "training_id")
 	protected Collection<Routine> routines;
