@@ -9,6 +9,7 @@
               description="Names in the list" %>
 <%@ attribute name="map" required="false" rtexprvalue="true" type="java.util.Map"
               description="Names in the list" %>
+<%@ attribute name="className" required="false" rtexprvalue="true" description="Class name for jqery" %>
 <%@ attribute name="size" required="true" rtexprvalue="true"
               description="Size of Select" %>
 
@@ -23,7 +24,7 @@
         
         <c:choose>	
         	<c:when test="${empty names}">
-        		<form:select class="form-control" path="${name}"  items="${map}" size="${size}"/>
+        		<form:select class="form-control ${className}" path="${name}"  items="${map}" size="${size}"/>
         	</c:when>
         	<c:otherwise>
         		<form:select class="form-control" path="${name}"  items="${names}" size="${size}"/>

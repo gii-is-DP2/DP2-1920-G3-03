@@ -2,7 +2,10 @@
 package org.springframework.samples.yogogym.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.RoutineLine;
+import org.springframework.samples.yogogym.model.Enums.RepetitionType;
+import org.springframework.samples.yogogym.service.ExerciseService;
 import org.springframework.samples.yogogym.service.RoutineLineService;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -11,12 +14,14 @@ public class RoutineLineValidator implements Validator{
 
 	@SuppressWarnings("unused")
 	private final RoutineLineService routineLineService;
+	private final ExerciseService exerciseService;
 	
 	private static final String REQUIRED = "required: ";
 	
 	@Autowired
-	public RoutineLineValidator(final RoutineLineService routineLineService) {
+	public RoutineLineValidator(final RoutineLineService routineLineService, ExerciseService exerciseService) {
 		this.routineLineService = routineLineService;
+		this.exerciseService = exerciseService;
 	}
 	
 	@Override
@@ -68,6 +73,18 @@ public class RoutineLineValidator implements Validator{
 		{
 			errors.rejectValue("reps", REQUIRED, "You cannot enter both time and reps. Choose one.");
 			errors.rejectValue("time", REQUIRED, "You cannot enter both time and reps. Choose one.");
+		}
+		
+		Exercise exercise = this.exerciseService.findExerciseById(validar.getExercise().getId());
+		if(exercise.getRepetitionType().equals(RepetitionType.REPS))
+		{
+			if(validar.getTime() != null)
+				errors.rejectValue("time", REQUIRED, "This exercise can only have Repetitions");
+		}
+		else if(exercise.getRepetitionType().equals(RepetitionType.TIME))
+		{
+			if(validar.getReps() != null)
+				errors.rejectValue("reps", REQUIRED, "This exercise can only have Time");
 		}
 	}
 		
