@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.service.DashboardsAdminService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class DashboardsAdminController {
@@ -30,8 +32,8 @@ public class DashboardsAdminController {
 	public String getDashboardEquipment(Model model) {
 		Collection<Training> listTraining = this.dashboardsAdminService.equipmentControl();
 		if (!listTraining.isEmpty()) {
-			dashboard(listTraining, 28, "Month", model);
-			dashboard(listTraining, 7, "Week", model);
+			dashboardEquipment(listTraining, 28, "Month", model);
+			dashboardEquipment(listTraining, 7, "Week", model);
 		} else {
 			model.addAttribute("hasEquipmentMonth", false);
 			model.addAttribute("hasEquipmentWeek", false);
@@ -39,14 +41,29 @@ public class DashboardsAdminController {
 		return "admin/dashboards/dashboardEquipment";
 	}
 	
-	@GetMapping("/admin/dashboardChallenges")
-	public String getDashboardChallenges(Model model) {
+	@GetMapping("/admin/dashboardChallenges/{month}")
+	public String getDashboardChallenges(@PathVariable("month") int month, Model model) {
 		
-		model.addAttribute("test",true);
+		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		
+		if(month == 0)
+			month = cal.get(Calendar.MONTH) + 1;
+		
+		Collection<Challenge> challenges = this.dashboardsAdminService.getChallengesOfMonth(month);
+		
+		if(!challenges.isEmpty()) {
+			model.addAttribute("ChallengesExists",true);
+			System.out.println("a");
+		}
+		else {
+			model.addAttribute("ChallengesExists",false);
+		}
 		return "admin/dashboards/dashboardChallenges";
 	}
 
-	private void dashboard(Collection<Training> listTraining, Integer days, String string, Model model) {
+	private void dashboardEquipment(Collection<Training> listTraining, Integer days, String string, Model model) {
 		List<Integer> listTrainingFilter = new ArrayList<>();
 		Calendar now = Calendar.getInstance();
 		now.add(Calendar.DAY_OF_MONTH, -days);

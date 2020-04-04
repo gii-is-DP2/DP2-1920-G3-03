@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.DashboardAdmin;
 import org.springframework.samples.yogogym.model.Training;
 
@@ -32,5 +33,8 @@ public interface DashboardsAdminRepository extends CrudRepository<DashboardAdmin
 	
 	@Query("SELECT eq.name FROM Equipment eq WHERE eq.id = :id")
 	String findNameEquipmentByIdEquipment(@Param("id") int id);
+
+	@Query("SELECT c FROM Challenge c WHERE YEAR(c.endDate)=:year AND MONTH(c.endDate)=:month")
+	Collection<Challenge> findChallengesByMonthAndYear(Integer month, Integer year);
 
 }
