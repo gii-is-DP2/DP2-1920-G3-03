@@ -31,7 +31,7 @@ public class ClientController {
 	// TRAINING
 	
 	@GetMapping("/client/{clientUsername}/trainings")
-	public String getTrainingDetails(@PathVariable("clientUsername")final String clientUsername, Model model)
+	public String getTrainingList(@PathVariable("clientUsername")final String clientUsername, Model model)
 	{
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		Collection<Training> trainings = this.trainingService.findTrainingFromClient(client.getId());
@@ -39,6 +39,17 @@ public class ClientController {
 		model.addAttribute("trainings",trainings);
 		
 		return "client/trainings/trainingsList";
+	}
+	
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}")
+	public String getTrainingDetails(@PathVariable("clientUsername")final String clientUsername, @PathVariable("trainingId")final int trainingId, Model model)
+	{
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		model.addAttribute("training",training);
+		
+		return "client/trainings/trainingsDetails";
 	}
 
 	// TRAINER
