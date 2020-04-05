@@ -121,6 +121,7 @@ class TrainingControllerTests {
 		training1.setInitialDate(initialDate);
 		training1.setEndDate(endDate);
 		training1.setEditingPermission(EditingPermission.TRAINER);
+		training1.setAuthor(TRAINER1_USERNAME);
 		training1.setDiet(null);
 		training1.setRoutines(null);
 
@@ -129,12 +130,14 @@ class TrainingControllerTests {
 		training2.setId(CLIENT1_TRAINING2_ID);
 		training2.setName("Training 2");
 		training2.setEditingPermission(EditingPermission.CLIENT);
+		training2.setAuthor(client1.getUser().getUsername());
 		
 		Training training3 = new Training();
 		BeanUtils.copyProperties(training1, training3);
 		training3.setId(CLIENT1_TRAINING3_ID);
 		training3.setName("Training 3");
 		training3.setEditingPermission(EditingPermission.BOTH);
+		training3.setAuthor(TRAINER1_USERNAME);
 		
 		//Trainer2
 		Collection<Client> clientsTrainer2 = new ArrayList<>();
@@ -246,6 +249,7 @@ class TrainingControllerTests {
 				.andExpect(model().attribute("training", hasProperty("name", is("Training 1"))))
 				.andExpect(model().attribute("training", hasProperty("initialDate", equalTo(initialDate))))
 				.andExpect(model().attribute("training", hasProperty("endDate", equalTo(endDate))))
+				.andExpect(model().attribute("training", hasProperty("author", is(TRAINER1_USERNAME))))
 				.andExpect(model().attribute("training", hasProperty("routines", nullValue())))
 				.andExpect(model().attribute("training", hasProperty("diet", nullValue())))
 				.andExpect(view().name("trainer/trainings/trainingsDetails"));
@@ -270,6 +274,7 @@ class TrainingControllerTests {
 			 	.param("initialDate", dateFormat.format(initialDate))
 			 	.param("endDate", dateFormat.format(endDate))
 			 	.param("editingPermission", EditingPermission.TRAINER.toString())
+			 	.param("author", TRAINER2_USERNAME)
 			 	.param("client", "12345678F"))
 				.andExpect(status().is3xxRedirection())
 		 		.andExpect(view().name("redirect:/trainer/"+TRAINER2_USERNAME+"/trainings"));
@@ -284,6 +289,7 @@ class TrainingControllerTests {
 			 	.param("initialDate", "")
 			 	.param("endDate", "")
 			 	.param("editingPermission", "")
+			 	.param("author", TRAINER2_USERNAME)
 			 	.param("client", NIF_2))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
@@ -371,6 +377,7 @@ class TrainingControllerTests {
 		  		.andExpect(model().attribute("training", hasProperty("name", is(trainingId==1?"Training 1":"Training 3"))))
 				.andExpect(model().attribute("training", hasProperty("initialDate", equalTo(initialDate))))
 				.andExpect(model().attribute("training", hasProperty("endDate", equalTo(endDate))))
+				.andExpect(model().attribute("training", hasProperty("author", is(TRAINER1_USERNAME))))
 				.andExpect(model().attribute("training", hasProperty("editingPermission", equalTo(trainingId==1?EditingPermission.TRAINER:EditingPermission.BOTH))))
 				.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
 	}
@@ -390,6 +397,7 @@ class TrainingControllerTests {
     			.param("initialDate", dateFormat.format(initialDate))
 				.param("endDate", dateFormat.format(endDateUpdated))
 				.param("editingPermission", EditingPermission.BOTH.toString())
+				.param("author", TRAINER1_USERNAME)
 				.param("client", NIF_1))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}"));
@@ -404,6 +412,7 @@ class TrainingControllerTests {
 				.param("initialDate", dateFormat.format(initialDate))
 				.param("endDate", "")
 				.param("editingPermission", "")
+				.param("author", TRAINER1_USERNAME)
 				.param("client", NIF_1))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
@@ -508,6 +517,7 @@ class TrainingControllerTests {
     		 	.param("initialDate", dateFormat.format(initialDate))
     		 	.param("endDate", dateFormat.format(endDate))
     		 	.param("editingPermission", EditingPermission.BOTH.toString())
+    		 	.param("author", TRAINER2_USERNAME)
     		 	.param("client", NIF_2))
     			.andExpect(status().isOk())
     			.andExpect(model().attributeHasErrors("training"))
@@ -522,6 +532,7 @@ class TrainingControllerTests {
     		 	.param("initialDate", dateFormat.format(initialDate))
     		 	.param("endDate", dateFormat.format(endDate))
     		 	.param("editingPermission", EditingPermission.BOTH.toString())
+    		 	.param("author", TRAINER1_USERNAME)
     		 	.param("client", NIF_1))
     			.andExpect(status().isOk())
     			.andExpect(model().attributeHasErrors("training"))
