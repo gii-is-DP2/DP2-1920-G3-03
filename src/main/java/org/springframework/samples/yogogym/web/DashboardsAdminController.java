@@ -47,20 +47,24 @@ public class DashboardsAdminController {
 		Date now = new Date();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(now);
-		
 		if(month == 0)
 			month = cal.get(Calendar.MONTH) + 1;
-		
 		Collection<Challenge> challenges = this.dashboardsAdminService.getChallengesOfMonth(month);
 		
 		if(!challenges.isEmpty()) {
 			model.addAttribute("ChallengesExists",true);
-			System.out.println("a");
+			dashboardChallenges(challenges, model);
 		}
 		else {
 			model.addAttribute("ChallengesExists",false);
 		}
+		
 		return "admin/dashboards/dashboardChallenges";
+	}
+
+	private void dashboardChallenges(Collection<Challenge> challenges, Model model) {
+		model.addAttribute("test","holo");
+		
 	}
 
 	private void dashboardEquipment(Collection<Training> listTraining, Integer days, String string, Model model) {
