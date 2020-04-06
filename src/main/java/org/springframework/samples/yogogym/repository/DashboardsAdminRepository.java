@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.DashboardAdmin;
 
 public interface DashboardsAdminRepository extends CrudRepository<DashboardAdmin, Integer> {
@@ -17,5 +18,8 @@ public interface DashboardsAdminRepository extends CrudRepository<DashboardAdmin
 
 	@Query("SELECT rl.exercise.equipment.name FROM Training t left join t.routines r left join r.routineLine rl WHERE :init <= t.initialDate GROUP BY rl.exercise.equipment ORDER BY rl.exercise.equipment.name")
 	List<String> nameEquipment(@Param("init") Date init);
+
+	@Query("SELECT c FROM Challenge c WHERE YEAR(c.endDate)=:year AND MONTH(c.endDate)=:month")
+	Collection<Challenge> findChallengesByMonthAndYear(Integer month, Integer year);
 
 }

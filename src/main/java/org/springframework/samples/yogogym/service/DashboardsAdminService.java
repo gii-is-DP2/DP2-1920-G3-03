@@ -1,10 +1,13 @@
 package org.springframework.samples.yogogym.service;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.yogogym.model.Challenge;
+import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.DashboardsAdminRepository;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +33,16 @@ public class DashboardsAdminService {
 		now.add(Calendar.DAY_OF_MONTH, -days);
 		Date d2 = now.getTime();
 		return this.dashboardRepository.nameEquipment(d2);
+	}
+
+	public Collection<Challenge> getChallengesOfMonth(Integer month) {
+
+		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		Integer year = cal.get(Calendar.YEAR);
+		
+		return this.dashboardRepository.findChallengesByMonthAndYear(month,year);
 	}
 
 }
