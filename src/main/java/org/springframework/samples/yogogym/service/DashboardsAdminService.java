@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
-import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.DashboardsAdminRepository;
 import org.springframework.stereotype.Service;
 

@@ -19,7 +19,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
+import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DashboardsAdminService;
+import org.springframework.samples.yogogym.service.GuildService;
+import org.springframework.samples.yogogym.service.InscriptionService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,6 +40,15 @@ public class DashboardsAdminControllerTest {
 
 		@MockBean
 		private DashboardsAdminService dashboardsAdminService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
 
 		@Autowired
 		private MockMvc mockMvc;
@@ -77,6 +89,15 @@ public class DashboardsAdminControllerTest {
 
 		@MockBean
 		private DashboardsAdminService dashboardService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
 
 		@Autowired
 		private MockMvc mockMvc;
@@ -114,6 +135,15 @@ public class DashboardsAdminControllerTest {
 
 		@MockBean
 		private DashboardsAdminService dashboardService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
 
 		@Autowired
 		private MockMvc mockMvc;
