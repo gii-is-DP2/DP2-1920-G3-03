@@ -88,5 +88,6 @@ public class ClientService {
 	public List<Client> findClientsWithCompletedInscriptions(){
 		return this.clientRepository.findClientsWithCompletedInscriptions();
 	}
+
 	
 }

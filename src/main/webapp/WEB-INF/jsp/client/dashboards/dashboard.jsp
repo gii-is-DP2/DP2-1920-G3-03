@@ -25,7 +25,7 @@
 		</div>
 	</jstl:if>
 	<jstl:if test="${!hasExerciseMonth and hasExerciseAll}">
-		<b>You haven't exercises in the last month</b>
+		<b>You dont have exercises in the last month</b>
 	</jstl:if>
 	<jstl:if test="${hasExerciseAll}">
 		<table class="table table-striped">
@@ -42,7 +42,7 @@
 		</div>
 	</jstl:if>
 	<jstl:if test="${!hasExerciseAll}">
-		<b>You haven't exercises</b>
+		<b>You dont have exercises</b>
 	</jstl:if>
 <script>
 <jstl:if test="${hasExerciseMonth}">
