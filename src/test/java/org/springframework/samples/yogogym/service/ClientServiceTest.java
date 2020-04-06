@@ -76,15 +76,34 @@ public class ClientServiceTest {
 	}
 	
 	@Test
-	void shouldFindClientsWithOnlyCompletedInscriptions() {
-		List<Client> clients = this.clientService.findClientsWithCompletedInscriptions();
-		assertThat(clients.size()).isEqualTo(1);
-	}
-	
-	@Test
 	void shouldFindAllClients(){
 		Collection<Client> clients = (Collection<Client>) this.clientService.findAllClient();
 		assertThat(clients.size()).isEqualTo(11);
+	}
+	
+	//Classification
+	@Test
+	void shouldClassificationNameDate() {
+		List<String> names = this.clientService.classificationNameDate();
+		assertThat(names.size()).isEqualTo(0);
+	}
+	
+	@Test
+	void shouldClassificationPointDate() {
+		List<Integer> points = this.clientService.classificationPointDate();
+		assertThat(points.size()).isEqualTo(0);
+	}
+	
+	@Test
+	void shouldClassificationNameAll() {
+		List<String> names = this.clientService.classificationNameAll();
+		assertThat(names.size()).isEqualTo(1);
+	}
+	
+	@Test
+	void shouldClassificationPointAll() {
+		List<Integer> points = this.clientService.classificationPointAll();
+		assertThat(points.size()).isEqualTo(1);
 	}
 
 }

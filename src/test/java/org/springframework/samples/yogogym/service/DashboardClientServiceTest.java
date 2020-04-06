@@ -1,45 +1,49 @@
 package org.springframework.samples.yogogym.service;
 
-import java.util.Collection;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.samples.yogogym.model.Exercise;
-import org.springframework.samples.yogogym.model.Training;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 public class DashboardClientServiceTest {
-	
+
 	@Autowired
 	protected DashboardClientService dashboardClientService;
-	
+
 	@Test
-	void shouldListTrainingByClient() {
-		Collection<Training> trainings = this.dashboardClientService.listTrainingByClient(1);
-		assertThat(trainings.size()).isEqualTo(2);
+	void shouldCountBodyPart() {
+		List<Integer> countBodyPart = this.dashboardClientService.countBodyPart(null, "client1");
+		assertThat(countBodyPart.size()).isEqualTo(3);
 	}
-	
+
 	@Test
-	void shouldlistRoutineByTraining() {
-		List<Integer> routines = this.dashboardClientService.listRoutineByTraining(1);
-		assertThat(routines.size()).isEqualTo(2);
+	void shouldNameBodyPart() {
+		List<String> nameBodyPart = this.dashboardClientService.nameBodyPart(null, "client1");
+		assertThat(nameBodyPart.size()).isEqualTo(3);
 	}
-	
+
 	@Test
-	void shouldlistRepsRoutineByRoutine() {
-		Integer reps = this.dashboardClientService.listRepsRoutineByRoutine(1);
-		assertThat(reps).isEqualTo(3);
+	void shouldCountRepetition() {
+		List<Integer> countRepetitionType = this.dashboardClientService.countRepetitionType(null, "client1");
+		assertThat(countRepetitionType.size()).isEqualTo(2);
 	}
-	
+
 	@Test
-	void shouldlistExerciseByRoutine() {
-		List<Exercise> exercises = this.dashboardClientService.listExerciseByRoutine(1);
-		assertThat(exercises.size()).isEqualTo(6);
+	void shouldNameRepetition() {
+		List<String> nameRepetitionType = this.dashboardClientService.nameRepetitionType(null, "client1");
+		assertThat(nameRepetitionType.size()).isEqualTo(2);
+	}
+
+	@Test
+	void shouldSumKcal() {
+		Integer sumKcal = this.dashboardClientService.sumKcal(null, "client1");
+		assertThat(sumKcal).isEqualTo(1100);
 	}
 
 }
