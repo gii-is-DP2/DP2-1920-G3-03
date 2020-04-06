@@ -51,13 +51,13 @@ Como administrador quiero añadir retos semanales al gimnasio, que los clientes 
 
 #### HU2 - Dashboard Retos
 
-Como administrador quiero visualizar diagramas que muestren, clasificados por individuales o gremios y semanales o mensuales, el éxito en los retos para poder adecuarlos en temática y dificultad correctamente.
+Como administrador quiero visualizar el cliente y el gremio con más puntos de cada mes, para poder saber quienes son los ganadores y otorgarles sus respectivos premios, y diagramas con el porcentaje de clientes y gremios que han completado los retos de un mes para poder adecuarlos en temática y dificultad correctamente.
 
 #### Escenarios: 
 
-* **Visualizar diagrama individual de periodo con retos:** Dado un administrador y un periodo con retos individuales registrados, cuando este intente visualizar su diagrama individual, entonces se le mostrarán los nombres de estos y el número y porcentaje de clientes que los han logrado.
-* **Visualizar diagrama individual de periodo sin retos:** Dado un administrador y un periodo sin retos, cuando este intente visualizar su diagrama, entonces se le indicará que no hay ninguno y se le ofrecerá añadir uno si el periodo es posterior al actual.
-
+* **Visualizar datosindividual en periodo con retos:** Dado un administrador [admin1] y el mes [01/2021], cuando este intente visualizar los datos, entonces se le mostrarán que [Cliente1,200 puntos] y [Calisthenics,300 puntos] han ganado y que el reto 1 lo han completado [9%] de los clientes y un [66%] de los gremios, el reto 2 un [3%] y un [33%] respectivamente.
+* **Visualizar datos en periodo sin retos:** Dado un administrador [admin1] y el mes [02/2021], cuando este intente visualizar los datos, se le mostrará que no hay retos que finalicen ese mes y se le propondrá crear uno.
+* **Visualizar datos en periodo sin retos completados:** Dado un administrador [admin1] y el mes [03/2021], cuando este intente visualizar los datos, se le mostrará que no hay retos completados ese mes.
 ---
 
 #### HU3 - Dashboard Máquinas
