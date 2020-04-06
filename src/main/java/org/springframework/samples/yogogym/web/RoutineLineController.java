@@ -59,11 +59,20 @@ public class RoutineLineController {
 
 	@InitBinder("routineLine")
 	public void initRoutineLineBinder(WebDataBinder dataBinder) {
-		dataBinder.setValidator(new RoutineLineValidator(routineLineService));
+		dataBinder.setValidator(new RoutineLineValidator(routineLineService,exerciseService));
+	}
+	
+	@GetMapping("/trainer/routineLine/ExerciseDetails/{exerciseId}")
+	public String getEsto(@PathVariable("exerciseId") final int exerciseId, Model model)
+	{
+		Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
+		
+		model.addAttribute("exercise",exercise);
+		
+		return "trainer/routines/routineLineExerciseDetails";
 	}
 	
 	// TRAINER
-
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/create")
 	public String initRoutineLineCreateForm(@PathVariable("clientId") int clientId,
 			@PathVariable("routineId") int routineId, @PathVariable("trainerUsername")final String trainerUsername, @PathVariable("trainingId")final int trainingId, final ModelMap model) {
@@ -75,16 +84,10 @@ public class RoutineLineController {
 		
 		Collection<Exercise> exerciseCollection = this.exerciseService.findAllExercise();
 		Map<Integer,String> selectVals = new TreeMap<>();
-		
-		String value = "";
+				
 		for(Exercise e:exerciseCollection)
-		{
-			value = e.getName();
-			
-			if(e.getEquipment() != null)
-				value = value.concat(", Equipment: "+e.getEquipment().getName());
-			
-			selectVals.put(e.getId(), value);
+		{	
+			selectVals.put(e.getId(),  e.getName());
 		}
 		
 		Client client = this.clientService.findClientById(clientId);
@@ -111,16 +114,10 @@ public class RoutineLineController {
 			
 			Collection<Exercise> exerciseCollection = this.exerciseService.findAllExercise();
 			Map<Integer,String> selectVals = new TreeMap<>();
-			
-			String value = "";
+						
 			for(Exercise e:exerciseCollection)
-			{
-				value = e.getName();
-				
-				if(e.getEquipment() != null)
-					value = value.concat(", Equipment: "+e.getEquipment().getName());
-				
-				selectVals.put(e.getId(), value);
+			{	
+				selectVals.put(e.getId(),  e.getName());
 			}
 			
 			model.addAttribute("routineId", routineId);
@@ -140,7 +137,7 @@ public class RoutineLineController {
 
 			try
 			{
-				this.routineService.saveRoutine(routine,trainingId);
+				this.routineLineService.saveRoutineLine(routineLine, trainingId);
 			}
 			catch(Exception e)
 			{
@@ -164,15 +161,9 @@ public class RoutineLineController {
 		Collection<Exercise> exerciseCollection = this.exerciseService.findAllExercise();
 		Map<Integer,String> selectVals = new TreeMap<>();
 		
-		String value = "";
 		for(Exercise e:exerciseCollection)
-		{
-			value = e.getName();
-			
-			if(e.getEquipment() != null)
-				value = value.concat(", Equipment: "+e.getEquipment().getName());
-			
-			selectVals.put(e.getId(), value);
+		{	
+			selectVals.put(e.getId(),  e.getName());
 		}	
 		
 		Client client = this.clientService.findClientById(clientId);
@@ -202,15 +193,9 @@ public class RoutineLineController {
 			Collection<Exercise> exerciseCollection = this.exerciseService.findAllExercise();
 			Map<Integer,String> selectVals = new TreeMap<>();
 			
-			String value = "";
 			for(Exercise e:exerciseCollection)
-			{
-				value = e.getName();
-				
-				if(e.getEquipment() != null)
-					value = value.concat(", Equipment: "+e.getEquipment().getName());
-				
-				selectVals.put(e.getId(), value);
+			{	
+				selectVals.put(e.getId(),  e.getName());
 			}
 			
 			model.addAttribute("routineId", routineId);
@@ -262,17 +247,17 @@ public class RoutineLineController {
 	
 	//Security Utils Check
 	
-	public Boolean routineExist(final int routineId)
+	protected Boolean routineExist(final int routineId)
 	{
 		return this.routineService.findRoutineById(routineId) != null;
 	}
 	
-	public Boolean routineLineExist(final int routineLineId)
+	protected Boolean routineLineExist(final int routineLineId)
 	{
 		return this.routineLineService.findRoutineLineById(routineLineId) != null;
 	}
 	
-	public Boolean isLoggedTrainer(final String trainerUsername)
+	protected Boolean isLoggedTrainer(final String trainerUsername)
 	{		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String principalUsername = ((UserDetails)principal).getUsername();
@@ -280,7 +265,7 @@ public class RoutineLineController {
 		return principalUsername.trim().toLowerCase().equals(trainerUsername.trim().toLowerCase());
 	}
 	
-	public Boolean isClientOfLoggedTrainer(final int clientId)
+	protected Boolean isClientOfLoggedTrainer(final int clientId)
 	{		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String trainerUsername = ((UserDetails)principal).getUsername();
@@ -291,7 +276,7 @@ public class RoutineLineController {
 		return trainer.getClients().contains(client);
 	}
 	
-	public Boolean isTrainingFinished(final int trainingId)
+	protected Boolean isTrainingFinished(final int trainingId)
 	{
 		Calendar now = Calendar.getInstance();
 		Date actualDate = now.getTime();
@@ -300,4 +285,5 @@ public class RoutineLineController {
 		
 		return training.getEndDate().before(actualDate);
 	}
+	
 }

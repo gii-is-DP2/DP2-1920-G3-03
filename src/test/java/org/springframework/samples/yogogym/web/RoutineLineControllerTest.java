@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,66 +91,29 @@ public class RoutineLineControllerTest {
 	void setUp()
 	{		
 		//Trainer 1
-		Exercise exercise = new Exercise();
-		exercise.setId(testExerciseId_t1);
-		exercise.setName("Exercise name test");
-		exercise.setDescription("Description Exercise test");
-		exercise.setKcal(20);
-		exercise.setRepetitionType(RepetitionType.REPS);
-		exercise.setBodyPart(BodyParts.ALL);
+		Exercise exercise = createExercise(testExerciseId_t1,RepetitionType.TIME_AND_REPS);
 		
 		Collection<Exercise> allExercises = new ArrayList<>();
 		allExercises.add(exercise);
 		
-		RoutineLine routineLine = new RoutineLine();
-		routineLine.setId(testRoutineLineId_t1);
-		routineLine.setReps(5);
-		routineLine.setTime(null);
-		routineLine.setWeight(50.0);
-		routineLine.setSeries(5);
-		routineLine.setExercise(exercise);
-				
+		RoutineLine routineLine = createRoutineLine(testRoutineLineId_t1, 10, null, exercise);
+					
 		Collection<RoutineLine> routinesLines = new ArrayList<>();
 		routinesLines.add(routineLine);
 		
-		Routine routine= new Routine();
-		routine.setName("Routine Test");
-		routine.setDescription("Routine Description Test");
-		routine.setRepsPerWeek(5);
-		routine.setRoutineLine(routinesLines);
+		Routine routine = createRoutine(testRoutineId_t1, routinesLines);
 		
-		Client client = new Client();
-		User user_client = new User();
-		user_client.setUsername("client1");
-		user_client.setEnabled(true);
-		client.setUser(user_client);
-		client.setId(testClientId_t1);
+		Client client = createClient(testClientId_t1,"client1");
 		
 		Collection<Client> clients = new ArrayList<>();
 		clients.add(client);
 		
-		Trainer trainer = new Trainer();
-		User user_trainer = new User();
-		user_trainer.setUsername(testTrainerUsername_t1);
-		user_trainer.setEnabled(true);
-		trainer.setUser(user_trainer);
-		trainer.setClients(clients);
-				
-		Date initialDate = testInitialTrainingDate.getTime();
-		
-		testEndTrainingDate.add(Calendar.DAY_OF_MONTH, 1);
-		Date endDate = testEndTrainingDate.getTime();
-		
+		Trainer trainer = createTrainer(testTrainerUsername_t1,clients);
+						
 		Collection<Routine> routines = new ArrayList<>();
+		routines.add(routine);
 		
-		Training training = new Training();
-		training.setId(testTrainingId_t1);
-		training.setName("training 1");
-		training.setClient(client);
-		training.setInitialDate(initialDate);
-		training.setEndDate(endDate);
-		training.setDiet(null);
-		training.setRoutines(routines);
+		Training training = createTraining(testTrainingId_t1,client,routines,1);
 		
 		given(this.clientService.findClientById(testClientId_t1)).willReturn(client);
 		given(this.trainerService.findTrainer(testTrainerUsername_t1)).willReturn(trainer);
@@ -162,22 +124,12 @@ public class RoutineLineControllerTest {
 		given(this.trainingService.findTrainingById(testTrainingId_t1)).willReturn(training);
 		
 		//Trainer 2
-		Client client_t2 = new Client();
-		User user_client_t2 = new User();
-		user_client_t2.setUsername("client2");
-		user_client_t2.setEnabled(true);
-		client_t2.setUser(user_client_t2);
-		client_t2.setId(testClientId_t2);
-		
+		Client client_t2 = createClient(testClientId_t2,"client2");
+				
 		Collection<Client> clients_t2 = new ArrayList<>();
 		clients_t2.add(client_t2);
 		
-		Trainer trainer_t2 = new Trainer();
-		User user_trainer_t2 = new User();
-		user_trainer_t2.setUsername(testTrainerUsername_t2);
-		user_trainer_t2.setEnabled(true);
-		trainer_t2.setUser(user_trainer_t2);
-		trainer_t2.setClients(clients_t2);
+		Trainer trainer_t2 = createTrainer(testTrainerUsername_t2, clients_t2);		
 		
 		given(this.clientService.findClientById(testClientId_t2)).willReturn(client_t2);
 		given(this.trainerService.findTrainer(testTrainerUsername_t2)).willReturn(trainer_t2);	
@@ -327,4 +279,85 @@ public class RoutineLineControllerTest {
 		.andExpect(view().name("redirect:/trainer/"+ testTrainerUsername_t1 + "/clients/" + testClientId_t1 + "/trainings/" + testTrainingId_t1 + "/routines/" + testRoutineId_t1));
 	}
 	
+	
+	//Derivative Methods
+	
+	protected Exercise createExercise(final int id, RepetitionType type)
+	{
+		Exercise exercise = new Exercise();
+		exercise.setId(id);
+		exercise.setName("Exercise name test");
+		exercise.setDescription("Description Exercise test");
+		exercise.setKcal(20);
+		exercise.setRepetitionType(type);
+		exercise.setBodyPart(BodyParts.ALL);
+		
+		return exercise;
+	}
+	
+	protected RoutineLine createRoutineLine(final int id,final Integer reps, final Double time, Exercise exercise)
+	{
+		RoutineLine routineLine = new RoutineLine();
+		routineLine.setId(id);
+		routineLine.setReps(reps);
+		routineLine.setTime(time);
+		routineLine.setWeight(50.0);
+		routineLine.setSeries(5);
+		routineLine.setExercise(exercise);
+		
+		return routineLine;
+	}
+	
+	protected Routine createRoutine(final int id, Collection<RoutineLine> routinesLines)
+	{
+		Routine routine= new Routine();
+		routine.setName("Routine Test");
+		routine.setDescription("Routine Description Test");
+		routine.setRepsPerWeek(5);
+		routine.setRoutineLine(routinesLines);
+		
+		return routine;
+	}
+	
+	protected Client createClient(final int id, final String username)
+	{
+		Client client = new Client();
+		User user_client = new User();
+		user_client.setUsername(username);
+		user_client.setEnabled(true);
+		client.setUser(user_client);
+		client.setId(id);
+		
+		return client;
+	}
+	
+	protected Trainer createTrainer(String trainerUsername, Collection<Client> clients)
+	{
+		Trainer trainer = new Trainer();
+		User user_trainer = new User();
+		user_trainer.setUsername(trainerUsername);
+		user_trainer.setEnabled(true);
+		trainer.setUser(user_trainer);
+		trainer.setClients(clients);
+		
+		return trainer;
+	}
+	
+	protected Training createTraining(final int id,final Client client, Collection<Routine> routines,final int DaysToFinishTraining)
+	{
+		Calendar cal = Calendar.getInstance();
+		
+		Training training = new Training();
+		training.setId(id);
+		training.setName("training 1");
+		training.setClient(client);
+		training.setInitialDate(cal.getTime());
+		
+		cal.add(Calendar.DAY_OF_MONTH, DaysToFinishTraining);
+		training.setEndDate(cal.getTime());
+		training.setDiet(null);
+		training.setRoutines(routines);
+		
+		return training;
+	}
 }

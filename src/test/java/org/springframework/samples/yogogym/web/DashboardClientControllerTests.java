@@ -7,8 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,15 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
-import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.model.Exercise;
-import org.springframework.samples.yogogym.model.Routine;
-import org.springframework.samples.yogogym.model.RoutineLine;
-import org.springframework.samples.yogogym.model.Training;
-import org.springframework.samples.yogogym.model.User;
-import org.springframework.samples.yogogym.model.Enums.BodyParts;
-import org.springframework.samples.yogogym.model.Enums.RepetitionType;
-import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DashboardClientService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -38,78 +27,68 @@ public class DashboardClientControllerTests {
 
 	private static final String TEST_USERNAME = "client1";
 
+	private static final String TEST_USERNAME2 = "client2";
+
+	private static final String TEST_USERNAME3 = "client3";
+
+	private static final String TEST_USERNAME4 = "client4";
+
+	private static final Integer[] COUNT_BODY_PART = { 1 };
+
+	private static final String[] NAME_BODY_PART = { "BODY" };
+
+	private static final Integer[] COUNT_REPETITION_TYPE = { 2 };
+
+	private static final String[] NAME_REPETITION_TYPE = { "REPETITION" };
+
+	private static final Integer SUM_KCAL = 1100;
+
+	// Density data
+
+	private static final Integer[] COUNT_BODY_PART2 = { 1, 1, 1, 1 };
+
+	private static final String[] NAME_BODY_PART2 = { "BODY", "BODY", "BODY", "BODY" };
+
+	private static final Integer[] COUNT_REPETITION_TYPE2 = { 2, 2, 2, 2 };
+
+	private static final String[] NAME_REPETITION_TYPE2 = { "REPETITION", "REPETITION", "REPETITION", "REPETITION" };
+
 	@Nested
 	@WebMvcTest(value = DashboardClientController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-	public class Client13Tests {
+	public class Client1Tests {
 
 		@MockBean
 		private DashboardClientService dashboardClientService;
-
-		@MockBean
-		private ClientService clientService;
 
 		@Autowired
 		private MockMvc mockMvc;
 
 		@BeforeEach
 		void setup() {
-			Exercise sampleExercise = new Exercise();
-			sampleExercise.setId(1);
-			sampleExercise.setName("prueba");
-			sampleExercise.setDescription("prueba");
-			sampleExercise.setBodyPart(BodyParts.ALL);
-			sampleExercise.setKcal(1000);
-			sampleExercise.setRepetitionType(RepetitionType.REPS);
-			List<Exercise> listExercise = new ArrayList<Exercise>();
-			listExercise.add(sampleExercise);
-			RoutineLine sampleRoutineLine = new RoutineLine();
-			sampleRoutineLine.setId(1);
-			sampleRoutineLine.setReps(3);
-			sampleRoutineLine.setExercise(sampleExercise);
-			Routine sampleRoutine = new Routine();
-			sampleRoutine.setId(1);
-			sampleRoutine.setName("prueba");
-			sampleRoutine.setRepsPerWeek(1);
-			sampleRoutine.setDescription("prueba");
-			List<RoutineLine> sampleListRoutineLine = new ArrayList<RoutineLine>();
-			sampleListRoutineLine.add(sampleRoutineLine);
-			sampleRoutine.setRoutineLine(sampleListRoutineLine);
-			Training sampleTraining = new Training();
-			Calendar now = Calendar.getInstance();
-			now.add(Calendar.DAY_OF_MONTH, -2);
-			Date sampleIntialDate = now.getTime();
-			Calendar now2 = Calendar.getInstance();
-			now2.add(Calendar.DAY_OF_MONTH, -1);
-			Date sampleEndDate = now.getTime();
-			sampleTraining.setInitialDate(sampleIntialDate);
-			sampleTraining.setEndDate(sampleEndDate);
-			sampleTraining.setName("prueba");
-			List<Routine> sampleListRoutine = new ArrayList<Routine>();
-			sampleListRoutine.add(sampleRoutine);
-			sampleTraining.setRoutines(sampleListRoutine);
-			sampleTraining.setId(1);
-			Client sampleClient = new Client();
-			User sampleUser = new User();
-			sampleUser.setUsername(TEST_USERNAME);
-			sampleUser.setEnabled(true);
-			sampleClient.setUser(sampleUser);
-			sampleClient.setId(1);
-			sampleTraining.setClient(sampleClient);
-			List<Training> sampleListTraining = new ArrayList<Training>();
-			sampleListTraining.add(sampleTraining);
-			sampleClient.setTrainings(sampleListTraining);
-			List<Integer> listRoutineByTraining = new ArrayList<Integer>();
-			listRoutineByTraining.add(1);
+			List<Integer> listCountBodyPart = new ArrayList<Integer>();
+			listCountBodyPart.add(1);
+			List<String> listNameBodyPart = new ArrayList<String>();
+			listNameBodyPart.add("BODY");
+			List<Integer> listCountRepetitionType = new ArrayList<Integer>();
+			listCountRepetitionType.add(2);
+			List<String> listNameRepetitionType = new ArrayList<String>();
+			listNameRepetitionType.add("REPETITION");
 
-			given(this.clientService.findClientByUsername(TEST_USERNAME)).willReturn(sampleClient);
-			given(this.dashboardClientService.listTrainingByClient(sampleClient.getId()))
-					.willReturn(sampleListTraining);
-			given(this.dashboardClientService.listRoutineByTraining(sampleTraining.getId()))
-					.willReturn(listRoutineByTraining);
-			given(this.dashboardClientService.listRepsRoutineByRoutine(sampleRoutine.getId()))
-					.willReturn(sampleRoutine.getRepsPerWeek());
-			given(this.dashboardClientService.listExerciseByRoutine(sampleRoutine.getId())).willReturn(listExercise);
-
+			// Client 1 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME)).willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME)).willReturn(1100);
+			// Client 1 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME))
+					.willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME)).willReturn(1100);
 		}
 
 		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
@@ -117,25 +96,23 @@ public class DashboardClientControllerTests {
 		void testInitAllDashboardClient() throws Exception {
 			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
-					.andExpect(model().attribute("hasExerciseMonth", true))
-					.andExpect(model().attribute("hasExerciseAll", true));
+					.andExpect(model().attribute("hasBodyPartsMonth", true))
+					.andExpect(model().attribute("hasBodyPartsAll", true))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", true))
+					.andExpect(model().attribute("hasRepetitionTypeAll", true))
+					.andExpect(model().attribute("hasKcalMonth", true)).andExpect(model().attribute("hasKcalAll", true))
+					.andExpect(model().attribute("orderBodyPartsMonth", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsMonth", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderRepetitionTypeMonth", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeMonth", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("kcalMonth", SUM_KCAL))
+					.andExpect(model().attribute("kcalAll", SUM_KCAL));
 		}
 
-		@WithMockUser(username = "client3", authorities = { "client" })
-		@Test
-		void testInitDashboardClientWithoutExercises() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", "client3")).andExpect(status().isOk())
-					.andExpect(view().name("client/dashboards/dashboard"))
-					.andExpect(model().attribute("hasExerciseMonth", false))
-					.andExpect(model().attribute("hasExerciseAll", false));
-		}
-
-		@WithMockUser(username = "client3", authorities = { "client" })
-		@Test
-		void testWrongUsername() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
-					.andExpect(view().name("exception"));
-		}
 	}
 
 	@Nested
@@ -145,279 +122,771 @@ public class DashboardClientControllerTests {
 		@MockBean
 		private DashboardClientService dashboardClientService;
 
-		@MockBean
-		private ClientService clientService;
-
 		@Autowired
 		private MockMvc mockMvc;
 
 		@BeforeEach
 		void setup() {
-			Exercise sampleExercise2 = new Exercise();
-			sampleExercise2.setId(2);
-			sampleExercise2.setName("prueba");
-			sampleExercise2.setDescription("prueba");
-			sampleExercise2.setBodyPart(BodyParts.ALL);
-			sampleExercise2.setKcal(1000);
-			sampleExercise2.setRepetitionType(RepetitionType.REPS);
-			List<Exercise> listExercise2 = new ArrayList<Exercise>();
-			listExercise2.add(sampleExercise2);
-			RoutineLine sampleRoutineLine2 = new RoutineLine();
-			sampleRoutineLine2.setId(2);
-			sampleRoutineLine2.setReps(3);
-			sampleRoutineLine2.setExercise(sampleExercise2);
-			Routine sampleRoutine2 = new Routine();
-			sampleRoutine2.setId(2);
-			sampleRoutine2.setName("prueba");
-			sampleRoutine2.setRepsPerWeek(1);
-			sampleRoutine2.setDescription("prueba");
-			List<RoutineLine> sampleListRoutineLine2 = new ArrayList<RoutineLine>();
-			sampleListRoutineLine2.add(sampleRoutineLine2);
-			sampleRoutine2.setRoutineLine(sampleListRoutineLine2);
-			Training sampleTraining2 = new Training();
-			Calendar now3 = Calendar.getInstance();
-			now3.add(Calendar.DAY_OF_MONTH, -60);
-			Date sampleIntialDate2 = now3.getTime();
-			Calendar now4 = Calendar.getInstance();
-			now4.add(Calendar.DAY_OF_MONTH, -55);
-			Date sampleEndDate2 = now4.getTime();
-			sampleTraining2.setInitialDate(sampleIntialDate2);
-			sampleTraining2.setEndDate(sampleEndDate2);
-			sampleTraining2.setName("prueba");
-			List<Routine> sampleListRoutine2 = new ArrayList<Routine>();
-			sampleListRoutine2.add(sampleRoutine2);
-			sampleTraining2.setRoutines(sampleListRoutine2);
-			sampleTraining2.setId(2);
-			Client sampleClient2 = new Client();
-			User sampleUser2 = new User();
-			sampleUser2.setUsername("client2");
-			sampleUser2.setEnabled(true);
-			sampleClient2.setUser(sampleUser2);
-			sampleClient2.setId(1);
-			sampleTraining2.setClient(sampleClient2);
-			List<Training> sampleListTraining = new ArrayList<Training>();
-			sampleListTraining.add(sampleTraining2);
-			sampleClient2.setTrainings(sampleListTraining);
-			List<Integer> listRoutineByTraining = new ArrayList<Integer>();
-			listRoutineByTraining.add(2);
+			List<Integer> listCountBodyPart = new ArrayList<Integer>();
+			listCountBodyPart.add(1);
+			List<String> listNameBodyPart = new ArrayList<String>();
+			listNameBodyPart.add("BODY");
+			List<Integer> listCountRepetitionType = new ArrayList<Integer>();
+			listCountRepetitionType.add(2);
+			List<String> listNameRepetitionType = new ArrayList<String>();
+			listNameRepetitionType.add("REPETITION");
 
-			given(this.clientService.findClientByUsername("client2")).willReturn(sampleClient2);
-			given(this.dashboardClientService.listTrainingByClient(sampleClient2.getId()))
-					.willReturn(sampleListTraining);
-			given(this.dashboardClientService.listRoutineByTraining(sampleTraining2.getId()))
-					.willReturn(listRoutineByTraining);
-			given(this.dashboardClientService.listRepsRoutineByRoutine(sampleRoutine2.getId()))
-					.willReturn(sampleRoutine2.getRepsPerWeek());
-			given(this.dashboardClientService.listExerciseByRoutine(sampleRoutine2.getId())).willReturn(listExercise2);
+			// Client 2 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME2)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME2)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME2)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME2)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME2)).willReturn(null);
+			// Client 2 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME2)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME2)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME2))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME2))
+					.willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME2)).willReturn(1100);
 
 		}
 
-		@WithMockUser(username = "client2", authorities = { "client" })
+		@WithMockUser(username = TEST_USERNAME2, authorities = { "client" })
 		@Test
 		void testInitDashboardClientHisto() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", "client2")).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME2)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
-					.andExpect(model().attribute("hasExerciseMonth", false))
-					.andExpect(model().attribute("hasExerciseAll", true));
+					.andExpect(model().attribute("hasBodyPartsMonth", false))
+					.andExpect(model().attribute("hasBodyPartsAll", true))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", false))
+					.andExpect(model().attribute("hasRepetitionTypeAll", true))
+					.andExpect(model().attribute("hasKcalMonth", false))
+					.andExpect(model().attribute("hasKcalAll", true))
+					.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("kcalAll", SUM_KCAL));
 		}
-
 	}
 
 	@Nested
 	@WebMvcTest(value = DashboardClientController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-	public class Client2WithoutExercisesTests {
+	public class Client3Tests {
 
 		@MockBean
 		private DashboardClientService dashboardClientService;
-
-		@MockBean
-		private ClientService clientService;
 
 		@Autowired
 		private MockMvc mockMvc;
 
 		@BeforeEach
 		void setup() {
-			RoutineLine sampleRoutineLine2 = new RoutineLine();
-			sampleRoutineLine2.setId(2);
-			sampleRoutineLine2.setReps(3);
-			Routine sampleRoutine2 = new Routine();
-			sampleRoutine2.setId(2);
-			sampleRoutine2.setName("prueba");
-			sampleRoutine2.setRepsPerWeek(1);
-			sampleRoutine2.setDescription("prueba");
-			List<RoutineLine> sampleListRoutineLine2 = new ArrayList<RoutineLine>();
-			sampleListRoutineLine2.add(sampleRoutineLine2);
-			sampleRoutine2.setRoutineLine(sampleListRoutineLine2);
-			Training sampleTraining2 = new Training();
-			Calendar now3 = Calendar.getInstance();
-			now3.add(Calendar.DAY_OF_MONTH, -60);
-			Date sampleIntialDate2 = now3.getTime();
-			Calendar now4 = Calendar.getInstance();
-			now4.add(Calendar.DAY_OF_MONTH, -55);
-			Date sampleEndDate2 = now4.getTime();
-			sampleTraining2.setInitialDate(sampleIntialDate2);
-			sampleTraining2.setEndDate(sampleEndDate2);
-			sampleTraining2.setName("prueba");
-			List<Routine> sampleListRoutine2 = new ArrayList<Routine>();
-			sampleListRoutine2.add(sampleRoutine2);
-			sampleTraining2.setRoutines(sampleListRoutine2);
-			sampleTraining2.setId(2);
-			Client sampleClient2 = new Client();
-			User sampleUser2 = new User();
-			sampleUser2.setUsername("client2");
-			sampleUser2.setEnabled(true);
-			sampleClient2.setUser(sampleUser2);
-			sampleClient2.setId(1);
-			sampleTraining2.setClient(sampleClient2);
-			List<Training> sampleListTraining = new ArrayList<Training>();
-			sampleListTraining.add(sampleTraining2);
-			sampleClient2.setTrainings(sampleListTraining);
-			List<Integer> listRoutineByTraining = new ArrayList<Integer>();
-			listRoutineByTraining.add(2);
 
-			given(this.clientService.findClientByUsername("client2")).willReturn(sampleClient2);
-			given(this.dashboardClientService.listTrainingByClient(sampleClient2.getId()))
-					.willReturn(sampleListTraining);
-			given(this.dashboardClientService.listRoutineByTraining(sampleTraining2.getId()))
-					.willReturn(listRoutineByTraining);
-			given(this.dashboardClientService.listRepsRoutineByRoutine(sampleRoutine2.getId()))
-					.willReturn(sampleRoutine2.getRepsPerWeek());
-			given(this.dashboardClientService.listExerciseByRoutine(sampleRoutine2.getId()))
-					.willReturn(new ArrayList<>());
-
+			// Client 3 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME3)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME3)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME3)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME3)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME3)).willReturn(null);
+			// Client 3 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME3)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME3)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME3)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME3)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME3)).willReturn(null);
 		}
 
-		@WithMockUser(username = "client2", authorities = { "client" })
+		@WithMockUser(username = TEST_USERNAME3, authorities = { "client" })
 		@Test
 		void testInitDashboardClientWithoutExercises() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", "client2")).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME3)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
-					.andExpect(model().attribute("hasExerciseMonth", false))
-					.andExpect(model().attribute("hasExerciseAll", false));
+					.andExpect(model().attribute("hasBodyPartsMonth", false))
+					.andExpect(model().attribute("hasBodyPartsAll", false))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", false))
+					.andExpect(model().attribute("hasRepetitionTypeAll", false))
+					.andExpect(model().attribute("hasKcalMonth", false))
+					.andExpect(model().attribute("hasKcalAll", false));
+		}
+
+		@WithMockUser(username = TEST_USERNAME3, authorities = { "client" })
+		@Test
+		void testWrongUsername() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+					.andExpect(view().name("exception"));
 		}
 	}
 
 	@Nested
 	@WebMvcTest(value = DashboardClientController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-	public class Client2WithoutRoutineLinesTests {
+	public class Client4TestsWithoutBodyPartsMonth {
 
 		@MockBean
 		private DashboardClientService dashboardClientService;
-
-		@MockBean
-		private ClientService clientService;
 
 		@Autowired
 		private MockMvc mockMvc;
 
 		@BeforeEach
 		void setup() {
-			Routine sampleRoutine2 = new Routine();
-			sampleRoutine2.setId(2);
-			sampleRoutine2.setName("prueba");
-			sampleRoutine2.setRepsPerWeek(1);
-			sampleRoutine2.setDescription("prueba");
-			Training sampleTraining2 = new Training();
-			Calendar now3 = Calendar.getInstance();
-			now3.add(Calendar.DAY_OF_MONTH, -60);
-			Date sampleIntialDate2 = now3.getTime();
-			Calendar now4 = Calendar.getInstance();
-			now4.add(Calendar.DAY_OF_MONTH, -55);
-			Date sampleEndDate2 = now4.getTime();
-			sampleTraining2.setInitialDate(sampleIntialDate2);
-			sampleTraining2.setEndDate(sampleEndDate2);
-			sampleTraining2.setName("prueba");
-			List<Routine> sampleListRoutine2 = new ArrayList<Routine>();
-			sampleListRoutine2.add(sampleRoutine2);
-			sampleTraining2.setRoutines(sampleListRoutine2);
-			sampleTraining2.setId(2);
-			Client sampleClient2 = new Client();
-			User sampleUser2 = new User();
-			sampleUser2.setUsername("client2");
-			sampleUser2.setEnabled(true);
-			sampleClient2.setUser(sampleUser2);
-			sampleClient2.setId(1);
-			sampleTraining2.setClient(sampleClient2);
-			List<Training> sampleListTraining = new ArrayList<Training>();
-			sampleListTraining.add(sampleTraining2);
-			sampleClient2.setTrainings(sampleListTraining);
-			List<Integer> listRoutineByTraining = new ArrayList<Integer>();
-			listRoutineByTraining.add(2);
+			List<Integer> listCountBodyPart = new ArrayList<Integer>();
+			listCountBodyPart.add(1);
+			List<String> listNameBodyPart = new ArrayList<String>();
+			listNameBodyPart.add("BODY");
+			List<Integer> listCountRepetitionType = new ArrayList<Integer>();
+			listCountRepetitionType.add(2);
+			List<String> listNameRepetitionType = new ArrayList<String>();
+			listNameRepetitionType.add("REPETITION");
 
-			given(this.clientService.findClientByUsername("client2")).willReturn(sampleClient2);
-			given(this.dashboardClientService.listTrainingByClient(sampleClient2.getId()))
-					.willReturn(sampleListTraining);
-			given(this.dashboardClientService.listRoutineByTraining(sampleTraining2.getId()))
-					.willReturn(listRoutineByTraining);
-			given(this.dashboardClientService.listRepsRoutineByRoutine(sampleRoutine2.getId()))
-					.willReturn(sampleRoutine2.getRepsPerWeek());
+			// Client 4 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME4)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME4)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME4))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME4))
+					.willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME4)).willReturn(1100);
+			// Client 4 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME4)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME4)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME4))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME4))
+					.willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME4)).willReturn(1100);
 		}
 
-		@WithMockUser(username = "client2", authorities = { "client" })
+		@WithMockUser(username = TEST_USERNAME4, authorities = { "client" })
 		@Test
-		void testInitDashboardClientWithoutRoutineLines() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", "client2")).andExpect(status().isOk())
+		void testInitAllDashboardClient() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME4)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
-					.andExpect(model().attribute("hasExerciseMonth", false))
-					.andExpect(model().attribute("hasExerciseAll", false));
+					.andExpect(model().attribute("hasBodyPartsMonth", false))
+					.andExpect(model().attribute("hasBodyPartsAll", true))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", true))
+					.andExpect(model().attribute("hasRepetitionTypeAll", true))
+					.andExpect(model().attribute("hasKcalMonth", true)).andExpect(model().attribute("hasKcalAll", true))
+					.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderRepetitionTypeMonth", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeMonth", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("kcalMonth", SUM_KCAL))
+					.andExpect(model().attribute("kcalAll", SUM_KCAL));
 		}
+
 	}
 
 	@Nested
 	@WebMvcTest(value = DashboardClientController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-	public class Client2WithoutRoutineTests {
+	public class Client5TestsWithoutRepetitionTypeMonth {
 
 		@MockBean
 		private DashboardClientService dashboardClientService;
-
-		@MockBean
-		private ClientService clientService;
 
 		@Autowired
 		private MockMvc mockMvc;
 
 		@BeforeEach
 		void setup() {
-			Training sampleTraining2 = new Training();
-			Calendar now3 = Calendar.getInstance();
-			now3.add(Calendar.DAY_OF_MONTH, -60);
-			Date sampleIntialDate2 = now3.getTime();
-			Calendar now4 = Calendar.getInstance();
-			now4.add(Calendar.DAY_OF_MONTH, -55);
-			Date sampleEndDate2 = now4.getTime();
-			sampleTraining2.setInitialDate(sampleIntialDate2);
-			sampleTraining2.setEndDate(sampleEndDate2);
-			sampleTraining2.setName("prueba");
-			sampleTraining2.setId(2);
-			Client sampleClient2 = new Client();
-			User sampleUser2 = new User();
-			sampleUser2.setUsername("client2");
-			sampleUser2.setEnabled(true);
-			sampleClient2.setUser(sampleUser2);
-			sampleClient2.setId(1);
-			sampleTraining2.setClient(sampleClient2);
-			List<Training> sampleListTraining = new ArrayList<Training>();
-			sampleListTraining.add(sampleTraining2);
-			sampleClient2.setTrainings(sampleListTraining);
-			List<Integer> listRoutineByTraining = new ArrayList<Integer>();
-			listRoutineByTraining.add(2);
+			List<Integer> listCountBodyPart = new ArrayList<Integer>();
+			listCountBodyPart.add(1);
+			List<String> listNameBodyPart = new ArrayList<String>();
+			listNameBodyPart.add("BODY");
+			List<Integer> listCountRepetitionType = new ArrayList<Integer>();
+			listCountRepetitionType.add(2);
+			List<String> listNameRepetitionType = new ArrayList<String>();
+			listNameRepetitionType.add("REPETITION");
 
-			given(this.clientService.findClientByUsername("client2")).willReturn(sampleClient2);
-			given(this.dashboardClientService.listTrainingByClient(sampleClient2.getId()))
-					.willReturn(sampleListTraining);
-			given(this.dashboardClientService.listRoutineByTraining(sampleTraining2.getId()))
-					.willReturn(new ArrayList<>());
+			// Client 1 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME)).willReturn(1100);
+			// Client 1 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME))
+					.willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME)).willReturn(1100);
 		}
 
-		@WithMockUser(username = "client2", authorities = { "client" })
+		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
 		@Test
-		void testInitDashboardClientWithoutRoutines() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", "client2")).andExpect(status().isOk())
+		void testInitAllDashboardClient() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
-					.andExpect(model().attribute("hasExerciseMonth", false))
-					.andExpect(model().attribute("hasExerciseAll", false));
+					.andExpect(model().attribute("hasBodyPartsMonth", true))
+					.andExpect(model().attribute("hasBodyPartsAll", true))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", false))
+					.andExpect(model().attribute("hasRepetitionTypeAll", true))
+					.andExpect(model().attribute("hasKcalMonth", true)).andExpect(model().attribute("hasKcalAll", true))
+					.andExpect(model().attribute("orderBodyPartsMonth", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsMonth", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("kcalMonth", SUM_KCAL))
+					.andExpect(model().attribute("kcalAll", SUM_KCAL));
 		}
+
+	}
+
+	@Nested
+	@WebMvcTest(value = DashboardClientController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class Client6TestsWithoutKcalMonth {
+
+		@MockBean
+		private DashboardClientService dashboardClientService;
+
+		@Autowired
+		private MockMvc mockMvc;
+
+		@BeforeEach
+		void setup() {
+			List<Integer> listCountBodyPart = new ArrayList<Integer>();
+			listCountBodyPart.add(1);
+			List<String> listNameBodyPart = new ArrayList<String>();
+			listNameBodyPart.add("BODY");
+			List<Integer> listCountRepetitionType = new ArrayList<Integer>();
+			listCountRepetitionType.add(2);
+			List<String> listNameRepetitionType = new ArrayList<String>();
+			listNameRepetitionType.add("REPETITION");
+
+			// Client 1 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME)).willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME)).willReturn(null);
+			// Client 1 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME))
+					.willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME)).willReturn(1100);
+		}
+
+		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
+		@Test
+		void testInitAllDashboardClient() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+					.andExpect(view().name("client/dashboards/dashboard"))
+					.andExpect(model().attribute("hasBodyPartsMonth", true))
+					.andExpect(model().attribute("hasBodyPartsAll", true))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", true))
+					.andExpect(model().attribute("hasRepetitionTypeAll", true))
+					.andExpect(model().attribute("hasKcalMonth", false))
+					.andExpect(model().attribute("hasKcalAll", true))
+					.andExpect(model().attribute("orderBodyPartsMonth", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsMonth", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderRepetitionTypeMonth", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeMonth", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("kcalAll", SUM_KCAL));
+		}
+
+	}
+
+	@Nested
+	@WebMvcTest(value = DashboardClientController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class Client7TestsWithoutBodyPartsAll {
+
+		@MockBean
+		private DashboardClientService dashboardClientService;
+
+		@Autowired
+		private MockMvc mockMvc;
+
+		@BeforeEach
+		void setup() {
+			List<Integer> listCountBodyPart = new ArrayList<Integer>();
+			listCountBodyPart.add(1);
+			List<String> listNameBodyPart = new ArrayList<String>();
+			listNameBodyPart.add("BODY");
+			List<Integer> listCountRepetitionType = new ArrayList<Integer>();
+			listCountRepetitionType.add(2);
+			List<String> listNameRepetitionType = new ArrayList<String>();
+			listNameRepetitionType.add("REPETITION");
+
+			// Client 1 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME)).willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME)).willReturn(1100);
+			// Client 1 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME))
+					.willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME)).willReturn(1100);
+		}
+
+		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
+		@Test
+		void testInitAllDashboardClient() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+					.andExpect(view().name("client/dashboards/dashboard"))
+					.andExpect(model().attribute("hasBodyPartsMonth", false))
+					.andExpect(model().attribute("hasBodyPartsAll", false))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", true))
+					.andExpect(model().attribute("hasRepetitionTypeAll", true))
+					.andExpect(model().attribute("hasKcalMonth", true)).andExpect(model().attribute("hasKcalAll", true))
+					.andExpect(model().attribute("orderRepetitionTypeMonth", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeMonth", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("kcalMonth", SUM_KCAL))
+					.andExpect(model().attribute("kcalAll", SUM_KCAL));
+		}
+
+	}
+
+	@Nested
+	@WebMvcTest(value = DashboardClientController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class Client8TestsWithoutRepetitionTypeAll {
+
+		@MockBean
+		private DashboardClientService dashboardClientService;
+
+		@Autowired
+		private MockMvc mockMvc;
+
+		@BeforeEach
+		void setup() {
+			List<Integer> listCountBodyPart = new ArrayList<Integer>();
+			listCountBodyPart.add(1);
+			List<String> listNameBodyPart = new ArrayList<String>();
+			listNameBodyPart.add("BODY");
+			List<Integer> listCountRepetitionType = new ArrayList<Integer>();
+			listCountRepetitionType.add(2);
+			List<String> listNameRepetitionType = new ArrayList<String>();
+			listNameRepetitionType.add("REPETITION");
+
+			// Client 1 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME)).willReturn(1100);
+			// Client 1 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME)).willReturn(1100);
+		}
+
+		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
+		@Test
+		void testInitAllDashboardClient() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+					.andExpect(view().name("client/dashboards/dashboard"))
+					.andExpect(model().attribute("hasBodyPartsMonth", true))
+					.andExpect(model().attribute("hasBodyPartsAll", true))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", false))
+					.andExpect(model().attribute("hasRepetitionTypeAll", false))
+					.andExpect(model().attribute("hasKcalMonth", true)).andExpect(model().attribute("hasKcalAll", true))
+					.andExpect(model().attribute("orderBodyPartsMonth", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsMonth", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART))
+					.andExpect(model().attribute("kcalMonth", SUM_KCAL))
+					.andExpect(model().attribute("kcalAll", SUM_KCAL));
+		}
+
+	}
+
+	@Nested
+	@WebMvcTest(value = DashboardClientController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class Client9TestsWithoutKcalAll {
+
+		@MockBean
+		private DashboardClientService dashboardClientService;
+
+		@Autowired
+		private MockMvc mockMvc;
+
+		@BeforeEach
+		void setup() {
+			List<Integer> listCountBodyPart = new ArrayList<Integer>();
+			listCountBodyPart.add(1);
+			List<String> listNameBodyPart = new ArrayList<String>();
+			listNameBodyPart.add("BODY");
+			List<Integer> listCountRepetitionType = new ArrayList<Integer>();
+			listCountRepetitionType.add(2);
+			List<String> listNameRepetitionType = new ArrayList<String>();
+			listNameRepetitionType.add("REPETITION");
+
+			// Client 1 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME)).willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME)).willReturn(null);
+			// Client 1 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME))
+					.willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME)).willReturn(null);
+		}
+
+		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
+		@Test
+		void testInitAllDashboardClient() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+					.andExpect(view().name("client/dashboards/dashboard"))
+					.andExpect(model().attribute("hasBodyPartsMonth", true))
+					.andExpect(model().attribute("hasBodyPartsAll", true))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", true))
+					.andExpect(model().attribute("hasRepetitionTypeAll", true))
+					.andExpect(model().attribute("hasKcalMonth", false))
+					.andExpect(model().attribute("hasKcalAll", false))
+					.andExpect(model().attribute("orderBodyPartsMonth", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsMonth", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderRepetitionTypeMonth", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeMonth", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE));
+		}
+
+	}
+
+	@Nested
+	@WebMvcTest(value = DashboardClientController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class Client10TestsWithoutCountBodyPartsMonth {
+
+		@MockBean
+		private DashboardClientService dashboardClientService;
+
+		@Autowired
+		private MockMvc mockMvc;
+
+		@BeforeEach
+		void setup() {
+			List<Integer> listCountBodyPart = new ArrayList<Integer>();
+			listCountBodyPart.add(1);
+			List<String> listNameBodyPart = new ArrayList<String>();
+			listNameBodyPart.add("BODY");
+			List<Integer> listCountRepetitionType = new ArrayList<Integer>();
+			listCountRepetitionType.add(2);
+			List<String> listNameRepetitionType = new ArrayList<String>();
+			listNameRepetitionType.add("REPETITION");
+
+			// Client 4 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME)).willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME)).willReturn(1100);
+			// Client 4 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME))
+					.willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME)).willReturn(1100);
+		}
+
+		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
+		@Test
+		void testInitAllDashboardClient() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+					.andExpect(view().name("client/dashboards/dashboard"))
+					.andExpect(model().attribute("hasBodyPartsMonth", false))
+					.andExpect(model().attribute("hasBodyPartsAll", true))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", true))
+					.andExpect(model().attribute("hasRepetitionTypeAll", true))
+					.andExpect(model().attribute("hasKcalMonth", true)).andExpect(model().attribute("hasKcalAll", true))
+					.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderRepetitionTypeMonth", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeMonth", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("kcalMonth", SUM_KCAL))
+					.andExpect(model().attribute("kcalAll", SUM_KCAL));
+		}
+
+	}
+
+	@Nested
+	@WebMvcTest(value = DashboardClientController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class Client11TestsWithoutNameBodyPartsMonth {
+
+		@MockBean
+		private DashboardClientService dashboardClientService;
+
+		@Autowired
+		private MockMvc mockMvc;
+
+		@BeforeEach
+		void setup() {
+			List<Integer> listCountBodyPart = new ArrayList<Integer>();
+			listCountBodyPart.add(1);
+			List<String> listNameBodyPart = new ArrayList<String>();
+			listNameBodyPart.add("BODY");
+			List<Integer> listCountRepetitionType = new ArrayList<Integer>();
+			listCountRepetitionType.add(2);
+			List<String> listNameRepetitionType = new ArrayList<String>();
+			listNameRepetitionType.add("REPETITION");
+
+			// Client 4 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME)).willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME)).willReturn(1100);
+			// Client 4 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME))
+					.willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME)).willReturn(1100);
+		}
+
+		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
+		@Test
+		void testInitAllDashboardClient() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+					.andExpect(view().name("client/dashboards/dashboard"))
+					.andExpect(model().attribute("hasBodyPartsMonth", false))
+					.andExpect(model().attribute("hasBodyPartsAll", true))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", true))
+					.andExpect(model().attribute("hasRepetitionTypeAll", true))
+					.andExpect(model().attribute("hasKcalMonth", true)).andExpect(model().attribute("hasKcalAll", true))
+					.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderRepetitionTypeMonth", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeMonth", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("kcalMonth", SUM_KCAL))
+					.andExpect(model().attribute("kcalAll", SUM_KCAL));
+		}
+
+	}
+
+	@Nested
+	@WebMvcTest(value = DashboardClientController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class Client12TestsWithoutCountRepetitionTypeMonth {
+
+		@MockBean
+		private DashboardClientService dashboardClientService;
+
+		@Autowired
+		private MockMvc mockMvc;
+
+		@BeforeEach
+		void setup() {
+			List<Integer> listCountBodyPart = new ArrayList<Integer>();
+			listCountBodyPart.add(1);
+			List<String> listNameBodyPart = new ArrayList<String>();
+			listNameBodyPart.add("BODY");
+			List<Integer> listCountRepetitionType = new ArrayList<Integer>();
+			listCountRepetitionType.add(2);
+			List<String> listNameRepetitionType = new ArrayList<String>();
+			listNameRepetitionType.add("REPETITION");
+
+			// Client 4 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME)).willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME)).willReturn(1100);
+			// Client 4 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME))
+					.willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME)).willReturn(1100);
+		}
+
+		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
+		@Test
+		void testInitAllDashboardClient() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+					.andExpect(view().name("client/dashboards/dashboard"))
+					.andExpect(model().attribute("hasBodyPartsMonth", true))
+					.andExpect(model().attribute("hasBodyPartsAll", true))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", false))
+					.andExpect(model().attribute("hasRepetitionTypeAll", true))
+					.andExpect(model().attribute("hasKcalMonth", true)).andExpect(model().attribute("hasKcalAll", true))
+					.andExpect(model().attribute("orderBodyPartsMonth", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsMonth", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("kcalMonth", SUM_KCAL))
+					.andExpect(model().attribute("kcalAll", SUM_KCAL));
+		}
+
+	}
+
+	@Nested
+	@WebMvcTest(value = DashboardClientController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class Client13TestsWithoutNameRepetitionTypeMonth {
+
+		@MockBean
+		private DashboardClientService dashboardClientService;
+
+		@Autowired
+		private MockMvc mockMvc;
+
+		@BeforeEach
+		void setup() {
+			List<Integer> listCountBodyPart = new ArrayList<Integer>();
+			listCountBodyPart.add(1);
+			List<String> listNameBodyPart = new ArrayList<String>();
+			listNameBodyPart.add("BODY");
+			List<Integer> listCountRepetitionType = new ArrayList<Integer>();
+			listCountRepetitionType.add(2);
+			List<String> listNameRepetitionType = new ArrayList<String>();
+			listNameRepetitionType.add("REPETITION");
+
+			// Client 4 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME)).willReturn(new ArrayList<>());
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME)).willReturn(1100);
+			// Client 4 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME))
+					.willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME)).willReturn(1100);
+		}
+
+		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
+		@Test
+		void testInitAllDashboardClient() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+					.andExpect(view().name("client/dashboards/dashboard"))
+					.andExpect(model().attribute("hasBodyPartsMonth", true))
+					.andExpect(model().attribute("hasBodyPartsAll", true))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", false))
+					.andExpect(model().attribute("hasRepetitionTypeAll", true))
+					.andExpect(model().attribute("hasKcalMonth", true)).andExpect(model().attribute("hasKcalAll", true))
+					.andExpect(model().attribute("orderBodyPartsMonth", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsMonth", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART))
+					.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART))
+					.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE))
+					.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE))
+					.andExpect(model().attribute("kcalMonth", SUM_KCAL))
+					.andExpect(model().attribute("kcalAll", SUM_KCAL));
+		}
+
+	}
+
+	@Nested
+	@WebMvcTest(value = DashboardClientController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class Client14TestsWithDensityData {
+
+		@MockBean
+		private DashboardClientService dashboardClientService;
+
+		@Autowired
+		private MockMvc mockMvc;
+
+		@BeforeEach
+		void setup() {
+			List<Integer> listCountBodyPart = new ArrayList<Integer>();
+			listCountBodyPart.add(1);
+			listCountBodyPart.add(1);
+			listCountBodyPart.add(1);
+			listCountBodyPart.add(1);
+			List<String> listNameBodyPart = new ArrayList<String>();
+			listNameBodyPart.add("BODY");
+			listNameBodyPart.add("BODY");
+			listNameBodyPart.add("BODY");
+			listNameBodyPart.add("BODY");
+			List<Integer> listCountRepetitionType = new ArrayList<Integer>();
+			listCountRepetitionType.add(2);
+			listCountRepetitionType.add(2);
+			listCountRepetitionType.add(2);
+			listCountRepetitionType.add(2);
+			List<String> listNameRepetitionType = new ArrayList<String>();
+			listNameRepetitionType.add("REPETITION");
+			listNameRepetitionType.add("REPETITION");
+			listNameRepetitionType.add("REPETITION");
+			listNameRepetitionType.add("REPETITION");
+
+			// Client 1 28 days
+			given(this.dashboardClientService.countBodyPart(28, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(28, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(28, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(28, TEST_USERNAME)).willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(28, TEST_USERNAME)).willReturn(1100);
+			// Client 1 Historical
+			given(this.dashboardClientService.countBodyPart(null, TEST_USERNAME)).willReturn(listCountBodyPart);
+			given(this.dashboardClientService.nameBodyPart(null, TEST_USERNAME)).willReturn(listNameBodyPart);
+			given(this.dashboardClientService.countRepetitionType(null, TEST_USERNAME))
+					.willReturn(listCountRepetitionType);
+			given(this.dashboardClientService.nameRepetitionType(null, TEST_USERNAME))
+					.willReturn(listNameRepetitionType);
+			given(this.dashboardClientService.sumKcal(null, TEST_USERNAME)).willReturn(1100);
+		}
+
+		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
+		@Test
+		void testInitAllDashboardClient() throws Exception {
+			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+					.andExpect(view().name("client/dashboards/dashboard"))
+					.andExpect(model().attribute("hasBodyPartsMonth", true))
+					.andExpect(model().attribute("hasBodyPartsAll", true))
+					.andExpect(model().attribute("hasRepetitionTypeMonth", true))
+					.andExpect(model().attribute("hasRepetitionTypeAll", true))
+					.andExpect(model().attribute("hasKcalMonth", true)).andExpect(model().attribute("hasKcalAll", true))
+					.andExpect(model().attribute("orderBodyPartsMonth", NAME_BODY_PART2))
+					.andExpect(model().attribute("countBodyPartsMonth", COUNT_BODY_PART2))
+					.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART2))
+					.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART2))
+					.andExpect(model().attribute("orderRepetitionTypeMonth", NAME_REPETITION_TYPE2))
+					.andExpect(model().attribute("countRepetitionTypeMonth", COUNT_REPETITION_TYPE2))
+					.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE2))
+					.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE2))
+					.andExpect(model().attribute("kcalMonth", SUM_KCAL))
+					.andExpect(model().attribute("kcalAll", SUM_KCAL));
+		}
+
 	}
 
 }

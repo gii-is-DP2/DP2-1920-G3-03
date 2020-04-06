@@ -6,6 +6,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <yogogym:layout pageName="routineLine">
 
 	<c:choose>
@@ -20,6 +21,31 @@
 	<h3>Routine Line Data</h3>
 	<form:form modelAttribute="routineLine" class="form-horizontal">
 		<div class="form-group has-feedback">
+						
+			<yogogym:selectField className="selectedExercise" label="Exercise" name="exercise.id" size="" map="${exercises}"/>			
+			
+			<%-- SOME JQUERY TESTING --%>
+			
+			<script>
+				$(document).ready(function(){
+					
+					var exerciseId = $("select.selectedExercise").children("option:selected").val();
+					$('#sec').load('/trainer/routineLine/ExerciseDetails/' + exerciseId);
+				
+					$("select.selectedExercise").change(function(){
+						var exerciseId = $(this).children("option:selected").val();
+						
+						$('#sec').load('/trainer/routineLine/ExerciseDetails/' + exerciseId);
+							
+						});
+						
+				    });
+			</script>			
+			
+			<section style="margin-left:205px; width:400px" id="sec">			
+			</section>
+			
+			<br>
 			
 			<input type="hidden" name="routineId" value="${routineId}"/>
 			
@@ -28,15 +54,12 @@
 			<yogogym:inputField label="Weight" name="weight"/>
 			<yogogym:inputField label="Series" name="series"/>
 			
-			<h3>Pick Exercise</h3>
-						
-			<yogogym:selectField label="Exercise" name="exercise.id" size="" map="${exercises}"/>			
 				
 			<br>
-			<div class="form-group">
+
                 <div class="col-sm-offset-2 col-sm-10">                    
                     <c:choose>
-						<c:when test="">		
+						<c:when test="${routineLine['new']}">		
 						     <button class="btn btn-default" type="submit">Add Routine Line</button>
 						</c:when>
 						<c:otherwise>
@@ -45,7 +68,7 @@
 					</c:choose>
 				</div>
             </div>
-		</div>
+		
 	</form:form>
     
 </yogogym:layout>

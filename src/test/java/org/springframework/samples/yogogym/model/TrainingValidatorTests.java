@@ -25,6 +25,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
 		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor("trainer1");
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -43,6 +44,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
 		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor("trainer1");
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -65,6 +67,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
 		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor("trainer1");
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -87,6 +90,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
 		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor("trainer1");
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -109,6 +113,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
 		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor("trainer1");
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -131,6 +136,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setInitialDate(null);
 		training.setEndDate(dateFormat.parse("2020-01-14"));
 		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor("trainer1");
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -153,6 +159,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(null);
 		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor("trainer1");
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -175,6 +182,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
 		training.setEditingPermission(null);
+		training.setAuthor("trainer1");
 		Client client = new Client();
 		training.setClient(client);
 		
@@ -189,6 +197,75 @@ class TrainingValidatorTests extends ValidatorTests{
 	}
 	
 	@Test
+	void shouldNotValidateWhenTrainingAuthorEmpty() throws ParseException {
+		
+		Training training = new Training();
+		
+		training.setName("Training 1");
+		training.setInitialDate(dateFormat.parse("2020-01-01"));
+		training.setEndDate(dateFormat.parse("2020-01-14"));
+		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor("");
+		Client client = new Client();
+		training.setClient(client);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Training>> constraintViolations = validator.validate(training);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
+		
+		assertThat(violation.getPropertyPath().toString()).isEqualTo("author");
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");		
+	}
+	
+	@Test
+	void shouldNotValidateWhenTrainingAuthorBlank() throws ParseException {
+		
+		Training training = new Training();
+		
+		training.setName("Training 1");
+		training.setInitialDate(dateFormat.parse("2020-01-01"));
+		training.setEndDate(dateFormat.parse("2020-01-14"));
+		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor("   ");
+		Client client = new Client();
+		training.setClient(client);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Training>> constraintViolations = validator.validate(training);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
+		
+		assertThat(violation.getPropertyPath().toString()).isEqualTo("author");
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");		
+	}
+	
+	@Test
+	void shouldNotValidateWhenTrainingAuthorNull() throws ParseException {
+		
+		Training training = new Training();
+		
+		training.setName("Training 1");
+		training.setInitialDate(dateFormat.parse("2020-01-01"));
+		training.setEndDate(dateFormat.parse("2020-01-14"));
+		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor(null);
+		Client client = new Client();
+		training.setClient(client);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Training>> constraintViolations = validator.validate(training);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
+		
+		assertThat(violation.getPropertyPath().toString()).isEqualTo("author");
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");		
+	}
+	
+	@Test
 	void shouldNotValidateWhenTrainingClientNull() throws ParseException {
 		
 		Training training = new Training();
@@ -197,6 +274,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
 		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor("trainer1");
 		training.setClient(null);
 		
 		Validator validator = createValidator();

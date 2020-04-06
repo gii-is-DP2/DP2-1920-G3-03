@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="trainings">
@@ -49,6 +50,11 @@
         </script>
     </jsp:attribute>
 	<jsp:body>
+		<sec:authorize access="isAuthenticated()">
+			<c:set var="principalUsername">
+				<sec:authentication property="principal.username"/>
+			</c:set>
+		</sec:authorize>
 		<c:choose>
             <c:when test="${training['new']}">
                 <h2>New Training for <c:out value="${client.firstName} ${client.lastName}"/></h2>
@@ -63,6 +69,7 @@
 			<div class="form-group has-feedback">
 				<input type="hidden" name="id" id="id" class="form-control" value="${training.id}"/>
 				<input type="hidden" name="client" value="${client.nif}"/>
+				<input type="hidden" name="author" value="${principalUsername}"/>
 				<yogogym:inputField label="Name" name="name"/>
 				<yogogym:inputField label="Initial Date" name="initialDate" readonly="${!training['new']}" pattern="^\d{4}\/\d{2}\/\d{2}$" placeholder="yyyy/MM/dd"/>
 	            <yogogym:inputField label="End Date" name="endDate" readonly="${!(training['new']||(!training['new']&&endDateAux>=actualDate))}" pattern="^\d{4}\/\d{2}\/\d{2}$" placeholder="yyyy/MM/dd"/>

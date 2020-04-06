@@ -1,6 +1,6 @@
 package org.springframework.samples.yogogym.service.exceptions;
 
 @SuppressWarnings("serial")
-public class TrainingRepAndTimeSetted extends Exception {
+public class RoutineLineRepAndTimeSetted extends Exception {
 
 }
