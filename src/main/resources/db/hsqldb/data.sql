@@ -103,6 +103,10 @@ INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,di
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (7, '2020-03-01', '2020-03-10', 'Entrenamiento3', 1, 'client6', null, 6);
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (8, '2020-04-01', '2020-04-20', 'Entrenamiento4', 1, 'client7', null, 7);
 
+/* Always Updated Training */
+
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (9, CURRENT_DATE, DATEADD(day, 1, CURRENT_DATE), 'Test', 0, 'trainer1', null, 1);
+
 
 /* ROUTINE */
 
@@ -114,6 +118,18 @@ INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (5,'M
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (6,'Triatlon', 'Para participantes del triatlon',3,5);
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (7,'Culturismo', 'Para participar en competiciones de culturismo',3,5);
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (8,'Relajación', 'Descanso',3,6);
+
+/* Routine for Update Training */
+
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (9,'Routine 1', 'Desc',1,9);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (10,'Routine 2', 'Desc',2,9);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (11,'Routine 3', 'Desc',3,9);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (12,'Routine 4', 'Desc',4,9);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (13,'Routine 5', 'Desc',5,9);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (14,'Routine 6', 'Desc',6,9);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (15,'Routine 7', 'Desc',7,9);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (16,'Routine 8', 'Desc',8,9);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (17,'Routine 9', 'Desc',9,9);
 
 /* EQUIPMENT */
 
@@ -284,6 +300,7 @@ INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (2,8);
 
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (1,1);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (1,2);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (1,9);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (2,3);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (3,4);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (4,5);

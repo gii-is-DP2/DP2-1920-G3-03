@@ -231,7 +231,7 @@ public class RoutineControllerTest {
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/trainer/"+ testTrainerUsername + "/clients/" + testClientId + "/trainings/"+testTrainingId));
 	}
-	
+		
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
 	@Test
 	void testInitUpdateRoutineForm() throws Exception

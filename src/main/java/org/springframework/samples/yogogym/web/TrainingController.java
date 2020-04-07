@@ -1,8 +1,9 @@
 package org.springframework.samples.yogogym.web;
 
-import java.util.Calendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 
 import javax.validation.Valid;
@@ -17,8 +18,8 @@ import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
 import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
-import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
 import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
 import org.springframework.samples.yogogym.service.exceptions.PastEndException;
 import org.springframework.samples.yogogym.service.exceptions.PastInitException;
 import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
@@ -133,7 +134,7 @@ public class TrainingController {
 			if(!training.getAuthor().equals(trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
 				return "exception";
 			}
-			try {
+			try {			
 				this.trainingService.saveTraining(training);
 			} 
 			catch (Exception e) {
@@ -291,6 +292,33 @@ public class TrainingController {
 			return "exception";
 		}
 	}
+	
+	//CLIENT
+		
+	@GetMapping("/client/{clientUsername}/trainings")
+	public String getTrainingList(@PathVariable("clientUsername")final String clientUsername, Model model)
+	{
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		Collection<Training> trainings = this.trainingService.findTrainingFromClient(client.getId());
+		
+		model.addAttribute("trainings",trainings);
+		
+		return "client/trainings/trainingsList";
+	}
+	
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}")
+	public String getTrainingDetails(@PathVariable("clientUsername")final String clientUsername, @PathVariable("trainingId")final int trainingId, Model model)
+	{
+		Training training = this.trainingService.findTrainingById(trainingId);
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		
+		model.addAttribute("training",training);
+		model.addAttribute("client",client);
+		
+		return "client/trainings/trainingsDetails";
+	}
+	
+	//Derivative
 	
 	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
