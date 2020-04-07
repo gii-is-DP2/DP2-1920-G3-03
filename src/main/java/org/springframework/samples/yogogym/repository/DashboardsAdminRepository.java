@@ -9,6 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.DashboardAdmin;
+import org.springframework.samples.yogogym.model.Inscription;
 
 public interface DashboardsAdminRepository extends CrudRepository<DashboardAdmin, Integer> {
 
@@ -22,5 +23,9 @@ public interface DashboardsAdminRepository extends CrudRepository<DashboardAdmin
 
 	@Query("SELECT c FROM Challenge c WHERE YEAR(c.endDate)=:year AND MONTH(c.endDate)=:month")
 	Collection<Challenge> findChallengesByMonthAndYear(Integer month, Integer year);
+	
+	@Query("SELECT i FROM Inscription i WHERE YEAR(i.challenge.endDate)=:year "
+			+ "AND MONTH(i.challenge.endDate)=:month AND i.status=2")
+	List<Inscription> findCompletedInscriptionsByMonthAndYear(int month, int year);
 
 }

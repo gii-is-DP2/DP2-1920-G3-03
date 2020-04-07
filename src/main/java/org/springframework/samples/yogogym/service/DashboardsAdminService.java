@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
+import org.springframework.samples.yogogym.model.Inscription;
 import org.springframework.samples.yogogym.repository.DashboardsAdminRepository;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,16 @@ public class DashboardsAdminService {
 		Integer year = cal.get(Calendar.YEAR);
 		
 		return this.dashboardRepository.findChallengesByMonthAndYear(month,year);
+	}
+
+	public List<Inscription> findCompletedInscriptionsThisMonth(int month) {
+		
+		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		Integer year = cal.get(Calendar.YEAR);
+		
+		return dashboardRepository.findCompletedInscriptionsByMonthAndYear(month,year);
 	}
 
 }
