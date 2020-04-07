@@ -73,13 +73,15 @@
 				<yogogym:inputField label="Name" name="name"/>
 				<yogogym:inputField label="Initial Date" name="initialDate" readonly="${!training['new']}" pattern="^\d{4}\/\d{2}\/\d{2}$" placeholder="yyyy/MM/dd"/>
 	            <yogogym:inputField label="End Date" name="endDate" readonly="${!(training['new']||(!training['new']&&endDateAux>=actualDate))}" pattern="^\d{4}\/\d{2}\/\d{2}$" placeholder="yyyy/MM/dd"/>
-	            <label class="col-sm-2 control-label">Share Editing Permission</label>
-	            <div class="col-sm-4">
-				    <select class="form-control" id="editingPermission" name="editingPermission">
-				    	<option id="trainerSelect" value="TRAINER">No, my client cannot edit his/her training.</option>
-				    	<option id="clientSelect" value="CLIENT">No, my trainer cannot edit my training.</option>
-		            	<option id="bothSelect" value="BOTH"></option>
-		            </select>
+	            <div class="form-group">
+		            <label class="col-sm-2 control-label">Share Editing Permission</label>
+		            <div class="col-sm-10">
+					    <select class="form-control" id="editingPermission" name="editingPermission">
+					    	<option id="trainerSelect" value="TRAINER">No, my client cannot edit his/her training.</option>
+					    	<option id="clientSelect" value="CLIENT">No, my trainer cannot edit my training.</option>
+			            	<option id="bothSelect" value="BOTH"></option>
+			            </select>
+		            </div>
 	            </div>
             </div>
 			<div class="form-group">
