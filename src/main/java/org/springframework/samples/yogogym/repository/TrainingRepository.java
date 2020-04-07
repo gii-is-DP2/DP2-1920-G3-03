@@ -25,5 +25,9 @@ public interface TrainingRepository extends  CrudRepository<Training, String>{
 	@Query("SELECT training FROM Training training WHERE training.client.id=:clientId AND training.id!=:trainingId AND ((training.initialDate BETWEEN :init AND :end) AND (training.endDate BETWEEN :init AND :end)) ORDER BY training.initialDate ASC")
 	public Collection<Training> countConcurrentTrainingsForIncluding(@Param("clientId") int clientId, @Param("trainingId") int trainingId, @Param("init") Date init, @Param("end") Date end);
 
+	//Copy training
+	@Query("SELECT client.trainings FROM Client client WHERE client.isPublic=true")
+	public Collection<Training> findTrainingWithPublicClient();
+	
 }
 	

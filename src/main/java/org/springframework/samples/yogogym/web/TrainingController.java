@@ -1,6 +1,7 @@
 package org.springframework.samples.yogogym.web;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -95,6 +96,9 @@ public class TrainingController {
 		
 		model.addAttribute("client", client);
 		model.addAttribute("training", training);
+		if(training.getRoutines().isEmpty()) {
+			model.addAttribute("hasNotRoutine",true);
+		}
 
 		return "trainer/trainings/trainingsDetails";
 	}
@@ -290,6 +294,25 @@ public class TrainingController {
 		else {
 			return "exception";
 		}
+	}
+	
+	//Copy training
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining")
+	public String getTrainingListCopy(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, Model model) {
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+			return "exception";
+		}
+		
+		Collection<Training> trainings = this.trainingService.findTrainingWithPublicClient();
+		if(trainings.isEmpty()) {
+			model.addAttribute("notHaveTrainingsPublic", true);
+		}else {
+			model.addAttribute("trainings", trainings);
+		}
+		return "trainer/trainings/listCopyTraining";
 	}
 	
 	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		

@@ -178,4 +178,11 @@ public class TrainingService {
 		this.clientRepository.save(client);
 		this.trainingRepository.delete(training);
 	}
+	
+	//Copy training
+	@Transactional
+	public Collection<Training> findTrainingWithPublicClient() throws DataAccessException{
+		Collection<Training> res = this.trainingRepository.findTrainingWithPublicClient();
+		return res;
+	}
 }

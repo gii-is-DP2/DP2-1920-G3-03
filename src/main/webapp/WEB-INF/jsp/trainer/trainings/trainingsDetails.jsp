@@ -24,7 +24,12 @@
 		<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/delete" var="trainingDeleteUrl" />
 		<a href="${fn:escapeXml(trainingDeleteUrl)}">Delete Training</a>
 	</c:if>
-	
+	<c:if test="${hasNotRoutine}">
+		<br>
+		<br>
+		<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/copyTraining" var="trainingCopyUrl" />
+		<a href="${fn:escapeXml(trainingCopyUrl)}">Copy Training</a>
+	</c:if>
 	<br>
 	<br>
 	<br>

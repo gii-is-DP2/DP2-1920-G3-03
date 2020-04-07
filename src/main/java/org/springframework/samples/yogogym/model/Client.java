@@ -28,6 +28,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -66,6 +67,10 @@ public class Client extends Person {
 	@Column(name="fatPercentage")
 	@Min(0)
 	protected Double fatPercentage;
+	
+	@Column(name="isPublic")
+	@NotNull
+	protected Boolean isPublic;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	protected Collection<Training> trainings;
