@@ -87,7 +87,10 @@ public class RoutineLineController {
 				
 		for(Exercise e:exerciseCollection)
 		{	
-			selectVals.put(e.getId(),  e.getName());
+			if(e.getEquipment() != null)
+				selectVals.put(e.getId(),  e.getName()+", "+e.getEquipment().getName());
+			else
+				selectVals.put(e.getId(),  e.getName());
 		}
 		
 		Client client = this.clientService.findClientById(clientId);
@@ -117,7 +120,10 @@ public class RoutineLineController {
 						
 			for(Exercise e:exerciseCollection)
 			{	
-				selectVals.put(e.getId(),  e.getName());
+				if(e.getEquipment() != null)
+					selectVals.put(e.getId(),  e.getName()+", "+e.getEquipment().getName());
+				else
+					selectVals.put(e.getId(),  e.getName());
 			}
 			
 			model.addAttribute("routineId", routineId);
@@ -163,8 +169,11 @@ public class RoutineLineController {
 		
 		for(Exercise e:exerciseCollection)
 		{	
-			selectVals.put(e.getId(),  e.getName());
-		}	
+			if(e.getEquipment() != null)
+				selectVals.put(e.getId(),  e.getName()+", "+e.getEquipment().getName());
+			else
+				selectVals.put(e.getId(),  e.getName());
+		}
 		
 		Client client = this.clientService.findClientById(clientId);
 			
@@ -195,7 +204,10 @@ public class RoutineLineController {
 			
 			for(Exercise e:exerciseCollection)
 			{	
-				selectVals.put(e.getId(),  e.getName());
+				if(e.getEquipment() != null)
+					selectVals.put(e.getId(),  e.getName()+", "+e.getEquipment().getName());
+				else
+					selectVals.put(e.getId(),  e.getName());
 			}
 			
 			model.addAttribute("routineId", routineId);
