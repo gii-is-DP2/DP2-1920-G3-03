@@ -1,15 +1,18 @@
 package org.springframework.samples.yogogym.web;
 
-import java.util.Calendar;
-import java.util.Collection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Client;
+import org.springframework.samples.yogogym.model.Routine;
+import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
@@ -18,8 +21,8 @@ import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
 import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
-import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
 import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
 import org.springframework.samples.yogogym.service.exceptions.PastEndException;
 import org.springframework.samples.yogogym.service.exceptions.PastInitException;
 import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
@@ -96,7 +99,7 @@ public class TrainingController {
 		
 		model.addAttribute("client", client);
 		model.addAttribute("training", training);
-		if(training.getRoutines().isEmpty()) {
+		if(training.getRoutines().isEmpty() && training.getDiet()==null) {
 			model.addAttribute("hasNotRoutine",true);
 		}
 
@@ -310,9 +313,67 @@ public class TrainingController {
 		if(trainings.isEmpty()) {
 			model.addAttribute("notHaveTrainingsPublic", true);
 		}else {
+			model.addAttribute("clientId", clientId);
+			model.addAttribute("trainerUsername", trainerUsername);
+			model.addAttribute("trainingId", trainingId);
 			model.addAttribute("trainings", trainings);
 		}
 		return "trainer/trainings/listCopyTraining";
+	}
+	
+	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining")
+	public String processTrainingCopy(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, Model model) {
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+			return "exception";
+		}
+		Training trainingToCopy = this.trainingService.findTrainingById((int) model.getAttribute("trainingIdToCopy"));
+		
+		Training nuevo = new Training();
+		if(trainingToCopy.getDiet()!=null) {
+			nuevo.setDiet(trainingToCopy.getDiet());
+		}
+		if(trainingToCopy.getRoutines()!=null) {
+			Collection<Routine> routines = new ArrayList<>();
+			for(Routine r : trainingToCopy.getRoutines()) {
+				Routine nueva = new Routine();
+				if(!r.getRoutineLine().isEmpty()) {
+					Collection<RoutineLine> routinesLines = new ArrayList<>();
+					for(RoutineLine rl : r.getRoutineLine()) {
+						RoutineLine nuevaRl = new RoutineLine();
+						nuevaRl.setExercise(rl.getExercise());
+						nuevaRl.setReps(rl.getReps());
+						nuevaRl.setSeries(rl.getSeries());
+						nuevaRl.setTime(rl.getTime());
+						nuevaRl.setWeight(rl.getWeight());
+						routinesLines.add(nuevaRl);
+					}
+					nueva.setRoutineLine(routinesLines);
+				}
+				nueva.setDescription(r.getDescription());
+				nueva.setName(r.getName());
+				nueva.setRepsPerWeek(r.getRepsPerWeek());
+				routines.add(nueva);
+			}
+			nuevo.setRoutines(routines);
+		}
+		nuevo.setAuthor(training.getAuthor());
+		nuevo.setClient(training.getClient());
+		nuevo.setEditingPermission(training.getEditingPermission());
+		nuevo.setEndDate(training.getEndDate());
+		nuevo.setId(training.getId());
+		nuevo.setInitialDate(training.getInitialDate());
+		nuevo.setName(training.getName());
+		
+		try {
+			this.trainingService.saveTraining(nuevo);
+		}catch(Exception e) {
+			
+		}
+		
+		return "redirect:/trainer/{trainerUsername}/trainings";
 	}
 	
 	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		

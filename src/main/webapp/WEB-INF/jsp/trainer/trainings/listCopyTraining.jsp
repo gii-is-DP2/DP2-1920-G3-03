@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="trainings">
@@ -17,6 +18,7 @@
             <th>Diet Description</th>
             <th>Routine Name</th>
             <th>Routine Description</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -46,6 +48,15 @@
                     	<c:out value="${routine.description}"/>
                     	<br>
                     </c:forEach>
+                </td>
+                <td>
+                	<form:form modelAttribute="training" class="form-horizontal" id="trainingForm">
+                		<input type="hidden" name="trainerUsername" value="${trainerUsername}">
+                		<input type="hidden" name="clientId" value="${clientId}">
+                		<input type="hidden" name="trainingId" value="${trainingId}">
+                		<input type="hidden" name="trainingIdToCopy" value="${training.id}">
+                		<button class="btn btn-default" type="submit">Copy Training</button>
+                	</form:form>
                 </td>
             </tr>
         </c:forEach>
