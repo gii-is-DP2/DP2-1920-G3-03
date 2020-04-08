@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -35,6 +36,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -99,7 +101,7 @@ public class TrainingController {
 		
 		model.addAttribute("client", client);
 		model.addAttribute("training", training);
-		if(training.getRoutines().isEmpty() && training.getDiet()==null) {
+		if((training.getRoutines().isEmpty() || training.getRoutines()==null) && training.getDiet()==null) {
 			model.addAttribute("hasNotRoutine",true);
 		}
 
@@ -305,31 +307,31 @@ public class TrainingController {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)||!isTrainingOfClient(trainingId,clientId)||!isTrainingEmpty(trainingId)) {
 			return "exception";
 		}
 		
 		Collection<Training> trainings = this.trainingService.findTrainingWithPublicClient();
+		Collection<Training> tr = trainings.stream().filter(t->t.getDiet()!=null || !t.getRoutines().isEmpty()).collect(Collectors.toList());
 		if(trainings.isEmpty()) {
 			model.addAttribute("notHaveTrainingsPublic", true);
 		}else {
 			model.addAttribute("clientId", clientId);
-			model.addAttribute("trainerUsername", trainerUsername);
 			model.addAttribute("trainingId", trainingId);
-			model.addAttribute("trainings", trainings);
+			model.addAttribute("trainings", tr);
 		}
 		return "trainer/trainings/listCopyTraining";
 	}
 	
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining")
-	public String processTrainingCopy(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, Model model) {
+	public String processTrainingCopy(@ModelAttribute("trainingIdToCopy") int idTrainingToCopy, @PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, Model model) {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)||!isTrainingOfClient(trainingId,clientId)||!isTrainingEmpty(trainingId)) {
 			return "exception";
 		}
-		Training trainingToCopy = this.trainingService.findTrainingById((int) model.getAttribute("trainingIdToCopy"));
+		Training trainingToCopy = this.trainingService.findTrainingById(idTrainingToCopy);
 		
 		Training nuevo = new Training();
 		if(trainingToCopy.getDiet()!=null) {
@@ -376,6 +378,16 @@ public class TrainingController {
 		return "redirect:/trainer/{trainerUsername}/trainings";
 	}
 	
+	private boolean isTrainingEmpty(int trainingId) {
+		Training training = this.trainingService.findTrainingById(trainingId);
+		return training.getDiet()==null && training.getRoutines().isEmpty();
+	}
+
+	private boolean isTrainingOfClient(int trainingId, int clientId) {
+		Collection<Integer> list = this.trainingService.findTrainingIdFromClient(clientId);
+		return list.contains(trainingId);
+	}
+
 	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		Client client = this.clientService.findClientById(clientId);

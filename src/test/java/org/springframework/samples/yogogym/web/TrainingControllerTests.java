@@ -123,7 +123,7 @@ class TrainingControllerTests {
 		training1.setEditingPermission(EditingPermission.TRAINER);
 		training1.setAuthor(TRAINER1_USERNAME);
 		training1.setDiet(null);
-		training1.setRoutines(null);
+		training1.setRoutines(new ArrayList<>());
 
 		Training training2 = new Training();
 		BeanUtils.copyProperties(training1, training2);
@@ -244,13 +244,13 @@ class TrainingControllerTests {
 	void testClientTrainingDetails() throws Exception {
 		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID))
 		 		.andExpect(status().isOk())
-				.andExpect(model().attributeExists("client"))
+		 		.andExpect(model().attributeExists("client"))
 				.andExpect(model().attributeExists("training"))
 				.andExpect(model().attribute("training", hasProperty("name", is("Training 1"))))
 				.andExpect(model().attribute("training", hasProperty("initialDate", equalTo(initialDate))))
 				.andExpect(model().attribute("training", hasProperty("endDate", equalTo(endDate))))
 				.andExpect(model().attribute("training", hasProperty("author", is(TRAINER1_USERNAME))))
-				.andExpect(model().attribute("training", hasProperty("routines", nullValue())))
+				.andExpect(model().attribute("training", hasProperty("routines", is(new ArrayList<>()))))
 				.andExpect(model().attribute("training", hasProperty("diet", nullValue())))
 				.andExpect(view().name("trainer/trainings/trainingsDetails"));
 	}
