@@ -183,12 +183,13 @@ public class TrainingService {
 	//Copy training
 	@Transactional
 	public Collection<Training> findTrainingWithPublicClient() throws DataAccessException{
-		Collection<Training> res = this.trainingRepository.findTrainingWithPublicClient();
-		return res;
+		List<Training> res = (List<Training>) this.trainingRepository.findTrainingWithPublicClient();
+		return res.get(0) == null ? new ArrayList<Training>() : res;
 	}
 	
 	@Transactional
 	public Collection<Integer> findTrainingIdFromClient(int id) throws DataAccessException{
-		return this.trainingRepository.findTrainingIdFromClient(id);
+		List<Integer> res = (List<Integer>) this.trainingRepository.findTrainingIdFromClient(id);
+		return res.get(0) == null ? new ArrayList<Integer>() : res;
 	}
 }

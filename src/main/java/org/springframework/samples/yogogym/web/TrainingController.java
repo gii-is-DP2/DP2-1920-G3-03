@@ -311,14 +311,16 @@ public class TrainingController {
 			return "exception";
 		}
 		
-		Collection<Training> trainings = this.trainingService.findTrainingWithPublicClient();
-		Collection<Training> tr = trainings.stream().filter(t->t.getDiet()!=null || !t.getRoutines().isEmpty()).collect(Collectors.toList());
+		Collection<Training> trainings = this.trainingService.findTrainingWithPublicClient();		
 		if(trainings.isEmpty()) {
 			model.addAttribute("notHaveTrainingsPublic", true);
 		}else {
-			model.addAttribute("clientId", clientId);
-			model.addAttribute("trainingId", trainingId);
-			model.addAttribute("trainings", tr);
+			Collection<Training> tr = trainings.stream().filter(t->t.getDiet()!=null || !t.getRoutines().isEmpty()).collect(Collectors.toList());
+			if(tr.isEmpty()) {
+				model.addAttribute("notHaveTrainingsPublic", true);
+			}else {
+				model.addAttribute("trainings", tr);
+			}
 		}
 		return "trainer/trainings/listCopyTraining";
 	}
