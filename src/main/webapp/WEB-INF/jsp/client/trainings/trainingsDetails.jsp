@@ -10,11 +10,20 @@
     
     <spring:url value="/client/${client.user.username}/trainings/${training.id}/routine/create" var="addRoutineUrl"/>
     <a href="${fn:escapeXml(addRoutineUrl)}">Add Routine</a>
-    
+    <br>
+    <br>
     <c:forEach var="routine" items="${training.routines}">
     	
     	<h3>Routine: <c:out value="${routine.name}"/></h3>
     	<h3>Repetitions per Week: <c:out value="${routine.repsPerWeek}"/></h3>
+    	<spring:url value="/client/${client.user.username}/trainings/${training.id}/routine/${routine.id}/update" var="updateRoutineUrl"/>
+    	<a href="${fn:escapeXml(updateRoutineUrl)}">Edit Routine</a>
+    	<br>
+    	<spring:url value="/client/${client.user.username}/trainings/${training.id}/routine/${routine.id}/delete" var="deleteRoutineUrl"/>
+    	<a href="${fn:escapeXml(deleteRoutineUrl)}">Delete Routine</a>
+    	<br>
+    	<spring:url value="/client/${client.user.username}/trainings/${training.id}/routines/${routine.id}/routineLine/create" var="addRoutineLineUrl"/>
+    	<a href="${fn:escapeXml(addRoutineLineUrl)}">Add Routine Line</a>
 		<table class="table table-striped">
 			<thead>
 	        <tr>
@@ -74,12 +83,12 @@
 						</c:when>
 						<c:otherwise>
 							
-							<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/routineLine/{routineLineId}/update" var="routineLineUpdateUrl">
+							<spring:url value="/client/${client.user.username}/trainings/${training.id}/routines/${routine.id}/routineLine/{routineLineId}/update" var="routineLineUpdateUrl">
 								<spring:param name="routineLineId" value="${lineRoutine.id}"/>
 							</spring:url>	
 							<td><a href="${fn:escapeXml(routineLineUpdateUrl)}">Edit</a></td>
 							
-							<spring:url value="/trainer/${trainerUsername}/clients/${clientId}/trainings/${training.id}/routines/${routine.id}/routineLine/{routineLineId}/delete" var="routineLineDeleteUrl">
+							<spring:url value="/client/${client.user.username}/trainings/${training.id}/routines/${routine.id}/routineLine/{routineLineId}/delete" var="routineLineDeleteUrl">
 								<spring:param name="routineLineId" value="${lineRoutine.id}"/>
 							</spring:url>				
 							<td><a href="${fn:escapeXml(routineLineDeleteUrl)}">Delete</a></td>
