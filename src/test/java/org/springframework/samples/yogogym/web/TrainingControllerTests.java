@@ -553,6 +553,8 @@ class TrainingControllerTests {
     			.andExpect(view().name("redirect:/trainer/{trainerUsername}/trainings"));
     }
     
+    //Copy training
+    
     @WithMockUser(username="trainer1", authorities= {"trainer"})
     @ParameterizedTest
 	@ValueSource(ints = {CLIENT1_TRAINING1_ID,CLIENT1_TRAINING3_ID})
@@ -570,6 +572,30 @@ class TrainingControllerTests {
    				.andExpect(status().isOk())
    				.andExpect(view().name("exception"));
    	}
+    
+    @WithMockUser(username="trainer1", authorities= {"trainer"})
+    @ParameterizedTest
+	@ValueSource(ints = {CLIENT1_TRAINING1_ID,CLIENT1_TRAINING3_ID})
+	void testProcessCopyTrainingSuccess(int trainingId) throws Exception {
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining", TRAINER1_USERNAME,CLIENT1_ID,trainingId)
+				.with(csrf())
+			 	.param("trainingIdToCopy", String.valueOf(CLIENT1_TRAINING4_ID))
+			 	.param("trainerUsername", "trainer1"))
+				.andExpect(status().is3xxRedirection())
+		 		.andExpect(view().name("redirect:/trainer/{trainerUsername}/trainings"));
+	}
+    
+    @WithMockUser(username="trainer1", authorities= {"trainer"})
+    @ParameterizedTest
+	@ValueSource(ints = {CLIENT1_TRAINING4_ID,CLIENT1_TRAINING5_ID,CLIENT1_TRAINING6_ID})
+	void testProcessCopyTrainingFailed(int trainingId) throws Exception {
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining", TRAINER1_USERNAME,CLIENT1_ID,trainingId)
+				.with(csrf())
+			 	.param("trainingIdToCopy", String.valueOf(CLIENT1_TRAINING4_ID))
+			 	.param("trainerUsername", "trainer1"))
+				.andExpect(status().isOk())
+		 		.andExpect(view().name("exception"));
+	}
     
     /**
      * <p>Performs a post with a sample training which has no errors. It's used to check try/catch in controller tests.</p>

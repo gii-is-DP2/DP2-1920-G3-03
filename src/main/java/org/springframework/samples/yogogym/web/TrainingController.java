@@ -343,7 +343,7 @@ public class TrainingController {
 			Collection<Routine> routines = new ArrayList<>();
 			for(Routine r : trainingToCopy.getRoutines()) {
 				Routine nueva = new Routine();
-				if(!r.getRoutineLine().isEmpty()) {
+				if(r.getRoutineLine()!=null) {
 					Collection<RoutineLine> routinesLines = new ArrayList<>();
 					for(RoutineLine rl : r.getRoutineLine()) {
 						RoutineLine nuevaRl = new RoutineLine();
