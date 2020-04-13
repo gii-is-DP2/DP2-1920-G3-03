@@ -45,30 +45,24 @@ excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes
 excludeAutoConfiguration= SecurityConfiguration.class)
 public class RoutineControllerTest {
 	
-	private static final int testRoutineId = 1;
-	
-	private static final String testTrainerUsername = "trainer1";
-	
-	private static final int testClientId = 1;
-	
+	//Trainer 1
+	private static final int testRoutineId = 1;	
+	private static final String testTrainerUsername = "trainer1";	
+	private static final int testClientId = 1;	
 	private static final int testTrainingId = 1;
 	
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		
 	//Trainer 2
-	private static final String testTrainerUsername_t2 = "trainer2";
-	
+	private static final String testTrainerUsername_t2 = "trainer2";	
 	private static final int testClientId_t2 = 2;
 	
 	@MockBean
-	private RoutineService routineService;
-	
+	private RoutineService routineService;	
 	@MockBean
 	private ClientService clientService;
-
 	@MockBean
-	private TrainerService trainerService;
-	
+	private TrainerService trainerService;	
 	@MockBean
 	private TrainingService trainingService;
 	

@@ -105,7 +105,7 @@ INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,di
 
 /* Always Updated Training */
 
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (9, CURRENT_DATE, DATEADD(day, 1, CURRENT_DATE), 'Test', 0, 'trainer1', null, 1);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (9, CURRENT_DATE, DATEADD(day, 1, CURRENT_DATE), 'Test', 2, 'trainer1', null, 1);
 
 
 /* ROUTINE */
