@@ -62,8 +62,8 @@ class TrainingControllerTests {
 	
 	private static final int CLIENT1_ID = 1;
 	private static final int CLIENT2_ID = 2;
-	private static final String NIF_1 = "12345678F";
-	private static final String NIF_2 = "12345678G";
+	private static final String NIF1 = "12345678F";
+	private static final String NIF2 = "12345678G";
 	
 	private static final int CLIENT1_TRAINING1_ID = 1;
 	private static final int CLIENT1_TRAINING2_ID = 2;
@@ -226,12 +226,12 @@ class TrainingControllerTests {
 		given(this.trainingService.findTrainingIdFromClient(CLIENT1_ID)).willReturn(trainingIdList);
 		given(this.trainingService.findTrainingIdFromClient(CLIENT2_ID)).willReturn(new ArrayList<>());
 		try {
-			given(this.clientFormatter.parse(NIF_1, Locale.ENGLISH)).willReturn(client1);
+			given(this.clientFormatter.parse(NIF1, Locale.ENGLISH)).willReturn(client1);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		try {
-			given(this.clientFormatter.parse(NIF_2, Locale.ENGLISH)).willReturn(client2);
+			given(this.clientFormatter.parse(NIF2, Locale.ENGLISH)).willReturn(client2);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -334,7 +334,7 @@ class TrainingControllerTests {
 			 	.param("endDate", dateFormat.format(endDate))
 			 	.param("editingPermission", EditingPermission.TRAINER.toString())
 			 	.param("author", TRAINER2_USERNAME)
-			 	.param("client", "12345678F"))
+			 	.param("client", NIF2))
 				.andExpect(status().is3xxRedirection())
 		 		.andExpect(view().name("redirect:/trainer/"+TRAINER2_USERNAME+"/trainings"));
 	}
@@ -349,7 +349,7 @@ class TrainingControllerTests {
 			 	.param("endDate", "")
 			 	.param("editingPermission", "")
 			 	.param("author", TRAINER2_USERNAME)
-			 	.param("client", NIF_2))
+			 	.param("client", NIF2))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
 				.andExpect(model().attributeHasFieldErrors("training", "name"))
@@ -457,7 +457,7 @@ class TrainingControllerTests {
 				.param("endDate", dateFormat.format(endDateUpdated))
 				.param("editingPermission", EditingPermission.BOTH.toString())
 				.param("author", TRAINER1_USERNAME)
-				.param("client", NIF_1))
+				.param("client", NIF1))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}"));
 	}
@@ -472,7 +472,7 @@ class TrainingControllerTests {
 				.param("endDate", "")
 				.param("editingPermission", "")
 				.param("author", TRAINER1_USERNAME)
-				.param("client", NIF_1))
+				.param("client", NIF1))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
 				.andExpect(model().attributeHasFieldErrors("training", "name"))
@@ -621,7 +621,7 @@ class TrainingControllerTests {
     		 	.param("endDate", dateFormat.format(endDate))
     		 	.param("editingPermission", EditingPermission.BOTH.toString())
     		 	.param("author", TRAINER2_USERNAME)
-    		 	.param("client", NIF_2))
+    		 	.param("client", NIF2))
     			.andExpect(status().isOk())
     			.andExpect(model().attributeHasErrors("training"))
     			.andExpect(model().attributeHasFieldErrors("training", errorField))
@@ -636,7 +636,7 @@ class TrainingControllerTests {
     		 	.param("endDate", dateFormat.format(endDate))
     		 	.param("editingPermission", EditingPermission.BOTH.toString())
     		 	.param("author", TRAINER1_USERNAME)
-    		 	.param("client", NIF_1))
+    		 	.param("client", NIF1))
     			.andExpect(status().isOk())
     			.andExpect(model().attributeHasErrors("training"))
     			.andExpect(model().attributeHasFieldErrors("training", errorField))

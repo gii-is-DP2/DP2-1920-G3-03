@@ -111,8 +111,9 @@ public class TrainingController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/create")
 	public String initTrainingCreateForm(@PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, ModelMap model) {
 		
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername)) {
 			return "exception";
+		}
 		
 		Training training = new Training();
 		Client client = this.clientService.findClientById(clientId);
@@ -139,7 +140,7 @@ public class TrainingController {
 			model.put("training", training);
 			return "trainer/trainings/trainingCreateOrUpdate";
 		} else {
-			if(!training.getAuthor().equals(trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+			if(!training.getAuthor().equals(trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)||!training.getClient().equals(client)) {
 				return "exception";
 			}
 			try {
@@ -234,10 +235,12 @@ public class TrainingController {
 		} 
 		else {
 			
-			if(oldTraining.getEndDate().before(now)||!training.getAuthor().equals(oldTraining.getAuthor())||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+			if(oldTraining.getEndDate().before(now)&&!training.getEndDate().equals(oldTraining.getEndDate())
+				||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
 				return "exception";
 			}
 			
+			training.setAuthor(oldTraining.getAuthor());
 			training.setClient(oldTraining.getClient());
 			training.setInitialDate(oldTraining.getInitialDate());
 			training.setDiet(oldTraining.getDiet());

@@ -3,7 +3,6 @@ package org.springframework.samples.yogogym.web;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
@@ -43,6 +42,27 @@ public class DashboardsAdminController {
 		dashboard(7, "Week", model);
 		return "admin/dashboards/dashboardEquipment";
 	}
+	
+	private void dashboard(Integer days, String string, Model model) {
+		List<Integer> countEquipment = this.dashboardsAdminService.countEquipment(days);
+		List<String> nameEquipment = this.dashboardsAdminService.nameEquipment(days);
+		if (!countEquipment.isEmpty() || !nameEquipment.isEmpty()) {
+			String[] s = new String[nameEquipment.size()];
+			for (int i = 0; i < nameEquipment.size(); i++) {
+				s[i] = nameEquipment.get(i);
+			}
+			Integer[] c = new Integer[countEquipment.size()];
+			for (int i = 0; i < countEquipment.size(); i++) {
+				c[i] = countEquipment.get(i);
+			}
+			model.addAttribute("orderName" + string, s);
+			model.addAttribute("count" + string, c);
+			model.addAttribute("hasEquipment" + string, true);
+		} else {
+			model.addAttribute("hasEquipment" + string, false);
+		}
+
+	}
 
 	@GetMapping("/admin/dashboardChallenges/{month}")
 	public String getDashboardChallenges(@PathVariable("month") int month, Model model) {
@@ -70,14 +90,11 @@ public class DashboardsAdminController {
 		Client client = null;
 		Integer cPoints = null;
 
-		List<Inscription> completedInscriptionsThisMonth = this.inscriptionService.findAll().stream()
-				.filter(i -> challenges.contains(i.getChallenge()) && i.getStatus().equals(Status.COMPLETED))
-				.collect(Collectors.toList());
+		List<Inscription> completedInscriptionsThisMonth = this.dashboardsAdminService.findCompletedInscriptionsThisMonth(month);
 		if (completedInscriptionsThisMonth.isEmpty()) {
 			model.addAttribute("NoCompletedChallenges", true);
 			return;
 		}
-		// model.addAttribute("NoCompletedChallenges", false);
 
 		List<Client> clients = (List<Client>) this.clientService.findAllClient();
 		for (Client c : clients) {
@@ -159,27 +176,6 @@ public class DashboardsAdminController {
 		}
 
 		model.addAttribute("percentageGuilds", percentageGuilds);
-
-	}
-
-	private void dashboard(Integer days, String string, Model model) {
-		List<Integer> countEquipment = this.dashboardsAdminService.countEquipment(days);
-		List<String> nameEquipment = this.dashboardsAdminService.nameEquipment(days);
-		if (!countEquipment.isEmpty() || !nameEquipment.isEmpty()) {
-			String[] s = new String[nameEquipment.size()];
-			for (int i = 0; i < nameEquipment.size(); i++) {
-				s[i] = nameEquipment.get(i);
-			}
-			Integer[] c = new Integer[countEquipment.size()];
-			for (int i = 0; i < countEquipment.size(); i++) {
-				c[i] = countEquipment.get(i);
-			}
-			model.addAttribute("orderName" + string, s);
-			model.addAttribute("count" + string, c);
-			model.addAttribute("hasEquipment" + string, true);
-		} else {
-			model.addAttribute("hasEquipment" + string, false);
-		}
 
 	}
 

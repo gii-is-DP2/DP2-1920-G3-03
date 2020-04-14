@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +21,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
+import org.springframework.samples.yogogym.model.Challenge;
+import org.springframework.samples.yogogym.model.Client;
+import org.springframework.samples.yogogym.model.Exercise;
+import org.springframework.samples.yogogym.model.Guild;
+import org.springframework.samples.yogogym.model.Inscription;
+import org.springframework.samples.yogogym.model.User;
+import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DashboardsAdminService;
 import org.springframework.samples.yogogym.service.GuildService;
@@ -31,7 +40,14 @@ public class DashboardsAdminControllerTest {
 
 	private static final Integer[] COUNT = { 1 };
 
-	private static final String[] NAME = { "prueba" };
+	private static final String[] NAME = { "prueba" }; 
+	
+	private static final Calendar testInitialChallengeDate = Calendar.getInstance();
+	private static final Calendar testEndChallengeDate = Calendar.getInstance();
+	
+	private static final String[] challengesNames = { "Challenge1 Name Test" };
+	private static final Double[] percentageClients = { 100. };
+	private static final Double[] percentageGuilds = { 100. };
 
 	@Nested
 	@DisplayName("Admin test with exercises")
@@ -165,5 +181,233 @@ public class DashboardsAdminControllerTest {
 					.andExpect(model().attribute("hasEquipmentMonth", false))
 					.andExpect(model().attribute("hasEquipmentWeek", false));
 		}
+	}
+	
+	@Nested
+	@DisplayName("Admin Dashboard Challenges Test All Ok")
+	@WebMvcTest(value = DashboardsAdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class AdminDashboardChallengesTestOk {
+
+		@MockBean
+		private DashboardsAdminService dashboardsAdminService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
+
+		@Autowired
+		private MockMvc mockMvc;
+		
+
+		@BeforeEach
+		void setup() {
+			
+			//Challenge 1:
+			testEndChallengeDate.add(Calendar.DAY_OF_MONTH, 1);
+			Date initialDate = testInitialChallengeDate.getTime();
+			Date endDate = testInitialChallengeDate.getTime();
+			Exercise exercise1 = new Exercise();
+			exercise1.setName("Exercise Test");
+			
+			Challenge challenge1 = new Challenge();
+			challenge1.setId(1);
+			challenge1.setName("Challenge1 Name Test");
+			challenge1.setDescription("Challenge Description Test");
+			challenge1.setInitialDate(initialDate);
+			challenge1.setEndDate(endDate);
+			challenge1.setPoints(100);
+			challenge1.setReward("Reward Test");
+			challenge1.setReps(100);
+			challenge1.setWeight(100.);
+			challenge1.setExercise(exercise1);
+			
+			//Inscription 1:
+			Inscription inscription1 = new Inscription();
+			inscription1.setChallenge(challenge1);
+			inscription1.setId(1);
+			inscription1.setStatus(Status.COMPLETED);
+			
+			Client client1 = new Client();
+			User userClient1 = new User();
+			userClient1.setUsername("username");
+			userClient1.setEnabled(true);
+			client1.setUser(userClient1);
+			client1.setId(1);
+			client1.addInscription(inscription1);
+			
+			//Guild 1:
+			Guild guild1 = new Guild();
+			guild1.setId(1);
+			guild1.setCreator("username");
+			guild1.setDescription("We are connecting the world");
+			guild1.setName("Connecting");
+			guild1.setLogo("https://omega2001.es/wp-content/uploads/2016/02/red-informatica-1080x675.jpg");
+			client1.setGuild(guild1);
+			
+			
+			
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(now);
+			int month = cal.get(Calendar.MONTH) + 1;
+			
+			
+			List<Challenge> listChallenges = new ArrayList<Challenge>();
+			listChallenges.add(challenge1);
+			given(this.dashboardsAdminService.getChallengesOfMonth(month)).willReturn(listChallenges);
+			
+			List<Inscription> completedInscriptionsThisMonth = new ArrayList<Inscription>();
+			completedInscriptionsThisMonth.add(inscription1);
+			given(this.dashboardsAdminService.findCompletedInscriptionsThisMonth(month)).willReturn(completedInscriptionsThisMonth);
+			
+			List<Inscription> inscriptionsByChallenge1 = new ArrayList<Inscription>();
+			inscriptionsByChallenge1.add(inscription1);
+			given(this.inscriptionService.findInscriptionsByChallengeId(1)).willReturn(inscriptionsByChallenge1);
+			
+			List<Client> listClients = new ArrayList<Client>();
+			listClients.add(client1);
+			given(this.clientService.findAllClient()).willReturn(listClients);
+			
+			List<Guild> guilds = new ArrayList<>();
+			guilds.add(guild1);
+			given(this.guildService.findAllGuild()).willReturn(guilds);
+			
+			List<Client> clientsguild1 = new ArrayList<>();
+			clientsguild1.add(client1);
+			given(this.guildService.findAllClientesByGuild(guild1)).willReturn(clientsguild1);
+			
+		}
+
+		@WithMockUser(username = "admin1", authorities = { "admin" })
+		@Test
+		void testInitAllDashboardChallenges() throws Exception {
+			mockMvc.perform(get("/admin/dashboardChallenges/0")).andExpect(status().isOk())
+					.andExpect(view().name("admin/dashboards/dashboardChallenges"))
+					.andExpect(model().attribute("ChallengesExists", true))
+					.andExpect(model().attributeExists("client"))
+					.andExpect(model().attribute("cPoints", 100))
+					.andExpect(model().attributeExists("guild"))
+					.andExpect(model().attribute("gPoints", 100))
+					.andExpect(model().attribute("challengesNames", challengesNames))
+					.andExpect(model().attribute("percentageClients", percentageClients))
+					.andExpect(model().attribute("percentageGuilds", percentageGuilds));
+		}	
+	}
+	
+	@Nested
+	@DisplayName("Admin Dashboard Challenges Test No Challenges")
+	@WebMvcTest(value = DashboardsAdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class AdminDashboardChallengesTestNoChallenges{
+
+		@MockBean
+		private DashboardsAdminService dashboardsAdminService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
+
+		@Autowired
+		private MockMvc mockMvc;
+		
+
+		@BeforeEach
+		void setup() {
+			
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(now);
+			int month = cal.get(Calendar.MONTH) + 1;
+			
+			List<Challenge> listChallenges = new ArrayList<Challenge>();
+			given(this.dashboardsAdminService.getChallengesOfMonth(month)).willReturn(listChallenges);
+			
+		}
+
+		@WithMockUser(username = "admin1", authorities = { "admin" })
+		@Test
+		void testInitAllDashboardChallenges() throws Exception {
+			mockMvc.perform(get("/admin/dashboardChallenges/0")).andExpect(status().isOk())
+					.andExpect(view().name("admin/dashboards/dashboardChallenges"))
+					.andExpect(model().attribute("ChallengesExists", false));
+		}	
+	}
+	
+	@Nested
+	@DisplayName("Admin Dashboard Challenges Test No Completed Challenges")
+	@WebMvcTest(value = DashboardsAdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class AdminDashboardChallengesTestNoCompletedChallenges {
+
+		@MockBean
+		private DashboardsAdminService dashboardsAdminService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
+
+		@Autowired
+		private MockMvc mockMvc;
+		
+
+		@BeforeEach
+		void setup() {
+			
+			//Challenge 1:
+			testEndChallengeDate.add(Calendar.DAY_OF_MONTH, 1);
+			Date initialDate = testInitialChallengeDate.getTime();
+			Date endDate = testInitialChallengeDate.getTime();
+			Exercise exercise1 = new Exercise();
+			exercise1.setName("Exercise Test");
+			
+			Challenge challenge1 = new Challenge();
+			challenge1.setId(1);
+			challenge1.setName("Challenge1 Name Test");
+			challenge1.setDescription("Challenge Description Test");
+			challenge1.setInitialDate(initialDate);
+			challenge1.setEndDate(endDate);
+			challenge1.setPoints(100);
+			challenge1.setReward("Reward Test");
+			challenge1.setReps(100);
+			challenge1.setWeight(100.);
+			challenge1.setExercise(exercise1);
+			
+			//Inscription 1:
+			Inscription inscription1 = new Inscription();
+			inscription1.setChallenge(challenge1);
+			inscription1.setId(1);
+			inscription1.setStatus(Status.SUBMITTED);
+			
+			
+			List<Challenge> listChallenges = new ArrayList<Challenge>();
+			listChallenges.add(challenge1);
+			given(this.dashboardsAdminService.getChallengesOfMonth(1)).willReturn(listChallenges);
+			
+			List<Inscription> completedInscriptionsThisMonth = new ArrayList<Inscription>();
+			given(this.dashboardsAdminService.findCompletedInscriptionsThisMonth(1)).willReturn(completedInscriptionsThisMonth);
+			
+		}
+
+		@WithMockUser(username = "admin1", authorities = { "admin" })
+		@Test
+		void testInitAllDashboardChallenges() throws Exception {
+			mockMvc.perform(get("/admin/dashboardChallenges/1")).andExpect(status().isOk())
+					.andExpect(view().name("admin/dashboards/dashboardChallenges"))
+					.andExpect(model().attribute("ChallengesExists", true))
+					.andExpect(model().attribute("NoCompletedChallenges", true));
+		}	
 	}
 }
