@@ -430,6 +430,23 @@ public class TrainingServiceTests {
 		assertThat(clientTrainings.size()).isEqualTo(foundClient-1);
 	}
 	
+	//Copy Training
+	@Test
+	@Transactional
+	public void shouldFindTrainingWithPublicClient() {
+		Collection<Training> trainingsPublic = this.trainingService.findTrainingWithPublicClient();
+		assertThat(trainingsPublic.size()).isEqualTo(9);
+	}
+	
+	@ParameterizedTest
+	@ValueSource(ints = {1,2,3,4,5,6,7,8,9,10})
+	@Transactional
+	public void shouldFindTrainingIdFromClient(int idClient) {
+		Collection<Training> listTraining = this.trainingService.findTrainingFromClient(idClient);
+		Collection<Integer> listTrainingsId = this.trainingService.findTrainingIdFromClient(idClient);
+		assertThat(listTrainingsId.size()).isEqualTo(listTraining.size());
+	}
+	
 	/**
 	 * <p>Creates a sample Training whose initial and end date are by default the actual date. Also, its 
 	 * client is the one with the id CLIENT_ID.</p>

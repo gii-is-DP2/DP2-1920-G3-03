@@ -35,6 +35,7 @@ public class ClientServiceTest {
 		c.setWeight(100.);
 		c.setFatPercentage(0.3);
 		c.setNif("26547898D");
+		c.setIsPublic(true);
 		
 		this.clientService.saveClient(c);
 		
