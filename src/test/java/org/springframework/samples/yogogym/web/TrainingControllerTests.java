@@ -108,7 +108,7 @@ class TrainingControllerTests {
 		userClient1.setEnabled(true);
 		client1.setUser(userClient1);
 		client1.setId(CLIENT1_ID);
-		client1.setNif(NIF_1);
+		client1.setNif(NIF1);
 		client1.setIsPublic(true);
 		
 		clientsTrainer1.add(client1);
@@ -198,7 +198,7 @@ class TrainingControllerTests {
 		userClient2.setEnabled(true);
 		client2.setUser(userClient2);
 		client2.setId(CLIENT2_ID);
-		client2.setNif(NIF_2);
+		client2.setNif(NIF2);
 		client2.setIsPublic(true);
 		
 		clientsTrainer2.add(client2);
