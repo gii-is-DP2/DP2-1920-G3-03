@@ -318,7 +318,7 @@ public class TrainingController {
 		if(trainings.isEmpty()) {
 			model.addAttribute("notHaveTrainingsPublic", true);
 		}else {
-			Collection<Training> tr = trainings.stream().filter(t->t.getDiet()!=null || !t.getRoutines().isEmpty()).collect(Collectors.toList());
+			Collection<Training> tr = trainings.stream().filter(t->t!=null).filter(t->t.getDiet()!=null || !t.getRoutines().isEmpty()).collect(Collectors.toList());
 			if(tr.isEmpty()) {
 				model.addAttribute("notHaveTrainingsPublic", true);
 			}else {
