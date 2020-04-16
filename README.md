@@ -42,10 +42,10 @@ Como administrador quiero añadir retos semanales al gimnasio, que los clientes 
 
 #### Escenarios:
 
-* **Añadir reto semanal a semana sin retos:** Dado un administrador [admin1] y una semana [01/01/2030] sin retos, cuando este intente añadir un challenge aportando la información necesaria [name="ChallengeTest", description="Test", initialDate="01/01/2030", endDate="05/01/2030", points=10,reps=10,reward="Test",weight=10. , exercise=Exercise1], entonces el reto se creará correctamente.
+* **Añadir reto semanal a semana sin retos:** Dado un administrador [admin1] y una semana [01/01/2030] sin retos, cuando este intente añadir un challenge aportando la información necesaria [name="ChallengeTest", description="Test1", initialDate="01/01/2030", endDate="05/01/2030", points=10,reps=10,reward="Test",weight=10. , exercise=Exercise1], entonces el reto se creará correctamente.
 * **Añadir reto semanal ya existente:** Dado un administrador[admin1], el reto anterior creado  y un reto [igual que el anterior pero con description= "Test2"] cuando este intente crearlo con el mismo nombre e initialDate que el anterior, entonces se le indicará que esto no es posible debido a que ya existe.
-* **Añadir reto semanal a semana con 3 retos:** Dado un administrador[admin1]  y una semana con 2 retos con initialDate=[10/10/2020], cuando este intente añadir dos con el mismo initialDate, entonces se le indicará que no es posible debido a que se ha llegado al máximo de retos esa semana.
-* **Añadir reto semanal en fecha anterior:** Dado un administrador[admin1] , cuando este intente añadir un reto con los mismos datos que el anterior pero con fecha [01/02/2010], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
+* **Añadir reto semanal a semana con 3 retos:** Dado un administrador[admin1]  y una semana con 2 retos con initialDate=[10/10/2020], cuando este intente añadir dos con los mismos datos que en el primer caso pero con el mismo initialDate de esta semana y endDate=[15/10/2020] y nombres "ChallengeTest1" y "ChallengeTest2", entonces el primero se creará, pero el segundo indicará que hay un máximo de 3 test por semana.
+* **Añadir reto semanal en fecha anterior:** Dado un administrador[admin1] , cuando este intente añadir un reto con los mismos datos que el primero pero con initialDate [01/02/2010], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
 
 ---
 
