@@ -252,6 +252,17 @@ Como entrenador quiero llevar el control de los entrenamientos de mis clientes c
 
 ---
 
+#### HU17 - Copiar entrenamiento de otro cliente
+
+Como entrenador quiero poder copiar los entrenamientos de otros clientes con perfil público para ahorrar tiempo a la hora de hacer entrenamientos similares.
+
+#### Escenarios:
+
+* **Mostrar entrenamientos a copiar a un entrenamiento vacío:** Dado un entrenador con usuario 'trainer1', y un cliente con id '1' que cuente con un entrenamiento que no contenga rutinas ni dietas, mostrarle un listado de entrenamientos de otros clientes con perfil público, y que tengan rutinas, dietas o ambas, para poder copiarla.
+* **Mostrar entrenamientos a copiar a un entrenamiento no vacío:** Dado un entrenador con usuario 'trainer1', y un cliente con id '1' que cuente con un entrenamiento que contenga rutinas, dietas o ambas, redirigir a la vista de error.
+
+---
+
 ### Cliente
 
 ---
@@ -305,17 +316,6 @@ Como cliente quiero poder tener dietas personalizadas según mi tipo de entrenam
 
 * **Cliente con entrenamiento asignado:** Dado un cliente con un entrenamiento asignado se le asignará la dieta que mejor complemente su entrenamiento.
 * **Cliente sin entrenamiento asignado:** Dado un cliente sin un entrenamiento asignado no se le permitirá acceder a esta función y se le pedirá que consiga un entrenamiento antes de acceder.
-
----
-
-#### HU17 - Copiar entrenamiento de otro cliente
-
-Como cliente quiero seguir a otros clientes para copiar su entrenamiento.
-
-#### Escenarios:
-
-* **Clientes con perfil público:** Dado un cliente con perfil público se permitirá que otros clientes le sigan.
-* **Clientes con perfil privado:** Dado un cliente con perfil privado no se permitirá que otros clientes le sigan.
 
 ---
 
