@@ -143,7 +143,20 @@ public class ChallengeController {
             	}
             	
             	Collection<Exercise> exercises = this.exerciseService.findAllExercise();
-    			model.addAttribute("exercises",exercises);
+    			Map<Integer,String> selectVals = new TreeMap<>();
+    			
+    			String value = "";
+    			for(Exercise e:exercises)
+    			{
+    				value = e.getName();
+    				
+    				if(e.getEquipment() != null)
+    					value = value.concat(", Equipment: "+e.getEquipment().getName());
+    				
+    				selectVals.put(e.getId(), value);
+    			}
+    			model.addAttribute("exercises",selectVals);
+    			
                 return "/admin/challenges/challengesCreateOrUpdate";
             }
 
