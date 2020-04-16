@@ -55,9 +55,9 @@ Como administrador quiero visualizar el cliente y el gremio con más puntos de c
 
 #### Escenarios: 
 
-* **Visualizar datosindividual en periodo con retos:** Dado un administrador [admin1] y el mes [01/2021], cuando este intente visualizar los datos, entonces se le mostrarán que [Cliente1,200 puntos] y [Calisthenics,300 puntos] han ganado y que el reto 1 lo han completado [9%] de los clientes y un [66%] de los gremios, el reto 2 un [3%] y un [33%] respectivamente.
+* **Visualizar datosindividual en periodo con retos:** Dado un administrador [admin1] y el mes [01/2020], cuando este intente visualizar los datos, entonces se le mostrarán que [Julio Enrique Guerrero, 10 puntos] y [Gym for Dummies, 10 puntos] han ganado y que el reto 1 lo han completado [9,09%] de los clientes y un [33,3%].
 * **Visualizar datos en periodo sin retos:** Dado un administrador [admin1] y el mes [02/2021], cuando este intente visualizar los datos, se le mostrará que no hay retos que finalicen ese mes y se le propondrá crear uno.
-* **Visualizar datos en periodo sin retos completados:** Dado un administrador [admin1] y el mes [03/2021], cuando este intente visualizar los datos, se le mostrará que no hay retos completados ese mes.
+* **Visualizar datos en periodo sin retos completados:** Dado un administrador [admin1] y el mes [10/2020], cuando este intente visualizar los datos, se le mostrará que no hay retos completados ese mes.
 ---
 
 #### HU3 - Dashboard Máquinas
