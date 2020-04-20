@@ -1,4 +1,4 @@
-package org.springframework.samples.yogogym.ui;
+package org.springframework.samples.yogogym.ui.client;
 
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
@@ -9,7 +9,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 
-public class CopyTrainingUITest {
+public class DashBoardClientUITest {
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
@@ -23,30 +23,26 @@ public class CopyTrainingUITest {
   }
 
   @Test
-  public void testCopyTrainingUI() throws Exception {
+  public void testDashBoardClientUI() throws Exception {
     driver.get("http://localhost:8080/");
     driver.findElement(By.linkText("Login")).click();
     driver.findElement(By.id("password")).clear();
-    driver.findElement(By.id("password")).sendKeys("trainer1999");
+    driver.findElement(By.id("password")).sendKeys("client1999");
     driver.findElement(By.id("username")).clear();
-    driver.findElement(By.id("username")).sendKeys("trainer1");
+    driver.findElement(By.id("username")).sendKeys("client1");
     driver.findElement(By.xpath("//button[@type='submit']")).click();
-    driver.findElement(By.linkText("Trainer")).click();
-    driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[2]/a/span[2]")).click();
-    driver.findElement(By.linkText("Add Training")).click();
-    driver.findElement(By.id("name")).click();
-    driver.findElement(By.id("name")).click();
-    driver.findElement(By.id("name")).clear();
-    driver.findElement(By.id("name")).sendKeys("Entrenamiento3");
-    driver.findElement(By.id("initialDate")).click();
-    driver.findElement(By.linkText("16")).click();
-    driver.findElement(By.id("endDate")).click();
-    driver.findElement(By.linkText("23")).click();
-    driver.findElement(By.xpath("//button[@type='submit']")).click();
-    driver.findElement(By.linkText("Entrenamiento3")).click();
-    driver.findElement(By.linkText("Copy Training")).click();
-    driver.findElement(By.xpath("//button[@type='submit']")).click();
-    driver.findElement(By.linkText("Entrenamiento3")).click();
+    driver.findElement(By.linkText("Client")).click();
+    driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[5]/a/span[2]")).click();
+    driver.findElement(By.id("canvasBodyPartsMonth")).click();
+    driver.findElement(By.id("canvasBodyPartsMonth")).click();
+    driver.findElement(By.id("canvasRepititionTypeMonth")).click();
+    driver.findElement(By.id("canvasRepititionTypeMonth")).click();
+    // ERROR: Caught exception [ERROR: Unsupported command [doubleClick | id=canvasRepititionTypeMonth | ]]
+    driver.findElement(By.id("canvasBodyPartsAll")).click();
+    driver.findElement(By.id("canvasBodyPartsAll")).click();
+    // ERROR: Caught exception [ERROR: Unsupported command [doubleClick | id=canvasBodyPartsAll | ]]
+    driver.findElement(By.id("canvasRepititionTypeAll")).click();
+    driver.findElement(By.id("canvasRepititionTypeAll")).click();
   }
 
   @AfterEach
