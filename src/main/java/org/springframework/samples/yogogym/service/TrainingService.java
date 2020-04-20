@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
@@ -30,8 +31,8 @@ import org.springframework.samples.yogogym.repository.ClientRepository;
 import org.springframework.samples.yogogym.repository.TrainingRepository;
 import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
 import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
-import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
 import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
 import org.springframework.samples.yogogym.service.exceptions.PastEndException;
 import org.springframework.samples.yogogym.service.exceptions.PastInitException;
 import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
@@ -177,5 +178,18 @@ public class TrainingService {
 		client.getTrainings().remove(training);
 		this.clientRepository.save(client);
 		this.trainingRepository.delete(training);
+	}
+	
+	//Copy training
+	@Transactional
+	public Collection<Training> findTrainingWithPublicClient() throws DataAccessException{
+		List<Training> res = (List<Training>) this.trainingRepository.findTrainingWithPublicClient();
+		return res.get(0) == null ? new ArrayList<Training>() : res;
+	}
+	
+	@Transactional
+	public Collection<Integer> findTrainingIdFromClient(int id) throws DataAccessException{
+		List<Integer> res = (List<Integer>) this.trainingRepository.findTrainingIdFromClient(id);
+		return res.get(0) == null ? new ArrayList<Integer>() : res;
 	}
 }

@@ -21,16 +21,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
+import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.model.Equipment;
 import org.springframework.samples.yogogym.model.Exercise;
-import org.springframework.samples.yogogym.model.Routine;
-import org.springframework.samples.yogogym.model.RoutineLine;
-import org.springframework.samples.yogogym.model.Training;
+import org.springframework.samples.yogogym.model.Guild;
+import org.springframework.samples.yogogym.model.Inscription;
 import org.springframework.samples.yogogym.model.User;
-import org.springframework.samples.yogogym.model.Enums.BodyParts;
-import org.springframework.samples.yogogym.model.Enums.RepetitionType;
+import org.springframework.samples.yogogym.model.Enums.Status;
+import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DashboardsAdminService;
+import org.springframework.samples.yogogym.service.GuildService;
+import org.springframework.samples.yogogym.service.InscriptionService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,7 +40,14 @@ public class DashboardsAdminControllerTest {
 
 	private static final Integer[] COUNT = { 1 };
 
-	private static final String[] NAME = { "prueba" };
+	private static final String[] NAME = { "prueba" }; 
+	
+	private static final Calendar testInitialChallengeDate = Calendar.getInstance();
+	private static final Calendar testEndChallengeDate = Calendar.getInstance();
+	
+	private static final String[] challengesNames = { "Challenge1 Name Test" };
+	private static final Double[] percentageClients = { 100. };
+	private static final Double[] percentageGuilds = { 100. };
 
 	@Nested
 	@DisplayName("Admin test with exercises")
@@ -48,71 +56,32 @@ public class DashboardsAdminControllerTest {
 
 		@MockBean
 		private DashboardsAdminService dashboardsAdminService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
 
 		@Autowired
 		private MockMvc mockMvc;
 
 		@BeforeEach
 		void setup() {
-			Equipment sampleEquipment = new Equipment();
-			sampleEquipment.setId(1);
-			sampleEquipment.setName("prueba");
-			sampleEquipment.setLocation("aqui");
-			Exercise sampleExercise = new Exercise();
-			sampleExercise.setId(1);
-			sampleExercise.setName("prueba");
-			sampleExercise.setDescription("prueba");
-			sampleExercise.setBodyPart(BodyParts.ALL);
-			sampleExercise.setKcal(1000);
-			sampleExercise.setRepetitionType(RepetitionType.REPS);
-			List<Exercise> listExercise = new ArrayList<Exercise>();
-			listExercise.add(sampleExercise);
-			RoutineLine sampleRoutineLine = new RoutineLine();
-			sampleRoutineLine.setId(1);
-			sampleRoutineLine.setReps(3);
-			sampleRoutineLine.setExercise(sampleExercise);
-			Routine sampleRoutine = new Routine();
-			sampleRoutine.setId(1);
-			sampleRoutine.setName("prueba");
-			sampleRoutine.setRepsPerWeek(1);
-			sampleRoutine.setDescription("prueba");
-			List<RoutineLine> sampleListRoutineLine = new ArrayList<RoutineLine>();
-			sampleListRoutineLine.add(sampleRoutineLine);
-			sampleRoutine.setRoutineLine(sampleListRoutineLine);
-			Training sampleTraining = new Training();
-			Calendar now = Calendar.getInstance();
-			now.add(Calendar.DAY_OF_MONTH, -2);
-			Date sampleIntialDate = now.getTime();
-			Calendar now2 = Calendar.getInstance();
-			now2.add(Calendar.DAY_OF_MONTH, -1);
-			Date sampleEndDate = now.getTime();
-			sampleTraining.setInitialDate(sampleIntialDate);
-			sampleTraining.setEndDate(sampleEndDate);
-			sampleTraining.setName("prueba");
-			List<Routine> sampleListRoutine = new ArrayList<Routine>();
-			sampleListRoutine.add(sampleRoutine);
-			sampleTraining.setRoutines(sampleListRoutine);
-			sampleTraining.setId(1);
-			Client sampleClient = new Client();
-			User sampleUser = new User();
-			sampleUser.setUsername("client1");
-			sampleUser.setEnabled(true);
-			sampleClient.setUser(sampleUser);
-			sampleClient.setId(1);
-			sampleTraining.setClient(sampleClient);
-			List<Training> sampleListTraining = new ArrayList<Training>();
-			sampleListTraining.add(sampleTraining);
 			List<Integer> listOne = new ArrayList<Integer>();
 			listOne.add(1);
+			List<String> listName = new ArrayList<>();
+			listName.add("prueba");
 
-			given(this.dashboardsAdminService.equipmentControl()).willReturn(sampleListTraining);
-			given(this.dashboardsAdminService.listRoutine(sampleTraining.getId())).willReturn(listOne);
-			given(this.dashboardsAdminService.listRepsRoutine(sampleRoutine.getId()))
-					.willReturn(sampleRoutine.getRepsPerWeek());
-			given(this.dashboardsAdminService.listExercise(sampleRoutine.getId())).willReturn(listOne);
-			given(this.dashboardsAdminService.listIdEquipment(sampleExercise.getId())).willReturn(1);
-			given(this.dashboardsAdminService.listNameEquipment(sampleEquipment.getId()))
-					.willReturn(sampleEquipment.getName());
+			given(this.dashboardsAdminService.countEquipment(7)).willReturn(listOne);
+			given(this.dashboardsAdminService.nameEquipment(7)).willReturn(listName);
+			
+			given(this.dashboardsAdminService.countEquipment(28)).willReturn(listOne);
+			given(this.dashboardsAdminService.nameEquipment(28)).willReturn(listName);
+			
 		}
 
 		@WithMockUser(username = "admin1", authorities = { "admin" })
@@ -136,71 +105,31 @@ public class DashboardsAdminControllerTest {
 
 		@MockBean
 		private DashboardsAdminService dashboardService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
 
 		@Autowired
 		private MockMvc mockMvc;
 
 		@BeforeEach
 		void setup() {
-			Equipment sampleEquipment = new Equipment();
-			sampleEquipment.setId(1);
-			sampleEquipment.setName("prueba");
-			sampleEquipment.setLocation("aqui");
-			Exercise sampleExercise = new Exercise();
-			sampleExercise.setId(1);
-			sampleExercise.setName("prueba");
-			sampleExercise.setDescription("prueba");
-			sampleExercise.setBodyPart(BodyParts.ALL);
-			sampleExercise.setKcal(1000);
-			sampleExercise.setRepetitionType(RepetitionType.REPS);
-			List<Exercise> listExercise = new ArrayList<Exercise>();
-			listExercise.add(sampleExercise);
-			RoutineLine sampleRoutineLine = new RoutineLine();
-			sampleRoutineLine.setId(1);
-			sampleRoutineLine.setReps(3);
-			sampleRoutineLine.setExercise(sampleExercise);
-			Routine sampleRoutine = new Routine();
-			sampleRoutine.setId(1);
-			sampleRoutine.setName("prueba");
-			sampleRoutine.setRepsPerWeek(1);
-			sampleRoutine.setDescription("prueba");
-			List<RoutineLine> sampleListRoutineLine = new ArrayList<RoutineLine>();
-			sampleListRoutineLine.add(sampleRoutineLine);
-			sampleRoutine.setRoutineLine(sampleListRoutineLine);
-			Training sampleTraining = new Training();
-			Calendar now = Calendar.getInstance();
-			now.add(Calendar.DAY_OF_MONTH, -14);
-			Date sampleIntialDate = now.getTime();
-			Calendar now2 = Calendar.getInstance();
-			now2.add(Calendar.DAY_OF_MONTH, -10);
-			Date sampleEndDate = now.getTime();
-			sampleTraining.setInitialDate(sampleIntialDate);
-			sampleTraining.setEndDate(sampleEndDate);
-			sampleTraining.setName("prueba");
-			List<Routine> sampleListRoutine = new ArrayList<Routine>();
-			sampleListRoutine.add(sampleRoutine);
-			sampleTraining.setRoutines(sampleListRoutine);
-			sampleTraining.setId(1);
-			Client sampleClient = new Client();
-			User sampleUser = new User();
-			sampleUser.setUsername("client1");
-			sampleUser.setEnabled(true);
-			sampleClient.setUser(sampleUser);
-			sampleClient.setId(1);
-			sampleTraining.setClient(sampleClient);
-			List<Training> sampleListTraining = new ArrayList<Training>();
-			sampleListTraining.add(sampleTraining);
 			List<Integer> listOne = new ArrayList<Integer>();
 			listOne.add(1);
+			List<String> listName = new ArrayList<>();
+			listName.add("prueba");
 
-			given(this.dashboardService.equipmentControl()).willReturn(sampleListTraining);
-			given(this.dashboardService.listRoutine(sampleTraining.getId())).willReturn(listOne);
-			given(this.dashboardService.listRepsRoutine(sampleRoutine.getId()))
-					.willReturn(sampleRoutine.getRepsPerWeek());
-			given(this.dashboardService.listExercise(sampleRoutine.getId())).willReturn(listOne);
-			given(this.dashboardService.listIdEquipment(sampleExercise.getId())).willReturn(1);
-			given(this.dashboardService.listNameEquipment(sampleEquipment.getId()))
-					.willReturn(sampleEquipment.getName());
+			given(this.dashboardService.countEquipment(7)).willReturn(new ArrayList<>());
+			given(this.dashboardService.nameEquipment(7)).willReturn(new ArrayList<>());
+			
+			given(this.dashboardService.countEquipment(28)).willReturn(listOne);
+			given(this.dashboardService.nameEquipment(28)).willReturn(listName);
 		}
 
 		@WithMockUser(username = "admin1", authorities = { "admin" })
@@ -222,13 +151,26 @@ public class DashboardsAdminControllerTest {
 
 		@MockBean
 		private DashboardsAdminService dashboardService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
 
 		@Autowired
 		private MockMvc mockMvc;
 
 		@BeforeEach
 		void setup() {
-			given(this.dashboardService.equipmentControl()).willReturn(new ArrayList<Training>());
+			given(this.dashboardService.countEquipment(7)).willReturn(new ArrayList<>());
+			given(this.dashboardService.nameEquipment(7)).willReturn(new ArrayList<>());
+			
+			given(this.dashboardService.countEquipment(28)).willReturn(new ArrayList<>());
+			given(this.dashboardService.nameEquipment(28)).willReturn(new ArrayList<>());
 		}
 
 		@WithMockUser(username = "admin1", authorities = { "admin" })
@@ -240,426 +182,232 @@ public class DashboardsAdminControllerTest {
 					.andExpect(model().attribute("hasEquipmentWeek", false));
 		}
 	}
-
+	
 	@Nested
-	@DisplayName("Admin test without equipment machine")
+	@DisplayName("Admin Dashboard Challenges Test All Ok")
 	@WebMvcTest(value = DashboardsAdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-	public class AdminTestWithoutEquipment {
+	public class AdminDashboardChallengesTestOk {
 
 		@MockBean
-		private DashboardsAdminService dashboardService;
+		private DashboardsAdminService dashboardsAdminService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
 
 		@Autowired
 		private MockMvc mockMvc;
+		
 
 		@BeforeEach
 		void setup() {
-			Exercise sampleExercise = new Exercise();
-			sampleExercise.setId(1);
-			sampleExercise.setName("prueba");
-			sampleExercise.setDescription("prueba");
-			sampleExercise.setBodyPart(BodyParts.ALL);
-			sampleExercise.setKcal(1000);
-			sampleExercise.setRepetitionType(RepetitionType.REPS);
-			List<Exercise> listExercise = new ArrayList<Exercise>();
-			listExercise.add(sampleExercise);
-			RoutineLine sampleRoutineLine = new RoutineLine();
-			sampleRoutineLine.setId(1);
-			sampleRoutineLine.setReps(3);
-			sampleRoutineLine.setExercise(sampleExercise);
-			Routine sampleRoutine = new Routine();
-			sampleRoutine.setId(1);
-			sampleRoutine.setName("prueba");
-			sampleRoutine.setRepsPerWeek(1);
-			sampleRoutine.setDescription("prueba");
-			List<RoutineLine> sampleListRoutineLine = new ArrayList<RoutineLine>();
-			sampleListRoutineLine.add(sampleRoutineLine);
-			sampleRoutine.setRoutineLine(sampleListRoutineLine);
-			Training sampleTraining = new Training();
-			Calendar now = Calendar.getInstance();
-			now.add(Calendar.DAY_OF_MONTH, -2);
-			Date sampleIntialDate = now.getTime();
-			Calendar now2 = Calendar.getInstance();
-			now2.add(Calendar.DAY_OF_MONTH, -1);
-			Date sampleEndDate = now.getTime();
-			sampleTraining.setInitialDate(sampleIntialDate);
-			sampleTraining.setEndDate(sampleEndDate);
-			sampleTraining.setName("prueba");
-			List<Routine> sampleListRoutine = new ArrayList<Routine>();
-			sampleListRoutine.add(sampleRoutine);
-			sampleTraining.setRoutines(sampleListRoutine);
-			sampleTraining.setId(1);
-			Client sampleClient = new Client();
-			User sampleUser = new User();
-			sampleUser.setUsername("client1");
-			sampleUser.setEnabled(true);
-			sampleClient.setUser(sampleUser);
-			sampleClient.setId(1);
-			sampleTraining.setClient(sampleClient);
-			List<Training> sampleListTraining = new ArrayList<Training>();
-			sampleListTraining.add(sampleTraining);
-			List<Integer> listOne = new ArrayList<Integer>();
-			listOne.add(1);
-
-			given(this.dashboardService.equipmentControl()).willReturn(sampleListTraining);
-			given(this.dashboardService.listRoutine(sampleTraining.getId())).willReturn(listOne);
-			given(this.dashboardService.listRepsRoutine(sampleRoutine.getId()))
-					.willReturn(sampleRoutine.getRepsPerWeek());
-			given(this.dashboardService.listExercise(sampleRoutine.getId())).willReturn(listOne);
-			given(this.dashboardService.listIdEquipment(sampleExercise.getId())).willReturn(null);
+			
+			//Challenge 1:
+			testEndChallengeDate.add(Calendar.DAY_OF_MONTH, 1);
+			Date initialDate = testInitialChallengeDate.getTime();
+			Date endDate = testInitialChallengeDate.getTime();
+			Exercise exercise1 = new Exercise();
+			exercise1.setName("Exercise Test");
+			
+			Challenge challenge1 = new Challenge();
+			challenge1.setId(1);
+			challenge1.setName("Challenge1 Name Test");
+			challenge1.setDescription("Challenge Description Test");
+			challenge1.setInitialDate(initialDate);
+			challenge1.setEndDate(endDate);
+			challenge1.setPoints(100);
+			challenge1.setReward("Reward Test");
+			challenge1.setReps(100);
+			challenge1.setWeight(100.);
+			challenge1.setExercise(exercise1);
+			
+			//Inscription 1:
+			Inscription inscription1 = new Inscription();
+			inscription1.setChallenge(challenge1);
+			inscription1.setId(1);
+			inscription1.setStatus(Status.COMPLETED);
+			
+			Client client1 = new Client();
+			User userClient1 = new User();
+			userClient1.setUsername("username");
+			userClient1.setEnabled(true);
+			client1.setUser(userClient1);
+			client1.setId(1);
+			client1.addInscription(inscription1);
+			
+			//Guild 1:
+			Guild guild1 = new Guild();
+			guild1.setId(1);
+			guild1.setCreator("username");
+			guild1.setDescription("We are connecting the world");
+			guild1.setName("Connecting");
+			guild1.setLogo("https://omega2001.es/wp-content/uploads/2016/02/red-informatica-1080x675.jpg");
+			client1.setGuild(guild1);
+			
+			
+			
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(now);
+			int month = cal.get(Calendar.MONTH) + 1;
+			
+			
+			List<Challenge> listChallenges = new ArrayList<Challenge>();
+			listChallenges.add(challenge1);
+			given(this.dashboardsAdminService.getChallengesOfMonth(month)).willReturn(listChallenges);
+			
+			List<Inscription> completedInscriptionsThisMonth = new ArrayList<Inscription>();
+			completedInscriptionsThisMonth.add(inscription1);
+			given(this.dashboardsAdminService.findCompletedInscriptionsThisMonth(month)).willReturn(completedInscriptionsThisMonth);
+			
+			List<Inscription> inscriptionsByChallenge1 = new ArrayList<Inscription>();
+			inscriptionsByChallenge1.add(inscription1);
+			given(this.inscriptionService.findInscriptionsByChallengeId(1)).willReturn(inscriptionsByChallenge1);
+			
+			List<Client> listClients = new ArrayList<Client>();
+			listClients.add(client1);
+			given(this.clientService.findAllClient()).willReturn(listClients);
+			
+			List<Guild> guilds = new ArrayList<>();
+			guilds.add(guild1);
+			given(this.guildService.findAllGuild()).willReturn(guilds);
+			
+			List<Client> clientsguild1 = new ArrayList<>();
+			clientsguild1.add(client1);
+			given(this.guildService.findAllClientesByGuild(guild1)).willReturn(clientsguild1);
+			
 		}
 
 		@WithMockUser(username = "admin1", authorities = { "admin" })
 		@Test
-		void testInitWithoutEquipment() throws Exception {
-			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
-					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
-					.andExpect(model().attribute("hasEquipmentMonth", false))
-					.andExpect(model().attribute("hasEquipmentWeek", false));
-		}
-	}
-
-	@Nested
-	@DisplayName("Admin test without exercises")
-	@WebMvcTest(value = DashboardsAdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-	public class AdminTestWithoutExercises {
-
-		@MockBean
-		private DashboardsAdminService dashboardService;
-
-		@Autowired
-		private MockMvc mockMvc;
-
-		@BeforeEach
-		void setup() {
-			RoutineLine sampleRoutineLine = new RoutineLine();
-			sampleRoutineLine.setId(1);
-			sampleRoutineLine.setReps(3);
-			Routine sampleRoutine = new Routine();
-			sampleRoutine.setId(1);
-			sampleRoutine.setName("prueba");
-			sampleRoutine.setRepsPerWeek(1);
-			sampleRoutine.setDescription("prueba");
-			List<RoutineLine> sampleListRoutineLine = new ArrayList<RoutineLine>();
-			sampleListRoutineLine.add(sampleRoutineLine);
-			sampleRoutine.setRoutineLine(sampleListRoutineLine);
-			Training sampleTraining = new Training();
-			Calendar now = Calendar.getInstance();
-			now.add(Calendar.DAY_OF_MONTH, -2);
-			Date sampleIntialDate = now.getTime();
-			Calendar now2 = Calendar.getInstance();
-			now2.add(Calendar.DAY_OF_MONTH, -1);
-			Date sampleEndDate = now.getTime();
-			sampleTraining.setInitialDate(sampleIntialDate);
-			sampleTraining.setEndDate(sampleEndDate);
-			sampleTraining.setName("prueba");
-			List<Routine> sampleListRoutine = new ArrayList<Routine>();
-			sampleListRoutine.add(sampleRoutine);
-			sampleTraining.setRoutines(sampleListRoutine);
-			sampleTraining.setId(1);
-			Client sampleClient = new Client();
-			User sampleUser = new User();
-			sampleUser.setUsername("client1");
-			sampleUser.setEnabled(true);
-			sampleClient.setUser(sampleUser);
-			sampleClient.setId(1);
-			sampleTraining.setClient(sampleClient);
-			List<Training> sampleListTraining = new ArrayList<Training>();
-			sampleListTraining.add(sampleTraining);
-			List<Integer> listOne = new ArrayList<Integer>();
-			listOne.add(1);
-
-			given(this.dashboardService.equipmentControl()).willReturn(sampleListTraining);
-			given(this.dashboardService.listRoutine(sampleTraining.getId())).willReturn(listOne);
-			given(this.dashboardService.listRepsRoutine(sampleRoutine.getId()))
-					.willReturn(sampleRoutine.getRepsPerWeek());
-			given(this.dashboardService.listExercise(sampleRoutine.getId())).willReturn(new ArrayList<>());
-		}
-
-		@WithMockUser(username = "admin1", authorities = { "admin" })
-		@Test
-		void testInitWithoutExercise() throws Exception {
-			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
-					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
-					.andExpect(model().attribute("hasEquipmentMonth", false))
-					.andExpect(model().attribute("hasEquipmentWeek", false));
-		}
-	}
-
-	@Nested
-	@DisplayName("Admin test without routine lines")
-	@WebMvcTest(value = DashboardsAdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-	public class AdminTestWithoutRoutinesLines {
-
-		@MockBean
-		private DashboardsAdminService dashboardService;
-
-		@Autowired
-		private MockMvc mockMvc;
-
-		@BeforeEach
-		void setup() {
-			Routine sampleRoutine = new Routine();
-			sampleRoutine.setId(1);
-			sampleRoutine.setName("prueba");
-			sampleRoutine.setRepsPerWeek(1);
-			sampleRoutine.setDescription("prueba");
-			Training sampleTraining = new Training();
-			Calendar now = Calendar.getInstance();
-			now.add(Calendar.DAY_OF_MONTH, -2);
-			Date sampleIntialDate = now.getTime();
-			Calendar now2 = Calendar.getInstance();
-			now2.add(Calendar.DAY_OF_MONTH, -1);
-			Date sampleEndDate = now.getTime();
-			sampleTraining.setInitialDate(sampleIntialDate);
-			sampleTraining.setEndDate(sampleEndDate);
-			sampleTraining.setName("prueba");
-			List<Routine> sampleListRoutine = new ArrayList<Routine>();
-			sampleListRoutine.add(sampleRoutine);
-			sampleTraining.setRoutines(sampleListRoutine);
-			sampleTraining.setId(1);
-			Client sampleClient = new Client();
-			User sampleUser = new User();
-			sampleUser.setUsername("client1");
-			sampleUser.setEnabled(true);
-			sampleClient.setUser(sampleUser);
-			sampleClient.setId(1);
-			sampleTraining.setClient(sampleClient);
-			List<Training> sampleListTraining = new ArrayList<Training>();
-			sampleListTraining.add(sampleTraining);
-			List<Integer> listOne = new ArrayList<Integer>();
-			listOne.add(1);
-
-			given(this.dashboardService.equipmentControl()).willReturn(sampleListTraining);
-			given(this.dashboardService.listRoutine(sampleTraining.getId())).willReturn(listOne);
-			given(this.dashboardService.listRepsRoutine(sampleRoutine.getId()))
-					.willReturn(sampleRoutine.getRepsPerWeek());
-		}
-
-		@WithMockUser(username = "admin1", authorities = { "admin" })
-		@Test
-		void testInitWithoutRoutineLines() throws Exception {
-			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
-					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
-					.andExpect(model().attribute("hasEquipmentMonth", false))
-					.andExpect(model().attribute("hasEquipmentWeek", false));
-		}
-	}
-
-	@Nested
-	@DisplayName("Admin test without routines")
-	@WebMvcTest(value = DashboardsAdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-	public class AdminTestWithoutRoutines {
-
-		@MockBean
-		private DashboardsAdminService dashboardService;
-
-		@Autowired
-		private MockMvc mockMvc;
-
-		@BeforeEach
-		void setup() {
-			Training sampleTraining = new Training();
-			Calendar now = Calendar.getInstance();
-			now.add(Calendar.DAY_OF_MONTH, -2);
-			Date sampleIntialDate = now.getTime();
-			Calendar now2 = Calendar.getInstance();
-			now2.add(Calendar.DAY_OF_MONTH, -1);
-			Date sampleEndDate = now.getTime();
-			sampleTraining.setInitialDate(sampleIntialDate);
-			sampleTraining.setEndDate(sampleEndDate);
-			sampleTraining.setName("prueba");
-			sampleTraining.setId(1);
-			Client sampleClient = new Client();
-			User sampleUser = new User();
-			sampleUser.setUsername("client1");
-			sampleUser.setEnabled(true);
-			sampleClient.setUser(sampleUser);
-			sampleClient.setId(1);
-			sampleTraining.setClient(sampleClient);
-			List<Training> sampleListTraining = new ArrayList<Training>();
-			sampleListTraining.add(sampleTraining);
-
-			given(this.dashboardService.equipmentControl()).willReturn(sampleListTraining);
-			given(this.dashboardService.listRoutine(sampleTraining.getId())).willReturn(new ArrayList<>());
-		}
-
-		@WithMockUser(username = "admin1", authorities = { "admin" })
-		@Test
-		void testInitWithoutRoutines() throws Exception {
-			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
-					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
-					.andExpect(model().attribute("hasEquipmentMonth", false))
-					.andExpect(model().attribute("hasEquipmentWeek", false));
-		}
+		void testInitAllDashboardChallenges() throws Exception {
+			mockMvc.perform(get("/admin/dashboardChallenges/0")).andExpect(status().isOk())
+					.andExpect(view().name("admin/dashboards/dashboardChallenges"))
+					.andExpect(model().attribute("ChallengesExists", true))
+					.andExpect(model().attributeExists("client"))
+					.andExpect(model().attribute("cPoints", 100))
+					.andExpect(model().attributeExists("guild"))
+					.andExpect(model().attribute("gPoints", 100))
+					.andExpect(model().attribute("challengesNames", challengesNames))
+					.andExpect(model().attribute("percentageClients", percentageClients))
+					.andExpect(model().attribute("percentageGuilds", percentageGuilds));
+		}	
 	}
 	
 	@Nested
-	@DisplayName("Admin test with past date")
+	@DisplayName("Admin Dashboard Challenges Test No Challenges")
 	@WebMvcTest(value = DashboardsAdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-	public class AdminTestPastDate {
+	public class AdminDashboardChallengesTestNoChallenges{
 
 		@MockBean
-		private DashboardsAdminService dashboardService;
+		private DashboardsAdminService dashboardsAdminService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
 
 		@Autowired
 		private MockMvc mockMvc;
+		
 
 		@BeforeEach
 		void setup() {
-			Equipment sampleEquipment = new Equipment();
-			sampleEquipment.setId(1);
-			sampleEquipment.setName("prueba");
-			sampleEquipment.setLocation("aqui");
-			Exercise sampleExercise = new Exercise();
-			sampleExercise.setId(1);
-			sampleExercise.setName("prueba");
-			sampleExercise.setDescription("prueba");
-			sampleExercise.setBodyPart(BodyParts.ALL);
-			sampleExercise.setKcal(1000);
-			sampleExercise.setRepetitionType(RepetitionType.REPS);
-			List<Exercise> listExercise = new ArrayList<Exercise>();
-			listExercise.add(sampleExercise);
-			RoutineLine sampleRoutineLine = new RoutineLine();
-			sampleRoutineLine.setId(1);
-			sampleRoutineLine.setReps(3);
-			sampleRoutineLine.setExercise(sampleExercise);
-			Routine sampleRoutine = new Routine();
-			sampleRoutine.setId(1);
-			sampleRoutine.setName("prueba");
-			sampleRoutine.setRepsPerWeek(1);
-			sampleRoutine.setDescription("prueba");
-			List<RoutineLine> sampleListRoutineLine = new ArrayList<RoutineLine>();
-			sampleListRoutineLine.add(sampleRoutineLine);
-			sampleRoutine.setRoutineLine(sampleListRoutineLine);
-			Training sampleTraining = new Training();
-			Calendar now = Calendar.getInstance();
-			now.add(Calendar.DAY_OF_MONTH, -60);
-			Date sampleIntialDate = now.getTime();
-			Calendar now2 = Calendar.getInstance();
-			now2.add(Calendar.DAY_OF_MONTH, -50);
-			Date sampleEndDate = now.getTime();
-			sampleTraining.setInitialDate(sampleIntialDate);
-			sampleTraining.setEndDate(sampleEndDate);
-			sampleTraining.setName("prueba");
-			List<Routine> sampleListRoutine = new ArrayList<Routine>();
-			sampleListRoutine.add(sampleRoutine);
-			sampleTraining.setRoutines(sampleListRoutine);
-			sampleTraining.setId(1);
-			Client sampleClient = new Client();
-			User sampleUser = new User();
-			sampleUser.setUsername("client1");
-			sampleUser.setEnabled(true);
-			sampleClient.setUser(sampleUser);
-			sampleClient.setId(1);
-			sampleTraining.setClient(sampleClient);
-			List<Training> sampleListTraining = new ArrayList<Training>();
-			sampleListTraining.add(sampleTraining);
-			List<Integer> listOne = new ArrayList<Integer>();
-			listOne.add(1);
-
-			given(this.dashboardService.equipmentControl()).willReturn(sampleListTraining);
-			given(this.dashboardService.listRoutine(sampleTraining.getId())).willReturn(listOne);
-			given(this.dashboardService.listRepsRoutine(sampleRoutine.getId()))
-					.willReturn(sampleRoutine.getRepsPerWeek());
-			given(this.dashboardService.listExercise(sampleRoutine.getId())).willReturn(listOne);
-			given(this.dashboardService.listIdEquipment(sampleExercise.getId())).willReturn(1);
-			given(this.dashboardService.listNameEquipment(sampleEquipment.getId()))
-					.willReturn(sampleEquipment.getName());
+			
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(now);
+			int month = cal.get(Calendar.MONTH) + 1;
+			
+			List<Challenge> listChallenges = new ArrayList<Challenge>();
+			given(this.dashboardsAdminService.getChallengesOfMonth(month)).willReturn(listChallenges);
+			
 		}
 
 		@WithMockUser(username = "admin1", authorities = { "admin" })
 		@Test
-		void testInitDashboardPastDate() throws Exception {
-			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
-					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
-					.andExpect(model().attribute("hasEquipmentMonth", false))
-					.andExpect(model().attribute("hasEquipmentWeek", false));
-		}
+		void testInitAllDashboardChallenges() throws Exception {
+			mockMvc.perform(get("/admin/dashboardChallenges/0")).andExpect(status().isOk())
+					.andExpect(view().name("admin/dashboards/dashboardChallenges"))
+					.andExpect(model().attribute("ChallengesExists", false));
+		}	
 	}
 	
 	@Nested
-	@DisplayName("Admin test with post date")
+	@DisplayName("Admin Dashboard Challenges Test No Completed Challenges")
 	@WebMvcTest(value = DashboardsAdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-	public class AdminTestPostDate {
+	public class AdminDashboardChallengesTestNoCompletedChallenges {
 
 		@MockBean
-		private DashboardsAdminService dashboardService;
+		private DashboardsAdminService dashboardsAdminService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
 
 		@Autowired
 		private MockMvc mockMvc;
+		
 
 		@BeforeEach
 		void setup() {
-			Equipment sampleEquipment = new Equipment();
-			sampleEquipment.setId(1);
-			sampleEquipment.setName("prueba");
-			sampleEquipment.setLocation("aqui");
-			Exercise sampleExercise = new Exercise();
-			sampleExercise.setId(1);
-			sampleExercise.setName("prueba");
-			sampleExercise.setDescription("prueba");
-			sampleExercise.setBodyPart(BodyParts.ALL);
-			sampleExercise.setKcal(1000);
-			sampleExercise.setRepetitionType(RepetitionType.REPS);
-			List<Exercise> listExercise = new ArrayList<Exercise>();
-			listExercise.add(sampleExercise);
-			RoutineLine sampleRoutineLine = new RoutineLine();
-			sampleRoutineLine.setId(1);
-			sampleRoutineLine.setReps(3);
-			sampleRoutineLine.setExercise(sampleExercise);
-			Routine sampleRoutine = new Routine();
-			sampleRoutine.setId(1);
-			sampleRoutine.setName("prueba");
-			sampleRoutine.setRepsPerWeek(1);
-			sampleRoutine.setDescription("prueba");
-			List<RoutineLine> sampleListRoutineLine = new ArrayList<RoutineLine>();
-			sampleListRoutineLine.add(sampleRoutineLine);
-			sampleRoutine.setRoutineLine(sampleListRoutineLine);
-			Training sampleTraining = new Training();
-			Calendar now = Calendar.getInstance();
-			now.add(Calendar.DAY_OF_MONTH, +2);
-			Date sampleIntialDate = now.getTime();
-			Calendar now2 = Calendar.getInstance();
-			now2.add(Calendar.DAY_OF_MONTH, +3);
-			Date sampleEndDate = now.getTime();
-			sampleTraining.setInitialDate(sampleIntialDate);
-			sampleTraining.setEndDate(sampleEndDate);
-			sampleTraining.setName("prueba");
-			List<Routine> sampleListRoutine = new ArrayList<Routine>();
-			sampleListRoutine.add(sampleRoutine);
-			sampleTraining.setRoutines(sampleListRoutine);
-			sampleTraining.setId(1);
-			Client sampleClient = new Client();
-			User sampleUser = new User();
-			sampleUser.setUsername("client1");
-			sampleUser.setEnabled(true);
-			sampleClient.setUser(sampleUser);
-			sampleClient.setId(1);
-			sampleTraining.setClient(sampleClient);
-			List<Training> sampleListTraining = new ArrayList<Training>();
-			sampleListTraining.add(sampleTraining);
-			List<Integer> listOne = new ArrayList<Integer>();
-			listOne.add(1);
-
-			given(this.dashboardService.equipmentControl()).willReturn(sampleListTraining);
-			given(this.dashboardService.listRoutine(sampleTraining.getId())).willReturn(listOne);
-			given(this.dashboardService.listRepsRoutine(sampleRoutine.getId()))
-					.willReturn(sampleRoutine.getRepsPerWeek());
-			given(this.dashboardService.listExercise(sampleRoutine.getId())).willReturn(listOne);
-			given(this.dashboardService.listIdEquipment(sampleExercise.getId())).willReturn(1);
-			given(this.dashboardService.listNameEquipment(sampleEquipment.getId()))
-					.willReturn(sampleEquipment.getName());
+			
+			//Challenge 1:
+			testEndChallengeDate.add(Calendar.DAY_OF_MONTH, 1);
+			Date initialDate = testInitialChallengeDate.getTime();
+			Date endDate = testInitialChallengeDate.getTime();
+			Exercise exercise1 = new Exercise();
+			exercise1.setName("Exercise Test");
+			
+			Challenge challenge1 = new Challenge();
+			challenge1.setId(1);
+			challenge1.setName("Challenge1 Name Test");
+			challenge1.setDescription("Challenge Description Test");
+			challenge1.setInitialDate(initialDate);
+			challenge1.setEndDate(endDate);
+			challenge1.setPoints(100);
+			challenge1.setReward("Reward Test");
+			challenge1.setReps(100);
+			challenge1.setWeight(100.);
+			challenge1.setExercise(exercise1);
+			
+			//Inscription 1:
+			Inscription inscription1 = new Inscription();
+			inscription1.setChallenge(challenge1);
+			inscription1.setId(1);
+			inscription1.setStatus(Status.SUBMITTED);
+			
+			
+			List<Challenge> listChallenges = new ArrayList<Challenge>();
+			listChallenges.add(challenge1);
+			given(this.dashboardsAdminService.getChallengesOfMonth(1)).willReturn(listChallenges);
+			
+			List<Inscription> completedInscriptionsThisMonth = new ArrayList<Inscription>();
+			given(this.dashboardsAdminService.findCompletedInscriptionsThisMonth(1)).willReturn(completedInscriptionsThisMonth);
+			
 		}
 
 		@WithMockUser(username = "admin1", authorities = { "admin" })
 		@Test
-		void testInitDashboardPostDate() throws Exception {
-			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
-					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
-					.andExpect(model().attribute("hasEquipmentMonth", false))
-					.andExpect(model().attribute("hasEquipmentWeek", false));
-		}
+		void testInitAllDashboardChallenges() throws Exception {
+			mockMvc.perform(get("/admin/dashboardChallenges/1")).andExpect(status().isOk())
+					.andExpect(view().name("admin/dashboards/dashboardChallenges"))
+					.andExpect(model().attribute("ChallengesExists", true))
+					.andExpect(model().attribute("NoCompletedChallenges", true));
+		}	
 	}
-
 }

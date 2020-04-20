@@ -42,22 +42,22 @@ Como administrador quiero añadir retos semanales al gimnasio, que los clientes 
 
 #### Escenarios:
 
-* **Añadir reto semanal a semana sin retos:** Dado un administrador [admin1] y una semana [1/1/2040] sin retos, cuando este intente añadir un challenge aportando la información necesaria [name="ChallengeTest", description="Test", initialDate="1/1/2040", endDate="5/1/2040", points=10,reps=10,reward="Test",weight=10. , exercise=Exercise1], entonces el reto se creará correctamente.
-* **Añadir reto semanal ya existente:** Dado un administrador[admin1]  y un reto c1[igual que el anterior pero con name= "Same Name" e initialDate=1/1/2030] cuando este intente añadir uno con el nombre ["Same Name"]  en el mismo initialDate que el anterior, entonces se le indicará que esto no es posible debido a que ya existe.
-* **Añadir reto semanal a semana con 3 retos:** Dado un administrador[admin1]  y 3 retos con los mismos datos que el anterior pero con initialDate=[1/1/2050], cuando este intente añadir uno con el mismo initialDate, entonces se le indicará que no es posible debido a que se ha llegado al máximo de retos esa semana.
-* **Añadir reto semanal en fecha anterior:** Dado un administrador[admin1] , cuando este intente añadir un reto con los mismos datos que el anterior pero con fecha [01/02/2010], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
+* **Añadir reto semanal a semana sin retos:** Dado un administrador [admin1] y una semana [01/01/2030] sin retos, cuando este intente añadir un challenge aportando la información necesaria [name="ChallengeTest", description="Test1", initialDate="01/01/2030", endDate="05/01/2030", points=10,reps=10,reward="Test",weight=10. , exercise=Exercise1], entonces el reto se creará correctamente.
+* **Añadir reto semanal ya existente:** Dado un administrador[admin1], el reto anterior creado  y un reto [igual que el anterior pero con description= "Test2"] cuando este intente crearlo con el mismo nombre e initialDate que el anterior, entonces se le indicará que esto no es posible debido a que ya existe.
+* **Añadir reto semanal a semana con 3 retos:** Dado un administrador[admin1]  y una semana con 2 retos con initialDate=[10/10/2020], cuando este intente añadir dos con los mismos datos que en el primer caso pero con el mismo initialDate de esta semana y endDate=[15/10/2020] y nombres "ChallengeTest1" y "ChallengeTest2", entonces el primero se creará, pero el segundo indicará que hay un máximo de 3 test por semana.
+* **Añadir reto semanal en fecha anterior:** Dado un administrador[admin1] , cuando este intente añadir un reto con los mismos datos que el primero pero con initialDate [01/02/2010], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
 
 ---
 
 #### HU2 - Dashboard Retos
 
-Como administrador quiero visualizar diagramas que muestren, clasificados por individuales o gremios y semanales o mensuales, el éxito en los retos para poder adecuarlos en temática y dificultad correctamente.
+Como administrador quiero visualizar el cliente y el gremio con más puntos de cada mes, para poder saber quienes son los ganadores y otorgarles sus respectivos premios, y diagramas con el porcentaje de clientes y gremios que han completado los retos de un mes para poder adecuarlos en temática y dificultad correctamente.
 
 #### Escenarios: 
 
-* **Visualizar diagrama individual de periodo con retos:** Dado un administrador y un periodo con retos individuales registrados, cuando este intente visualizar su diagrama individual, entonces se le mostrarán los nombres de estos y el número y porcentaje de clientes que los han logrado.
-* **Visualizar diagrama individual de periodo sin retos:** Dado un administrador y un periodo sin retos, cuando este intente visualizar su diagrama, entonces se le indicará que no hay ninguno y se le ofrecerá añadir uno si el periodo es posterior al actual.
-
+* **Visualizar datosindividual en periodo con retos:** Dado un administrador [admin1] y el mes [01/2020], cuando este intente visualizar los datos, entonces se le mostrarán que [Julio Enrique Guerrero, 10 puntos] y [Gym for Dummies, 10 puntos] han ganado y que el reto 1 lo han completado [9,09%] de los clientes y un [33,3%].
+* **Visualizar datos en periodo sin retos:** Dado un administrador [admin1] y el mes [02/2021], cuando este intente visualizar los datos, se le mostrará que no hay retos que finalicen ese mes y se le propondrá crear uno.
+* **Visualizar datos en periodo sin retos completados:** Dado un administrador [admin1] y el mes [10/2020], cuando este intente visualizar los datos, se le mostrará que no hay retos completados ese mes.
 ---
 
 #### HU3 - Dashboard Máquinas
@@ -69,12 +69,6 @@ Como administrador quiero visualizar diagrama que me muestren cuanto son utiliza
 * **Visualizar diagrama general de máquinas, sistema con datos de la última semana:** Dado un administrador con usuario 'admin1' y un sistema con máquinas registradas y usadas en la última semana, cuando este intente visualizar el diagrama general de máquinas, entonces se le mostrará el nombre de estas, cuantas veces han sido utilizadas en la última semana.
 * **Visualizar diagrama general de máquinas, sistema con datos del último mes:** Dado un administrador con usuario 'admin1' y un sistema con máquinas registradas y usadas en el último mes, cuando este intente visualizar el diagrama general de máquinas, entonces se le mostrará el nombre de estas, cuantas veces han sido utilizadas en el último mes.
 * **Visualizar diagrama general de máquinas, sistema sin datos:** Dado un administrador con usuario 'admin1' y un sistema sin entrenamientos registrados, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
-* **Visualizar diagrama general de máquinas, sistema sin equipamiento:** Dado un administrador con usuario 'admin1' y un sistema sin máquinas registradas, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
-* **Visualizar diagrama general de máquinas, sistema sin ejercicio:** Dado un administrador con usuario 'admin1' y un sistema sin ejercicio, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
-* **Visualizar diagrama general de máquinas, sistema sin línea de rutina:** Dado un administrador con usuario 'admin1' y un sistema sin líneas de rutinas, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
-* **Visualizar diagrama general de máquinas, sistema sin rutinas:** Dado un administrador con usuario 'admin1' y un sistema sin rutinas, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
-* **Visualizar diagrama general de máquinas, sistema con fechas de hace de dos meses:** Dado un administrador con usuario 'admin1' y un sistema con entrenamientos de hace dos meses, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
-* **Visualizar diagrama general de máquinas, sistema con fechas de dos días después:** Dado un administrador con usuario 'admin1' y un sistema con entrenamientos de dos días después, cuando este intente visualizar el diagrama general de máquinas, entonces se le indicará que no hay ninguna.
 
 ---
 
@@ -258,6 +252,17 @@ Como entrenador quiero llevar el control de los entrenamientos de mis clientes c
 
 ---
 
+#### HU17 - Copiar entrenamiento de otro cliente
+
+Como entrenador quiero poder copiar los entrenamientos de otros clientes con perfil público para ahorrar tiempo a la hora de hacer entrenamientos similares.
+
+#### Escenarios:
+
+* **Mostrar entrenamientos a copiar a un entrenamiento vacío:** Dado un entrenador con usuario 'trainer1', y un cliente con id '1' que cuente con un entrenamiento que no contenga rutinas ni dietas, mostrarle un listado de entrenamientos de otros clientes con perfil público, y que tengan rutinas, dietas o ambas, para poder copiarla.
+* **Mostrar entrenamientos a copiar a un entrenamiento no vacío:** Dado un entrenador con usuario 'trainer1', y un cliente con id '1' que cuente con un entrenamiento que contenga rutinas, dietas o ambas, redirigir a la vista de error.
+
+---
+
 ### Cliente
 
 ---
@@ -314,17 +319,6 @@ Como cliente quiero poder tener dietas personalizadas según mi tipo de entrenam
 
 ---
 
-#### HU17 - Copiar entrenamiento de otro cliente
-
-Como cliente quiero seguir a otros clientes para copiar su entrenamiento.
-
-#### Escenarios:
-
-* **Clientes con perfil público:** Dado un cliente con perfil público se permitirá que otros clientes le sigan.
-* **Clientes con perfil privado:** Dado un cliente con perfil privado no se permitirá que otros clientes le sigan.
-
----
-
 #### HU18- Dashboard Cliente
 
 Como cliente quiero poder tener un dashboard donde poder ver el Historial de actividades, Calorías quemadas y otros datos relacionados con mi entrenamiento.
@@ -335,9 +329,17 @@ Como cliente quiero poder tener un dashboard donde poder ver el Historial de act
 * **Ver dashboard sin datos:** Dado un cliente con usuario 'client3', y un sistema sin entrenamientos registrados para este cliente al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de ejercicios registrados.
 * **Ver dashboard de otro cliente:** Dado un cliente con usuario 'client3', cambiar la url para ver su dashboard para ver el de 'client1', se redirigirá a una vista de excepción.
 * **Ver dashboard sin datos de este mes:** Dado un cliente con usuario 'client2', y un sistema sin ejercicios registrados este mes para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de ejercicios registrados este mes y justo abajo las gráficas y kcal del histórico.
-* **Ver dashboard sin ejercicios:** Dado un cliente con usuario 'client2' y un sistema en el que no tenga ejercicios registrados para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de ejercicios registrados.
-* **Ver dashboard sin líneas de rutinas:** Dado un cliente con usuario 'client2' y un sistema en el que no tenga líneas de rutina registradas para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de ejercicios registrados.
-* **Ver dashboard sin rutinas:** Dado un cliente con usuario 'client2' y un sistema en el que no tenga rutinas registradas para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de ejercicios registrados.
+* **Ver dashboard sin partes del cuerpo de este mes:** Dado un cliente con usuario 'client4', y un sistema sin partes del cuerpo registradas este mes para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de partes del cuerpo registradas este mes y justo abajo el resto de gráficos de este mes, y las gráficas y kcal del histórico.
+* **Ver dashboard sin tipos de repetición de este mes:** Dado un cliente con usuario 'client4', y un sistema sin tipos de repetición registrados este mes para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de tipos de repetición registrados este mes y justo abajo el resto de gráficos de este mes, y las gráficas y kcal del histórico.
+* **Ver dashboard sin kcal de este mes:** Dado un cliente con usuario 'client4', y un sistema sin kcal registradas este mes para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de kcal registradas este mes y justo abajo el resto de gráficos de este mes, y las gráficas y kcal del histórico.
+* **Ver dashboard sin partes del cuerpo:** Dado un cliente con usuario 'client4', y un sistema sin partes del cuerpo registradas para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de partes del cuerpo registradas y justo abajo el resto de gráficos histórico.
+* **Ver dashboard sin tipos de repetición:** Dado un cliente con usuario 'client4', y un sistema sin tipos de repetición registrados para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de tipos de repetición registrados y justo abajo el resto de gráficos histórico.
+* **Ver dashboard sin kcal:** Dado un cliente con usuario 'client4', y un sistema sin kcal registradas para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de kcal registradas y justo abajo el resto de gráficos histórico.
+* **Ver dashboard sin nombres partes del cuerpo de este mes:** Dado un cliente con usuario 'client4', y un sistema sin nombres partes del cuerpo registradas este mes para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de partes del cuerpo registradas este mes y justo abajo el resto de gráficos de este mes, y las gráficas y kcal del histórico.
+* **Ver dashboard sin cuenta partes del cuerpo de este mes:** Dado un cliente con usuario 'client4', y un sistema sin cuenta partes del cuerpo registradas este mes para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de partes del cuerpo registradas este mes y justo abajo el resto de gráficos de este mes, y las gráficas y kcal del histórico.
+* **Ver dashboard sin nombre tipos de repetición de este mes:** Dado un cliente con usuario 'client4', y un sistema sin nombre tipos de repetición registrados este mes para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de tipos de repetición registrados este mes y justo abajo el resto de gráficos de este mes, y las gráficas y kcal del histórico.
+* **Ver dashboard sin cuenta tipos de repetición de este mes:** Dado un cliente con usuario 'client4', y un sistema sin cuenta tipos de repetición registrados este mes para este cliente, al pulsar el botón de "Dashboard", aparecerá un mensaje de que no hay datos de tipos de repetición registrados este mes y justo abajo el resto de gráficos de este mes, y las gráficas y kcal del histórico.
+* **Ver dashboard con datos (varios):** Dado un cliente con usuario 'client1', y un sistema con ejercicios registrados para este cliente, al pulsar el botón de "Dashboard", aparecerá las kcal gastadas este mes y un histórico, además de dos gráficas (mensual e histórico).
 
 ---
 
@@ -372,11 +374,9 @@ Como cliente quiero poder participar en los distintos retos propuestos por el gi
 #### Escenarios
 
 * **Listar los retos en los que aún no me he inscrito:** Dado un cliente[client1], pinchará en la sección "new challenges", verá un listado con los diferentes retos propuestos y seleccionará el que desee, por ejemplo, el challenge descrito en la HU01, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "inscribe me", añadiéndosele dicho reto a la sección "my challenges" pero con un estado "participating" hasta que adjunte una foto[url] demostrando que lo ha completado y pasará al estado "submitted".
-  **Listar los retos en los que participa:** Dado un cliente[client1],  pinchará en la sección "my challenges", verá un listado con los diferentes retos en los que se ha inscrito.
+ * **Listar los retos en los que participa:** Dado un cliente[client1],  pinchará en la sección "my challenges", verá un listado con los diferentes retos en los que se ha inscrito, entre ellos el anterior.
 * **Participar en un reto cuando no hay retos:** Dado un cliente[client1], , pinchará en la sección "new challenges", si dicho cliente se ha inscrito en todos los retos disponibles, no le saldrá ningún reto en dicha lista.
 * **Pedir confirmar un reto que ha completado:** Dado un cliente[client1], , pinchará en la sección "my challenges", si dicho cliente ha completado algún reto, pinchará sobre el[Challenge descrito anteriormente], rellenará la url de la foto de prueba[https://test.com], y clicará en enviar. El administrador[admin1] podrá ver esos retos enviados, y decidirá si han sido completados o fallados en base a la url proporcionada.
-* **Listar los retos en los que participo y la fecha límite del reto pasa antes de que el cliente lo envíe:** Dado un cliente[client1],  y un reto con fecha de finalización [12/12/2018], sin que haya sido enviado, se pondrá automáticamente en fallado.
-
 ---
 
 #### HU22 - Clasificación de los Retos
@@ -385,11 +385,16 @@ Como cliente quiero poder ver la clasificación de mis retos, para poder ver en 
 
 #### Escenarios
 
-* **Ver un la clasificación semanal e histórica con datos:** Dado un cliente con usuario 'client3', y un sistema con retos completados la última semana, al pulsar el botón de "Clasificación", aparecerá un listado de los retos completados, viendo también una clasificación semanal y global.
-* **Ver un la clasificación histórica sin haber completado retos:** Dado un cliente con usuario 'client1', y un sistema sin retos completados para este cliente, al pulsar el botón de "Clasificación", aparecerá una clasificación global.
-* **Ver un la clasificación de otro cliente:** Dado un cliente con usuario 'client1', intentar entrar en la clasificación del cliente con usuario 'client3' cambiando la url, dando como resultado una redirección a la página de excepción.
-* **Ver un la clasificación sin retos:** Dado un cliente con usuario 'client3' y un sistema sin retos completados para ningún cliente, al pulsar el botón de "Clasificación", aparecerá un mensaje de que no hay retos completados.
-
+* **Ver un la clasificación semanal e histórica con datos:** Dado un cliente con usuario 'client1', y un sistema con retos completados la última semana, al pulsar el botón de "Clasificación", aparecerá un listado de los retos completados, viendo también una clasificación semanal y global.
+* **Ver un la clasificación semanal e histórica sin haber completado retos:** Dado un cliente con usuario 'client2', y un sistema sin retos completados para este cliente, al pulsar el botón de "Clasificación", aparecerá una clasificación semanal y global.
+* **Ver un la clasificación de otro cliente:** Dado un cliente con usuario 'client2', intentar entrar en la clasificación del cliente con usuario 'client1' cambiando la url, dando como resultado una redirección a la página de excepción.
+* **Ver un la clasificación sin retos:** Dado un cliente con usuario 'client1' y un sistema sin retos completados para ningún cliente, al pulsar el botón de "Clasificación", aparecerá un mensaje de que no hay retos completados.
+* **Ver un la clasificación histórica con datos:** Dado un cliente con usuario 'client1', y un sistema sin retos completados la última semana, al pulsar el botón de "Clasificación", aparecerá un listado de los retos completados, viendo también una clasificación global.
+* **Ver un la clasificación histórica con datos de otros:** Dado un cliente con usuario 'client2', y un sistema sin retos completados la última semana, y sin retos completados por este cliente, al pulsar el botón de "Clasificación", aparecerá una clasificación global.
+* **Ver un la clasificación histórica con datos de otros y sin retos completados:** Dado un cliente con usuario 'client1', y sin retos completados por este cliente, pero si con puntos, al pulsar el botón de "Clasificación", aparecerá una clasificación semanal y global.
+* **Ver un la clasificación histórica con datos de otros y sin puntos:** Dado un cliente con usuario 'client1', y sin puntos por este cliente, pero si con retos completados, al pulsar el botón de "Clasificación", aparecerá una clasificación semanal y global.
+* **Ver un la clasificación sin usuarios con retos completados:** Dado un cliente con usuario 'client1', con retos completados, y un sistema en el que hay retos completados pero no se devuelven el nombre de los usuarios, al pulsar el botón de "Clasificación", aparecerá un listado de los retos completados.
+* **Ver un la clasificación sin puntos:** Dado un cliente con usuario 'client1', con retos completados, y un sistema en el que hay retos completados pero no se devuelven los puntos, al pulsar el botón de "Clasificación", aparecerá un listado de los retos completados.
 ---
 
 #### HU23 - Añadir Playlist adaptada a mis entrenamientos

@@ -15,6 +15,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
 import org.springframework.samples.yogogym.model.Client;
+import org.springframework.samples.yogogym.model.Diet;
+import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.User;
@@ -60,12 +62,15 @@ class TrainingControllerTests {
 	
 	private static final int CLIENT1_ID = 1;
 	private static final int CLIENT2_ID = 2;
-	private static final String NIF_1 = "12345678F";
-	private static final String NIF_2 = "12345678G";
+	private static final String NIF1 = "12345678F";
+	private static final String NIF2 = "12345678G";
 	
 	private static final int CLIENT1_TRAINING1_ID = 1;
 	private static final int CLIENT1_TRAINING2_ID = 2;
 	private static final int CLIENT1_TRAINING3_ID = 3;
+	private static final int CLIENT1_TRAINING4_ID = 4;
+	private static final int CLIENT1_TRAINING5_ID = 5;
+	private static final int CLIENT1_TRAINING6_ID = 6;
 	
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 	private static Date initialDate = null;
@@ -103,7 +108,8 @@ class TrainingControllerTests {
 		userClient1.setEnabled(true);
 		client1.setUser(userClient1);
 		client1.setId(CLIENT1_ID);
-		client1.setNif(NIF_1);
+		client1.setNif(NIF1);
+		client1.setIsPublic(true);
 		
 		clientsTrainer1.add(client1);
 		
@@ -123,7 +129,7 @@ class TrainingControllerTests {
 		training1.setEditingPermission(EditingPermission.TRAINER);
 		training1.setAuthor(TRAINER1_USERNAME);
 		training1.setDiet(null);
-		training1.setRoutines(null);
+		training1.setRoutines(new ArrayList<>());
 
 		Training training2 = new Training();
 		BeanUtils.copyProperties(training1, training2);
@@ -139,6 +145,50 @@ class TrainingControllerTests {
 		training3.setEditingPermission(EditingPermission.BOTH);
 		training3.setAuthor(TRAINER1_USERNAME);
 		
+		Training training4 = new Training();
+		training4.setId(CLIENT1_TRAINING4_ID);
+		training4.setName("Training 4");
+		training4.setClient(client1);
+		training4.setInitialDate(initialDate);
+		training4.setEndDate(endDate);
+		training4.setEditingPermission(EditingPermission.TRAINER);
+		training4.setAuthor(TRAINER1_USERNAME);
+		Diet diet = new Diet();
+		diet.setId(1);
+		diet.setName("Diet");
+		training4.setDiet(diet);
+		Routine routine = new Routine();
+		routine.setId(1);
+		routine.setName("Routine");
+		Collection<Routine> routineList = new ArrayList<>();
+		routineList.add(routine);
+		training4.setRoutines(routineList);
+		
+		Training training5 = new Training();
+		BeanUtils.copyProperties(training4, training5);
+		training5.setId(CLIENT1_TRAINING5_ID);
+		training5.setDiet(null);
+		
+		Training training6 = new Training();
+		BeanUtils.copyProperties(training4, training6);
+		training6.setId(CLIENT1_TRAINING6_ID);
+		training6.setRoutines(new ArrayList<>());
+		
+		Collection<Training> trainingList = new ArrayList<>();
+		trainingList.add(training1);
+		trainingList.add(training2);
+		trainingList.add(training3);
+		trainingList.add(training4);
+		trainingList.add(training5);
+		trainingList.add(training6);
+		Collection<Integer> trainingIdList = new ArrayList<>();
+		trainingIdList.add(CLIENT1_TRAINING1_ID);
+		trainingIdList.add(CLIENT1_TRAINING2_ID);
+		trainingIdList.add(CLIENT1_TRAINING3_ID);
+		trainingIdList.add(CLIENT1_TRAINING4_ID);
+		trainingIdList.add(CLIENT1_TRAINING5_ID);
+		trainingIdList.add(CLIENT1_TRAINING6_ID);
+		
 		//Trainer2
 		Collection<Client> clientsTrainer2 = new ArrayList<>();
 		
@@ -148,7 +198,8 @@ class TrainingControllerTests {
 		userClient2.setEnabled(true);
 		client2.setUser(userClient2);
 		client2.setId(CLIENT2_ID);
-		client2.setNif(NIF_2);
+		client2.setNif(NIF2);
+		client2.setIsPublic(true);
 		
 		clientsTrainer2.add(client2);
 		
@@ -166,13 +217,21 @@ class TrainingControllerTests {
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING1_ID)).willReturn(training1);
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING2_ID)).willReturn(training2);
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING3_ID)).willReturn(training3);
+		given(this.trainingService.findTrainingById(CLIENT1_TRAINING4_ID)).willReturn(training4);
+		given(this.trainingService.findTrainingById(CLIENT1_TRAINING5_ID)).willReturn(training5);
+		given(this.trainingService.findTrainingById(CLIENT1_TRAINING6_ID)).willReturn(training6);
+		
+		//Copy Training
+		given(this.trainingService.findTrainingWithPublicClient()).willReturn(trainingList);
+		given(this.trainingService.findTrainingIdFromClient(CLIENT1_ID)).willReturn(trainingIdList);
+		given(this.trainingService.findTrainingIdFromClient(CLIENT2_ID)).willReturn(new ArrayList<>());
 		try {
-			given(this.clientFormatter.parse(NIF_1, Locale.ENGLISH)).willReturn(client1);
+			given(this.clientFormatter.parse(NIF1, Locale.ENGLISH)).willReturn(client1);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		try {
-			given(this.clientFormatter.parse(NIF_2, Locale.ENGLISH)).willReturn(client2);
+			given(this.clientFormatter.parse(NIF2, Locale.ENGLISH)).willReturn(client2);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -244,13 +303,13 @@ class TrainingControllerTests {
 	void testClientTrainingDetails() throws Exception {
 		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID))
 		 		.andExpect(status().isOk())
-				.andExpect(model().attributeExists("client"))
+		 		.andExpect(model().attributeExists("client"))
 				.andExpect(model().attributeExists("training"))
 				.andExpect(model().attribute("training", hasProperty("name", is("Training 1"))))
 				.andExpect(model().attribute("training", hasProperty("initialDate", equalTo(initialDate))))
 				.andExpect(model().attribute("training", hasProperty("endDate", equalTo(endDate))))
 				.andExpect(model().attribute("training", hasProperty("author", is(TRAINER1_USERNAME))))
-				.andExpect(model().attribute("training", hasProperty("routines", nullValue())))
+				.andExpect(model().attribute("training", hasProperty("routines", is(new ArrayList<>()))))
 				.andExpect(model().attribute("training", hasProperty("diet", nullValue())))
 				.andExpect(view().name("trainer/trainings/trainingsDetails"));
 	}
@@ -275,7 +334,7 @@ class TrainingControllerTests {
 			 	.param("endDate", dateFormat.format(endDate))
 			 	.param("editingPermission", EditingPermission.TRAINER.toString())
 			 	.param("author", TRAINER2_USERNAME)
-			 	.param("client", "12345678F"))
+			 	.param("client", NIF2))
 				.andExpect(status().is3xxRedirection())
 		 		.andExpect(view().name("redirect:/trainer/"+TRAINER2_USERNAME+"/trainings"));
 	}
@@ -290,7 +349,7 @@ class TrainingControllerTests {
 			 	.param("endDate", "")
 			 	.param("editingPermission", "")
 			 	.param("author", TRAINER2_USERNAME)
-			 	.param("client", NIF_2))
+			 	.param("client", NIF2))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
 				.andExpect(model().attributeHasFieldErrors("training", "name"))
@@ -398,7 +457,7 @@ class TrainingControllerTests {
 				.param("endDate", dateFormat.format(endDateUpdated))
 				.param("editingPermission", EditingPermission.BOTH.toString())
 				.param("author", TRAINER1_USERNAME)
-				.param("client", NIF_1))
+				.param("client", NIF1))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}"));
 	}
@@ -413,7 +472,7 @@ class TrainingControllerTests {
 				.param("endDate", "")
 				.param("editingPermission", "")
 				.param("author", TRAINER1_USERNAME)
-				.param("client", NIF_1))
+				.param("client", NIF1))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
 				.andExpect(model().attributeHasFieldErrors("training", "name"))
@@ -494,6 +553,50 @@ class TrainingControllerTests {
     			.andExpect(view().name("redirect:/trainer/{trainerUsername}/trainings"));
     }
     
+    //Copy training
+    
+    @WithMockUser(username="trainer1", authorities= {"trainer"})
+    @ParameterizedTest
+	@ValueSource(ints = {CLIENT1_TRAINING1_ID,CLIENT1_TRAINING3_ID})
+   	void testGetTrainingListCopyGood(int trainingId) throws Exception {
+   		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining", TRAINER1_USERNAME,CLIENT1_ID,trainingId))
+   				.andExpect(status().isOk())
+   				.andExpect(view().name("trainer/trainings/listCopyTraining"));
+   	}
+    
+    @WithMockUser(username="trainer1", authorities= {"trainer"})
+    @ParameterizedTest
+	@ValueSource(ints = {CLIENT1_TRAINING4_ID,CLIENT1_TRAINING5_ID,CLIENT1_TRAINING6_ID})
+   	void testGetTrainingListCopyFailed(int trainingId) throws Exception {
+   		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining", TRAINER1_USERNAME,CLIENT1_ID,trainingId))
+   				.andExpect(status().isOk())
+   				.andExpect(view().name("exception"));
+   	}
+    
+    @WithMockUser(username="trainer1", authorities= {"trainer"})
+    @ParameterizedTest
+	@ValueSource(ints = {CLIENT1_TRAINING1_ID,CLIENT1_TRAINING3_ID})
+	void testProcessCopyTrainingSuccess(int trainingId) throws Exception {
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining", TRAINER1_USERNAME,CLIENT1_ID,trainingId)
+				.with(csrf())
+			 	.param("trainingIdToCopy", String.valueOf(CLIENT1_TRAINING4_ID))
+			 	.param("trainerUsername", "trainer1"))
+				.andExpect(status().is3xxRedirection())
+		 		.andExpect(view().name("redirect:/trainer/{trainerUsername}/trainings"));
+	}
+    
+    @WithMockUser(username="trainer1", authorities= {"trainer"})
+    @ParameterizedTest
+	@ValueSource(ints = {CLIENT1_TRAINING4_ID,CLIENT1_TRAINING5_ID,CLIENT1_TRAINING6_ID})
+	void testProcessCopyTrainingFailed(int trainingId) throws Exception {
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining", TRAINER1_USERNAME,CLIENT1_ID,trainingId)
+				.with(csrf())
+			 	.param("trainingIdToCopy", String.valueOf(CLIENT1_TRAINING4_ID))
+			 	.param("trainerUsername", "trainer1"))
+				.andExpect(status().isOk())
+		 		.andExpect(view().name("exception"));
+	}
+    
     /**
      * <p>Performs a post with a sample training which has no errors. It's used to check try/catch in controller tests.</p>
      * @param selectErrorField : Must be greater or equals to 0 for "endDate" and less than 0 for "initialDate"
@@ -518,7 +621,7 @@ class TrainingControllerTests {
     		 	.param("endDate", dateFormat.format(endDate))
     		 	.param("editingPermission", EditingPermission.BOTH.toString())
     		 	.param("author", TRAINER2_USERNAME)
-    		 	.param("client", NIF_2))
+    		 	.param("client", NIF2))
     			.andExpect(status().isOk())
     			.andExpect(model().attributeHasErrors("training"))
     			.andExpect(model().attributeHasFieldErrors("training", errorField))
@@ -533,7 +636,7 @@ class TrainingControllerTests {
     		 	.param("endDate", dateFormat.format(endDate))
     		 	.param("editingPermission", EditingPermission.BOTH.toString())
     		 	.param("author", TRAINER1_USERNAME)
-    		 	.param("client", NIF_1))
+    		 	.param("client", NIF1))
     			.andExpect(status().isOk())
     			.andExpect(model().attributeHasErrors("training"))
     			.andExpect(model().attributeHasFieldErrors("training", errorField))
