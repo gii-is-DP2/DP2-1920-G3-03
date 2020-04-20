@@ -62,6 +62,7 @@ class TrainingControllerTests {
 	
 	private static final int CLIENT1_ID = 1;
 	private static final int CLIENT2_ID = 2;
+	
 	private static final String NIF1 = "12345678F";
 	private static final String NIF2 = "12345678G";
 	
@@ -71,6 +72,7 @@ class TrainingControllerTests {
 	private static final int CLIENT1_TRAINING4_ID = 4;
 	private static final int CLIENT1_TRAINING5_ID = 5;
 	private static final int CLIENT1_TRAINING6_ID = 6;
+	private static final int CLIENT2_TRAINING7_ID = 7;
 	
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 	private static Date initialDate = null;
@@ -210,6 +212,20 @@ class TrainingControllerTests {
 		trainer2.setUser(userTrainer2);
 		trainer2.setClients(clientsTrainer2);
 		
+		Training training7 = new Training();
+		training7.setId(CLIENT2_TRAINING7_ID);
+		training7.setName("Training 2");
+		training7.setClient(client2);
+		training7.setInitialDate(initialDate);
+		training7.setEndDate(endDate);
+		training7.setEditingPermission(EditingPermission.TRAINER);
+		training7.setAuthor(TRAINER2_USERNAME);
+		training7.setDiet(null);
+		training7.setRoutines(new ArrayList<>());
+		
+		Collection<Training> trainingList2 = new ArrayList<>();
+		trainingList2.add(training7);
+		
 		given(this.clientService.findClientById(CLIENT1_ID)).willReturn(client1);
 		given(this.clientService.findClientById(CLIENT2_ID)).willReturn(client2);
 		given(this.trainerService.findTrainer(TRAINER1_USERNAME)).willReturn(trainer1);
@@ -220,6 +236,7 @@ class TrainingControllerTests {
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING4_ID)).willReturn(training4);
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING5_ID)).willReturn(training5);
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING6_ID)).willReturn(training6);
+		given(this.trainingService.findTrainingFromClient(CLIENT2_ID)).willReturn(trainingList2);
 		
 		//Copy Training
 		given(this.trainingService.findTrainingWithPublicClient()).willReturn(trainingList);
@@ -336,7 +353,7 @@ class TrainingControllerTests {
 			 	.param("author", TRAINER2_USERNAME)
 			 	.param("client", NIF2))
 				.andExpect(status().is3xxRedirection())
-		 		.andExpect(view().name("redirect:/trainer/"+TRAINER2_USERNAME+"/trainings"));
+				.andExpect(view().name("redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings/"+CLIENT2_TRAINING7_ID));
 	}
 	
 	@WithMockUser(username="trainer2", authorities= {"trainer"})
