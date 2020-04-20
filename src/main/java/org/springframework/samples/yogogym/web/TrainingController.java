@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -177,8 +178,9 @@ public class TrainingController {
 				return "trainer/trainings/trainingCreateOrUpdate";
 			} 
 			
-			Trainer trainer = this.trainerService.findTrainer(trainerUsername);
-			return "redirect:/trainer/" + trainer.getUser().getUsername() + "/trainings";
+			List<Training> allTrainingsClient = new ArrayList<Training>(this.trainingService.findTrainingFromClient(clientId));
+			Training newTraining = allTrainingsClient.get(allTrainingsClient.size()-1);
+			return "redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings/"+newTraining.getId();
 		}
 	}
 	
