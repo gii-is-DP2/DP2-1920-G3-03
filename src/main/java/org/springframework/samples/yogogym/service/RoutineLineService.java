@@ -90,6 +90,7 @@ public class RoutineLineService {
 			this.routineLineRepository.save(routineLine);
 	}
 	
+	//Derivative method
 
 	protected Boolean isCorrectRepetitionType(RoutineLine routineLine)
 	{

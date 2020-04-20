@@ -8,6 +8,9 @@
 <yogogym:layout pageName="clients">
 	<h2>My Trainings: <c:out value="${training.name}"/></h2>
     
+    <spring:url value="/client/${client.user.username}/trainings/${training.id}/routine/create" var="addRoutineUrl"/>
+    <a href="${fn:escapeXml(addRoutineUrl)}">Add Routine</a>
+    
     <c:forEach var="routine" items="${training.routines}">
     	
     	<h3>Routine: <c:out value="${routine.name}"/></h3>
