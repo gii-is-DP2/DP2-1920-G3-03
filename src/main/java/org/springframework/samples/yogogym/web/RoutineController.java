@@ -298,6 +298,71 @@ public class RoutineController {
 			return "redirect:/client/" + clientUsername + "/trainings/" + trainingId;
 		}
 	}
+	
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/update")
+	public String initUpdateForm(@PathVariable("trainingId") int trainingId,@PathVariable("routineId") int routineId,@PathVariable("clientUsername")final String clientUsername, final Model model)
+	{
+		if(!routineExist(routineId) || isTrainingFinished(trainingId)|| !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId))
+			return "exception";
+			
+		Routine routine = this.routineService.findRoutineById(routineId);
+		
+		model.addAttribute("routine", routine);
+		
+		return "client/routines/routinesCreateOrUpdate";
+	}
+	
+	@PostMapping("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/update")
+	public String postUpdateForm(@Valid Routine routine, BindingResult result, @PathVariable("trainingId") int trainingId,@PathVariable("routineId") int routineId,@PathVariable("clientUsername")final String clientUsername, final ModelMap model)
+	{
+		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId))
+			return "exception";
+		
+		if (result.hasErrors()) {
+			routine.setId(routineId);
+			Client client = this.clientService.findClientByUsername(clientUsername);
+			model.put("client",client);
+			
+			return "client/routines/routinesCreateOrUpdate";
+		} else {
+			Routine oldRoutine = this.routineService.findRoutineById(routineId);
+		
+			routine.setId(routineId);
+			routine.setRoutineLine(oldRoutine.getRoutineLine());
+						
+			String loggedUsername = getLoggedUsername();
+			
+			try
+			{
+				this.routineService.saveRoutine(routine,loggedUsername,trainingId);
+			}
+			catch(Exception e)
+			{
+				
+			}
+			return "redirect:/client/" + clientUsername + "/trainings/" + trainingId;
+		}
+	}
+	
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/delete")
+	public String deleteRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientUsername")String clientUsername, @PathVariable("trainingId")int trainingId)
+	{		
+		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId))
+			return "exception";
+		
+		Routine routine = this.routineService.findRoutineById(routineId);
+		
+		try
+		{
+			this.routineService.deleteRoutine(routine,clientUsername,trainingId);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return "exception";
+		}
+		return "redirect:/client/" + clientUsername + "/trainings/" + trainingId;
+	}
 
 	//Security Utils Check
 
