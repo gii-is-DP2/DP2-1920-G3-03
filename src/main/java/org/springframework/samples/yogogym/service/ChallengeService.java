@@ -118,6 +118,15 @@ public class ChallengeService {
 		return week == week2;
 	}
 	
+	
+	//Clasification
+	public List<Challenge> findChallengesByUsername(String username){
+		return this.challengeRepo.findChallengesByUsername(username);
+	}
+	
+	public Integer sumPointChallengesByUsername(String username) {
+		return this.challengeRepo.sumPointChallengesByUsername(username);
+	}
 
 
 }

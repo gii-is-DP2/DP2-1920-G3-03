@@ -18,7 +18,6 @@ package org.springframework.samples.yogogym.service;
 
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -71,13 +70,6 @@ public class InscriptionService {
 		
 		return (Collection<Inscription>) this.inscriptionRepo.findAll();
 	}
-	
-	//Clasification
-	public List<Inscription> findInscriptionsByUsername(String username){
-		
-		return this.inscriptionRepo.findIncriptionsByUsername(username);
-  }
-
 
 	public Inscription findInscriptionByClientAndChallenge(Client client, Challenge challenge) {
 		

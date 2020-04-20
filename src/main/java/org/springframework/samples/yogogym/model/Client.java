@@ -66,6 +66,9 @@ public class Client extends Person {
 	@Column(name="fatPercentage")
 	@Min(0)
 	protected Double fatPercentage;
+	
+	@Column(name="isPublic")
+	protected Boolean isPublic;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	protected Collection<Training> trainings;

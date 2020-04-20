@@ -226,4 +226,18 @@ public class ChallengeServiceTest {
 		
 		return c;
 	}
+	
+	//Classification
+	@Test
+	void shouldFindChallengesByUsername(){
+		List<Challenge> challenges = this.challengeService.findChallengesByUsername("client3");
+		assertThat(challenges.size()).isEqualTo(1);
+	}
+	
+	@Test
+	void shouldSumPointChallengesByUsername(){
+		Integer sum = this.challengeService.sumPointChallengesByUsername("client3");
+		assertThat(sum).isEqualTo(10);
+	}
+	
 }

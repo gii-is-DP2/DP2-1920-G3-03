@@ -70,7 +70,7 @@
 	<c:if test="${!hasChallenge && hasChallengeClasificationAll}">
 		You haven't completed challenges
 	</c:if>
-	<h2>Week Clasification</h2>
+	<h2>Week Classification</h2>
 	<c:if test="${hasChallengeClasificationWeek}">
 		<div>
 			<canvas id="canvasClasificationWeek"></canvas>
@@ -79,13 +79,13 @@
     <c:if test="${!hasChallengeClasificationWeek && hasChallengeClasificationAll}">
 		No one has completed challenges this week
 	</c:if>
-	<h2>Historical Clasification</h2>
+	<h2>Historical Classification</h2>
 	<c:if test="${hasChallengeClasificationAll}">
 		<div>
 			<canvas id="canvasClasificationAll"></canvas>
 		</div>
 	</c:if>
-    <c:if test="${!hasChallengeClasification}">
+    <c:if test="${!hasChallengeClasificationAll and !hasChallengeClasificationWeek}">
 		No one has completed challenges
 	</c:if>
 </petclinic:layout>

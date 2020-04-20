@@ -46,9 +46,9 @@
 	<span>My Challenges</span>
 </yogogym:menuItem>
 
-<yogogym:menuItem active="${name eq 'clasifications'}" url="/client/${clientUsername}/clasification" title="Clasification">
+<yogogym:menuItem active="${name eq 'clasifications'}" url="/client/${clientUsername}/clasification" title="Classification">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Clasification</span>
+	<span>Classification</span>
 </yogogym:menuItem>
 
 <yogogym:menuItem active="${name eq 'dashboards'}" url="/client/${clientUsername}/dashboard" title="Dashboard">

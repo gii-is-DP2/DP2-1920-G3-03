@@ -1,55 +1,58 @@
 package org.springframework.samples.yogogym.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Collection;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.samples.yogogym.model.Training;
+import org.springframework.samples.yogogym.model.Challenge;
+import org.springframework.samples.yogogym.model.Inscription;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 public class DashboardsAdminServiceTest {
-	
+
 	@Autowired
 	protected DashboardsAdminService dashboardService;
-	
+
 	@Test
-	void shouldEquipmentControl() {
-		Collection<Training> trainings = this.dashboardService.equipmentControl();
-		assertThat(trainings.size()).isEqualTo(8);
+	void shouldCountEquipment() {
+		List<Integer> count = this.dashboardService.countEquipment(3000);
+		assertThat(count.size()).isEqualTo(6);
+	}
+
+	@Test
+	void shouldNameEquipment() {
+		List<String> count = this.dashboardService.nameEquipment(3000);
+		assertThat(count.size()).isEqualTo(6);
 	}
 	
 	@Test
-	void shouldListRoutine() {
-		List<Integer> routines = this.dashboardService.listRoutine(1);
-		assertThat(routines.size()).isEqualTo(2);
+	void shouldGetChallengesOfMonth(){
+		Collection<Challenge> challenges = this.dashboardService.getChallengesOfMonth(10);
+		assertThat(challenges.size()).isEqualTo(3);
+	}
+
+	@Test
+	void shouldNotFindChallengesOfMonth(){
+		Collection<Challenge> challenges = this.dashboardService.getChallengesOfMonth(2);
+		assertThat(challenges.size()).isEqualTo(0);
 	}
 	
 	@Test
-	void shouldListRepsRoutine() {
-		Integer reps = this.dashboardService.listRepsRoutine(1);
-		assertThat(reps).isEqualTo(3);
+	void shouldGetCompletedInscriptionsOfMonth(){
+		Collection<Inscription> inscriptions = this.dashboardService.findCompletedInscriptionsThisMonth(1);
+		assertThat(inscriptions.size()).isEqualTo(1);
 	}
 	
 	@Test
-	void shouldListExercise() {
-		List<Integer> exercises = this.dashboardService.listExercise(1);
-		assertThat(exercises.size()).isEqualTo(6);
+	void shouldNotFindCompletedInscriptionsOfMonth(){
+		Collection<Inscription> inscriptions = this.dashboardService.findCompletedInscriptionsThisMonth(2);
+		assertThat(inscriptions.size()).isEqualTo(0);
 	}
-	
-	@Test
-	void shouldListIdEquipment() {
-		Integer equipment = this.dashboardService.listIdEquipment(1);
-		assertThat(equipment).isEqualTo(1);
-	}
-	
-	@Test
-	void shouldListNameEquipment() {
-		String name = this.dashboardService.listNameEquipment(1);
-		assertThat(name).isEqualTo("Squat-Calf");
-	}
+
 }

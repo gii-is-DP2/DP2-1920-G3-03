@@ -2,14 +2,18 @@ package org.springframework.samples.yogogym.web;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Client;
+import org.springframework.samples.yogogym.model.Routine;
+import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
@@ -32,6 +36,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -96,6 +101,9 @@ public class TrainingController {
 		
 		model.addAttribute("client", client);
 		model.addAttribute("training", training);
+		if((training.getRoutines().isEmpty() || training.getRoutines()==null) && training.getDiet()==null) {
+			model.addAttribute("hasNotRoutine",true);
+		}
 
 		return "trainer/trainings/trainingsDetails";
 	}
@@ -296,6 +304,95 @@ public class TrainingController {
 		}
 	}
 	
+	//Copy training
+	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining")
+	public String getTrainingListCopy(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, Model model) {
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)||!isTrainingOfClient(trainingId,clientId)||!isTrainingEmpty(trainingId)) {
+			return "exception";
+		}
+		
+		Collection<Training> trainings = this.trainingService.findTrainingWithPublicClient();		
+		if(trainings.isEmpty()) {
+			model.addAttribute("notHaveTrainingsPublic", true);
+		}else {
+			Collection<Training> tr = trainings.stream().filter(t->t!=null).filter(t->t.getDiet()!=null || !t.getRoutines().isEmpty()).collect(Collectors.toList());
+			if(tr.isEmpty()) {
+				model.addAttribute("notHaveTrainingsPublic", true);
+			}else {
+				model.addAttribute("trainings", tr);
+			}
+		}
+		return "trainer/trainings/listCopyTraining";
+	}
+	
+	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining")
+	public String processTrainingCopy(@ModelAttribute("trainingIdToCopy") int idTrainingToCopy, @PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, Model model) {
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)||!isTrainingOfClient(trainingId,clientId)||!isTrainingEmpty(trainingId)) {
+			return "exception";
+		}
+		Training trainingToCopy = this.trainingService.findTrainingById(idTrainingToCopy);
+		
+		Training nuevo = new Training();
+		if(trainingToCopy.getDiet()!=null) {
+			nuevo.setDiet(trainingToCopy.getDiet());
+		}
+		if(trainingToCopy.getRoutines()!=null) {
+			Collection<Routine> routines = new ArrayList<>();
+			for(Routine r : trainingToCopy.getRoutines()) {
+				Routine nueva = new Routine();
+				if(r.getRoutineLine()!=null) {
+					Collection<RoutineLine> routinesLines = new ArrayList<>();
+					for(RoutineLine rl : r.getRoutineLine()) {
+						RoutineLine nuevaRl = new RoutineLine();
+						nuevaRl.setExercise(rl.getExercise());
+						nuevaRl.setReps(rl.getReps());
+						nuevaRl.setSeries(rl.getSeries());
+						nuevaRl.setTime(rl.getTime());
+						nuevaRl.setWeight(rl.getWeight());
+						routinesLines.add(nuevaRl);
+					}
+					nueva.setRoutineLine(routinesLines);
+				}
+				nueva.setDescription(r.getDescription());
+				nueva.setName(r.getName());
+				nueva.setRepsPerWeek(r.getRepsPerWeek());
+				routines.add(nueva);
+			}
+			nuevo.setRoutines(routines);
+		}
+		nuevo.setAuthor(training.getAuthor());
+		nuevo.setClient(training.getClient());
+		nuevo.setEditingPermission(training.getEditingPermission());
+		nuevo.setEndDate(training.getEndDate());
+		nuevo.setId(training.getId());
+		nuevo.setInitialDate(training.getInitialDate());
+		nuevo.setName(training.getName());
+		
+		try {
+			this.trainingService.saveTraining(nuevo);
+		}catch(Exception e) {
+			
+		}
+		
+		return "redirect:/trainer/{trainerUsername}/trainings";
+	}
+	
+	private boolean isTrainingEmpty(int trainingId) {
+		Training training = this.trainingService.findTrainingById(trainingId);
+		return training.getDiet()==null && training.getRoutines().isEmpty();
+	}
+
+	private boolean isTrainingOfClient(int trainingId, int clientId) {
+		Collection<Integer> list = this.trainingService.findTrainingIdFromClient(clientId);
+		return list.contains(trainingId);
+	}
+
 	//CLIENT
 		
 	@GetMapping("/client/{clientUsername}/trainings")
