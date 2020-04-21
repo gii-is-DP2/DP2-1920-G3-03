@@ -28,4 +28,13 @@ public interface DashboardsAdminRepository extends CrudRepository<DashboardAdmin
 			+ "AND MONTH(i.challenge.endDate)=:month AND i.status=2")
 	List<Inscription> findCompletedInscriptionsByMonthAndYear(int month, int year);
 
+	// General info about the gym
+	@Query("SELECT count(c) FROM Client c")
+	Integer countClients();
+
+	@Query("SELECT count(t) FROM Trainer t")
+	Integer countTrainers();
+
+	@Query("SELECT count(c) FROM Client c GROUP BY c.guild ")
+	List<Integer> countClientsPerGuild();
 }
