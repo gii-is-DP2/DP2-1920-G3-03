@@ -18,4 +18,7 @@ public interface GuildRepository extends CrudRepository<Guild, String>{
 	
 	@Query("select c from Client c where c.guild=:guild")
 	Collection<Client> findClientsByGuild(Guild guild);
+
+	@Query("select g.name from Guild g")
+	Collection<String> findAllGuildNames();
 }

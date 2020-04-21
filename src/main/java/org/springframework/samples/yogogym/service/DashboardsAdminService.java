@@ -55,4 +55,13 @@ public class DashboardsAdminService {
 		return dashboardRepository.findCompletedInscriptionsByMonthAndYear(month,year);
 	}
 
+	public Integer countClients() {
+		return this.dashboardRepository.countClients();
+	}
+	public Integer countTrainers() {
+		return this.dashboardRepository.countTrainers();
+	}
+	public List<Integer> countClientsPerGuild() {
+		return this.dashboardRepository.countClientsPerGuild();
+	}
 }

@@ -179,4 +179,30 @@ public class DashboardsAdminController {
 
 	}
 
+	@GetMapping("/admin/dashboardGeneral")
+	public String getDashboardGeneral( Model model) {
+
+		Integer clients = this.dashboardsAdminService.countClients();
+		Integer trainers = this.dashboardsAdminService.countTrainers();
+		List<Integer> clientsPerGuild = this.dashboardsAdminService.countClientsPerGuild();
+
+		// Graphs
+		// Clients per Guilds
+		List<String> guildNames = (List<String>) this.guildService.findAllGuildNames();
+		guildNames.add(0, "Without guild");
+		model.addAttribute("guildNames", guildNames);
+		model.addAttribute("clientsPerGuild", clientsPerGuild);
+
+
+		boolean dataExists = clients > 0  || trainers >0;
+		if (dataExists) {
+			model.addAttribute("dataExists", true);
+			model.addAttribute("clients", clients);
+			model.addAttribute("trainers", trainers);
+		} else {
+			model.addAttribute("dataExists", false);
+		}
+
+		return "admin/dashboards/dashboardGeneral";
+	}
 }
