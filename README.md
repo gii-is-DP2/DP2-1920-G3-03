@@ -42,10 +42,10 @@ Como administrador quiero añadir retos semanales al gimnasio, que los clientes 
 
 #### Escenarios:
 
-* **Añadir reto semanal a semana sin retos:** Dado un administrador [admin1] y una semana [1/1/2040] sin retos, cuando este intente añadir un challenge aportando la información necesaria [name="ChallengeTest", description="Test", initialDate="1/1/2040", endDate="5/1/2040", points=10,reps=10,reward="Test",weight=10. , exercise=Exercise1], entonces el reto se creará correctamente.
-* **Añadir reto semanal ya existente:** Dado un administrador[admin1]  y un reto c1[igual que el anterior pero con name= "Same Name" e initialDate=1/1/2030] cuando este intente añadir uno con el nombre ["Same Name"]  en el mismo initialDate que el anterior, entonces se le indicará que esto no es posible debido a que ya existe.
-* **Añadir reto semanal a semana con 3 retos:** Dado un administrador[admin1]  y 3 retos con los mismos datos que el anterior pero con initialDate=[1/1/2050], cuando este intente añadir uno con el mismo initialDate, entonces se le indicará que no es posible debido a que se ha llegado al máximo de retos esa semana.
-* **Añadir reto semanal en fecha anterior:** Dado un administrador[admin1] , cuando este intente añadir un reto con los mismos datos que el anterior pero con fecha [01/02/2010], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
+* **Añadir reto semanal a semana sin retos:** Dado un administrador [admin1] y una semana [01/01/2030] sin retos, cuando este intente añadir un challenge aportando la información necesaria [name="ChallengeTest", description="Test1", initialDate="01/01/2030", endDate="05/01/2030", points=10,reps=10,reward="Test",weight=10. , exercise=Exercise1], entonces el reto se creará correctamente.
+* **Añadir reto semanal ya existente:** Dado un administrador[admin1], el reto anterior creado  y un reto [igual que el anterior pero con description= "Test2"] cuando este intente crearlo con el mismo nombre e initialDate que el anterior, entonces se le indicará que esto no es posible debido a que ya existe.
+* **Añadir reto semanal a semana con 3 retos:** Dado un administrador[admin1]  y una semana con 2 retos con initialDate=[10/10/2020], cuando este intente añadir dos con los mismos datos que en el primer caso pero con el mismo initialDate de esta semana y endDate=[15/10/2020] y nombres "ChallengeTest1" y "ChallengeTest2", entonces el primero se creará, pero el segundo indicará que hay un máximo de 3 test por semana.
+* **Añadir reto semanal en fecha anterior:** Dado un administrador[admin1] , cuando este intente añadir un reto con los mismos datos que el primero pero con initialDate [01/02/2010], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
 
 ---
 
@@ -55,9 +55,9 @@ Como administrador quiero visualizar el cliente y el gremio con más puntos de c
 
 #### Escenarios: 
 
-* **Visualizar datosindividual en periodo con retos:** Dado un administrador [admin1] y el mes [01/2021], cuando este intente visualizar los datos, entonces se le mostrarán que [Cliente1,200 puntos] y [Calisthenics,300 puntos] han ganado y que el reto 1 lo han completado [9%] de los clientes y un [66%] de los gremios, el reto 2 un [3%] y un [33%] respectivamente.
+* **Visualizar datosindividual en periodo con retos:** Dado un administrador [admin1] y el mes [01/2020], cuando este intente visualizar los datos, entonces se le mostrarán que [Julio Enrique Guerrero, 10 puntos] y [Gym for Dummies, 10 puntos] han ganado y que el reto 1 lo han completado [9,09%] de los clientes y un [33,3%].
 * **Visualizar datos en periodo sin retos:** Dado un administrador [admin1] y el mes [02/2021], cuando este intente visualizar los datos, se le mostrará que no hay retos que finalicen ese mes y se le propondrá crear uno.
-* **Visualizar datos en periodo sin retos completados:** Dado un administrador [admin1] y el mes [03/2021], cuando este intente visualizar los datos, se le mostrará que no hay retos completados ese mes.
+* **Visualizar datos en periodo sin retos completados:** Dado un administrador [admin1] y el mes [10/2020], cuando este intente visualizar los datos, se le mostrará que no hay retos completados ese mes.
 ---
 
 #### HU3 - Dashboard Máquinas
@@ -374,11 +374,9 @@ Como cliente quiero poder participar en los distintos retos propuestos por el gi
 #### Escenarios
 
 * **Listar los retos en los que aún no me he inscrito:** Dado un cliente[client1], pinchará en la sección "new challenges", verá un listado con los diferentes retos propuestos y seleccionará el que desee, por ejemplo, el challenge descrito en la HU01, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "inscribe me", añadiéndosele dicho reto a la sección "my challenges" pero con un estado "participating" hasta que adjunte una foto[url] demostrando que lo ha completado y pasará al estado "submitted".
-  **Listar los retos en los que participa:** Dado un cliente[client1],  pinchará en la sección "my challenges", verá un listado con los diferentes retos en los que se ha inscrito.
+ * **Listar los retos en los que participa:** Dado un cliente[client1],  pinchará en la sección "my challenges", verá un listado con los diferentes retos en los que se ha inscrito, entre ellos el anterior.
 * **Participar en un reto cuando no hay retos:** Dado un cliente[client1], , pinchará en la sección "new challenges", si dicho cliente se ha inscrito en todos los retos disponibles, no le saldrá ningún reto en dicha lista.
 * **Pedir confirmar un reto que ha completado:** Dado un cliente[client1], , pinchará en la sección "my challenges", si dicho cliente ha completado algún reto, pinchará sobre el[Challenge descrito anteriormente], rellenará la url de la foto de prueba[https://test.com], y clicará en enviar. El administrador[admin1] podrá ver esos retos enviados, y decidirá si han sido completados o fallados en base a la url proporcionada.
-* **Listar los retos en los que participo y la fecha límite del reto pasa antes de que el cliente lo envíe:** Dado un cliente[client1],  y un reto con fecha de finalización [12/12/2018], sin que haya sido enviado, se pondrá automáticamente en fallado.
-
 ---
 
 #### HU22 - Clasificación de los Retos

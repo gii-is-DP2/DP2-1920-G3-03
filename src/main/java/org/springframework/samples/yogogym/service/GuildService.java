@@ -95,4 +95,10 @@ public class GuildService {
 		if(client.getGuild().equals(guild))
 		client.setGuild(null);
 	}
+
+	@Transactional
+	public Collection<String> findAllGuildNames() throws DataAccessException {
+		Collection<String> res = this.guildRepository.findAllGuildNames();
+		return res;		
+	}
 }

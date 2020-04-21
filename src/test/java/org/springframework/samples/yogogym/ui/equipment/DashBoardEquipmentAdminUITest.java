@@ -1,4 +1,4 @@
-package org.springframework.samples.yogogym.ui;
+package org.springframework.samples.yogogym.ui.equipment;
 
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
@@ -9,7 +9,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 
-public class DashBoardClientUITest {
+public class DashBoardEquipmentAdminUITest {
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
@@ -23,26 +23,20 @@ public class DashBoardClientUITest {
   }
 
   @Test
-  public void testDashBoardClientUI() throws Exception {
+  public void testDashBoardEquipmentAdminUI() throws Exception {
     driver.get("http://localhost:8080/");
     driver.findElement(By.linkText("Login")).click();
     driver.findElement(By.id("password")).clear();
-    driver.findElement(By.id("password")).sendKeys("client1999");
+    driver.findElement(By.id("password")).sendKeys("admin1999");
     driver.findElement(By.id("username")).clear();
-    driver.findElement(By.id("username")).sendKeys("client1");
+    driver.findElement(By.id("username")).sendKeys("admin1");
     driver.findElement(By.xpath("//button[@type='submit']")).click();
-    driver.findElement(By.linkText("Client")).click();
-    driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[5]/a/span[2]")).click();
-    driver.findElement(By.id("canvasBodyPartsMonth")).click();
-    driver.findElement(By.id("canvasBodyPartsMonth")).click();
-    driver.findElement(By.id("canvasRepititionTypeMonth")).click();
-    driver.findElement(By.id("canvasRepititionTypeMonth")).click();
-    // ERROR: Caught exception [ERROR: Unsupported command [doubleClick | id=canvasRepititionTypeMonth | ]]
-    driver.findElement(By.id("canvasBodyPartsAll")).click();
-    driver.findElement(By.id("canvasBodyPartsAll")).click();
-    // ERROR: Caught exception [ERROR: Unsupported command [doubleClick | id=canvasBodyPartsAll | ]]
-    driver.findElement(By.id("canvasRepititionTypeAll")).click();
-    driver.findElement(By.id("canvasRepititionTypeAll")).click();
+    driver.findElement(By.linkText("Admin")).click();
+    driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[3]/a/span[2]")).click();
+    driver.findElement(By.id("canvasWeek")).click();
+    driver.findElement(By.id("canvasWeek")).click();
+    driver.findElement(By.id("canvasMonth")).click();
+    driver.findElement(By.id("canvasMonth")).click();
   }
 
   @AfterEach

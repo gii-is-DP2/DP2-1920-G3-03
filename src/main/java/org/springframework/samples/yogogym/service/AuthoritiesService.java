@@ -16,6 +16,8 @@
 package org.springframework.samples.yogogym.service;
 
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Authorities;
@@ -37,6 +39,13 @@ public class AuthoritiesService {
 	@Autowired
 	public AuthoritiesService(AuthoritiesRepository authoritiesRepository) {
 		this.authoritiesRepository = authoritiesRepository;
+	}
+	
+	@Transactional
+	public Collection<Authorities> findAuthByUsername(String username) throws DataAccessException
+	{
+		Collection<Authorities> res = this.authoritiesRepository.findAuthByUsername(username);
+		return res;
 	}
 
 	@Transactional
