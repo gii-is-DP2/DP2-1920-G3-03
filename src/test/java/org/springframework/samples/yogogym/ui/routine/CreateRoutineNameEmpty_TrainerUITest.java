@@ -3,13 +3,23 @@ package org.springframework.samples.yogogym.ui.routine;
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CreateRoutineNameEmpty_TrainerUITest {
+
+	@LocalServerPort
+	private int port;
 
 	private WebDriver driver;
 	private String baseUrl;
@@ -24,26 +34,30 @@ public class CreateRoutineNameEmpty_TrainerUITest {
 	}
 
 	@Test
-	public void testCreateRoutineCorrect() throws Exception {
-		driver.get("http://localhost:8080/trainer/trainer1/routines");
+	public void testCreateRoutineNameEmpty() throws Exception {
+		driver.get("http://localhost:" + port);
+		driver.findElement(By.linkText("Login")).click();
+		driver.findElement(By.id("password")).clear();
+		driver.findElement(By.id("password")).sendKeys("trainer1999");
+		driver.findElement(By.id("username")).clear();
+		driver.findElement(By.id("username")).sendKeys("trainer1");
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		driver.findElement(By.linkText("Trainer")).click();
+		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[3]/a/span[2]")).click();
 		driver.findElement(By.xpath("(//a[contains(text(),'Add Routine')])[3]")).click();
-		driver.findElement(By.id("name")).click();
-		driver.findElement(By.id("name")).clear();
-		driver.findElement(By.id("name")).sendKeys("Routine 10");
 		driver.findElement(By.id("description")).click();
 		driver.findElement(By.id("description")).clear();
 		driver.findElement(By.id("description")).sendKeys("Routine 10 description");
 		driver.findElement(By.id("repsPerWeek")).click();
 		driver.findElement(By.id("repsPerWeek")).clear();
-		driver.findElement(By.id("repsPerWeek")).sendKeys("5");
-		driver.findElement(By.xpath("//div/div/div/div/div")).click();
+		driver.findElement(By.id("repsPerWeek")).sendKeys("10");
+		driver.findElement(By.xpath("//body/div/div")).click();
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		assertEquals("Routine 10", driver.findElement(By.linkText("Routine 10")).getText());
-		driver.findElement(By.linkText("Routine 10")).click();
-		assertEquals("Routine Name: Routine 10", driver.findElement(By.xpath("//body/div/div/p")).getText());
-		assertEquals("Description: Routine 10 description",
-				driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
-		assertEquals("Repetitions Per Week: 5", driver.findElement(By.xpath("//p[3]")).getText());
+		assertEquals("", driver.findElement(By.id("name")).getAttribute("value"));
+		assertEquals("The name cannot be empty",
+				driver.findElement(By.xpath("//form[@id='routine']/div/div/div/span[2]")).getText());
+		assertEquals("Routine 10 description", driver.findElement(By.id("description")).getAttribute("value"));
+		assertEquals("10",  driver.findElement(By.id("repsPerWeek")).getAttribute("value"));
 	}
 
 	@AfterEach
