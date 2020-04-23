@@ -1,4 +1,4 @@
-package org.springframework.samples.yogogym.ui;
+package org.springframework.samples.yogogym.ui.admin;
 
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
