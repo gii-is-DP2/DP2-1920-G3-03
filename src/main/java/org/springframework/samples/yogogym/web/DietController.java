@@ -60,7 +60,7 @@ public class DietController {
 		String actualDate = dateFormat.format(date);
 		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
-		
+	
 		model.addAttribute("actualDate", actualDate);
 		model.addAttribute("trainer", trainer);
 		
