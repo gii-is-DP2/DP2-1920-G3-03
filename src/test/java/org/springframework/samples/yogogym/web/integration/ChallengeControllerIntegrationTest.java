@@ -36,7 +36,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ChallegeControllerIntegrationTest {
+public class ChallengeControllerIntegrationTest {
 	
 	private static final Calendar testInitialTrainingDate = Calendar.getInstance();
 	private static final Calendar testEndTrainingDate = Calendar.getInstance();
