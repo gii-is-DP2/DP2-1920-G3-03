@@ -54,5 +54,23 @@ public class DashboardsAdminServiceTest {
 		Collection<Inscription> inscriptions = this.dashboardService.findCompletedInscriptionsThisMonth(2);
 		assertThat(inscriptions.size()).isEqualTo(0);
 	}
+	
+	@Test
+	void shouldCountClients() {
+		Integer count = this.dashboardService.countClients();
+		assertThat(count).isEqualTo(11);
+	}
+	
+	@Test
+	void shouldCountTrainers() {
+		Integer count = this.dashboardService.countTrainers();
+		assertThat(count).isEqualTo(2);
+	}
+	
+	@Test
+	void shouldCountClientsPerGuild() {
+		List<Integer> list = this.dashboardService.countClientsPerGuild();
+		assertThat(list.size()).isEqualTo(4);
+	}
 
 }
