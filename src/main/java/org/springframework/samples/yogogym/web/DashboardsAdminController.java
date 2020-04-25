@@ -16,6 +16,7 @@ import org.springframework.samples.yogogym.service.GuildService;
 import org.springframework.samples.yogogym.service.InscriptionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -37,13 +38,13 @@ public class DashboardsAdminController {
 	}
 
 	@GetMapping("/admin/dashboardEquipment")
-	public String getDashboardEquipment(Model model) {
+	public String getDashboardEquipment(ModelMap model) {
 		dashboard(28, "Month", model);
 		dashboard(7, "Week", model);
 		return "admin/dashboards/dashboardEquipment";
 	}
 	
-	private void dashboard(Integer days, String string, Model model) {
+	private void dashboard(Integer days, String string, ModelMap model) {
 		List<Integer> countEquipment = this.dashboardsAdminService.countEquipment(days);
 		List<String> nameEquipment = this.dashboardsAdminService.nameEquipment(days);
 		if (!countEquipment.isEmpty() || !nameEquipment.isEmpty()) {
@@ -65,7 +66,7 @@ public class DashboardsAdminController {
 	}
 
 	@GetMapping("/admin/dashboardChallenges/{month}")
-	public String getDashboardChallenges(@PathVariable("month") int month, Model model) {
+	public String getDashboardChallenges(@PathVariable("month") int month, ModelMap model) {
 
 		Date now = new Date();
 		Calendar cal = Calendar.getInstance();
@@ -84,7 +85,7 @@ public class DashboardsAdminController {
 		return "admin/dashboards/dashboardChallenges";
 	}
 
-	private void dashboardChallenges(List<Challenge> challenges, int month, Model model) {
+	private void dashboardChallenges(List<Challenge> challenges, int month, ModelMap model) {
 
 		// client with more points
 		Client client = null;
@@ -179,4 +180,30 @@ public class DashboardsAdminController {
 
 	}
 
+	@GetMapping("/admin/dashboardGeneral")
+	public String getDashboardGeneral( ModelMap model) {
+
+		Integer clients = this.dashboardsAdminService.countClients();
+		Integer trainers = this.dashboardsAdminService.countTrainers();
+		List<Integer> clientsPerGuild = this.dashboardsAdminService.countClientsPerGuild();
+
+		// Graphs
+		// Clients per Guilds
+		List<String> guildNames = (List<String>) this.guildService.findAllGuildNames();
+		guildNames.add(0, "Without guild");
+		model.addAttribute("guildNames", guildNames);
+		model.addAttribute("clientsPerGuild", clientsPerGuild);
+
+
+		boolean dataExists = clients > 0  || trainers >0;
+		if (dataExists) {
+			model.addAttribute("dataExists", true);
+			model.addAttribute("clients", clients);
+			model.addAttribute("trainers", trainers);
+		} else {
+			model.addAttribute("dataExists", false);
+		}
+
+		return "admin/dashboards/dashboardGeneral";
+	}
 }

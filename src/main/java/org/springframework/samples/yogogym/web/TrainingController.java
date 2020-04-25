@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -143,7 +144,7 @@ public class TrainingController {
 			if(!training.getAuthor().equals(trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)||!training.getClient().equals(client)) {
 				return "exception";
 			}
-			try {
+			try {			
 				this.trainingService.saveTraining(training);
 			} 
 			catch (Exception e) {
@@ -177,8 +178,9 @@ public class TrainingController {
 				return "trainer/trainings/trainingCreateOrUpdate";
 			} 
 			
-			Trainer trainer = this.trainerService.findTrainer(trainerUsername);
-			return "redirect:/trainer/" + trainer.getUser().getUsername() + "/trainings";
+			List<Training> allTrainingsClient = new ArrayList<Training>(this.trainingService.findTrainingFromClient(clientId));
+			Training newTraining = allTrainingsClient.get(allTrainingsClient.size()-1);
+			return "redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings/"+newTraining.getId();
 		}
 	}
 	
@@ -393,6 +395,33 @@ public class TrainingController {
 		return list.contains(trainingId);
 	}
 
+	//CLIENT
+		
+	@GetMapping("/client/{clientUsername}/trainings")
+	public String getTrainingList(@PathVariable("clientUsername")final String clientUsername, Model model)
+	{
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		Collection<Training> trainings = this.trainingService.findTrainingFromClient(client.getId());
+		
+		model.addAttribute("trainings",trainings);
+		
+		return "client/trainings/trainingsList";
+	}
+	
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}")
+	public String getTrainingDetails(@PathVariable("clientUsername")final String clientUsername, @PathVariable("trainingId")final int trainingId, Model model)
+	{
+		Training training = this.trainingService.findTrainingById(trainingId);
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		
+		model.addAttribute("training",training);
+		model.addAttribute("client",client);
+		
+		return "client/trainings/trainingsDetails";
+	}
+	
+	//Derivative
+	
 	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		Client client = this.clientService.findClientById(clientId);

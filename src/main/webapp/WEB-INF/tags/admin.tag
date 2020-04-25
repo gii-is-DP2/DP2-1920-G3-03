@@ -24,6 +24,10 @@
 	<span>Challenges Dashboard</span>
 </yogogym:menuItem>	
 
+<yogogym:menuItem active="${name eq 'generalDashboard'}" url="/admin/dashboardGeneral" title="General Dashboard">
+	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+	<span>General Dashboard</span>
+</yogogym:menuItem>	
 <%--
 <yogogym:menuItem active="${name eq 'vets'}" url="/" title="Empleados">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>

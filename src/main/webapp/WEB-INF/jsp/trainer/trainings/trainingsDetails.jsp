@@ -7,6 +7,14 @@
 
 <yogogym:layout pageName="trainings">
 
+	<c:if test="${error != null}">
+		<div class="text-center alert alert-danger" role="alert">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+	  		<span class="sr-only">Error:</span>
+   			${error} for ${client.lastName}, ${client.firstName}
+   		</div>
+	</c:if>
+	
 	<spring:url value="/trainer/${trainerUsername}/clients/{clientId}" var="clientUrl">
 		<spring:param name="clientId" value="${client.id}"/>
 	</spring:url>

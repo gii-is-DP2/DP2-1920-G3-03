@@ -1,6 +1,7 @@
-package org.springframework.samples.yogogym.ui;
+package org.springframework.samples.yogogym.ui.training;
 
 import java.util.regex.Pattern;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.*;
 import static org.junit.Assert.*;
@@ -9,11 +10,12 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 
-public class LoginUITest {
+public class CreateTrainingEndEqualsInitUITest {
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
   private StringBuffer verificationErrors = new StringBuffer();
+  private Calendar cal = Calendar.getInstance();
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -23,7 +25,7 @@ public class LoginUITest {
   }
 
   @Test
-  public void testLogin() throws Exception {
+  public void testCreateTrainingInitInPastUI() throws Exception {
     driver.get("http://localhost:8080/");
     driver.findElement(By.linkText("Login")).click();
     driver.findElement(By.id("username")).clear();
@@ -33,6 +35,27 @@ public class LoginUITest {
     driver.findElement(By.xpath("//button[@type='submit']")).click();
     try {
       assertEquals("trainer1", driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul[2]/li/a/strong")).getText());
+    } catch (Error e) {
+      verificationErrors.append(e.toString());
+    }
+    driver.findElement(By.linkText("Trainer")).click();
+    driver.findElement(By.linkText("Training Management")).click();
+    try {
+      assertEquals("Client Martin Antonio Lera ( marantle@yogogym.com )", driver.findElement(By.xpath("//h3")).getText());
+    } catch (Error e) {
+      verificationErrors.append(e.toString());
+    }
+    driver.findElement(By.linkText("Add Training")).click();
+    driver.findElement(By.id("name")).clear();
+    driver.findElement(By.id("name")).sendKeys("Entrenamiento nuevo");
+    driver.findElement(By.id("initialDate")).click();
+    int init = cal.get(Calendar.DAY_OF_MONTH);
+    driver.findElement(By.linkText(String.valueOf(init))).click();
+    driver.findElement(By.id("endDate")).click();
+    driver.findElement(By.linkText(String.valueOf(init))).click();
+    driver.findElement(By.xpath("//button[@type='submit']")).click();
+    try {
+      assertEquals("The end date must be after the initial date", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
     } catch (Error e) {
       verificationErrors.append(e.toString());
     }

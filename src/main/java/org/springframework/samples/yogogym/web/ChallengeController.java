@@ -67,7 +67,7 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("/admin/challenges/{challengeId}")
-	public String showChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, Model model) {
+	public String showChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, ModelMap model) {
 
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 		model.addAttribute("challenge", challenge);
@@ -165,7 +165,7 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("/admin/challenges/{challengeId}/edit")
-	public String initUpdateForm(@PathVariable("challengeId")int challengeId, Model model) {
+	public String initUpdateForm(@PathVariable("challengeId")int challengeId, ModelMap model) {
 		
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 		Collection<Exercise> exercises = this.exerciseService.findAllExercise();
