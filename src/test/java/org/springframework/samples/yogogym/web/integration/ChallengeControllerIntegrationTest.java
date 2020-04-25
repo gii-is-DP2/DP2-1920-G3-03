@@ -1,38 +1,24 @@
 package org.springframework.samples.yogogym.web.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.hibernate.Hibernate;
+import org.junit.After;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.samples.yogogym.model.Challenge;
+import org.springframework.samples.yogogym.web.ChallengeController;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.MapBindingResult;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.samples.yogogym.model.Challenge;
-import org.springframework.samples.yogogym.service.ChallengeService;
-import org.springframework.samples.yogogym.service.ClientService;
-import org.springframework.samples.yogogym.service.ExerciseService;
-import org.springframework.samples.yogogym.service.InscriptionService;
-import org.springframework.samples.yogogym.web.ChallengeController;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -44,17 +30,7 @@ public class ChallengeControllerIntegrationTest {
 	@Autowired
 	private ChallengeController challengeController;
 	
-	@Autowired
-	private ChallengeService challengeService;
-	
-	@Autowired
-	private ExerciseService exerciseService;
-	
-	@Autowired
-	private InscriptionService inscriptionService;
-	
-	@Autowired
-	private ClientService clientService;
+	//ADMIN
 	
 	@Test
 	void listChallengesAdmin() throws Exception{
@@ -88,7 +64,7 @@ public class ChallengeControllerIntegrationTest {
 		endDateCal.add(Calendar.DAY_OF_MONTH, 1);
 		Date initialDate = initialDateCal.getTime();
 		Date endDate = endDateCal.getTime();
-		challenge1.setId(1);
+		challenge1.setId(6);
 		challenge1.setName("Challenge1 Name Test");
 		challenge1.setDescription("Challenge Description Test");
 		challenge1.setInitialDate(initialDate);
@@ -112,7 +88,7 @@ public class ChallengeControllerIntegrationTest {
 		endDateCal.add(Calendar.DAY_OF_MONTH, 1);
 		Date initialDate = initialDateCal.getTime();
 		Date endDate = endDateCal.getTime();
-		challenge1.setId(2);
+		challenge1.setId(7);
 		challenge1.setName("Challenge1 Name Test");
 		challenge1.setDescription("Challenge Description Test");
 		challenge1.setInitialDate(initialDate);
@@ -137,7 +113,7 @@ public class ChallengeControllerIntegrationTest {
 		endDateCal.add(Calendar.DAY_OF_MONTH, 1);
 		Date initialDate = initialDateCal.getTime();
 		Date endDate = endDateCal.getTime();
-		challenge1.setId(3);
+		challenge1.setId(8);
 		challenge1.setName("Challenge1 Name Test");
 		challenge1.setDescription("Challenge Description Test");
 		challenge1.setInitialDate(initialDate);
@@ -162,7 +138,7 @@ public class ChallengeControllerIntegrationTest {
 		endDateCal.add(Calendar.DAY_OF_MONTH, 1);
 		Date initialDate = initialDateCal.getTime();
 		Date endDate = endDateCal.getTime();
-		challenge1.setId(4);
+		challenge1.setId(9);
 		challenge1.setName(null);
 		challenge1.setDescription("Challenge Description Test");
 		challenge1.setInitialDate(initialDate);
@@ -175,6 +151,222 @@ public class ChallengeControllerIntegrationTest {
 		bindingResult.reject("name", "The name can not be empty");
 		String view = this.challengeController.processCreationForm(exerciseId, challenge1, bindingResult, modelMap);
 		assertEquals(view, "/admin/challenges/challengesCreateOrUpdate");
+	}
+	
+	@Test
+	void initUpdateForm() throws Exception{
+		ModelMap modelMap = new ModelMap();
+		String view = this.challengeController.initUpdateForm(6,modelMap);
+		assertEquals(view, "/admin/challenges/challengesCreateOrUpdate");
+	}
+	
+	@Test
+	void initUpdateFormWithInscriptionError() throws Exception{
+		ModelMap modelMap = new ModelMap();
+		String view = this.challengeController.initUpdateForm(1,modelMap);
+		assertEquals(view, "admin/challenges/challengeDetails");
+	}
+	
+	@Test
+	void processUpdateFormSuccessful() throws Exception{
+		
+		ModelMap modelMap = new ModelMap();
+		int challengeId = 6;
+		int exerciseId = 4;
+		
+		Challenge challenge1 = new Challenge();
+		Calendar endDateCal = (Calendar) testEndTrainingDate.clone();
+		Calendar initialDateCal = (Calendar) testInitialTrainingDate.clone();
+		endDateCal.add(Calendar.DAY_OF_MONTH, 1);
+		Date initialDate = initialDateCal.getTime();
+		Date endDate = endDateCal.getTime();
+		challenge1.setId(1);
+		challenge1.setName("Challenge4 Name Test");
+		challenge1.setDescription("Challenge Description Test");
+		challenge1.setInitialDate(initialDate);
+		challenge1.setEndDate(endDate);
+		challenge1.setPoints(100);
+		challenge1.setReward("Reward Test");
+		challenge1.setReps(100);
+		challenge1.setWeight(100.);
+		
+		BindingResult bindingResult=new MapBindingResult(Collections.emptyMap(),"");
+		String view = this.challengeController.processUpdateForm(challengeId, exerciseId, challenge1, bindingResult, modelMap);
+		assertEquals(view, "redirect:/admin/challenges");
+	}
+	
+	@Test
+	void processUpdateFormErrorSameName() throws Exception{
+		
+		ModelMap modelMap = new ModelMap();
+		int challengeId = 6;
+		int exerciseId = 1;
+		
+		Challenge challenge1 = new Challenge();
+		Calendar endDateCal = (Calendar) testEndTrainingDate.clone();
+		Calendar initialDateCal = (Calendar) testInitialTrainingDate.clone();
+		endDateCal.add(Calendar.DAY_OF_MONTH, 1);
+		Date initialDate = initialDateCal.getTime();
+		Date endDate = endDateCal.getTime();
+		challenge1.setId(2);
+		challenge1.setName("Challenge1 Name Test");
+		challenge1.setDescription("Challenge Description Test");
+		challenge1.setInitialDate(initialDate);
+		challenge1.setEndDate(endDate);
+		challenge1.setPoints(100);
+		challenge1.setReward("Reward Test");
+		challenge1.setReps(100);
+		challenge1.setWeight(100.);
+		
+		BindingResult bindingResult=new MapBindingResult(Collections.emptyMap(),"");
+		bindingResult.reject("name", "There is already a challenge with that name the same week");
+		String view = this.challengeController.processUpdateForm(challengeId, exerciseId, challenge1, bindingResult, modelMap);
+		assertEquals(view, "/admin/challenges/challengesCreateOrUpdate");
+	}
+	
+	@Test
+	void processUpdateFormError3SameWeek() throws Exception{
+		
+		ModelMap modelMap = new ModelMap();
+		int challengeId = 6;
+		int exerciseId = 1;
+		
+		Challenge challenge1 = new Challenge();
+		Calendar endDateCal = (Calendar) testEndTrainingDate.clone();
+		Calendar initialDateCal = (Calendar) testInitialTrainingDate.clone();
+		endDateCal.add(Calendar.DAY_OF_MONTH, 1);
+		Date initialDate = initialDateCal.getTime();
+		Date endDate = endDateCal.getTime();
+		challenge1.setId(3);
+		challenge1.setName("Challenge1 Name Test");
+		challenge1.setDescription("Challenge Description Test");
+		challenge1.setInitialDate(initialDate);
+		challenge1.setEndDate(endDate);
+		challenge1.setPoints(100);
+		challenge1.setReward("Reward Test");
+		challenge1.setReps(100);
+		challenge1.setWeight(100.);
+		
+		BindingResult bindingResult=new MapBindingResult(Collections.emptyMap(),"");
+		bindingResult.reject("initialDate", "There must not be more than 3 challenges per week");
+		String view = this.challengeController.processUpdateForm(challengeId, exerciseId, challenge1, bindingResult, modelMap);
+		assertEquals(view, "/admin/challenges/challengesCreateOrUpdate");
+	}
+	
+	@Test
+	void processUpdateFormErrorNameNull() throws Exception{
+		
+		ModelMap modelMap = new ModelMap();
+		int challengeId = 6;
+		int exerciseId = 1;
+		
+		Challenge challenge1 = new Challenge();
+		Calendar endDateCal = (Calendar) testEndTrainingDate.clone();
+		Calendar initialDateCal = (Calendar) testInitialTrainingDate.clone();
+		endDateCal.add(Calendar.DAY_OF_MONTH, 1);
+		Date initialDate = initialDateCal.getTime();
+		Date endDate = endDateCal.getTime();
+		challenge1.setId(4);
+		challenge1.setName(null);
+		challenge1.setDescription("Challenge Description Test");
+		challenge1.setInitialDate(initialDate);
+		challenge1.setEndDate(endDate);
+		challenge1.setPoints(100);
+		challenge1.setReward("Reward Test");
+		challenge1.setReps(100);
+		challenge1.setWeight(100.);
+		
+		BindingResult bindingResult=new MapBindingResult(Collections.emptyMap(),"");
+		bindingResult.reject("name", "The name can not be empty");
+		String view = this.challengeController.processUpdateForm(challengeId, exerciseId, challenge1, bindingResult, modelMap);
+		assertEquals(view, "/admin/challenges/challengesCreateOrUpdate");
+	}
+	
+	@Test
+	void deleteChallengeInscriptionError() throws Exception{
+		
+		ModelMap modelMap = new ModelMap();
+		String view = this.challengeController.deleteChallenge(1,modelMap);
+		assertEquals(view, "exception");
+	}
+	
+	/*@After
+	void deleteChallenge() throws Exception{
+		
+		ModelMap modelMap = new ModelMap();
+		String view = this.challengeController.deleteChallenge(6,modelMap);
+		assertEquals(view, "redirect:/admin/challenges");
+	}*/
+	
+	
+	//CLIENT
+	
+	@WithMockUser(value = "client1", authorities = {"client"})
+	@Test
+	void listChallengesClient() throws Exception{
+		ModelMap modelMap = new ModelMap();
+		String view = this.challengeController.listChallengesClient("client1", modelMap);
+		assertEquals(view, "client/challenges/challengesList");
+	}
+	
+	@WithMockUser(value = "client1", authorities = {"client"})
+	@Test 
+	void showChallengeByIdClient() throws Exception{
+		ModelMap modelMap = new ModelMap();
+		int challengeId = 4;
+		String view = this.challengeController.showChallengeByIdClient("client1", challengeId, modelMap);
+		assertEquals(view, "client/challenges/challengeDetails");
+	}
+	
+	@WithMockUser(value = "client1", authorities = {"client"})
+	@Test 
+	void showChallengeByIdClientErrorAlreadyInscribed() throws Exception{
+		ModelMap modelMap = new ModelMap();
+		int challengeId = 1;
+		String view = this.challengeController.showChallengeByIdClient("client1", challengeId, modelMap);
+		assertEquals(view, "exception");
+	}
+	
+	@WithMockUser(value = "client1", authorities = {"client"})
+	@Test
+	void listMyChallengesClient() throws Exception{
+		ModelMap modelMap = new ModelMap();
+		String view = this.challengeController.listMyChallengesClient("client1", modelMap);
+		assertEquals(view, "client/challenges/myChallengesList");
+	}
+	
+	@WithMockUser(value = "client1", authorities = {"client"})
+	@Test
+	void showAndEditMyChallengeByIdClient() throws Exception{
+		ModelMap modelMap = new ModelMap();
+		int challengeId = 1;
+		String view = this.challengeController.showAndEditMyChallengeByIdClient("client1", challengeId, modelMap);
+		assertEquals(view, "client/challenges/myChallengeDetailsAndUpdate");
+	}
+	
+	@WithMockUser(value = "client2", authorities = {"client"})
+	@Test
+	void showAndEditMyChallengeByIdClientErrorNotHisChallenge() throws Exception{
+		ModelMap modelMap = new ModelMap();
+		int challengeId = 1;
+		String view = this.challengeController.showAndEditMyChallengeByIdClient("client2", challengeId, modelMap);
+		assertEquals(view, "exception");
+	}
+	
+	@WithMockUser(value = "client2", authorities = {"client"})
+	@Test
+	void TestWrongClient() throws Exception{
+		ModelMap modelMap = new ModelMap();
+		int challengeId = 1;
+		
+		String view = this.challengeController.listChallengesClient("client1", modelMap);
+		assertEquals(view, "exception");
+		view = this.challengeController.showChallengeByIdClient("client1", challengeId, modelMap);
+		assertEquals(view, "exception");
+		view = this.challengeController.listMyChallengesClient("client1", modelMap);
+		assertEquals(view, "exception");
+		view = this.challengeController.showAndEditMyChallengeByIdClient("client1", challengeId, modelMap);
+		assertEquals(view, "exception");
 	}
 
 }
