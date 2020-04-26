@@ -7,6 +7,29 @@
 
 <yogogym:layout pageName="clients">
 	<h2>My Trainings: <c:out value="${training.name}"/></h2>
+	
+	<p><b>Starts:</b> <c:out value="${training.initialDate}"/></p>
+	<p><b>Ends:</b> <c:out value="${training.endDate}"/></p>
+	<p><b>Editing Permission:</b> <c:out value="${training.editingPermission}"/></p>
+	<br>
+	
+	<c:choose>
+		<c:when test="${training.editingPermission!='TRAINER'}">
+			<spring:url value="/client/${client.user.username}/trainings/${training.id}/edit" var="trainingEditUrl" />
+			<a href="${fn:escapeXml(trainingEditUrl)}">Edit Training</a>
+			<br>
+			<br>
+			<spring:url value="/client/${client.user.username}/trainings/${training.id}/delete" var="trainingDeleteUrl" />
+			<a href="${fn:escapeXml(trainingDeleteUrl)}">Delete Training</a>
+		</c:when>
+		<c:otherwise>
+			<p><a style="color:grey">Edit Training</a></p>
+			<br>
+			<p><a style="color:grey">Delete Training</a></p>
+		</c:otherwise>
+	</c:choose>
+    <br>
+    <br>
     
     <spring:url value="/client/${client.user.username}/trainings/${training.id}/routine/create" var="addRoutineUrl"/>
     <a href="${fn:escapeXml(addRoutineUrl)}">Add Routine</a>
