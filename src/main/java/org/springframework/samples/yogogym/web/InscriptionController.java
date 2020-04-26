@@ -14,7 +14,6 @@ import org.springframework.samples.yogogym.service.InscriptionService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,7 +47,7 @@ public class InscriptionController {
 	}
 	
 	@GetMapping("/admin/inscriptions/submitted/{inscriptionId}")
-	public String showSubmittedInscriptionAdmin(@PathVariable("inscriptionId") int inscriptionId, Model model) {	  
+	public String showSubmittedInscriptionAdmin(@PathVariable("inscriptionId") int inscriptionId, ModelMap model) {	  
 
 	    Client client = this.clientService.findClientByInscriptionId(inscriptionId);
 	    Inscription inscription = client.getInscriptions().stream().filter(i -> i.getId() == inscriptionId).findFirst().get();
@@ -64,7 +63,7 @@ public class InscriptionController {
 	
 	@PostMapping("/admin/challenges/submitted/{challengeId}/inscription/{inscriptionId}/evaluate")
 	public String evaluateChallengeAdmin(@PathVariable("challengeId") int challengeId, @PathVariable("inscriptionId") int inscriptionId,
-			                             Inscription inscription, Model model) {
+			                             Inscription inscription, ModelMap model) {
 
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 
@@ -79,7 +78,7 @@ public class InscriptionController {
 	// CLIENT:
 	
 	@GetMapping("/client/{clientUsername}/challenges/{challengeId}/inscription/create")
-	public String createInscriptionByChallengeId(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
+	public String createInscriptionByChallengeId(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, ModelMap model) {	  
 		
 		if(!isLoggedPrincipal(clientUsername))
 			return "exception";
@@ -101,7 +100,7 @@ public class InscriptionController {
 	
 	@PostMapping("/client/{clientUsername}/challenges/{challengeId}/inscription/{inscriptionId}/submit")
 	public String submitInscription(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, 
-									@PathVariable("inscriptionId") int inscriptionId, Inscription inscription, Model model) {	  
+									@PathVariable("inscriptionId") int inscriptionId, Inscription inscription, ModelMap model) {	  
 		
 		if(!isLoggedPrincipal(clientUsername))
 			return "exception";
@@ -120,7 +119,12 @@ public class InscriptionController {
 	private boolean isLoggedPrincipal(String Username) {
 		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String principalUsername = ((UserDetails)principal).getUsername();
+		String principalUsername;
+		if (principal instanceof UserDetails) {
+			principalUsername = ((UserDetails) principal).getUsername();
+		} else {
+			principalUsername = principal.toString();
+		}
 		
 		return principalUsername.trim().toLowerCase().equals(Username.trim().toLowerCase());
 	}
