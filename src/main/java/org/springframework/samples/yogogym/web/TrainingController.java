@@ -240,7 +240,7 @@ public class TrainingController {
 			
 			if(oldTraining.getEndDate().before(now)&&!training.getEndDate().equals(oldTraining.getEndDate())
 				||training.getEditingPermission().equals(EditingPermission.CLIENT)
-				||oldTraining.getAuthor()!=trainerUsername&&!training.getEditingPermission().equals(oldTraining.getEditingPermission())) {
+				||(!oldTraining.getAuthor().equals(trainerUsername)&&!training.getEditingPermission().equals(oldTraining.getEditingPermission()))) {
 				return "exception";
 			}
 			
@@ -396,8 +396,12 @@ public class TrainingController {
 	//CLIENT
 		
 	@GetMapping("/client/{clientUsername}/trainings")
-	public String getTrainingList(@PathVariable("clientUsername") String clientUsername, Model model)
-	{
+	public String getTrainingList(@PathVariable("clientUsername") String clientUsername, Model model) {
+		
+		if(!isLoggedUser(clientUsername,false)) {
+			return "exception";
+		}
+		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		Collection<Training> trainings = this.trainingService.findTrainingFromClient(client.getId());
 		
@@ -407,8 +411,12 @@ public class TrainingController {
 	}
 	
 	@GetMapping("/client/{clientUsername}/trainings/{trainingId}")
-	public String getTrainingDetails(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") int trainingId, Model model)
-	{
+	public String getTrainingDetails(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") int trainingId, Model model) {
+		
+		if(!isLoggedUser(clientUsername,false)) {
+			return "exception";
+		}
+		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		
@@ -547,7 +555,7 @@ public class TrainingController {
 			
 			if(oldTraining.getEndDate().before(now)&&!training.getEndDate().equals(oldTraining.getEndDate())
 				||training.getEditingPermission().equals(EditingPermission.TRAINER)
-				||oldTraining.getAuthor()!=clientUsername&&!training.getEditingPermission().equals(oldTraining.getEditingPermission())) {
+				||(!oldTraining.getAuthor().equals(clientUsername)&&!training.getEditingPermission().equals(oldTraining.getEditingPermission()))) {
 				return "exception";
 			}
 			
