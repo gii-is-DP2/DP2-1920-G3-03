@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.web.ChallengeController;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.ui.ModelMap;
@@ -301,63 +304,90 @@ public class ChallengeControllerIntegrationTest {
 	
 	//CLIENT
 	
-	@WithMockUser(value = "client1", authorities = {"client"})
 	@Test
 	void listChallengesClient() throws Exception{
 		ModelMap modelMap = new ModelMap();
+		
+		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client1", "client1999"));
+		SecurityContextHolder.setContext(securityContext);
+		
 		String view = this.challengeController.listChallengesClient("client1", modelMap);
 		assertEquals(view, "client/challenges/challengesList");
 	}
 	
-	@WithMockUser(value = "client1", authorities = {"client"})
 	@Test 
 	void showChallengeByIdClient() throws Exception{
 		ModelMap modelMap = new ModelMap();
 		int challengeId = 4;
+		
+		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client1", "client1999"));
+		SecurityContextHolder.setContext(securityContext);
+		
 		String view = this.challengeController.showChallengeByIdClient("client1", challengeId, modelMap);
 		assertEquals(view, "client/challenges/challengeDetails");
 	}
-	
-	@WithMockUser(value = "client1", authorities = {"client"})
+
 	@Test 
 	void showChallengeByIdClientErrorAlreadyInscribed() throws Exception{
 		ModelMap modelMap = new ModelMap();
 		int challengeId = 1;
+		
+		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client1", "client1999"));
+		SecurityContextHolder.setContext(securityContext);
+		
 		String view = this.challengeController.showChallengeByIdClient("client1", challengeId, modelMap);
 		assertEquals(view, "exception");
 	}
-	
-	@WithMockUser(value = "client1", authorities = {"client"})
+
 	@Test
 	void listMyChallengesClient() throws Exception{
 		ModelMap modelMap = new ModelMap();
+		
+		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client1", "client1999"));
+		SecurityContextHolder.setContext(securityContext);
+		
 		String view = this.challengeController.listMyChallengesClient("client1", modelMap);
 		assertEquals(view, "client/challenges/myChallengesList");
 	}
 	
-	@WithMockUser(value = "client1", authorities = {"client"})
 	@Test
 	void showAndEditMyChallengeByIdClient() throws Exception{
 		ModelMap modelMap = new ModelMap();
 		int challengeId = 1;
+		
+		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client1", "client1999"));
+		SecurityContextHolder.setContext(securityContext);
+		
 		String view = this.challengeController.showAndEditMyChallengeByIdClient("client1", challengeId, modelMap);
 		assertEquals(view, "client/challenges/myChallengeDetailsAndUpdate");
 	}
 	
-	@WithMockUser(value = "client2", authorities = {"client"})
 	@Test
 	void showAndEditMyChallengeByIdClientErrorNotHisChallenge() throws Exception{
 		ModelMap modelMap = new ModelMap();
 		int challengeId = 1;
+		
+		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client2", "client1999"));
+		SecurityContextHolder.setContext(securityContext);
+		
 		String view = this.challengeController.showAndEditMyChallengeByIdClient("client2", challengeId, modelMap);
 		assertEquals(view, "exception");
 	}
 	
-	@WithMockUser(value = "client2", authorities = {"client"})
 	@Test
 	void TestWrongClient() throws Exception{
 		ModelMap modelMap = new ModelMap();
 		int challengeId = 1;
+		
+		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client2", "client1999"));
+		SecurityContextHolder.setContext(securityContext);
 		
 		String view = this.challengeController.listChallengesClient("client1", modelMap);
 		assertEquals(view, "exception");

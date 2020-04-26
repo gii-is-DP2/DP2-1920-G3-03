@@ -327,8 +327,14 @@ public class ChallengeController {
 	private boolean isLoggedPrincipal(String Username) {
 		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String principalUsername = ((UserDetails)principal).getUsername();
+		String principalUsername;
+		if (principal instanceof UserDetails) {
+			principalUsername = ((UserDetails) principal).getUsername();
+		} else {
+			principalUsername = principal.toString();
+		}
 		
 		return principalUsername.trim().toLowerCase().equals(Username.trim().toLowerCase());
 	}
+	
 }
