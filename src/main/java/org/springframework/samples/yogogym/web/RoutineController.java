@@ -29,6 +29,7 @@ import org.springframework.samples.yogogym.service.exceptions.NotEditableExcepti
 import org.springframework.samples.yogogym.service.exceptions.PastEndException;
 import org.springframework.samples.yogogym.service.exceptions.PastInitException;
 import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.RoutineRepsPerWeekNotValid;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -66,7 +67,8 @@ public class RoutineController {
 		dataBinder.setValidator(new RoutineValidator(routineService));
 	}
 
-	// TRAINER
+	// TRAINER ==================================================================================
+	
 	@GetMapping("/trainer/{trainerUsername}/routines")
 	public String RoutinesList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
 		
@@ -139,11 +141,8 @@ public class RoutineController {
 			return "exception";
 		
 		if (result.hasErrors()) {
-			
-			Client client = this.clientService.findClientById(clientId);
-			
-			model.put("client",client);
-			
+			Client client = this.clientService.findClientById(clientId);			
+			model.put("client",client);			
 			return "trainer/routines/routinesCreateOrUpdate";
 		} else {
 			Training training = this.trainingService.findTrainingById(trainingId);
@@ -160,6 +159,19 @@ public class RoutineController {
 					redirectAttrs.addFlashAttribute("error", error);
 					return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId + "/trainings/"
 					+ trainingId;
+				}
+				else if(e instanceof RoutineRepsPerWeekNotValid)
+				{
+					Client client = this.clientService.findClientById(clientId);
+					model.put("client",client);
+					return "trainer/routines/routinesCreateOrUpdate";
+				}
+				else
+				{
+					Client client = this.clientService.findClientById(clientId);
+					model.put("client",client);
+					result.rejectValue("repsPerWeek","","The repetition per week cannot be greater than 20 or less than 1");
+					return "trainer/routines/routinesCreateOrUpdate";
 				}
 			}
 			

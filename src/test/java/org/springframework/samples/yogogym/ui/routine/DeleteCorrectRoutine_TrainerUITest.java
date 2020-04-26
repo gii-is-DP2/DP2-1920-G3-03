@@ -1,27 +1,35 @@
 package org.springframework.samples.yogogym.ui.routine;
 
-import java.util.regex.Pattern;
-import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-import org.openqa.selenium.*;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CreateRoutineRepPerWeekGreaterThan20_TrainerUITest {
+public class DeleteCorrectRoutine_TrainerUITest {
 
 	@LocalServerPort
 	private int port;
-	
-	 private WebDriver driver;
+
+	private WebDriver driver;
 	  private String baseUrl;
 	  private boolean acceptNextAlert = true;
 	  private StringBuffer verificationErrors = new StringBuffer();
@@ -33,8 +41,9 @@ public class CreateRoutineRepPerWeekGreaterThan20_TrainerUITest {
 	    driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	  }
 
+	  @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	  @Test
-	  public void testCreateRoutineRepPerWeekGreaterThan20() throws Exception {
+	  public void testDeleteRoutine() throws Exception {
 	    driver.get("http://localhost:"+port);
 	    driver.findElement(By.linkText("Login")).click();
 	    driver.findElement(By.id("password")).clear();
@@ -44,22 +53,9 @@ public class CreateRoutineRepPerWeekGreaterThan20_TrainerUITest {
 	    driver.findElement(By.xpath("//button[@type='submit']")).click();
 	    driver.findElement(By.linkText("Trainer")).click();
 	    driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[3]/a/span[2]")).click();
-	    driver.findElement(By.xpath("(//a[contains(text(),'Add Routine')])[3]")).click();
-	    driver.findElement(By.id("name")).click();
-	    driver.findElement(By.id("name")).clear();
-	    driver.findElement(By.id("name")).sendKeys("Routine 10");
-	    driver.findElement(By.id("description")).click();
-	    driver.findElement(By.id("description")).clear();
-	    driver.findElement(By.id("description")).sendKeys("Routine 10 description");
-	    driver.findElement(By.id("repsPerWeek")).click();
-	    driver.findElement(By.id("repsPerWeek")).clear();
-	    driver.findElement(By.id("repsPerWeek")).sendKeys("21");
-	    driver.findElement(By.xpath("//body/div/div")).click();
-	    driver.findElement(By.xpath("//button[@type='submit']")).click();
-	    assertEquals("Routine 10", driver.findElement(By.id("name")).getAttribute("value"));
-	    assertEquals("Routine 10 description", driver.findElement(By.id("description")).getAttribute("value"));
-	    assertEquals("21", driver.findElement(By.id("repsPerWeek")).getAttribute("value"));
-	    assertEquals("The repetition per week cannot be greater than 20", driver.findElement(By.xpath("//form[@id='routine']/div/div[3]/div/span[2]")).getText());
+	    driver.findElement(By.linkText("Routine 1")).click();
+	    driver.findElement(By.linkText("Delete Routine")).click();
+	    assertEquals("Success:\n'Routine 1' has been deleted succesfully", driver.findElement(By.xpath("//body/div/div/div")).getText());
 	  }
 
 	  @AfterEach
