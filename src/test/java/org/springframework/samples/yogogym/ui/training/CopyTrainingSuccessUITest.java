@@ -3,13 +3,24 @@ package org.springframework.samples.yogogym.ui.training;
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CopyTrainingSuccessUITest {
+	
+  @LocalServerPort
+  private int port;
+	
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
@@ -24,7 +35,7 @@ public class CopyTrainingSuccessUITest {
 
   @Test
   public void testCopyTrainingUI() throws Exception {
-    driver.get("http://localhost:8080/");
+    driver.get("http://localhost:" + port);
     driver.findElement(By.linkText("Login")).click();
     driver.findElement(By.id("password")).clear();
     driver.findElement(By.id("password")).sendKeys("trainer1999");

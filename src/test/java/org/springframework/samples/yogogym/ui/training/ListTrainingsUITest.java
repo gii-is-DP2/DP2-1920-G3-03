@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ManageTrainingsUITest {
+public class ListTrainingsUITest {
 	
   @LocalServerPort
   private int port;
@@ -34,10 +34,10 @@ public class ManageTrainingsUITest {
   }
 
   @Test
-  public void testCreateTrainingClientNotTrainedUI() throws Exception {
+  public void testListTrainingsUI() throws Exception {
     as("trainer1");
-    accessManageTrainings();
-    trainingsManagementRequiredInfoShown();
+    accessListTrainings();
+    listTrainingsRequiredInfoShown();
   }
 
   @AfterEach
@@ -98,12 +98,12 @@ public class ManageTrainingsUITest {
 	  }
   }
   
-  private void accessManageTrainings() {
+  private void accessListTrainings() {
 	  driver.findElement(By.linkText("Trainer")).click();
 	  driver.findElement(By.linkText("Training Management")).click();
   }
   
-  private void trainingsManagementRequiredInfoShown() {
+  private void listTrainingsRequiredInfoShown() {
 	  try {
 	      assertEquals("All Trainings", driver.findElement(By.xpath("//h2")).getText());
 	    } catch (Error e) {
@@ -186,6 +186,11 @@ public class ManageTrainingsUITest {
 	    }
 	    try {
 	      assertEquals("Entrenamiento3 (COMPLETED)", driver.findElement(By.xpath("//div[4]/ul/li")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Entrenamiento1 (ON GOING)", driver.findElement(By.xpath("//div[4]/ul/li[2]")).getText());
 	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	    }

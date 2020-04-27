@@ -45,7 +45,7 @@ public class CreateTrainingInitInTrainingUITest {
     as("trainer1");
     createTrainingWithoutErrors();
     createTrainingInitInTraining();
-    showError();
+    errorsShown();
   }
 
   @AfterEach
@@ -134,7 +134,7 @@ public class CreateTrainingInitInTrainingUITest {
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
-  private void showError() {
+  private void errorsShown() {
 	  try {
 	      assertEquals("The training cannot start in a period with other training (The other training is from " + formatterDetails.format(calInit.getTime()) + " to " + formatterDetails.format(calEnd.getTime()) + ")", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[2]/div/span[2]")).getText());
 	    } catch (Error e) {

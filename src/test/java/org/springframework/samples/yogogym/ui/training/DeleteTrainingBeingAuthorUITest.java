@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DeleteTrainingNotBeingAuthorUITest {
+public class DeleteTrainingBeingAuthorUITest {
 	
   @LocalServerPort
   private int port;
@@ -34,10 +34,10 @@ public class DeleteTrainingNotBeingAuthorUITest {
   }
 
   @Test
-  public void testDeleteTrainingNotBeingAuthorUI() throws Exception {
+  public void testDeleteTrainingBeingAuthorUI() throws Exception {
     as("trainer1");
-    accessDeleteTrainingNotBeingAuthor();
-    exceptionViewShown();
+    accessShowDetailsTrainingClientTrained();
+    trainingDeletedSuccessfully();
   }
 
   @AfterEach
@@ -98,15 +98,18 @@ public class DeleteTrainingNotBeingAuthorUITest {
 	  }
   }
   
-  private void accessDeleteTrainingNotBeingAuthor() {
-	  driver.get("http://localhost:" + port + "/trainer/trainer1/clients/6/trainings/10/delete");
+  private void accessShowDetailsTrainingClientTrained() {
+	  driver.findElement(By.linkText("Trainer")).click();
+	  driver.findElement(By.linkText("Training Management")).click();
+	  driver.findElement(By.linkText("Entrenamiento1")).click();
   }
   
-  private void exceptionViewShown() {
-	  try {
-	      assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
-	  } catch (Error e) {
+  private void trainingDeletedSuccessfully() {
+	  driver.findElement(By.linkText("Delete Training")).click();
+	    try {
+	      assertEquals("The training was deleted successfully", driver.findElement(By.xpath("//body/div/div/div/p")).getText());
+	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
-	  }
+	    }
   }
 }

@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DeleteTrainingNotBeingAuthorUITest {
+public class ListTrainingsOtherTrainerUITest {
 	
   @LocalServerPort
   private int port;
@@ -34,9 +34,9 @@ public class DeleteTrainingNotBeingAuthorUITest {
   }
 
   @Test
-  public void testDeleteTrainingNotBeingAuthorUI() throws Exception {
+  public void testListTrainingsOtherTrainerUI() throws Exception {
     as("trainer1");
-    accessDeleteTrainingNotBeingAuthor();
+    accessListTrainingsOtherTrainer();
     exceptionViewShown();
   }
 
@@ -98,8 +98,8 @@ public class DeleteTrainingNotBeingAuthorUITest {
 	  }
   }
   
-  private void accessDeleteTrainingNotBeingAuthor() {
-	  driver.get("http://localhost:" + port + "/trainer/trainer1/clients/6/trainings/10/delete");
+  private void accessListTrainingsOtherTrainer() {
+	  driver.get("http://localhost:" + port + "/trainer/trainer2/trainings");
   }
   
   private void exceptionViewShown() {

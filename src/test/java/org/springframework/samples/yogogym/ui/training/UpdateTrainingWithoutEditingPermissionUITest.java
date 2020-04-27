@@ -34,7 +34,7 @@ public class UpdateTrainingWithoutEditingPermissionUITest {
   }
 
   @Test
-  public void testCreateTrainingClientNotTrainedUI() throws Exception {
+  public void testUpdateTrainingWithoutEditingPermissionUI() throws Exception {
     as("trainer1");
     accessUpdateTrainingWithoutEditingPermission();
     exceptionViewShown();

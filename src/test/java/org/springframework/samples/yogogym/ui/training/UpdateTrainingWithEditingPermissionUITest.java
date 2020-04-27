@@ -1,6 +1,8 @@
 package org.springframework.samples.yogogym.ui.training;
 
 import java.util.regex.Pattern;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DeleteTrainingNotBeingAuthorUITest {
+public class UpdateTrainingWithEditingPermissionUITest {
 	
   @LocalServerPort
   private int port;
@@ -25,6 +27,10 @@ public class DeleteTrainingNotBeingAuthorUITest {
   private String baseUrl;
   private boolean acceptNextAlert = true;
   private StringBuffer verificationErrors = new StringBuffer();
+  private Calendar calInit = Calendar.getInstance();
+  private Calendar calEnd = Calendar.getInstance();
+  private SimpleDateFormat formatterDetails = new SimpleDateFormat("yyyy-MM-dd");
+  private SimpleDateFormat formatterInput = new SimpleDateFormat("yyyy/MM/dd");
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -34,10 +40,11 @@ public class DeleteTrainingNotBeingAuthorUITest {
   }
 
   @Test
-  public void testDeleteTrainingNotBeingAuthorUI() throws Exception {
+  public void testUpdateTrainingWithEditingPermissionUI() throws Exception {
     as("trainer1");
-    accessDeleteTrainingNotBeingAuthor();
-    exceptionViewShown();
+    accessUpdateView();
+    updateTrainingWithEditingPermission();
+    trainingUpdatedSuccessfully();
   }
 
   @AfterEach
@@ -98,15 +105,38 @@ public class DeleteTrainingNotBeingAuthorUITest {
 	  }
   }
   
-  private void accessDeleteTrainingNotBeingAuthor() {
-	  driver.get("http://localhost:" + port + "/trainer/trainer1/clients/6/trainings/10/delete");
+  private void accessUpdateView() {
+	  driver.findElement(By.linkText("Trainer")).click();
+	  driver.findElement(By.linkText("Training Management")).click();
+	  driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento1')])[2]")).click();
+	  driver.findElement(By.linkText("Edit Training")).click();
   }
   
-  private void exceptionViewShown() {
+  private void updateTrainingWithEditingPermission() {
+	  driver.findElement(By.id("name")).clear();
+	  driver.findElement(By.id("name")).sendKeys("Entrenamiento1 Actualizado");
+	  driver.findElement(By.id("endDate")).clear();
+	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calEnd.getTime()));
+	  driver.findElement(By.id("bs-example-navbar-collapse-1")).click();
+	  driver.findElement(By.xpath("//button[@type='submit']")).click();
+  }
+  
+  private void trainingUpdatedSuccessfully() {
+	  calInit.add(Calendar.DAY_OF_MONTH, -7);
 	  try {
-	      assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
-	  } catch (Error e) {
+	      assertEquals("Name: Entrenamiento1 Actualizado", driver.findElement(By.xpath("//h3")).getText());
+	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
-	  }
+	    }
+	    try {
+	      assertEquals("Starts: " + formatterDetails.format(calInit.getTime()) + " 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Ends: " + formatterDetails.format(calEnd.getTime()) + " 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
   }
 }

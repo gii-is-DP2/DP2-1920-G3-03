@@ -37,7 +37,7 @@ public class CreateTrainingEmptyUITest {
   public void testCreateTrainingEmptyUI() throws Exception {
     as("trainer1");
     createEmptyTraining();
-    emptyTrainingErrorsShown();
+    errorsShown();
   }
 
   @AfterEach
@@ -105,7 +105,7 @@ public class CreateTrainingEmptyUITest {
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
-  private void emptyTrainingErrorsShown() {
+  private void errorsShown() {
 	  try {
 	      assertEquals("no puede estar vacío", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div/div/span[2]")).getText());
 	  } catch (Error e) {

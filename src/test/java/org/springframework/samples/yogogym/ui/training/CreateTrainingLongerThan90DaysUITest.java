@@ -39,10 +39,10 @@ public class CreateTrainingLongerThan90DaysUITest {
   }
 
   @Test
-  public void testCreateTrainingInitInPastUI() throws Exception {
+  public void testCreateTrainingLongerThan90DaysUI() throws Exception {
     as("trainer1");
     createTrainingLongerThan90Days();
-    showError();
+    errorsShown();
   }
 
   @AfterEach
@@ -117,7 +117,7 @@ public class CreateTrainingLongerThan90DaysUITest {
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
-  private void showError() {
+  private void errorsShown() {
 	  try {
 	      assertEquals("The training cannot be longer than 90 days", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
 	    } catch (Error e) {

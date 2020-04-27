@@ -1,6 +1,8 @@
 package org.springframework.samples.yogogym.ui.training;
 
 import java.util.regex.Pattern;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DeleteTrainingNotBeingAuthorUITest {
+public class UpdateTrainingEmptyUITest {
 	
   @LocalServerPort
   private int port;
@@ -34,10 +36,11 @@ public class DeleteTrainingNotBeingAuthorUITest {
   }
 
   @Test
-  public void testDeleteTrainingNotBeingAuthorUI() throws Exception {
+  public void testUpdateTrainingEmptyUI() throws Exception {
     as("trainer1");
-    accessDeleteTrainingNotBeingAuthor();
-    exceptionViewShown();
+    accessUpdateView();
+    updateTrainingEmpty();
+    errorsShown();
   }
 
   @AfterEach
@@ -98,13 +101,29 @@ public class DeleteTrainingNotBeingAuthorUITest {
 	  }
   }
   
-  private void accessDeleteTrainingNotBeingAuthor() {
-	  driver.get("http://localhost:" + port + "/trainer/trainer1/clients/6/trainings/10/delete");
+  private void accessUpdateView() {
+	  driver.findElement(By.linkText("Trainer")).click();
+	  driver.findElement(By.linkText("Training Management")).click();
+	  driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento1')])[2]")).click();
+	  driver.findElement(By.linkText("Edit Training")).click();
   }
   
-  private void exceptionViewShown() {
+  private void updateTrainingEmpty() {
+	  driver.findElement(By.id("name")).clear();
+	  driver.findElement(By.id("name")).sendKeys("");
+	  driver.findElement(By.id("endDate")).clear();
+	  driver.findElement(By.id("endDate")).sendKeys("");
+	  driver.findElement(By.xpath("//button[@type='submit']")).click();
+  }
+  
+  private void errorsShown() {
 	  try {
-	      assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
+	      assertEquals("no puede estar vacío", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div/div/span[2]")).getText());
+	  } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	  }
+	  try {
+	      assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
 	  } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	  }

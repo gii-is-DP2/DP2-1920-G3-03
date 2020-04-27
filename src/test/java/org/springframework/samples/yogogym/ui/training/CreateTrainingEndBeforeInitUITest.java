@@ -39,10 +39,10 @@ public class CreateTrainingEndBeforeInitUITest {
   }
 
   @Test
-  public void testCreateTrainingInitInPastUI() throws Exception {
+  public void testCreateTrainingEndBefireInitUI() throws Exception {
     as("trainer1");
     createTrainingEndBeforeInit();
-    showError();
+    errorsShown();
   }
 
   @AfterEach
@@ -117,7 +117,7 @@ public class CreateTrainingEndBeforeInitUITest {
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
-  private void showError() {
+  private void errorsShown() {
 	    try {
 	        assertEquals("The end date must be after the initial date", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
 	      } catch (Error e) {

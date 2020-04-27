@@ -42,7 +42,7 @@ public class CreateTrainingInitInPastUITest {
   public void testCreateTrainingInitInPastUI() throws Exception {
     as("trainer1");
     createTrainingInitInPast();
-    showError();
+    errorsShown();
   }
 
   @AfterEach
@@ -118,7 +118,7 @@ public class CreateTrainingInitInPastUITest {
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
-  private void showError() {
+  private void errorsShown() {
 	  try {
 	      assertEquals("The initial date cannot be in the past", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[2]/div/span[2]")).getText());
 	    } catch (Error e) {

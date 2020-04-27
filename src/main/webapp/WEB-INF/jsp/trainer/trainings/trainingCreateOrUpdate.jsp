@@ -76,7 +76,7 @@
 	            </div>
             </div>
 			<div class="form-group">
-	            <div class="col-sm-offset-2 col-sm-10">
+	            <div class="col-sm-offset-10 col-sm-10">
 	                <c:choose>
 	                    <c:when test="${training['new']}">
 	                        <button class="btn btn-default" type="submit">Add Training</button>
