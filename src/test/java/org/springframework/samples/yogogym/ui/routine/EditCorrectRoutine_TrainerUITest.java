@@ -37,34 +37,33 @@ public class EditCorrectRoutine_TrainerUITest {
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testEditRoutineCorrect() throws Exception {
-		
+
 		String username = "trainer1";
 		String password = "trainer1999";
-		
+
 		String newRoutineName = "Edit Name";
 		String newRoutineDescription = "Edited Description";
-		//No mayor de 20 si no, no se puede actualizar la rutina
+		// No mayor de 20 si no, no se puede actualizar la rutina
 		int newRoutineRepsPerWeek = 15;
-		
-		as(username,password,port);
+
+		as(username, password, port);
 		editRoutineName(newRoutineName);
-		editDescriptionName(newRoutineName,newRoutineDescription);
+		editDescriptionName(newRoutineName, newRoutineDescription);
 		editRoutineRepsPerWeek(newRoutineName, newRoutineDescription, newRoutineRepsPerWeek);
 	}
 
 	@AfterEach
 	public void tearDown() throws Exception {
-	
+
 		driver.quit();
 		String verificationErrorString = verificationErrors.toString();
 		if (!"".equals(verificationErrorString)) {
 			fail(verificationErrorString);
 		}
 	}
-	
-	//Derived Methods
-	public void as(String username, String password, int port)
-	{
+
+	// Derived Methods
+	public void as(String username, String password, int port) {
 		driver.get("http://localhost:" + port);
 		driver.findElement(By.linkText("Login")).click();
 		driver.findElement(By.id("password")).clear();
@@ -73,9 +72,8 @@ public class EditCorrectRoutine_TrainerUITest {
 		driver.findElement(By.id("username")).sendKeys(username);
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 	}
-	
-	public void editRoutineName(String newRoutineName)
-	{
+
+	public void editRoutineName(String newRoutineName) {
 		driver.findElement(By.linkText("Trainer")).click();
 		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[3]/a/span[2]")).click();
 		driver.findElement(By.linkText("Routine 1")).click();
@@ -88,10 +86,9 @@ public class EditCorrectRoutine_TrainerUITest {
 		assertEquals("Description: Desc", driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
 		assertEquals("Repetitions Per Week:", driver.findElement(By.xpath("//p[3]/b")).getText());
 	}
-		
-	public void editDescriptionName(String newRoutineName, String newRoutineDescription)
-	{
-		driver.get("http://localhost:"+port);
+
+	public void editDescriptionName(String newRoutineName, String newRoutineDescription) {
+		driver.get("http://localhost:" + port);
 		driver.findElement(By.linkText("Trainer")).click();
 		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[3]/a/span[2]")).click();
 		driver.findElement(By.linkText(newRoutineName)).click();
@@ -101,24 +98,25 @@ public class EditCorrectRoutine_TrainerUITest {
 		driver.findElement(By.id("description")).sendKeys(newRoutineDescription);
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 		assertEquals("Routine Name: " + newRoutineName, driver.findElement(By.xpath("//body/div/div/p")).getText());
-		assertEquals("Description: " + newRoutineDescription, driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
+		assertEquals("Description: " + newRoutineDescription,
+				driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
 		assertEquals("Repetitions Per Week:", driver.findElement(By.xpath("//p[3]/b")).getText());
 	}
-	
 
-	public void editRoutineRepsPerWeek(String newRoutineName, String newRoutineDescription, int newRoutineRepsPerWeek)
-	{
+	public void editRoutineRepsPerWeek(String newRoutineName, String newRoutineDescription, int newRoutineRepsPerWeek) {
 		driver.findElement(By.linkText("Trainer")).click();
 		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[3]/a/span[2]")).click();
 		driver.findElement(By.linkText(newRoutineName)).click();
-		 driver.findElement(By.linkText("Edit Routine")).click();
-		    driver.findElement(By.id("repsPerWeek")).click();
-		    driver.findElement(By.id("repsPerWeek")).clear();
-		    driver.findElement(By.id("repsPerWeek")).sendKeys(String.valueOf(newRoutineRepsPerWeek));
-		    driver.findElement(By.xpath("//form[@id='routine']/div")).click();
-		    driver.findElement(By.xpath("//button[@type='submit']")).click();
-		    assertEquals("Routine Name: " + newRoutineName, driver.findElement(By.xpath("//body/div/div/p")).getText());
-		    assertEquals("Description: " + newRoutineDescription, driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
-		    assertEquals("Repetitions Per Week: " + newRoutineRepsPerWeek, driver.findElement(By.xpath("//p[3]")).getText());
+		driver.findElement(By.linkText("Edit Routine")).click();
+		driver.findElement(By.id("repsPerWeek")).click();
+		driver.findElement(By.id("repsPerWeek")).clear();
+		driver.findElement(By.id("repsPerWeek")).sendKeys(String.valueOf(newRoutineRepsPerWeek));
+		driver.findElement(By.xpath("//form[@id='routine']/div")).click();
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		assertEquals("Routine Name: " + newRoutineName, driver.findElement(By.xpath("//body/div/div/p")).getText());
+		assertEquals("Description: " + newRoutineDescription,
+				driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
+		assertEquals("Repetitions Per Week: " + newRoutineRepsPerWeek,
+				driver.findElement(By.xpath("//p[3]")).getText());
 	}
 }

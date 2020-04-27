@@ -69,7 +69,7 @@ public class RoutineService {
 			throw new MaxRoutinesException();
 		else if(!CheckEditable(username,training))
 			throw new NotEditableException();
-		else if(validRepsPerWeekValue(routine,1,20))
+		else if(!validRepsPerWeekValue(routine,1,20))
 			throw new RoutineRepsPerWeekNotValid();
 		else
 			routineRepository.save(routine);
@@ -144,6 +144,6 @@ public class RoutineService {
 	{
 		int num = routine.getRepsPerWeek();
 		
-		return num >= min && max <= 20;
+		return num >= min && num <= max;
 	}
 }

@@ -164,13 +164,13 @@ public class RoutineController {
 				{
 					Client client = this.clientService.findClientById(clientId);
 					model.put("client",client);
+					result.rejectValue("repsPerWeek","","The repetition per week cannot be greater than 20 or less than 1");
 					return "trainer/routines/routinesCreateOrUpdate";
 				}
 				else
 				{
 					Client client = this.clientService.findClientById(clientId);
 					model.put("client",client);
-					result.rejectValue("repsPerWeek","","The repetition per week cannot be greater than 20 or less than 1");
 					return "trainer/routines/routinesCreateOrUpdate";
 				}
 			}
