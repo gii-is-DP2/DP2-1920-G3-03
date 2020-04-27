@@ -294,7 +294,7 @@ public class TrainingController {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
-		if(training==null||!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+		if(training==null||!isClientOfLoggedTrainer(clientId,trainerUsername)||!training.getAuthor().equals(trainerUsername)) {
 			return "exception";
 		}
 		else {
@@ -609,7 +609,7 @@ public class TrainingController {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 				
-		if(training==null||!isLoggedUser(clientUsername,false)||training.getEditingPermission().equals(EditingPermission.TRAINER)) {
+		if(training==null||!isLoggedUser(clientUsername,false)||!training.getAuthor().equals(clientUsername)) {
 			return "exception";
 		}
 		else {

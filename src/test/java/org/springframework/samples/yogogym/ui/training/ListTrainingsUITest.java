@@ -1,8 +1,6 @@
 package org.springframework.samples.yogogym.ui.training;
 
 import java.util.regex.Pattern;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,19 +16,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CreateTrainingNoErrorsUITest {
+public class ListTrainingsUITest {
 	
   @LocalServerPort
   private int port;
-	  
+  
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
   private StringBuffer verificationErrors = new StringBuffer();
-  private Calendar calInit = Calendar.getInstance();
-  private Calendar calEnd = Calendar.getInstance();
-  private SimpleDateFormat formatterDetails = new SimpleDateFormat("yyyy-MM-dd");
-  private SimpleDateFormat formatterInput = new SimpleDateFormat("yyyy/MM/dd");
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -40,10 +34,10 @@ public class CreateTrainingNoErrorsUITest {
   }
 
   @Test
-  public void testCreateTrainingNoErrorsUI() throws Exception {
+  public void testListTrainingsUI() throws Exception {
     as("trainer1");
-    createTrainingWithoutErrors();
-    trainingCreatedSuccessfully();
+    accessListTrainings();
+    listTrainingsRequiredInfoShown();
   }
 
   @AfterEach
@@ -104,73 +98,99 @@ public class CreateTrainingNoErrorsUITest {
 	  }
   }
   
-  private void createTrainingWithoutErrors() {
+  private void accessListTrainings() {
 	  driver.findElement(By.linkText("Trainer")).click();
 	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.linkText("Add Training")).click();
-	  driver.findElement(By.id("name")).clear();
-	  driver.findElement(By.id("name")).sendKeys("Entrenamiento nuevo");
-	  driver.findElement(By.id("initialDate")).clear();
-	  driver.findElement(By.id("initialDate")).sendKeys(formatterInput.format(calInit.getTime()));
-	  calEnd.add(Calendar.DAY_OF_MONTH, 7);
-	  driver.findElement(By.id("endDate")).clear();
-	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calEnd.getTime()));
-	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
-  private void trainingCreatedSuccessfully() {
+  private void listTrainingsRequiredInfoShown() {
 	  try {
-	      assertEquals("Name: Entrenamiento nuevo", driver.findElement(By.xpath("//h3")).getText());
+	      assertEquals("All Trainings", driver.findElement(By.xpath("//h2")).getText());
 	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	    }
 	    try {
-	      assertEquals("Starts: " + formatterDetails.format(calInit.getTime()) + " 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p")).getText());
+	      assertEquals("Client Martin Antonio Lera ( marantle@yogogym.com )", driver.findElement(By.xpath("//h3")).getText());
 	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	    }
 	    try {
-	      assertEquals("Ends: " + formatterDetails.format(calEnd.getTime()) + " 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
+	      assertEquals("Entrenamiento1", driver.findElement(By.linkText("Entrenamiento1")).getText());
 	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	    }
 	    try {
-	        assertEquals("Editing Permission: TRAINER", driver.findElement(By.xpath("//p[3]")).getText());
-	      } catch (Error e) {
-	        verificationErrors.append(e.toString());
-	      }
-	    try {
-	      assertEquals("Edit Training", driver.findElement(By.linkText("Edit Training")).getText());
+	      assertEquals("Entrenamiento1 (COMPLETED)", driver.findElement(By.xpath("//div/div/div/ul/li")).getText());
 	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	    }
 	    try {
-	      assertEquals("Delete Training", driver.findElement(By.linkText("Delete Training")).getText());
+	      assertEquals("Entrenamiento2", driver.findElement(By.linkText("Entrenamiento2")).getText());
 	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	    }
 	    try {
-	      assertEquals("Copy Training", driver.findElement(By.linkText("Copy Training")).getText());
+	      assertEquals("Entrenamiento2 (COMPLETED)", driver.findElement(By.xpath("//div/div/div/ul/li[2]")).getText());
 	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	    }
 	    try {
-	      assertEquals("Routines", driver.findElement(By.xpath("//h3[2]")).getText());
+	      assertEquals("Test", driver.findElement(By.linkText("Test")).getText());
 	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	    }
 	    try {
-	      assertEquals("Add Routine", driver.findElement(By.linkText("Add Routine")).getText());
+	      assertEquals("Test (ON GOING)", driver.findElement(By.xpath("//div/ul/li[3]")).getText());
 	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	    }
 	    try {
-	      assertEquals("Diet", driver.findElement(By.xpath("//h3[4]")).getText());
+	      assertEquals("Client Federico Javier Saco ( fejasa@yogogym.com )", driver.findElement(By.xpath("//div[2]/h3")).getText());
 	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	    }
 	    try {
-	      assertEquals("Add Diet", driver.findElement(By.linkText("Add Diet")).getText());
+	      assertEquals("Entrenamiento3", driver.findElement(By.linkText("Entrenamiento3")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Entrenamiento3 (COMPLETED)", driver.findElement(By.xpath("//div/div/div[2]/ul/li")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Client Carmelina Esteso Rodríguez ( caresro@yogogym.com )", driver.findElement(By.xpath("//div[3]/h3")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Entrenamiento2", driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento2')])[2]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Entrenamiento2 (COMPLETED)", driver.findElement(By.xpath("//div[3]/ul/li")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Client Sofia Victoria Obeso ( soviob@yogogym.com )", driver.findElement(By.xpath("//div[4]/h3")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Entrenamiento3", driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento3')])[2]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Entrenamiento3 (COMPLETED)", driver.findElement(By.xpath("//div[4]/ul/li")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Entrenamiento1 (ON GOING)", driver.findElement(By.xpath("//div[4]/ul/li[2]")).getText());
 	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	    }

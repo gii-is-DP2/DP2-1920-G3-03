@@ -76,6 +76,7 @@ class TrainingControllerTests {
 	private static final int CLIENT1_TRAINING4_ID = 4;
 	private static final int CLIENT1_TRAINING5_ID = 5;
 	private static final int CLIENT1_TRAINING6_ID = 6;
+	private static final int CLIENT1_TRAINING8_ID = 8;
 	private static final int CLIENT2_TRAINING7_ID = 7;
 	
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -170,6 +171,17 @@ class TrainingControllerTests {
 		routineList.add(routine);
 		training4.setRoutines(routineList);
 		
+		Training training8 = new Training();
+		training8.setId(CLIENT1_TRAINING8_ID);
+		training8.setName("Training 8");
+		training8.setClient(client1);
+		training8.setInitialDate(initialDate);
+		training8.setEndDate(endDate);
+		training8.setEditingPermission(EditingPermission.BOTH);
+		training8.setAuthor(CLIENT1_USERNAME);
+		training8.setDiet(null);
+		training8.setRoutines(new ArrayList<>());
+		
 		Training training5 = new Training();
 		BeanUtils.copyProperties(training4, training5);
 		training5.setId(CLIENT1_TRAINING5_ID);
@@ -242,6 +254,7 @@ class TrainingControllerTests {
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING4_ID)).willReturn(training4);
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING5_ID)).willReturn(training5);
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING6_ID)).willReturn(training6);
+		given(this.trainingService.findTrainingById(CLIENT1_TRAINING8_ID)).willReturn(training8);
 		given(this.trainingService.findTrainingFromClient(CLIENT2_ID)).willReturn(trainingList2);
 		
 		//Copy Training
@@ -303,7 +316,12 @@ class TrainingControllerTests {
 	void testTrainerNoEditingPermission() throws Exception {
 		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING2_ID);
 		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING2_ID);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING2_ID);
+	}
+	
+	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
+	@Test
+	void testTrainerDeleteNoAuthor() throws Exception {
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING8_ID);
 	}
 	
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
@@ -744,7 +762,12 @@ class TrainingControllerTests {
 	void testClientNoEditingPermission() throws Exception {
 		testWrongAuth(0,"/client/{clientUsername}/trainings/{trainingId}/edit",CLIENT1_USERNAME,CLIENT1_TRAINING1_ID);
 		testWrongAuth(1,"/client/{clientUsername}/trainings/{trainingId}/edit",CLIENT1_USERNAME,CLIENT1_TRAINING1_ID);
-		testWrongAuth(0,"/client/{clientUsername}/trainings/{trainingId}/delete",CLIENT1_USERNAME,CLIENT1_TRAINING1_ID);
+	}
+	
+	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
+	@Test
+	void testClientDeleteNoAuthor() throws Exception {
+		testWrongAuth(0,"/client/{clientUsername}/trainings/{trainingId}/delete",CLIENT1_USERNAME,CLIENT1_TRAINING3_ID);
 	}
 	
 	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
@@ -1093,10 +1116,8 @@ class TrainingControllerTests {
    	}
     
     @WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
-    @ParameterizedTest
-	@ValueSource(ints = {CLIENT1_TRAINING2_ID,CLIENT1_TRAINING3_ID})
-	void testClientProcessTrainingDeleteForm(int trainingId) throws Exception {
-    	mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/delete", CLIENT1_USERNAME,trainingId))
+	void testClientProcessTrainingDeleteForm() throws Exception {
+    	mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/delete", CLIENT1_USERNAME,CLIENT1_TRAINING2_ID))
     			.andExpect(status().is3xxRedirection())
     			.andExpect(view().name("redirect:/client/{clientUsername}/trainings"));
     }

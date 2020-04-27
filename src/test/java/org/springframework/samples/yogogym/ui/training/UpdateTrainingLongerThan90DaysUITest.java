@@ -18,19 +18,16 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CreateTrainingEndInTrainingUITest {
+public class UpdateTrainingLongerThan90DaysUITest {
 	
   @LocalServerPort
-  private int port;	
-	
+  private int port;
+  
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
   private StringBuffer verificationErrors = new StringBuffer();
-  private Calendar calInit = Calendar.getInstance();
   private Calendar calEnd = Calendar.getInstance();
-  private Calendar calAux = Calendar.getInstance();
-  private SimpleDateFormat formatterDetails = new SimpleDateFormat("yyyy-MM-dd");
   private SimpleDateFormat formatterInput = new SimpleDateFormat("yyyy/MM/dd");
 
   @BeforeEach
@@ -41,11 +38,11 @@ public class CreateTrainingEndInTrainingUITest {
   }
 
   @Test
-  public void testCreateTrainingEndInTrainingUI() throws Exception {
-	  as("trainer1");
-	  createTrainingWithoutErrors();
-	  createTrainingEndInTraining();
-	  errorsShown();
+  public void testUpdateTrainingLongerThan90DaysUI() throws Exception {
+    as("trainer1");
+    accessUpdateView();
+    updateTrainingLongerThan90Days();
+    errorsShown();
   }
 
   @AfterEach
@@ -106,38 +103,26 @@ public class CreateTrainingEndInTrainingUITest {
 	  }
   }
   
-  private void createTrainingWithoutErrors() {
+  private void accessUpdateView() {
 	  driver.findElement(By.linkText("Trainer")).click();
 	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.linkText("Add Training")).click();
-	  driver.findElement(By.id("name")).clear();
-	  driver.findElement(By.id("name")).sendKeys("Entrenamiento viejo");
-	  calInit.add(Calendar.DAY_OF_MONTH, 1);
-	  driver.findElement(By.id("initialDate")).clear();
-	  driver.findElement(By.id("initialDate")).sendKeys(formatterInput.format(calInit.getTime()));
-	  calEnd.add(Calendar.DAY_OF_MONTH, 7);
-	  driver.findElement(By.id("endDate")).clear();
-	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calEnd.getTime()));
-	  driver.findElement(By.xpath("//button[@type='submit']")).click();
+	  driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento1')])[2]")).click();
+	  driver.findElement(By.linkText("Edit Training")).click();
   }
   
-  private void createTrainingEndInTraining() {
-	  driver.findElement(By.linkText("Trainer")).click();
-	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.linkText("Add Training")).click();
+  private void updateTrainingLongerThan90Days() {
 	  driver.findElement(By.id("name")).clear();
-	  driver.findElement(By.id("name")).sendKeys("Entrenamiento Nuevo");
-	  driver.findElement(By.id("initialDate")).clear();
-	  driver.findElement(By.id("initialDate")).sendKeys(formatterInput.format(calAux.getTime()));
-	  calAux.add(Calendar.DAY_OF_MONTH, 7);
+	  driver.findElement(By.id("name")).sendKeys("Entrenamiento1");
+	  calEnd.add(Calendar.DAY_OF_MONTH, 84);
 	  driver.findElement(By.id("endDate")).clear();
-	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calAux.getTime()));
+	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calEnd.getTime()));
+	  driver.findElement(By.id("bs-example-navbar-collapse-1")).click();
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
   private void errorsShown() {
 	  try {
-	      assertEquals("The training cannot end in a period with other training (The other training is from " + formatterDetails.format(calInit.getTime()) + " to " + formatterDetails.format(calEnd.getTime()) + ")", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
+	      assertEquals("The training cannot be longer than 90 days", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
 	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	    }

@@ -1,8 +1,6 @@
 package org.springframework.samples.yogogym.ui.training;
 
 import java.util.regex.Pattern;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,20 +16,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CreateTrainingEndInTrainingUITest {
+public class ShowDetailsTrainingClientTrainedUITest {
 	
   @LocalServerPort
-  private int port;	
-	
+  private int port;
+  
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
   private StringBuffer verificationErrors = new StringBuffer();
-  private Calendar calInit = Calendar.getInstance();
-  private Calendar calEnd = Calendar.getInstance();
-  private Calendar calAux = Calendar.getInstance();
-  private SimpleDateFormat formatterDetails = new SimpleDateFormat("yyyy-MM-dd");
-  private SimpleDateFormat formatterInput = new SimpleDateFormat("yyyy/MM/dd");
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -41,11 +34,10 @@ public class CreateTrainingEndInTrainingUITest {
   }
 
   @Test
-  public void testCreateTrainingEndInTrainingUI() throws Exception {
-	  as("trainer1");
-	  createTrainingWithoutErrors();
-	  createTrainingEndInTraining();
-	  errorsShown();
+  public void testShowDetailsTrainingClientTrainedUI() throws Exception {
+    as("trainer1");
+    accessShowDetailsTrainingClientTrained();
+    trainingDetailsRequiredInfoShown();
   }
 
   @AfterEach
@@ -106,38 +98,75 @@ public class CreateTrainingEndInTrainingUITest {
 	  }
   }
   
-  private void createTrainingWithoutErrors() {
+  private void accessShowDetailsTrainingClientTrained() {
 	  driver.findElement(By.linkText("Trainer")).click();
 	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.linkText("Add Training")).click();
-	  driver.findElement(By.id("name")).clear();
-	  driver.findElement(By.id("name")).sendKeys("Entrenamiento viejo");
-	  calInit.add(Calendar.DAY_OF_MONTH, 1);
-	  driver.findElement(By.id("initialDate")).clear();
-	  driver.findElement(By.id("initialDate")).sendKeys(formatterInput.format(calInit.getTime()));
-	  calEnd.add(Calendar.DAY_OF_MONTH, 7);
-	  driver.findElement(By.id("endDate")).clear();
-	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calEnd.getTime()));
-	  driver.findElement(By.xpath("//button[@type='submit']")).click();
+	  driver.findElement(By.linkText("Entrenamiento1")).click();
   }
   
-  private void createTrainingEndInTraining() {
-	  driver.findElement(By.linkText("Trainer")).click();
-	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.linkText("Add Training")).click();
-	  driver.findElement(By.id("name")).clear();
-	  driver.findElement(By.id("name")).sendKeys("Entrenamiento Nuevo");
-	  driver.findElement(By.id("initialDate")).clear();
-	  driver.findElement(By.id("initialDate")).sendKeys(formatterInput.format(calAux.getTime()));
-	  calAux.add(Calendar.DAY_OF_MONTH, 7);
-	  driver.findElement(By.id("endDate")).clear();
-	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calAux.getTime()));
-	  driver.findElement(By.xpath("//button[@type='submit']")).click();
-  }
-  
-  private void errorsShown() {
+  private void trainingDetailsRequiredInfoShown() {
 	  try {
-	      assertEquals("The training cannot end in a period with other training (The other training is from " + formatterDetails.format(calInit.getTime()) + " to " + formatterDetails.format(calEnd.getTime()) + ")", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
+	      assertEquals("Name: Entrenamiento1", driver.findElement(By.xpath("//h3")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Starts: 2020-01-01 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Ends: 2020-01-14 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Editing Permission: TRAINER", driver.findElement(By.xpath("//p[3]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Edit Training", driver.findElement(By.linkText("Edit Training")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Delete Training", driver.findElement(By.linkText("Delete Training")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Routines", driver.findElement(By.xpath("//h3[2]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Add Routine", driver.findElement(By.linkText("Add Routine")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Cardio", driver.findElement(By.linkText("Cardio")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Brazos", driver.findElement(By.linkText("Brazos")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Diet", driver.findElement(By.xpath("//h3[4]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Add Diet", driver.findElement(By.linkText("Add Diet")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Dieta 1", driver.findElement(By.linkText("Dieta 1")).getText());
 	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	    }

@@ -29,13 +29,19 @@
 		<c:when test="${training.editingPermission!='CLIENT'}">
 			<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/edit" var="trainingEditUrl" />
 			<a href="${fn:escapeXml(trainingEditUrl)}">Edit Training</a>
+		</c:when>
+		<c:otherwise>
+			<p><a style="color:grey">Edit Training</a></p>
+		</c:otherwise>
+	</c:choose>
+	<c:choose>
+		<c:when test="${training.author==trainerUsername}">
 			<br>
 			<br>
 			<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/delete" var="trainingDeleteUrl" />
 			<a href="${fn:escapeXml(trainingDeleteUrl)}">Delete Training</a>
 		</c:when>
 		<c:otherwise>
-			<p><a style="color:grey">Edit Training</a></p>
 			<br>
 			<p><a style="color:grey">Delete Training</a></p>
 		</c:otherwise>
