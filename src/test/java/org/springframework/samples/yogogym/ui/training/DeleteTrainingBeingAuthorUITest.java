@@ -12,6 +12,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -33,6 +35,7 @@ public class DeleteTrainingBeingAuthorUITest {
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
   }
 
+  @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
   @Test
   public void testDeleteTrainingBeingAuthorUI() throws Exception {
     as("trainer1");
