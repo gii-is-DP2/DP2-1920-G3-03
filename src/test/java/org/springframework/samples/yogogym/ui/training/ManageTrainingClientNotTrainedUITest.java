@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CreateTrainingClientNotTrainedUITest {
+public class ManageTrainingClientNotTrainedUITest {
 	
   @LocalServerPort
   private int port;
@@ -36,7 +36,7 @@ public class CreateTrainingClientNotTrainedUITest {
   @Test
   public void testCreateTrainingClientNotTrainedUI() throws Exception {
     as("trainer1");
-    accessCreateTrainingClientNotTrained();
+    accessManageTrainingClientNotTrained();
     exceptionViewShown();
   }
 
@@ -98,8 +98,8 @@ public class CreateTrainingClientNotTrainedUITest {
 	  }
   }
   
-  private void accessCreateTrainingClientNotTrained() {
-	  driver.get("http://localhost:" + port + "/trainer/trainer1/clients/3/trainings/create");
+  private void accessManageTrainingClientNotTrained() {
+	  driver.get("http://localhost:" + port + "/trainer/trainer1/clients/3/trainings/4");
   }
   
   private void exceptionViewShown() {

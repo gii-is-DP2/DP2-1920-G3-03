@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CreateTrainingClientNotTrainedUITest {
+public class ManageTrainingClientTrainedUITest {
 	
   @LocalServerPort
   private int port;
@@ -36,8 +36,8 @@ public class CreateTrainingClientNotTrainedUITest {
   @Test
   public void testCreateTrainingClientNotTrainedUI() throws Exception {
     as("trainer1");
-    accessCreateTrainingClientNotTrained();
-    exceptionViewShown();
+    accessManageTrainingClientTrained();
+    trainingRequiredInfoShown();
   }
 
   @AfterEach
@@ -98,15 +98,77 @@ public class CreateTrainingClientNotTrainedUITest {
 	  }
   }
   
-  private void accessCreateTrainingClientNotTrained() {
-	  driver.get("http://localhost:" + port + "/trainer/trainer1/clients/3/trainings/create");
+  private void accessManageTrainingClientTrained() {
+	  driver.findElement(By.linkText("Trainer")).click();
+	  driver.findElement(By.linkText("Training Management")).click();
+	  driver.findElement(By.linkText("Entrenamiento1")).click();
   }
   
-  private void exceptionViewShown() {
+  private void trainingRequiredInfoShown() {
 	  try {
-	      assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
-	  } catch (Error e) {
+	      assertEquals("Name: Entrenamiento1", driver.findElement(By.xpath("//h3")).getText());
+	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
-	  }
+	    }
+	    try {
+	      assertEquals("Starts: 2020-01-01 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Ends: 2020-01-14 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Editing Permission: TRAINER", driver.findElement(By.xpath("//p[3]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Edit Training", driver.findElement(By.linkText("Edit Training")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Delete Training", driver.findElement(By.linkText("Delete Training")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Routines", driver.findElement(By.xpath("//h3[2]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Add Routine", driver.findElement(By.linkText("Add Routine")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Cardio", driver.findElement(By.linkText("Cardio")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Brazos", driver.findElement(By.linkText("Brazos")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Diet", driver.findElement(By.xpath("//h3[4]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Add Diet", driver.findElement(By.linkText("Add Diet")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Dieta 1", driver.findElement(By.linkText("Dieta 1")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
   }
 }
