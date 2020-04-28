@@ -23,6 +23,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
+import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Guild;
 import org.springframework.samples.yogogym.model.Inscription;
@@ -408,6 +409,117 @@ public class DashboardsAdminControllerTest {
 					.andExpect(view().name("admin/dashboards/dashboardChallenges"))
 					.andExpect(model().attribute("ChallengesExists", true))
 					.andExpect(model().attribute("NoCompletedChallenges", true));
+		}	
+	}
+	
+	@Nested
+	@DisplayName("Admin Dashboard General Test Ok")
+	@WebMvcTest(value = DashboardsAdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class AdminDashboardGeneralTestOk {
+
+		@MockBean
+		private DashboardsAdminService dashboardsAdminService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
+
+		@Autowired
+		private MockMvc mockMvc;
+		
+
+		@BeforeEach
+		void setup() {
+			
+			//client 1:
+			Client client1 = new Client();
+			User userClient1 = new User();
+			userClient1.setUsername("username");
+			userClient1.setEnabled(true);
+			client1.setUser(userClient1);
+			client1.setId(1);
+
+			//trainer 1:
+			Trainer trainer1 = new Trainer();
+			User userTrainer1 = new User();
+			trainer1.setUser(userTrainer1);
+			trainer1.setId(2);
+
+			//Guild 1:
+			Guild guild1 = new Guild();
+			guild1.setId(1);
+			guild1.setCreator("username");
+			guild1.setDescription("We are connecting the world");
+			guild1.setName("Connecting");
+			guild1.setLogo("https://omega2001.es/wp-content/uploads/2016/02/red-informatica-1080x675.jpg");
+			client1.setGuild(guild1);			
+			
+			List<Client> listClients = new ArrayList<Client>();
+			listClients.add(client1);
+			given(this.dashboardsAdminService.countClients()).willReturn(listClients.size());
+			
+			List<Trainer> listTrainers = new ArrayList<Trainer>();
+			listTrainers.add(trainer1);
+			given(this.dashboardsAdminService.countTrainers()).willReturn(listTrainers.size());
+
+			
+			List<Integer> countClientsPerGuild = new ArrayList<>();
+			countClientsPerGuild.add(1);
+			given(this.dashboardsAdminService.countClientsPerGuild()).willReturn(countClientsPerGuild);
+			
+		}
+
+		@WithMockUser(username = "admin1", authorities = { "admin" })
+		@Test
+		void testInitAllDashboardGeneral() throws Exception {
+			mockMvc.perform(get("/admin/dashboardGeneral")).andExpect(status().isOk())
+					.andExpect(view().name("admin/dashboards/dashboardGeneral"))
+					.andExpect(model().attribute("dataExists", true))
+					.andExpect(model().attributeExists("clients"))
+					.andExpect(model().attributeExists("trainers"))
+					.andExpect(model().attribute("clients", 1))
+					.andExpect(model().attribute("trainers", 1));
+		}	
+	}
+	
+	@Nested
+	@DisplayName("Admin Dashboard General Test No Information")
+	@WebMvcTest(value = DashboardsAdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
+	public class AdminDashboardGeneralTestNoInformation{
+
+		@MockBean
+		private DashboardsAdminService dashboardsAdminService;
+		
+		@MockBean
+		private ClientService clientService;
+		
+		@MockBean
+		private InscriptionService inscriptionService;
+		
+		@MockBean
+		private GuildService guildService;
+
+		@Autowired
+		private MockMvc mockMvc;
+		
+
+		@BeforeEach
+		void setup() {
+
+			
+		}
+
+		@WithMockUser(username = "admin1", authorities = { "admin" })
+		@Test
+		void testInitAllDashboardChallenges() throws Exception {
+			mockMvc.perform(get("/admin/dashboardGeneral")).andExpect(status().isOk())
+					.andExpect(view().name("admin/dashboards/dashboardGeneral"))
+					.andExpect(model().attribute("dataExists", false));
 		}	
 	}
 }
