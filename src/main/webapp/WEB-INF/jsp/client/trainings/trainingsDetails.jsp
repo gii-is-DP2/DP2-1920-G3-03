@@ -6,6 +6,39 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="clients">
+	
+	<c:if test="${error != null}">
+		<div class="text-center alert alert-danger" role="alert">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+	  		<span class="sr-only">Error:</span>
+   			${error}
+   		</div>
+	</c:if>
+	
+	<c:if test="${deleteRoutineLine != null}">
+		<div class="text-center alert alert-success" role="alert">
+			<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+	  		<span class="sr-only">Success:</span>
+   			${deleteRoutineLine}
+   		</div>
+	</c:if>
+	
+	<c:if test="${updateRoutineLine != null}">
+		<div class="text-center alert alert-info" role="alert">
+			<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+	  		<span class="sr-only">Success:</span>
+   			${updateRoutineLine}
+   		</div>
+	</c:if>
+	
+	<c:if test="${deleteRoutine != null}">
+		<div class="text-center alert alert-success" role="alert">
+			<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+	  		<span class="sr-only">Success:</span>
+   			${deleteRoutine}
+   		</div>
+	</c:if>
+
 	<h2>My Trainings: <c:out value="${training.name}"/></h2>
 	
 	<p><b>Starts:</b> <c:out value="${training.initialDate}"/></p>
@@ -35,9 +68,7 @@
 			<p><a style="color:grey">Delete Training</a></p>
 		</c:otherwise>
 	</c:choose>
-    <br>
-    <br>
-    
+    <br>    
     <spring:url value="/client/${client.user.username}/trainings/${training.id}/routine/create" var="addRoutineUrl"/>
     <a href="${fn:escapeXml(addRoutineUrl)}">Add Routine</a>
     <br>
