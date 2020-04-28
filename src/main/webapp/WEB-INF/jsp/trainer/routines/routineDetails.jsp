@@ -6,6 +6,31 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="clients">
+	
+	<c:if test="${updateRoutine != null}">
+		<div class="text-center alert alert-info" role="alert">
+			<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+	  		<span class="sr-only">Success:</span>
+   			${updateRoutine}
+   		</div>
+	</c:if>
+	
+	<c:if test="${updateRoutineLine != null}">
+		<div class="text-center alert alert-info" role="alert">
+			<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+	  		<span class="sr-only">Success:</span>
+   			${updateRoutineLine}
+   		</div>
+	</c:if>
+	
+	<c:if test="${deleteRoutineLine != null}">
+		<div class="text-center alert alert-success" role="alert">
+			<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+	  		<span class="sr-only">Success:</span>
+   			${deleteRoutineLine}
+   		</div>
+	</c:if>
+
 	<spring:url value="/trainer/${trainerUsername}/clients/{clientId}" var="clientUrl">
 		<spring:param name="clientId" value="${client.id}"/>
 	</spring:url>

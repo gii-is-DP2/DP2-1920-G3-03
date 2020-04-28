@@ -18,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CreateCorrectRoutine_TrainerUITest {
+public class EditCorrectRoutine_TrainerUITest {
 
 	@LocalServerPort
 	private int port;
@@ -27,30 +27,47 @@ public class CreateCorrectRoutine_TrainerUITest {
 	UtilsRoutineUI utils;
 	
 	//Globally used
+	
+	String routineToEdit = "Routine 1";
 	String username = "trainer1";
 	String password = "trainer1999";
-
+	
 	@BeforeEach
 	public void setUp() throws Exception {
 		driver = new FirefoxDriver();
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-		utils = new UtilsRoutineUI(port,driver);
+		
+		utils = new UtilsRoutineUI(port, driver);
 	}
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	public void testCreateRoutineCorrect() throws Exception {
-				
-		String newRoutineName = "Routine New";
-		String newRoutineDescription = "Routine Description New";
-		//No poner un numero superior a 20, si no saltaría excepción
-		String newRoutineRepsPerWeek = "15";		
+	public void testEditNameRoutineCorrect() throws Exception {
+
+		String newRoutineName = "name:Edit Name";
+		utils.updateRoutine(routineToEdit, username, password, newRoutineName);
+	}
 	
-		utils.createRoutine(username, password, newRoutineName, newRoutineDescription, newRoutineRepsPerWeek,1);
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Test
+	public void testEditDescriptionRoutineCorrect() throws Exception{
+		
+		String newRoutineDescription = "description:Edited Description";
+		utils.updateRoutine(routineToEdit, username, password, newRoutineDescription);
+	}
+	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Test
+	public void testEditRepsPerWeekRoutineCorrect() throws Exception
+	{
+		// No mayor de 20 si no, no se puede actualizar la rutina
+		String newRoutineRepsPerWeek = "repsPerWeek:15";
+		utils.updateRoutine(routineToEdit, username, password, newRoutineRepsPerWeek);
 	}
 
 	@AfterEach
 	public void tearDown() throws Exception {
+
 		driver.quit();
 		String verificationErrorString = utils.getVerificationError().toString();
 		if (!"".equals(verificationErrorString)) {
