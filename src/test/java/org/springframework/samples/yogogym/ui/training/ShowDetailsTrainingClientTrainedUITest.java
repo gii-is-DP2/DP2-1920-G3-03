@@ -16,11 +16,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CreateTrainingEmptyUITest {
+public class ShowDetailsTrainingClientTrainedUITest {
 	
   @LocalServerPort
   private int port;
-	
+  
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
@@ -34,10 +34,10 @@ public class CreateTrainingEmptyUITest {
   }
 
   @Test
-  public void testCreateTrainingEmptyUI() throws Exception {
+  public void testShowDetailsTrainingClientTrainedUI() throws Exception {
     as("trainer1");
-    createEmptyTraining();
-    errorsShown();
+    accessShowDetailsTrainingClientTrained();
+    trainingDetailsRequiredInfoShown();
   }
 
   @AfterEach
@@ -98,28 +98,77 @@ public class CreateTrainingEmptyUITest {
 	  }
   }
   
-  private void createEmptyTraining() {
+  private void accessShowDetailsTrainingClientTrained() {
 	  driver.findElement(By.linkText("Trainer")).click();
 	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.linkText("Add Training")).click();
-	  driver.findElement(By.xpath("//button[@type='submit']")).click();
+	  driver.findElement(By.linkText("Entrenamiento1")).click();
   }
   
-  private void errorsShown() {
+  private void trainingDetailsRequiredInfoShown() {
 	  try {
-	      assertEquals("no puede estar vacío", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div/div/span[2]")).getText());
-	  } catch (Error e) {
+	      assertEquals("Name: Entrenamiento1", driver.findElement(By.xpath("//h3")).getText());
+	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
-	  }
-	  try {
-	      assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[2]/div/span[2]")).getText());
-	  } catch (Error e) {
+	    }
+	    try {
+	      assertEquals("Starts: 2020-01-01 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p")).getText());
+	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
-	  }
-	  try {
-	      assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
-	  } catch (Error e) {
+	    }
+	    try {
+	      assertEquals("Ends: 2020-01-14 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
+	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
-	  }
+	    }
+	    try {
+	      assertEquals("Editing Permission: TRAINER", driver.findElement(By.xpath("//p[3]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Edit Training", driver.findElement(By.linkText("Edit Training")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Delete Training", driver.findElement(By.linkText("Delete Training")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Routines", driver.findElement(By.xpath("//h3[2]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Add Routine", driver.findElement(By.linkText("Add Routine")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Cardio", driver.findElement(By.linkText("Cardio")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Brazos", driver.findElement(By.linkText("Brazos")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Diet", driver.findElement(By.xpath("//h3[4]")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Add Diet", driver.findElement(By.linkText("Add Diet")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
+	    try {
+	      assertEquals("Dieta 1", driver.findElement(By.linkText("Dieta 1")).getText());
+	    } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	    }
   }
 }

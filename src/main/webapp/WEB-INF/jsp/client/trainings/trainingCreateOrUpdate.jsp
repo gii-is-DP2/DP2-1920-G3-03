@@ -50,7 +50,7 @@
 			<div class="form-group has-feedback">
 				<input type="hidden" name="id" id="id" class="form-control" value="${training.id}"/>
 				<input type="hidden" name="client" value="${client.nif}"/>
-				<input type="hidden" name="author" value="${training['new'] ? principalUsername : training.author}"/>
+            	<input type="hidden" name="author" value="${training['new'] ? principalUsername : training.author}"/>
 				<yogogym:inputField label="Name" name="name"/>
 				<yogogym:inputField label="Initial Date" name="initialDate" readonly="${!training['new']}" pattern="^\d{4}\/\d{2}\/\d{2}$" placeholder="yyyy/MM/dd"/>
 	            <yogogym:inputField label="End Date" name="endDate" readonly="${!(training['new']||(!training['new']&&endDateAux>=actualDate))}" pattern="^\d{4}\/\d{2}\/\d{2}$" placeholder="yyyy/MM/dd"/>
@@ -59,16 +59,16 @@
 		            <div class="col-sm-10">
 		            	<c:choose>
 		            		<c:when test="${training.author!=null&&training.author!=principalUsername}">
-		            			<select class="form-control" id="editingPermission" name="editingPermission" disabled>
-							    	<option value="CLIENT">Only the client can manage the training.</option>
-					            	<option value="BOTH">You and your client can manage the training.</option>
+		            			<select class="form-control" id="editingPermission" disabled>
+							    	<option value="TRAINER">Only the trainer can manage the training.</option>
+					            	<option value="BOTH">You and your trainer can manage the training.</option>
 					            </select>
-					            <input type="hidden" name="editingPermission" value="${training.editingPermission=='CLIENT' ? 'CLIENT' : 'BOTH' }"/>
+					            <input type="hidden" name="editingPermission" value="${training.editingPermission=='TRAINER' ? 'TRAINER' : 'BOTH' }"/>
 		            		</c:when>
 		            		<c:otherwise>
 		            			<select class="form-control" id="editingPermission" name="editingPermission">
-							    	<option value="TRAINER">Only you can manage the training.</option>
-					            	<option value="BOTH">You and your client can manage the training.</option>
+							    	<option value="CLIENT">Only you can manage the training.</option>
+					            	<option value="BOTH">You and your trainer can manage the training.</option>
 					            </select>
 		            		</c:otherwise>
 		            	</c:choose>

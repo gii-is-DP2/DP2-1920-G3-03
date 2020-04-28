@@ -133,11 +133,11 @@ public class TrainingService {
 				trainingId = training.getId();
 			}
 			
-			Collection<Training> concurrentInit = this.trainingRepository.countConcurrentTrainingsForInit(training.getClient().getId(), 
+			Collection<Training> concurrentInit = this.countConcurrentTrainingsForInit(training.getClient().getId(), 
 				trainingId, training.getInitialDate());
-			Collection<Training> concurrentEnd = this.trainingRepository.countConcurrentTrainingsForEnd(training.getClient().getId(), 
+			Collection<Training> concurrentEnd = this.countConcurrentTrainingsForEnd(training.getClient().getId(), 
 				trainingId, training.getEndDate());
-			Collection<Training> concurrentIncluding = this.trainingRepository.countConcurrentTrainingsForIncluding(training.getClient().getId(), 
+			Collection<Training> concurrentIncluding = this.countConcurrentTrainingsForIncluding(training.getClient().getId(), 
 				trainingId, training.getInitialDate(), training.getEndDate());
 			
 			if(concurrentInit.size()>0) {
@@ -169,6 +169,21 @@ public class TrainingService {
 				this.trainingRepository.save(training);
 			}
 		}
+	}
+	
+	@Transactional
+	public Collection<Training> countConcurrentTrainingsForInit(int clientId, int trainingId, Date init) {
+		return this.trainingRepository.countConcurrentTrainingsForInit(clientId, trainingId, init);
+	}
+	
+	@Transactional
+	public Collection<Training> countConcurrentTrainingsForEnd(int clientId, int trainingId, Date end) {
+		return this.trainingRepository.countConcurrentTrainingsForEnd(clientId, trainingId, end);
+	}
+	
+	@Transactional
+	public Collection<Training> countConcurrentTrainingsForIncluding(int clientId, int trainingId, Date init, Date end) {
+		return this.trainingRepository.countConcurrentTrainingsForIncluding(clientId, trainingId, init, end);
 	}
 
 	
