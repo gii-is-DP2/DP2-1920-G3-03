@@ -12,15 +12,17 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CreateTrainingEmptyUITest {
+public class DeleteTrainingBeingAuthorUITest {
 	
   @LocalServerPort
   private int port;
-	
+  
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
@@ -33,11 +35,12 @@ public class CreateTrainingEmptyUITest {
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
   }
 
+  @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
   @Test
-  public void testCreateTrainingEmptyUI() throws Exception {
+  public void testDeleteTrainingBeingAuthorUI() throws Exception {
     as("trainer1");
-    createEmptyTraining();
-    errorsShown();
+    accessShowDetailsTrainingClientTrained();
+    trainingDeletedSuccessfully();
   }
 
   @AfterEach
@@ -98,28 +101,18 @@ public class CreateTrainingEmptyUITest {
 	  }
   }
   
-  private void createEmptyTraining() {
+  private void accessShowDetailsTrainingClientTrained() {
 	  driver.findElement(By.linkText("Trainer")).click();
 	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.linkText("Add Training")).click();
-	  driver.findElement(By.xpath("//button[@type='submit']")).click();
+	  driver.findElement(By.linkText("Entrenamiento1")).click();
   }
   
-  private void errorsShown() {
-	  try {
-	      assertEquals("no puede estar vacío", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div/div/span[2]")).getText());
-	  } catch (Error e) {
+  private void trainingDeletedSuccessfully() {
+	  driver.findElement(By.linkText("Delete Training")).click();
+	    try {
+	      assertEquals("The training was deleted successfully", driver.findElement(By.xpath("//body/div/div/div/p")).getText());
+	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
-	  }
-	  try {
-	      assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[2]/div/span[2]")).getText());
-	  } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	  }
-	  try {
-	      assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
-	  } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	  }
+	    }
   }
 }

@@ -1,6 +1,8 @@
 package org.springframework.samples.yogogym.ui.training;
 
 import java.util.regex.Pattern;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CreateTrainingEmptyUITest {
+public class CreateTrainingLongerThan90DaysUITest {
 	
   @LocalServerPort
   private int port;
@@ -25,6 +27,9 @@ public class CreateTrainingEmptyUITest {
   private String baseUrl;
   private boolean acceptNextAlert = true;
   private StringBuffer verificationErrors = new StringBuffer();
+  private Calendar calInit = Calendar.getInstance();
+  private Calendar calEnd = Calendar.getInstance();
+  private SimpleDateFormat formatterInput = new SimpleDateFormat("yyyy/MM/dd");
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -34,9 +39,9 @@ public class CreateTrainingEmptyUITest {
   }
 
   @Test
-  public void testCreateTrainingEmptyUI() throws Exception {
+  public void testCreateTrainingLongerThan90DaysUI() throws Exception {
     as("trainer1");
-    createEmptyTraining();
+    createTrainingLongerThan90Days();
     errorsShown();
   }
 
@@ -98,28 +103,25 @@ public class CreateTrainingEmptyUITest {
 	  }
   }
   
-  private void createEmptyTraining() {
+  private void createTrainingLongerThan90Days() {
 	  driver.findElement(By.linkText("Trainer")).click();
 	  driver.findElement(By.linkText("Training Management")).click();
 	  driver.findElement(By.linkText("Add Training")).click();
+	  driver.findElement(By.id("name")).clear();
+	  driver.findElement(By.id("name")).sendKeys("Entrenamiento nuevo");
+	  driver.findElement(By.id("initialDate")).clear();
+	  driver.findElement(By.id("initialDate")).sendKeys(formatterInput.format(calInit.getTime()));
+	  calEnd.add(Calendar.DAY_OF_MONTH, 91);
+	  driver.findElement(By.id("endDate")).clear();
+	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calEnd.getTime()));
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
   private void errorsShown() {
 	  try {
-	      assertEquals("no puede estar vacío", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div/div/span[2]")).getText());
-	  } catch (Error e) {
+	      assertEquals("The training cannot be longer than 90 days", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
+	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
-	  }
-	  try {
-	      assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[2]/div/span[2]")).getText());
-	  } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	  }
-	  try {
-	      assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
-	  } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	  }
+	    }
   }
 }

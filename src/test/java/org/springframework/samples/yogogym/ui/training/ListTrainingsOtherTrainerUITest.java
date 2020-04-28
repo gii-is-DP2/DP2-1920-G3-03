@@ -16,11 +16,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CreateTrainingEmptyUITest {
+public class ListTrainingsOtherTrainerUITest {
 	
   @LocalServerPort
   private int port;
-	
+  
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
@@ -34,10 +34,10 @@ public class CreateTrainingEmptyUITest {
   }
 
   @Test
-  public void testCreateTrainingEmptyUI() throws Exception {
+  public void testListTrainingsOtherTrainerUI() throws Exception {
     as("trainer1");
-    createEmptyTraining();
-    errorsShown();
+    accessListTrainingsOtherTrainer();
+    exceptionViewShown();
   }
 
   @AfterEach
@@ -98,26 +98,13 @@ public class CreateTrainingEmptyUITest {
 	  }
   }
   
-  private void createEmptyTraining() {
-	  driver.findElement(By.linkText("Trainer")).click();
-	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.linkText("Add Training")).click();
-	  driver.findElement(By.xpath("//button[@type='submit']")).click();
+  private void accessListTrainingsOtherTrainer() {
+	  driver.get("http://localhost:" + port + "/trainer/trainer2/trainings");
   }
   
-  private void errorsShown() {
+  private void exceptionViewShown() {
 	  try {
-	      assertEquals("no puede estar vacío", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div/div/span[2]")).getText());
-	  } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	  }
-	  try {
-	      assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[2]/div/span[2]")).getText());
-	  } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	  }
-	  try {
-	      assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
+	      assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
 	  } catch (Error e) {
 	      verificationErrors.append(e.toString());
 	  }

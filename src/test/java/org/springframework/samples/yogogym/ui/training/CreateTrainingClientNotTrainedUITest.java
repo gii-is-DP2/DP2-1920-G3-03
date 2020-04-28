@@ -3,13 +3,24 @@ package org.springframework.samples.yogogym.ui.training;
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CreateTrainingClientNotTrainedUITest {
+	
+  @LocalServerPort
+  private int port;
+  
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
@@ -24,24 +35,9 @@ public class CreateTrainingClientNotTrainedUITest {
 
   @Test
   public void testCreateTrainingClientNotTrainedUI() throws Exception {
-    driver.get("http://localhost:8080/");
-    driver.findElement(By.linkText("Login")).click();
-    driver.findElement(By.id("username")).clear();
-    driver.findElement(By.id("username")).sendKeys("trainer1");
-    driver.findElement(By.id("password")).clear();
-    driver.findElement(By.id("password")).sendKeys("trainer1999");
-    driver.findElement(By.xpath("//button[@type='submit']")).click();
-    try {
-      assertEquals("trainer1", driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul[2]/li/a/strong")).getText());
-    } catch (Error e) {
-      verificationErrors.append(e.toString());
-    }
-    driver.get("http://localhost:8080/trainer/trainer1/clients/3/trainings/create");
-    try {
-      assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
-    } catch (Error e) {
-      verificationErrors.append(e.toString());
-    }
+    as("trainer1");
+    accessCreateTrainingClientNotTrained();
+    exceptionViewShown();
   }
 
   @AfterEach
@@ -84,5 +80,33 @@ public class CreateTrainingClientNotTrainedUITest {
     } finally {
       acceptNextAlert = true;
     }
+  }
+  
+  private void as(String username) {
+	  driver.get("http://localhost:" + port);
+	  driver.findElement(By.linkText("Login")).click();
+	  driver.findElement(By.id("username")).clear();
+	  driver.findElement(By.id("username")).sendKeys(username);
+	  driver.findElement(By.id("password")).clear();
+	  String pass = username.replaceAll("\\d", "");
+	  driver.findElement(By.id("password")).sendKeys(pass+"1999");
+	  driver.findElement(By.xpath("//button[@type='submit']")).click();
+	  try {
+		  assertEquals(username, driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul[2]/li/a/strong")).getText());
+	  } catch (Error e) {
+		  verificationErrors.append(e.toString());
+	  }
+  }
+  
+  private void accessCreateTrainingClientNotTrained() {
+	  driver.get("http://localhost:" + port + "/trainer/trainer1/clients/3/trainings/create");
+  }
+  
+  private void exceptionViewShown() {
+	  try {
+	      assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
+	  } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	  }
   }
 }

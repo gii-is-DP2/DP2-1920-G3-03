@@ -103,9 +103,10 @@ INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,di
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (7, '2020-03-01', '2020-03-10', 'Entrenamiento3', 1, 'client6', null, 6);
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (8, '2020-04-01', '2020-04-20', 'Entrenamiento4', 1, 'client7', null, 7);
 
-/* Always Updated Training */
+/* Always Updated Trainings */
 
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (9, CURRENT_DATE, DATEADD(day, 1, CURRENT_DATE), 'Test', 2, 'trainer1', null, 1);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (9, DATEADD(day, 100, CURRENT_DATE), DATEADD(day, 101, CURRENT_DATE), 'Test', 2, 'trainer1', null, 1);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (10, DATEADD(day, -7, CURRENT_DATE), DATEADD(day, 7, CURRENT_DATE), 'Entrenamiento1', 2, 'client6', null, 6);
 
 
 /* ROUTINE */
@@ -313,6 +314,7 @@ INSERT INTO clients_trainings(client_id,trainings_id) VALUES (3,4);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (4,5);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (5,6);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,7);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,10);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (7,8);
 
 

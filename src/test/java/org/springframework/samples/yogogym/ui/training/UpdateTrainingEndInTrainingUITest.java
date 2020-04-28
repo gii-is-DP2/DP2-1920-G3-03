@@ -1,6 +1,8 @@
 package org.springframework.samples.yogogym.ui.training;
 
 import java.util.regex.Pattern;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,19 +14,26 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CreateTrainingEmptyUITest {
+public class UpdateTrainingEndInTrainingUITest {
 	
   @LocalServerPort
   private int port;
-	
+  
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
   private StringBuffer verificationErrors = new StringBuffer();
+  private Calendar calInit = Calendar.getInstance();
+  private Calendar calEnd = Calendar.getInstance();
+  private Calendar calAux = Calendar.getInstance();
+  private SimpleDateFormat formatterDetails = new SimpleDateFormat("yyyy-MM-dd");
+  private SimpleDateFormat formatterInput = new SimpleDateFormat("yyyy/MM/dd");
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -33,10 +42,13 @@ public class CreateTrainingEmptyUITest {
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
   }
 
+  @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
   @Test
-  public void testCreateTrainingEmptyUI() throws Exception {
+  public void testUpdateTrainingEndInTrainingUI() throws Exception {
     as("trainer1");
-    createEmptyTraining();
+    createFutureTraining();
+    accessUpdateView();
+    updateTrainingEndInFutureTraining();
     errorsShown();
   }
 
@@ -98,28 +110,42 @@ public class CreateTrainingEmptyUITest {
 	  }
   }
   
-  private void createEmptyTraining() {
+  private void createFutureTraining() {
 	  driver.findElement(By.linkText("Trainer")).click();
 	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.linkText("Add Training")).click();
+	  driver.findElement(By.xpath("(//a[contains(text(),'Add Training')])[4]")).click();
+	  driver.findElement(By.id("name")).clear();
+	  driver.findElement(By.id("name")).sendKeys("Entrenamiento nuevo");
+	  calInit.add(Calendar.DAY_OF_MONTH, 8);
+	  driver.findElement(By.id("initialDate")).clear();
+	  driver.findElement(By.id("initialDate")).sendKeys(formatterInput.format(calInit.getTime()));
+	  calEnd.add(Calendar.DAY_OF_MONTH, 15);
+	  driver.findElement(By.id("endDate")).clear();
+	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calEnd.getTime()));
+	  driver.findElement(By.xpath("//button[@type='submit']")).click();
+  }
+  
+  private void accessUpdateView() {
+	  driver.findElement(By.linkText("Trainer")).click();
+	  driver.findElement(By.linkText("Training Management")).click();
+	  driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento1')])[2]")).click();
+	  driver.findElement(By.linkText("Edit Training")).click();
+  }
+  
+  private void updateTrainingEndInFutureTraining() {
+	  driver.findElement(By.id("name")).clear();
+	  driver.findElement(By.id("name")).sendKeys("Entrenamiento1");
+	  calAux.add(Calendar.DAY_OF_MONTH, 8);
+	  driver.findElement(By.id("endDate")).clear();
+	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calAux.getTime()));
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
   private void errorsShown() {
 	  try {
-	      assertEquals("no puede estar vacío", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div/div/span[2]")).getText());
-	  } catch (Error e) {
+	      assertEquals("The training cannot end in a period with other training (The other training is from " + formatterDetails.format(calInit.getTime()) + " to " + formatterDetails.format(calEnd.getTime()) + ")", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
+	    } catch (Error e) {
 	      verificationErrors.append(e.toString());
-	  }
-	  try {
-	      assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[2]/div/span[2]")).getText());
-	  } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	  }
-	  try {
-	      assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
-	  } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	  }
+	    }
   }
 }

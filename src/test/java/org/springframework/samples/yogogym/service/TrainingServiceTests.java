@@ -1,5 +1,6 @@
 package org.springframework.samples.yogogym.service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -61,7 +62,7 @@ public class TrainingServiceTests {
 	public void shouldFindAllTrainings() {
 		Collection<Training> trainings = this.trainingService.findAllTrainings();
 		assertThat(trainings).isNotNull();
-		assertThat(trainings.size()).isEqualTo(9);
+		assertThat(trainings.size()).isEqualTo(10);
 		Training training = EntityUtils.getById(trainings, Training.class, TRAINING_ID);
 		assertThat(training.getName()).isEqualTo("Entrenamiento1");
 		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
@@ -84,6 +85,42 @@ public class TrainingServiceTests {
 	@Test
 	public void shouldFindCorrectTraining() {
 		Training training = this.trainingService.findTrainingById(TRAINING_ID);
+		assertThat(training.getName()).isEqualTo("Entrenamiento1");
+		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
+		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
+		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
+	}
+	
+	@Test
+	public void shouldCountConcurrentTrainingsForInit() throws ParseException {
+		Collection<Training> concurrentTrainings = this.trainingService.countConcurrentTrainingsForInit(CLIENT_ID, -1, dateFormat.parse("2020-01-05"));
+		assertThat(concurrentTrainings).isNotNull();
+		assertThat(concurrentTrainings.size()).isEqualTo(1);
+		Training training = EntityUtils.getById(concurrentTrainings, Training.class, TRAINING_ID);
+		assertThat(training.getName()).isEqualTo("Entrenamiento1");
+		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
+		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
+		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
+	}
+	
+	@Test
+	public void shouldCountConcurrentTrainingsForEnd() throws ParseException {
+		Collection<Training> concurrentTrainings = this.trainingService.countConcurrentTrainingsForEnd(CLIENT_ID, -1, dateFormat.parse("2020-01-12"));
+		assertThat(concurrentTrainings).isNotNull();
+		assertThat(concurrentTrainings.size()).isEqualTo(1);
+		Training training = EntityUtils.getById(concurrentTrainings, Training.class, TRAINING_ID);
+		assertThat(training.getName()).isEqualTo("Entrenamiento1");
+		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
+		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
+		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
+	}
+	
+	@Test
+	public void shouldCountConcurrentTrainingsForIncluding() throws ParseException {
+		Collection<Training> concurrentTrainings = this.trainingService.countConcurrentTrainingsForIncluding(CLIENT_ID, -1, dateFormat.parse("2019-12-31"), dateFormat.parse("2020-01-15"));
+		assertThat(concurrentTrainings).isNotNull();
+		assertThat(concurrentTrainings.size()).isEqualTo(1);
+		Training training = EntityUtils.getById(concurrentTrainings, Training.class, TRAINING_ID);
 		assertThat(training.getName()).isEqualTo("Entrenamiento1");
 		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
@@ -221,7 +258,7 @@ public class TrainingServiceTests {
 		this.trainingService.saveTraining(training);
 		
 		Training training2 = createSampleTraining(0,addEndDate);
-		assertThrows(InitInTrainingException.class, ()->this.trainingService.saveTraining(training2));
+		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(training2));
 		
 		allTrainings = this.trainingService.findAllTrainings();
 		assertThat(allTrainings.size()).isNotEqualTo(foundAll+2);
@@ -436,7 +473,7 @@ public class TrainingServiceTests {
 	@Transactional
 	public void shouldFindTrainingWithPublicClient() {
 		Collection<Training> trainingsPublic = this.trainingService.findTrainingWithPublicClient();
-		assertThat(trainingsPublic.size()).isEqualTo(10);
+		assertThat(trainingsPublic.size()).isEqualTo(11);
 	}
 	
 	@ParameterizedTest
