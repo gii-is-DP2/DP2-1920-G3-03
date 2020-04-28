@@ -33,10 +33,16 @@ public class DashboardAdminControllerE2ETest {
 	
 	@WithMockUser(username = "admin1", authorities = { "admin" })
 	@Test
-	void testInitAllDashboard() throws Exception {
+	void testInitAllDashboardEquipmentSuccessful() throws Exception {
 		mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
 				.andExpect(view().name("admin/dashboards/dashboardEquipment"))
 				.andExpect(model().attributeExists("hasEquipmentWeek", "hasEquipmentMonth"));
+	}
+	
+	@WithMockUser(username = "client1", authorities = { "client" })
+	@Test
+	void testInitAllDashboardEquipmentFailedAuthority() throws Exception {
+		mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().is4xxClientError());
 	}
 	
 	@WithMockUser(username = "admin1", authorities = { "admin" })

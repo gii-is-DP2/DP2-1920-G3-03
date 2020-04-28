@@ -333,7 +333,7 @@ public class TrainingController {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)||!isTrainingOfClient(trainingId,clientId)||!isTrainingEmpty(trainingId)) {
+		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)||!isTrainingOfClient(trainingId,clientId)||!isTrainingEmpty(trainingId)||!this.clientService.isPublicByTrainingId(idTrainingToCopy)) {
 			return "exception";
 		}
 		Training trainingToCopy = this.trainingService.findTrainingById(idTrainingToCopy);
@@ -382,7 +382,7 @@ public class TrainingController {
 		
 		return "redirect:/trainer/{trainerUsername}/trainings";
 	}
-	
+
 	private boolean isTrainingEmpty(int trainingId) {
 		Training training = this.trainingService.findTrainingById(trainingId);
 		return training.getDiet()==null && training.getRoutines().isEmpty();
