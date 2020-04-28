@@ -56,18 +56,21 @@ public class DashboardsAdminServiceTest {
 	}
 	
 	@Test
-	void shouldCountClients(){
+	void shouldCountClients() {
 		Integer count = this.dashboardService.countClients();
-		assertThat(count.equals(3));
+		assertThat(count).isEqualTo(11);
 	}
+	
 	@Test
-	void shouldCountTrainers(){
+	void shouldCountTrainers() {
 		Integer count = this.dashboardService.countTrainers();
-		assertThat(count.equals(3));
+		assertThat(count).isEqualTo(2);
 	}
+	
 	@Test
-	void shouldCountClientsPerGuild(){
-		List<Integer> count = this.dashboardService.countClientsPerGuild();
-		assertThat(count.size()).isEqualTo(4);
+	void shouldCountClientsPerGuild() {
+		List<Integer> list = this.dashboardService.countClientsPerGuild();
+		assertThat(list.size()).isEqualTo(4);
 	}
+
 }

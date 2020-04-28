@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ClientService {
 
-	private final Calendar now = Calendar.getInstance();
+	private final Calendar now = Calendar.getInstance(); 
 
 	private ClientRepository clientRepository;
 

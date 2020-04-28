@@ -43,7 +43,7 @@ public class DashboardClientServiceTest {
 	@Test
 	void shouldSumKcal() {
 		Integer sumKcal = this.dashboardClientService.sumKcal(null, "client1");
-		assertThat(sumKcal).isEqualTo(1100);
+		assertThat(sumKcal).isEqualTo(1600);
 	}
 
 }

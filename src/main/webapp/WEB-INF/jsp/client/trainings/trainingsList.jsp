@@ -42,5 +42,8 @@
 	        </tr>
         </c:forEach>
     </table>
+    
+    <spring:url value="/client/${clientUsername}/trainings/create" var="trainingAddUrl" />
+	<a href="${fn:escapeXml(trainingAddUrl)}">Add Training</a>
         
 </yogogym:layout>

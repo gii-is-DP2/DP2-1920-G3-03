@@ -1,5 +1,6 @@
 package org.springframework.samples.yogogym.service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -61,7 +62,7 @@ public class TrainingServiceTests {
 	public void shouldFindAllTrainings() {
 		Collection<Training> trainings = this.trainingService.findAllTrainings();
 		assertThat(trainings).isNotNull();
-		assertThat(trainings.size()).isEqualTo(8);
+		assertThat(trainings.size()).isEqualTo(10);
 		Training training = EntityUtils.getById(trainings, Training.class, TRAINING_ID);
 		assertThat(training.getName()).isEqualTo("Entrenamiento1");
 		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
@@ -73,7 +74,7 @@ public class TrainingServiceTests {
 	public void shouldFindAllClientTrainings() {
 		Collection<Training> trainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		assertThat(trainings).isNotNull();
-		assertThat(trainings.size()).isEqualTo(2);
+		assertThat(trainings.size()).isEqualTo(3);
 		Training training = EntityUtils.getById(trainings, Training.class, TRAINING_ID);
 		assertThat(training.getName()).isEqualTo("Entrenamiento1");
 		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
@@ -91,6 +92,42 @@ public class TrainingServiceTests {
 	}
 	
 	@Test
+	public void shouldCountConcurrentTrainingsForInit() throws ParseException {
+		Collection<Training> concurrentTrainings = this.trainingService.countConcurrentTrainingsForInit(CLIENT_ID, -1, dateFormat.parse("2020-01-05"));
+		assertThat(concurrentTrainings).isNotNull();
+		assertThat(concurrentTrainings.size()).isEqualTo(1);
+		Training training = EntityUtils.getById(concurrentTrainings, Training.class, TRAINING_ID);
+		assertThat(training.getName()).isEqualTo("Entrenamiento1");
+		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
+		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
+		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
+	}
+	
+	@Test
+	public void shouldCountConcurrentTrainingsForEnd() throws ParseException {
+		Collection<Training> concurrentTrainings = this.trainingService.countConcurrentTrainingsForEnd(CLIENT_ID, -1, dateFormat.parse("2020-01-12"));
+		assertThat(concurrentTrainings).isNotNull();
+		assertThat(concurrentTrainings.size()).isEqualTo(1);
+		Training training = EntityUtils.getById(concurrentTrainings, Training.class, TRAINING_ID);
+		assertThat(training.getName()).isEqualTo("Entrenamiento1");
+		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
+		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
+		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
+	}
+	
+	@Test
+	public void shouldCountConcurrentTrainingsForIncluding() throws ParseException {
+		Collection<Training> concurrentTrainings = this.trainingService.countConcurrentTrainingsForIncluding(CLIENT_ID, -1, dateFormat.parse("2019-12-31"), dateFormat.parse("2020-01-15"));
+		assertThat(concurrentTrainings).isNotNull();
+		assertThat(concurrentTrainings.size()).isEqualTo(1);
+		Training training = EntityUtils.getById(concurrentTrainings, Training.class, TRAINING_ID);
+		assertThat(training.getName()).isEqualTo("Entrenamiento1");
+		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
+		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
+		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
+	}
+	
+	@Test
 	@Transactional
 	public void shouldInsertTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
 		
@@ -99,8 +136,9 @@ public class TrainingServiceTests {
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		int foundClient = clientTrainings.size();
 		
-		Training training = createSampleTraining(0,7);
+		Training training = createSampleTraining(2,7);
 		Calendar initDate = (Calendar) now.clone();
+		initDate.add(Calendar.DAY_OF_MONTH,2);
 		Calendar endDate = (Calendar) now.clone();
 		endDate.add(Calendar.DAY_OF_MONTH, 7);
 		
@@ -185,7 +223,7 @@ public class TrainingServiceTests {
 	}
 	
 	@ParameterizedTest
-	@ValueSource(ints = {0,1,6,7})
+	@ValueSource(ints = {2,4,6,7})
 	@Transactional
 	public void shouldNotInsertTrainingDueToInitInTraining(int addInitialDate) throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
 		
@@ -194,10 +232,10 @@ public class TrainingServiceTests {
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		int foundClient = clientTrainings.size();
 		
-		Training training = createSampleTraining(0,7);
+		Training training = createSampleTraining(2,7);
 		this.trainingService.saveTraining(training);
 		
-		Training training2 = createSampleTraining(addInitialDate,14);
+		Training training2 = createSampleTraining(addInitialDate,20);
 		assertThrows(InitInTrainingException.class, ()->this.trainingService.saveTraining(training2));
 		
 		allTrainings = this.trainingService.findAllTrainings();
@@ -237,10 +275,10 @@ public class TrainingServiceTests {
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		int foundClient = clientTrainings.size();
 		
-		Training training = createSampleTraining(1,8);
+		Training training = createSampleTraining(3,8);
 		this.trainingService.saveTraining(training);
 		
-		Training training2 = createSampleTraining(0,9);
+		Training training2 = createSampleTraining(2,9);
 		assertThrows(PeriodIncludingTrainingException.class, ()->this.trainingService.saveTraining(training2));
 		
 		allTrainings = this.trainingService.findAllTrainings();
@@ -258,7 +296,7 @@ public class TrainingServiceTests {
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		int foundClient = clientTrainings.size();
 		
-		Training training = createSampleTraining(0,7);
+		Training training = createSampleTraining(2,7);
 		this.trainingService.saveTraining(training);
 		
 		allTrainings = this.trainingService.findAllTrainings();
@@ -318,7 +356,7 @@ public class TrainingServiceTests {
 	@Transactional
 	public void shouldNotUpdateTrainingDueToLongerThan90Days() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
 		
-		Training training = createSampleTraining(0,7);
+		Training training = createSampleTraining(2,9);
 		this.trainingService.saveTraining(training);
 		
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
@@ -327,7 +365,7 @@ public class TrainingServiceTests {
 		
 		String newName = "New Training Updated";
 		Calendar aux = (Calendar) now.clone();
-		aux.add(Calendar.DAY_OF_MONTH, 92);
+		aux.add(Calendar.DAY_OF_MONTH, 100);
 		Date newEndDate = aux.getTime();
 		
 		Training auxTraining = new Training();
@@ -351,7 +389,7 @@ public class TrainingServiceTests {
 		
 		Training training2 = createSampleTraining(8,15);
 		this.trainingService.saveTraining(training2);
-		Training training = createSampleTraining(0,7);
+		Training training = createSampleTraining(2,7);
 		this.trainingService.saveTraining(training);
 		
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
@@ -384,7 +422,7 @@ public class TrainingServiceTests {
 		
 		Training training2 = createSampleTraining(8,15);
 		this.trainingService.saveTraining(training2);
-		Training training = createSampleTraining(0,7);
+		Training training = createSampleTraining(2,7);
 		this.trainingService.saveTraining(training);
 		
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
@@ -435,7 +473,7 @@ public class TrainingServiceTests {
 	@Transactional
 	public void shouldFindTrainingWithPublicClient() {
 		Collection<Training> trainingsPublic = this.trainingService.findTrainingWithPublicClient();
-		assertThat(trainingsPublic.size()).isEqualTo(9);
+		assertThat(trainingsPublic.size()).isEqualTo(11);
 	}
 	
 	@ParameterizedTest

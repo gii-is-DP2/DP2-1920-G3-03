@@ -7,6 +7,14 @@
 
 <yogogym:layout pageName="trainings">
 
+	<c:if test="${error != null}">
+		<div class="text-center alert alert-danger" role="alert">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+	  		<span class="sr-only">Error:</span>
+   			${error} for ${client.lastName}, ${client.firstName}
+   		</div>
+	</c:if>
+	
 	<spring:url value="/trainer/${trainerUsername}/clients/{clientId}" var="clientUrl">
 		<spring:param name="clientId" value="${client.id}"/>
 	</spring:url>
@@ -14,16 +22,31 @@
 	<h3>Name: <c:out value="${training.name}"/></h3>
 	<p><b>Starts:</b> <c:out value="${training.initialDate}"/></p>
 	<p><b>Ends:</b> <c:out value="${training.endDate}"/></p>
+	<p><b>Editing Permission:</b> <c:out value="${training.editingPermission}"/></p>
 	<br>
 	
-	<c:if test="${training.editingPermission!='CLIENT'}">
-		<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/edit" var="trainingEditUrl" />
-		<a href="${fn:escapeXml(trainingEditUrl)}">Edit Training</a>
-		<br>
-		<br>
-		<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/delete" var="trainingDeleteUrl" />
-		<a href="${fn:escapeXml(trainingDeleteUrl)}">Delete Training</a>
-	</c:if>
+	<c:choose>
+		<c:when test="${training.editingPermission!='CLIENT'}">
+			<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/edit" var="trainingEditUrl" />
+			<a href="${fn:escapeXml(trainingEditUrl)}">Edit Training</a>
+		</c:when>
+		<c:otherwise>
+			<p><a style="color:grey">Edit Training</a></p>
+		</c:otherwise>
+	</c:choose>
+	<c:choose>
+		<c:when test="${training.author==trainerUsername}">
+			<br>
+			<br>
+			<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/delete" var="trainingDeleteUrl" />
+			<a href="${fn:escapeXml(trainingDeleteUrl)}">Delete Training</a>
+		</c:when>
+		<c:otherwise>
+			<br>
+			<p><a style="color:grey">Delete Training</a></p>
+		</c:otherwise>
+	</c:choose>
+	
 	<c:if test="${hasNotRoutine}">
 		<br>
 		<br>

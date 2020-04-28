@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class RoutineController {
@@ -132,7 +133,7 @@ public class RoutineController {
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create")
 	public String processRoutineCreationForm(@Valid Routine routine, BindingResult result,
 			@PathVariable("trainerUsername") String trainerUsername, @PathVariable("trainingId") int trainingId,
-			@PathVariable("clientId") int clientId,  final ModelMap model) throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
+			@PathVariable("clientId") int clientId,  final ModelMap model,RedirectAttributes redirectAttrs) throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
 
 		if(isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
@@ -153,8 +154,13 @@ public class RoutineController {
 			}
 			catch(Exception e)
 			{
-				e.printStackTrace();
-				return "exception";
+				if(e instanceof MaxRoutinesException)
+				{
+					String error = "You cannot create more than 10 routines";
+					redirectAttrs.addFlashAttribute("error", error);
+					return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId + "/trainings/"
+					+ trainingId;
+				}
 			}
 			
 			training.getRoutines().add(routine);
@@ -226,7 +232,7 @@ public class RoutineController {
 	}
 	
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/delete")
-	public String deleteRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername)
+	public String deleteRoutine(@PathVariable("routineId")int routineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername,RedirectAttributes redirectAttrs)
 	{		
 		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
@@ -242,6 +248,10 @@ public class RoutineController {
 			e.printStackTrace();
 			return "exception";
 		}
+		
+		String deleteRoutine = " '" + routine.getName() + "' " + "has been deleted succesfully";
+		redirectAttrs.addFlashAttribute("deleteRoutine", deleteRoutine);
+		
 		return "redirect:/trainer/"+ trainerUsername + "/routines";
 	}
 	
