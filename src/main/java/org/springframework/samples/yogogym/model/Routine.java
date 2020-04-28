@@ -37,7 +37,6 @@ public class Routine extends BaseEntity{
 	@Range(min=1,max=20)
 	protected Integer repsPerWeek;
 	
-	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "routine_id")
 	protected Collection<RoutineLine> routineLine;	

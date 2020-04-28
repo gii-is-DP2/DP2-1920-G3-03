@@ -625,14 +625,7 @@ public class TrainingController {
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		Client client = this.clientService.findClientById(clientId);
 		
-		Boolean isClientFromTrainer = false;
-		for(Client c:trainer.getClients()) {
-			if(c.getUser().getUsername().equals(client.getUser().getUsername())) {
-				isClientFromTrainer=true;
-				break;
-			}
-		}
-		return isLoggedTrainer(trainerUsername)&&isClientFromTrainer;
+		return isLoggedUser(trainerUsername,true) && trainer.getClients().contains(client);
 	}
 	
 	private Boolean isLoggedUser(final String usernameURL, boolean isTrainer) {

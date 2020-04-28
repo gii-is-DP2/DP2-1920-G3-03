@@ -15,8 +15,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
 
@@ -52,7 +50,6 @@ public class Training extends BaseEntity{
 	@NotBlank
 	protected String author;
 	
-	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "training_id")
 	protected Collection<Routine> routines;

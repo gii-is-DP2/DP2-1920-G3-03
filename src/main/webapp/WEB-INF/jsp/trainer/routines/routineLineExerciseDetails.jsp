@@ -5,6 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <div class="mx-5	">	
+	<!--  
 	<c:choose>
 		<c:when test="${empty exercise.equipment.name}">
 			<p>Equipment: None</p>	
@@ -13,5 +14,6 @@
 			<p>Equipment: <c:out value="${exercise.equipment.name}"/></p>		
 		</c:otherwise>
 	</c:choose>
+	-->
 	<p>Repetition Type: <c:out value="${exercise.repetitionType}"/></p>	
 </div>

@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.ui.ModelMap;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -25,6 +26,7 @@ public class InscriptionControllerIntegrationTest {
 	
 	//ADMIN
 	
+	@Transactional
 	@Test
 	void listSubmittedInscriptionsAdmin() throws Exception{
 		ModelMap modelMap = new ModelMap();
@@ -32,6 +34,7 @@ public class InscriptionControllerIntegrationTest {
 		assertEquals(view, "admin/challenges/submittedInscriptionsList");
 	}
 	
+	@Transactional
 	@Test
 	void showSubmittedInscriptionsAdmin() throws Exception{
 		ModelMap modelMap = new ModelMap();
@@ -40,6 +43,7 @@ public class InscriptionControllerIntegrationTest {
 		assertEquals(view, "admin/challenges/submittedChallengeDetails");
 	}
 	
+	@Transactional
 	@Test
 	void showSubmittedInscriptionsAdminErrorNotSubmitted() throws Exception{
 		ModelMap modelMap = new ModelMap();
