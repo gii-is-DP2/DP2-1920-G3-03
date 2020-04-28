@@ -26,6 +26,10 @@ public class CreateBadRoutine_TrainerUITest {
 	
 	UtilsRoutineUI utils;
 
+	//Globally used
+	String username = "trainer1";
+	String password = "trainer1999";
+	
 	@BeforeEach
 	public void setUp() throws Exception {
 		driver = new FirefoxDriver();
@@ -36,10 +40,7 @@ public class CreateBadRoutine_TrainerUITest {
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateEmptyRoutine() throws Exception {
-		
-		String username = "trainer1";
-		String password = "trainer1999";
-		
+				
 		String newRoutineName = "{empty}";
 		String newRoutineDescription = "{empty}";
 		String newRoutineRepsPerWeek = "{empty}";
@@ -50,10 +51,7 @@ public class CreateBadRoutine_TrainerUITest {
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateNameEmptyRoutine() throws Exception {
-		
-		String username = "trainer1";
-		String password = "trainer1999";
-		
+				
 		String newRoutineName = "{empty}";
 		String newRoutineDescription = "Routine Description New";
 		String newRoutineRepsPerWeek = "30";
@@ -64,10 +62,7 @@ public class CreateBadRoutine_TrainerUITest {
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateDescriptionEmptyRoutine() throws Exception {
-		
-		String username = "trainer1";
-		String password = "trainer1999";
-		
+				
 		String newRoutineName = "Routine";
 		String newRoutineDescription = "{empty}";
 		String newRoutineRepsPerWeek = "30";
@@ -79,9 +74,6 @@ public class CreateBadRoutine_TrainerUITest {
 	@Test
 	public void testCreateRepsPerWeekEmptyRoutine() throws Exception {
 		
-		String username = "trainer1";
-		String password = "trainer1999";
-		
 		String newRoutineName = "Routine";
 		String newRoutineDescription = "Description";
 		String newRoutineRepsPerWeek = "{empty}";
@@ -92,9 +84,6 @@ public class CreateBadRoutine_TrainerUITest {
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateRepsPerWeekRoutineGreaterThanMax() throws Exception {
-
-		String username = "trainer1";
-		String password = "trainer1999";
 		
 		String newRoutineName = "Routine New";
 		String newRoutineDescription = "Routine Description New";
@@ -106,9 +95,6 @@ public class CreateBadRoutine_TrainerUITest {
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateRepsPerWeekRoutineNegative() throws Exception {
-
-		String username = "trainer1";
-		String password = "trainer1999";
 		
 		String newRoutineName = "Routine New";
 		String newRoutineDescription = "Routine Description New";
@@ -121,9 +107,6 @@ public class CreateBadRoutine_TrainerUITest {
 	@Test
 	public void testCreateRepsPerWeekRoutineCero() throws Exception {
 
-		String username = "trainer1";
-		String password = "trainer1999";
-		
 		String newRoutineName = "Routine New";
 		String newRoutineDescription = "Routine Description New";
 		String newRoutineRepsPerWeek = "0";

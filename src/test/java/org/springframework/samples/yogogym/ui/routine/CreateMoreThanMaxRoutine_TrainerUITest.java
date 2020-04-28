@@ -26,6 +26,10 @@ public class CreateMoreThanMaxRoutine_TrainerUITest {
 
 	UtilsRoutineUI utils;
 	
+	//Globally Used
+	String username = "trainer1";
+	String password = "trainer1999";
+		
 	@BeforeEach
 	public void setUp() throws Exception {
 		driver = new FirefoxDriver();
@@ -37,10 +41,7 @@ public class CreateMoreThanMaxRoutine_TrainerUITest {
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateMoreThan10Routines() throws Exception {
-		
-		String username = "trainer1";
-		String password = "trainer1999";
-		
+	
 		String newRoutineName = "Routine name";
 		String newRoutineDescription = "Routine Description";
 		String newRoutineRepsPerWeek = "10";

@@ -25,6 +25,10 @@ public class CreateCorrectRoutine_TrainerUITest {
 	private WebDriver driver;
 	
 	UtilsRoutineUI utils;
+	
+	//Globally used
+	String username = "trainer1";
+	String password = "trainer1999";
 
 	@BeforeEach
 	public void setUp() throws Exception {
@@ -36,10 +40,7 @@ public class CreateCorrectRoutine_TrainerUITest {
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateRoutineCorrect() throws Exception {
-		
-		String username = "trainer1";
-		String password = "trainer1999";
-		
+				
 		String newRoutineName = "Routine New";
 		String newRoutineDescription = "Routine Description New";
 		//No poner un numero superior a 20, si no saltaría excepción

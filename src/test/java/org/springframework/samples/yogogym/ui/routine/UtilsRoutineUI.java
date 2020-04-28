@@ -80,6 +80,36 @@ public class UtilsRoutineUI {
 		}
 	}
 	
+	public void updateRoutine(String routineToEdit, String username, String password, String string)
+	{
+		if(!this.logged)
+			as(username,password);
+			
+		String trozos[] = string.split(":");
+		String param = trozos[0].trim();
+		String value = trozos[1].trim();
+		
+		driver.findElement(By.linkText("Trainer")).click();
+		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[3]/a/span[2]")).click();
+		driver.findElement(By.linkText(routineToEdit)).click();
+		driver.findElement(By.linkText("Edit Routine")).click();
+		
+		driver.findElement(By.id(param)).click();
+		driver.findElement(By.id(param)).clear();
+		driver.findElement(By.id(param)).sendKeys(value);
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		
+		if(param.equals("name"))
+			assertEquals("Routine Name: " + value, driver.findElement(By.xpath("//body/div/div/p")).getText());
+		
+		if(param.equals("description"))
+			assertEquals("Description: " + value, driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
+		
+		if(param.equals("repsPerWeek"))
+			assertEquals("Repetitions Per Week: " + value, driver.findElement(By.xpath("//body/div/div/p[3]")).getText());
+		
+	}
+	
 	public void deleteRoutine(String username, String password, String routineName)
 	{
 		if(!this.logged)
