@@ -18,14 +18,14 @@ public class DashboardAdminControllerIntegrationTest {
 	private DashboardsAdminController dashboardsAdminController;
 
 	@Test
-	void InitEquipmentDashboard() throws Exception {
+	void initEquipmentDashboard() throws Exception {
 		ModelMap model = new ModelMap();
 		String view = this.dashboardsAdminController.getDashboardEquipment(model);
 		assertEquals(view, "admin/dashboards/dashboardEquipment");
 	}
 
 	@Test
-	void InitChallengeDashboard() throws Exception {
+	void initChallengeDashboard() throws Exception {
 		int month = 1;
 		ModelMap model = new ModelMap();
 		String view = this.dashboardsAdminController.getDashboardChallenges(month, model);
@@ -33,7 +33,7 @@ public class DashboardAdminControllerIntegrationTest {
 	}
 
 	@Test
-	void InitGeneralDashboard() throws Exception {
+	void initGeneralDashboard() throws Exception {
 		ModelMap model = new ModelMap();
 		String view = this.dashboardsAdminController.getDashboardGeneral(model);
 		assertEquals(view, "admin/dashboards/dashboardGeneral");

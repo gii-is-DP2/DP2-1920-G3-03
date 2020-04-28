@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.samples.yogogym.web.ClasificationController;
+import org.springframework.samples.yogogym.web.DashboardClientController;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,41 +15,41 @@ import org.springframework.ui.ModelMap;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ClassificationControllerIntegrationTest {
-
+public class DashboardClientControllerIntegrationTest {
+	
 	@Autowired
-	private ClasificationController classificationController;
-
+	private DashboardClientController dashboardClientController;
+	
 	@Test
-	void showClassificationChallengeSuccessful() throws Exception {
-		ModelMap model = new ModelMap();
-		String username = "client3";
-		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client3", "client1999"));
-		SecurityContextHolder.setContext(securityContext);
-		String view = this.classificationController.getClasification(username, model);
-		assertEquals(view, "client/clasifications/clasification");
-	}
-
-	@Test
-	void showClassificationChallengeEmptySuccessful() throws Exception {
+	void initDashboardClientSuccessful() throws Exception{
 		ModelMap model = new ModelMap();
 		String username = "client1";
 		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client1", "client1999"));
+	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client1", "client1999"));
 		SecurityContextHolder.setContext(securityContext);
-		String view = this.classificationController.getClasification(username, model);
-		assertEquals(view, "client/clasifications/clasification");
+		String view = this.dashboardClientController.getDashboard(username, model);
+		assertEquals(view, "client/dashboards/dashboard");
 	}
-
+	
 	@Test
-	void showClassificationChallengeFailed() throws Exception {
+	void initDashboardClientEmpty() throws Exception{
 		ModelMap model = new ModelMap();
 		String username = "client3";
 		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client1", "client1999"));
+	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client3", "client1999"));
 		SecurityContextHolder.setContext(securityContext);
-		String view = this.classificationController.getClasification(username, model);
+		String view = this.dashboardClientController.getDashboard(username, model);
+		assertEquals(view, "client/dashboards/dashboard");
+	}
+	
+	@Test
+	void initDashboardClientFailed() throws Exception{
+		ModelMap model = new ModelMap();
+		String username = "client1";
+		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client3", "client1999"));
+		SecurityContextHolder.setContext(securityContext);
+		String view = this.dashboardClientController.getDashboard(username, model);
 		assertEquals(view, "exception");
 	}
 

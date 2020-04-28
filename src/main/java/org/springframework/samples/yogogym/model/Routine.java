@@ -13,6 +13,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -36,6 +39,7 @@ public class Routine extends BaseEntity{
 	@Max(20)
 	protected Integer repsPerWeek;
 	
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "routine_id")
 	protected Collection<RoutineLine> routineLine;	
