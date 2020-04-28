@@ -306,7 +306,7 @@ public class TrainingController {
 	
 	//Copy training
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining")
-	public String getTrainingListCopy(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, Model model) {
+	public String getTrainingListCopy(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, ModelMap model) {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
@@ -329,7 +329,7 @@ public class TrainingController {
 	}
 	
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining")
-	public String processTrainingCopy(@ModelAttribute("trainingIdToCopy") int idTrainingToCopy, @PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, Model model) {
+	public String processTrainingCopy(@ModelAttribute("trainingIdToCopy") int idTrainingToCopy, @PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, ModelMap model) {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
@@ -625,7 +625,14 @@ public class TrainingController {
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		Client client = this.clientService.findClientById(clientId);
 		
-		return isLoggedUser(trainerUsername,true)&&trainer.getClients().contains(client);
+		Boolean isClientFromTrainer = false;
+		for(Client c:trainer.getClients()) {
+			if(c.getUser().getUsername().equals(client.getUser().getUsername())) {
+				isClientFromTrainer=true;
+				break;
+			}
+		}
+		return isLoggedTrainer(trainerUsername)&&isClientFromTrainer;
 	}
 	
 	private Boolean isLoggedUser(final String usernameURL, boolean isTrainer) {

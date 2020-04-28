@@ -10,7 +10,7 @@ import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -28,7 +28,7 @@ public class ClasificationController {
 	}
 
 	@GetMapping("/client/{clientUsername}/clasification")
-	public String getClasification(@PathVariable("clientUsername") String clientUsername, Model model) {
+	public String getClasification(@PathVariable("clientUsername") String clientUsername, ModelMap model) {
 		if (isTheRealUser(clientUsername)) {
 			List<Challenge> listChallenge = this.challengeService.findChallengesByUsername(clientUsername);
 			Integer totalPoint = this.challengeService.sumPointChallengesByUsername(clientUsername);
@@ -49,7 +49,7 @@ public class ClasificationController {
 		}
 	}
 
-	private void dashboardClasification(String clientUsername, Model model, String days) {
+	private void dashboardClasification(String clientUsername, ModelMap model, String days) {
 		List<String> orderNameList = new ArrayList<String>();
 		List<Integer> orderPointList = new ArrayList<Integer>();
 		if (days.equals("Week")) {
