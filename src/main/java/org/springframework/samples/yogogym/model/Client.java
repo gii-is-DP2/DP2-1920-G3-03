@@ -81,7 +81,7 @@ public class Client extends Person {
 	@ManyToOne(cascade = CascadeType.ALL)
 	protected Guild guild;
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)
 	protected List<Inscription> inscriptions;
 	
 	

@@ -2,7 +2,10 @@ package org.springframework.samples.yogogym.web.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+
+import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +41,7 @@ public class TrainingControllerIntegrationTest {
 	private ClientService clientService;
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Transactional 
 	@Test
 	void showListAndCopyTrainingSuccessful() throws Exception {
 		ModelMap model = new ModelMap();
@@ -56,14 +60,18 @@ public class TrainingControllerIntegrationTest {
 		calCopy.add(Calendar.DAY_OF_MONTH, 15);
 		training.setEndDate(calCopy.getTime());
 		training.setClient(client);
+		training.setRoutines(new ArrayList<>());
+		
 		this.trainingService.saveTraining(training);
-		String view = this.trainingController.getTrainingListCopy(10, 1, username, model);
+		
+		String view = this.trainingController.getTrainingListCopy(11, 1, username, model);
 		assertEquals(view, "trainer/trainings/listCopyTraining");
-		String view2 = this.trainingController.processTrainingCopy(1, 10, 1, username, model);
+		String view2 = this.trainingController.processTrainingCopy(1, 11, 1, username, model);
 		assertEquals(view2, "redirect:/trainer/{trainerUsername}/trainings");
 	}
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Transactional
 	@Test
 	void showListAndCopyTrainingFailedTrainingEmpty() throws Exception {
 		ModelMap model = new ModelMap();
@@ -82,10 +90,13 @@ public class TrainingControllerIntegrationTest {
 		calCopy.add(Calendar.DAY_OF_MONTH, 7);
 		training.setEndDate(calCopy.getTime());
 		training.setClient(client);
+		training.setRoutines(new ArrayList<>());
+		
 		this.trainingService.saveTraining(training);
-		String view = this.trainingController.getTrainingListCopy(10, 1, username, model);
+		
+		String view = this.trainingController.getTrainingListCopy(11, 1, username, model);
 		assertEquals(view, "trainer/trainings/listCopyTraining");
-		String view2 = this.trainingController.processTrainingCopy(1, 10, 1, username, model);
+		String view2 = this.trainingController.processTrainingCopy(1, 11, 1, username, model);
 		assertEquals(view2, "redirect:/trainer/{trainerUsername}/trainings");
 	}
 

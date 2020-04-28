@@ -8,13 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.validator.constraints.Range;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,11 +34,9 @@ public class Routine extends BaseEntity{
 
 	@Column(name="reps_per_week")
 	@NotNull
-	@Min(1)
-	@Max(20)
+	@Range(min=1,max=20)
 	protected Integer repsPerWeek;
 	
-	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "routine_id")
 	protected Collection<RoutineLine> routineLine;	
