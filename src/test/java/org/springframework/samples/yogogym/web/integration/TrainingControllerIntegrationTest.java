@@ -57,9 +57,9 @@ public class TrainingControllerIntegrationTest {
 		training.setEndDate(calCopy.getTime());
 		training.setClient(client);
 		this.trainingService.saveTraining(training);
-		String view = this.trainingController.getTrainingListCopy(10, 1, username, model);
+		String view = this.trainingController.getTrainingListCopy(11, 1, username, model);
 		assertEquals(view, "trainer/trainings/listCopyTraining");
-		String view2 = this.trainingController.processTrainingCopy(1, 10, 1, username, model);
+		String view2 = this.trainingController.processTrainingCopy(1, 11, 1, username, model);
 		assertEquals(view2, "redirect:/trainer/{trainerUsername}/trainings");
 	}
 
@@ -83,9 +83,9 @@ public class TrainingControllerIntegrationTest {
 		training.setEndDate(calCopy.getTime());
 		training.setClient(client);
 		this.trainingService.saveTraining(training);
-		String view = this.trainingController.getTrainingListCopy(10, 1, username, model);
+		String view = this.trainingController.getTrainingListCopy(11, 1, username, model);
 		assertEquals(view, "trainer/trainings/listCopyTraining");
-		String view2 = this.trainingController.processTrainingCopy(1, 10, 1, username, model);
+		String view2 = this.trainingController.processTrainingCopy(1, 11, 1, username, model);
 		assertEquals(view2, "redirect:/trainer/{trainerUsername}/trainings");
 	}
 

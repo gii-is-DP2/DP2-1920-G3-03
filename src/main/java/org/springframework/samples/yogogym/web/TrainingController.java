@@ -632,7 +632,8 @@ public class TrainingController {
 				break;
 			}
 		}
-		return isLoggedTrainer(trainerUsername)&&isClientFromTrainer;
+		
+		return isLoggedUser(trainerUsername,true) && isClientFromTrainer;
 	}
 	
 	private Boolean isLoggedUser(final String usernameURL, boolean isTrainer) {
