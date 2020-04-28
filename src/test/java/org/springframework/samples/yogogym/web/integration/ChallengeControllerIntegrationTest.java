@@ -6,8 +6,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 
-import org.junit.After;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +15,11 @@ import org.springframework.samples.yogogym.web.ChallengeController;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.MapBindingResult;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -304,6 +302,7 @@ public class ChallengeControllerIntegrationTest {
 	
 	//CLIENT
 	
+	@Transactional
 	@Test
 	void listChallengesClient() throws Exception{
 		ModelMap modelMap = new ModelMap();
@@ -316,6 +315,7 @@ public class ChallengeControllerIntegrationTest {
 		assertEquals(view, "client/challenges/challengesList");
 	}
 	
+	@Transactional
 	@Test 
 	void showChallengeByIdClient() throws Exception{
 		ModelMap modelMap = new ModelMap();
@@ -328,7 +328,8 @@ public class ChallengeControllerIntegrationTest {
 		String view = this.challengeController.showChallengeByIdClient("client1", challengeId, modelMap);
 		assertEquals(view, "client/challenges/challengeDetails");
 	}
-
+	
+	@Transactional
 	@Test 
 	void showChallengeByIdClientErrorAlreadyInscribed() throws Exception{
 		ModelMap modelMap = new ModelMap();
@@ -354,6 +355,7 @@ public class ChallengeControllerIntegrationTest {
 		assertEquals(view, "client/challenges/myChallengesList");
 	}
 	
+	@Transactional
 	@Test
 	void showAndEditMyChallengeByIdClient() throws Exception{
 		ModelMap modelMap = new ModelMap();
@@ -367,6 +369,7 @@ public class ChallengeControllerIntegrationTest {
 		assertEquals(view, "client/challenges/myChallengeDetailsAndUpdate");
 	}
 	
+	@Transactional
 	@Test
 	void showAndEditMyChallengeByIdClientErrorNotHisChallenge() throws Exception{
 		ModelMap modelMap = new ModelMap();

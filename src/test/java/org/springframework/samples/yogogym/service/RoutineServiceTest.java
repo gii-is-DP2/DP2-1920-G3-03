@@ -202,6 +202,7 @@ public class RoutineServiceTest {
 		Routine routine = this.routineService.findRoutineById(routineId);
 		//Get the specified training that contained the deleted routine
 		Training training = this.trainingService.findTrainingById(trainingId);
+		training.setInitialDate(Calendar.getInstance().getTime());
 		training.setEndDate(newEndDate);
 		training.setEditingPermission(editPerm);
 		try {

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.samples.yogogym.web.DashboardsAdminController;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 
 @ExtendWith(SpringExtension.class)
@@ -24,6 +25,7 @@ public class DashboardAdminControllerIntegrationTest {
 		assertEquals(view, "admin/dashboards/dashboardEquipment");
 	}
 
+	@Transactional
 	@Test
 	void initChallengeDashboard() throws Exception {
 		int month = 1;
