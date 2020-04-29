@@ -17,6 +17,7 @@ import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
+import org.springframework.samples.yogogym.model.User;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.TrainerService;
@@ -67,7 +68,7 @@ public class TrainingController {
 	@GetMapping("/trainer/{trainerUsername}/trainings")
 	public String ClientTrainingList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
 		
-		if(!isLoggedTrainer(trainerUsername))
+		if(!isLoggedUser(trainerUsername,true))
 			return "exception";
 		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
@@ -238,7 +239,8 @@ public class TrainingController {
 		else {
 			
 			if(oldTraining.getEndDate().before(now)&&!training.getEndDate().equals(oldTraining.getEndDate())
-				||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+				||training.getEditingPermission().equals(EditingPermission.CLIENT)
+				||(!oldTraining.getAuthor().equals(trainerUsername)&&!training.getEditingPermission().equals(oldTraining.getEditingPermission()))) {
 				return "exception";
 			}
 			
@@ -292,23 +294,19 @@ public class TrainingController {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
-		if(!isClientOfLoggedTrainer(clientId,trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+		if(training==null||!isClientOfLoggedTrainer(clientId,trainerUsername)||!training.getAuthor().equals(trainerUsername)) {
 			return "exception";
 		}
-			
-		if(training!=null&&!training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+		else {
 			this.trainingService.deleteTraining(training);
 			redirectAttrs.addFlashAttribute("deleteMessage", "The training was deleted successfully");
 			return "redirect:/trainer/{trainerUsername}/trainings";
-		}
-		else {
-			return "exception";
 		}
 	}
 	
 	//Copy training
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining")
-	public String getTrainingListCopy(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, Model model) {
+	public String getTrainingListCopy(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, ModelMap model) {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
@@ -331,7 +329,7 @@ public class TrainingController {
 	}
 	
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining")
-	public String processTrainingCopy(@ModelAttribute("trainingIdToCopy") int idTrainingToCopy, @PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, Model model) {
+	public String processTrainingCopy(@ModelAttribute("trainingIdToCopy") int idTrainingToCopy, @PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, ModelMap model) {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
@@ -398,8 +396,12 @@ public class TrainingController {
 	//CLIENT
 		
 	@GetMapping("/client/{clientUsername}/trainings")
-	public String getTrainingList(@PathVariable("clientUsername")final String clientUsername, Model model)
-	{
+	public String getTrainingList(@PathVariable("clientUsername") String clientUsername, Model model) {
+		
+		if(!isLoggedUser(clientUsername,false)) {
+			return "exception";
+		}
+		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		Collection<Training> trainings = this.trainingService.findTrainingFromClient(client.getId());
 		
@@ -409,8 +411,12 @@ public class TrainingController {
 	}
 	
 	@GetMapping("/client/{clientUsername}/trainings/{trainingId}")
-	public String getTrainingDetails(@PathVariable("clientUsername")final String clientUsername, @PathVariable("trainingId")final int trainingId, Model model)
-	{
+	public String getTrainingDetails(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") int trainingId, Model model) {
+		
+		if(!isLoggedUser(clientUsername,false)) {
+			return "exception";
+		}
+		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		
@@ -420,18 +426,221 @@ public class TrainingController {
 		return "client/trainings/trainingsDetails";
 	}
 	
+	@GetMapping("/client/{clientUsername}/trainings/create")
+	public String initTrainingCreateForm(@PathVariable("clientUsername") String clientUsername, ModelMap model) {
+		
+		if(!isLoggedUser(clientUsername,false)) {
+			return "exception";
+		}
+		
+		Training training = new Training();
+		Client client = this.clientService.findClientByUsername(clientUsername);
+
+		model.addAttribute("training", training);
+		model.addAttribute("client", client);
+
+		return "client/trainings/trainingCreateOrUpdate";
+	}
+
+	@PostMapping("/client/{clientUsername}/trainings/create")
+	public String processTrainingCreateForm(@Valid Training training, BindingResult result,
+			@PathVariable("clientUsername") String clientUsername, ModelMap model) {
+		
+		if(!isLoggedUser(clientUsername,false)) {
+			return "exception";
+		}
+		
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		model.addAttribute("client", client);
+		
+		if (result.hasErrors()) {
+			model.put("training", training);
+			return "client/trainings/trainingCreateOrUpdate";
+		} else {
+			if(!training.getAuthor().equals(clientUsername)||training.getEditingPermission().equals(EditingPermission.TRAINER)||!training.getClient().equals(client)) {
+				return "exception";
+			}
+			try {			
+				this.trainingService.saveTraining(training);
+			} 
+			catch (Exception e) {
+				if(e instanceof PastInitException) {
+					result.rejectValue("initialDate", null, "The initial date cannot be in the past");
+				}
+				else if (e instanceof PastEndException) {
+					result.rejectValue("endDate", null, "The end date cannot be in the past");
+				}
+				else if (e instanceof EndBeforeEqualsInitException) {
+					result.rejectValue("endDate", null, "The end date must be after the initial date");
+				}
+				else if (e instanceof LongerThan90DaysException) {
+					result.rejectValue("endDate", null, "The training cannot be longer than 90 days");
+				}
+				else if (e instanceof InitInTrainingException) {
+					InitInTrainingException ex = (InitInTrainingException) e;
+					result.rejectValue("initialDate", null, "The training cannot start in a period "
+						+ "with other training (The other training is from " + ex.getInitAssoc() + " to " + ex.getEndAssoc() + ")");
+				}
+				else if (e instanceof EndInTrainingException) {
+					EndInTrainingException ex = (EndInTrainingException) e;
+					result.rejectValue("endDate", null, "The training cannot end in a period "
+						+ "with other training (The other training is from " + ex.getInitAssoc() + " to " + ex.getEndAssoc() + ")");
+				}
+				else if (e instanceof PeriodIncludingTrainingException) {
+					PeriodIncludingTrainingException ex = (PeriodIncludingTrainingException) e;
+					result.rejectValue("endDate", null, "The training cannot be in a period "
+						+ "which includes another training (The other training is from " + ex.getInitAssoc() + " to " + ex.getEndAssoc() + ")");
+				}
+				return "client/trainings/trainingCreateOrUpdate";
+			} 
+			
+			List<Training> allTrainingsClient = new ArrayList<Training>(this.trainingService.findTrainingFromClient(client.getId()));
+			Training newTraining = allTrainingsClient.get(allTrainingsClient.size()-1);
+			return "redirect:/client/{clientUsername}/trainings/"+newTraining.getId();
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/edit")
+	public String initTrainingUpdateForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientUsername") String clientUsername, Model model) {
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+		
+		if(!isLoggedUser(clientUsername,false)||training.getEditingPermission().equals(EditingPermission.TRAINER)) {
+			return "exception";
+		}
+		
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		
+		Date now = new Date();
+		now = new Date(now.getYear(), now.getMonth(), now.getDate());
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String actualDate = dateFormat.format(now);
+		
+		model.addAttribute("endDateAux", training.getEndDate());
+		model.addAttribute("actualDate", actualDate);
+		model.addAttribute("training", training);
+		model.addAttribute("client", client);
+		return "client/trainings/trainingCreateOrUpdate";
+	}
+	
+	@SuppressWarnings("deprecation")
+	@PostMapping("/client/{clientUsername}/trainings/{trainingId}/edit")
+	public String processTrainingUpdateForm(@Valid Training training, BindingResult result, 
+		@PathVariable("trainingId") int trainingId, @PathVariable("clientUsername") String clientUsername, ModelMap model) {
+		
+		Training oldTraining = this.trainingService.findTrainingById(trainingId);
+		
+		if(!isLoggedUser(clientUsername,false)||oldTraining.getEditingPermission().equals(EditingPermission.TRAINER)) {
+			return "exception";
+		}
+
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		Date now = new Date();
+		now = new Date(now.getYear(), now.getMonth(), now.getDate());
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String actualDate = dateFormat.format(now);
+		
+		model.addAttribute("endDateAux", oldTraining.getEndDate());
+		model.addAttribute("actualDate", actualDate);
+		model.addAttribute("client", client);
+		
+		training.setId(trainingId);
+		
+		if (result.hasErrors()) {
+			model.put("training", training);
+			return "client/trainings/trainingCreateOrUpdate";
+		} 
+		else {
+			
+			if(oldTraining.getEndDate().before(now)&&!training.getEndDate().equals(oldTraining.getEndDate())
+				||training.getEditingPermission().equals(EditingPermission.TRAINER)
+				||(!oldTraining.getAuthor().equals(clientUsername)&&!training.getEditingPermission().equals(oldTraining.getEditingPermission()))) {
+				return "exception";
+			}
+			
+			training.setAuthor(oldTraining.getAuthor());
+			training.setClient(oldTraining.getClient());
+			training.setInitialDate(oldTraining.getInitialDate());
+			training.setDiet(oldTraining.getDiet());
+			training.setRoutines(oldTraining.getRoutines());
+			training.setId(trainingId);
+			
+			try {
+				this.trainingService.saveTraining(training);
+			} 
+			catch (Exception e) {
+				if(e instanceof PastInitException) {
+					result.rejectValue("initialDate", null, "The initial date cannot be in the past");
+				}
+				else if (e instanceof PastEndException) {
+					result.rejectValue("endDate", null, "The end date cannot be in the past");
+				}
+				else if (e instanceof EndBeforeEqualsInitException) {
+					result.rejectValue("endDate", null, "The end date must be after the initial date");
+				}
+				else if (e instanceof LongerThan90DaysException) {
+					result.rejectValue("endDate", null, "The training cannot be longer than 90 days");
+				}
+				else if (e instanceof InitInTrainingException) {
+					InitInTrainingException ex = (InitInTrainingException) e;
+					result.rejectValue("initialDate", null, "The training cannot start in a period "
+						+ "with other training (The other training is from " + ex.getInitAssoc() + " to " + ex.getEndAssoc() + ")");
+				}
+				else if (e instanceof EndInTrainingException) {
+					EndInTrainingException ex = (EndInTrainingException) e;
+					result.rejectValue("endDate", null, "The training cannot end in a period "
+						+ "with other training (The other training is from " + ex.getInitAssoc() + " to " + ex.getEndAssoc() + ")");
+				}
+				else if (e instanceof PeriodIncludingTrainingException) {
+					PeriodIncludingTrainingException ex = (PeriodIncludingTrainingException) e;
+					result.rejectValue("endDate", null, "The training cannot be in a period "
+						+ "which includes another training (The other training is from " + ex.getInitAssoc() + " to " + ex.getEndAssoc() + ")");
+				}
+				return "client/trainings/trainingCreateOrUpdate";
+			}
+			
+			return "redirect:/client/{clientUsername}/trainings/{trainingId}";
+		}
+	}
+	
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/delete")
+	public String processDeleteTrainingForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientUsername") String clientUsername,RedirectAttributes redirectAttrs) {
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+				
+		if(training==null||!isLoggedUser(clientUsername,false)||!training.getAuthor().equals(clientUsername)) {
+			return "exception";
+		}
+		else {
+			this.trainingService.deleteTraining(training);
+			redirectAttrs.addFlashAttribute("deleteMessage", "The training was deleted successfully");
+			return "redirect:/client/{clientUsername}/trainings";
+		}
+	}
+	
 	//Derivative
 	
 	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 		Client client = this.clientService.findClientById(clientId);
 		
-		return isLoggedTrainer(trainerUsername)&&trainer.getClients().contains(client);
+		return isLoggedUser(trainerUsername,true) && trainer.getClients().contains(client);
 	}
 	
-	private Boolean isLoggedTrainer(final String trainerUsername) {
+	private Boolean isLoggedUser(final String usernameURL, boolean isTrainer) {
 		
-		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
+		User user;
+		
+		if(isTrainer) {
+			Trainer trainer = this.trainerService.findTrainer(usernameURL);
+			user = trainer.getUser();
+		}
+		else {
+			Client client = this.clientService.findClientByUsername(usernameURL);
+			user = client.getUser();
+		}
+		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = "";
 		
@@ -442,7 +651,7 @@ public class TrainingController {
 			username = principal.toString();
 		}
 		
-		return trainer.getUser().getUsername().equals(username);
+		return user.getUsername().equals(username);
 	}
 	
 }

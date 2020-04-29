@@ -22,12 +22,16 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -69,7 +73,8 @@ public class Client extends Person {
 	
 	@Column(name="isPublic")
 	protected Boolean isPublic;
-
+	
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(cascade = CascadeType.ALL)
 	protected Collection<Training> trainings;
 

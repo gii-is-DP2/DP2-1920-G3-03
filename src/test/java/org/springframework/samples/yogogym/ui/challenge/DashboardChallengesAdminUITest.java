@@ -1,116 +1,112 @@
 package org.springframework.samples.yogogym.ui.challenge;
 
-import java.util.regex.Pattern;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.*;
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-import org.openqa.selenium.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DashboardChallengesAdminUITest {
-  private WebDriver driver;
-  private String baseUrl;
-  private boolean acceptNextAlert = true;
-  private StringBuffer verificationErrors = new StringBuffer();
 
-  @BeforeEach
-  public void setUp() throws Exception {
-    driver = new FirefoxDriver();
-    baseUrl = "https://www.google.com/";
-    driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-  }
+	@LocalServerPort
+	private int port;
 
-  @Test
-  public void testDashboardChallengesAdminUI() throws Exception {
-    driver.get("http://localhost:8080/");
-    driver.findElement(By.linkText("Login")).click();
-    driver.findElement(By.id("password")).clear();
-    driver.findElement(By.id("password")).sendKeys("admin1999");
-    driver.findElement(By.id("username")).clear();
-    driver.findElement(By.id("username")).sendKeys("admin1");
-    driver.findElement(By.xpath("//button[@type='submit']")).click();
-    driver.findElement(By.linkText("Admin")).click();
-    driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[4]/a/span[2]")).click();
-    driver.findElement(By.id("month")).click();
-    new Select(driver.findElement(By.id("month"))).selectByVisibleText("January");
-    driver.findElement(By.xpath("//option[@value='1']")).click();
-    driver.findElement(By.xpath("//input[@value='Change']")).click();
-    try {
-      assertEquals("Julio Enrique Guerrero", driver.findElement(By.xpath("//b")).getText());
-    } catch (Error e) {
-      verificationErrors.append(e.toString());
-    }
-    try {
-      assertEquals("Gym for Dummies", driver.findElement(By.xpath("//h5[2]/b")).getText());
-    } catch (Error e) {
-      verificationErrors.append(e.toString());
-    }
-    driver.findElement(By.id("month")).click();
-    new Select(driver.findElement(By.id("month"))).selectByVisibleText("February");
-    driver.findElement(By.xpath("//option[@value='2']")).click();
-    driver.findElement(By.xpath("//input[@value='Change']")).click();
-    try {
-      assertEquals("There are no challenges ending this month. Create one!", driver.findElement(By.xpath("//h2")).getText());
-    } catch (Error e) {
-      verificationErrors.append(e.toString());
-    }
-    try {
-      assertEquals("Create Challenge", driver.findElement(By.linkText("Create Challenge")).getText());
-    } catch (Error e) {
-      verificationErrors.append(e.toString());
-    }
-    driver.findElement(By.id("month")).click();
-    new Select(driver.findElement(By.id("month"))).selectByVisibleText("October");
-    driver.findElement(By.xpath("//option[@value='10']")).click();
-    driver.findElement(By.xpath("//input[@value='Change']")).click();
-    try {
-      assertEquals("No challenge is completed", driver.findElement(By.xpath("//h2")).getText());
-    } catch (Error e) {
-      verificationErrors.append(e.toString());
-    }
-  }
+	private WebDriver driver;
+	private StringBuffer verificationErrors = new StringBuffer();
 
-  @AfterEach
-  public void tearDown() throws Exception {
-    driver.quit();
-    String verificationErrorString = verificationErrors.toString();
-    if (!"".equals(verificationErrorString)) {
-      fail(verificationErrorString);
-    }
-  }
+	@BeforeEach
+	public void setUp() throws Exception {
+		driver = new FirefoxDriver();
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+	}
 
-  private boolean isElementPresent(By by) {
-    try {
-      driver.findElement(by);
-      return true;
-    } catch (NoSuchElementException e) {
-      return false;
-    }
-  }
+	@Test
+	public void testDashboardChallengesAdminUI() throws Exception {
+		as("admin1");
+		showDashboardWithChallenges();
+		showDashboardWithoutChallenges();
+		showDashboardWithoutChallengesCompleted();
+	}
 
-  private boolean isAlertPresent() {
-    try {
-      driver.switchTo().alert();
-      return true;
-    } catch (NoAlertPresentException e) {
-      return false;
-    }
-  }
+	@AfterEach
+	public void tearDown() throws Exception {
+		driver.quit();
+		String verificationErrorString = verificationErrors.toString();
+		if (!"".equals(verificationErrorString)) {
+			fail(verificationErrorString);
+		}
+	}
 
-  private String closeAlertAndGetItsText() {
-    try {
-      Alert alert = driver.switchTo().alert();
-      String alertText = alert.getText();
-      if (acceptNextAlert) {
-        alert.accept();
-      } else {
-        alert.dismiss();
-      }
-      return alertText;
-    } finally {
-      acceptNextAlert = true;
-    }
-  }
+	private void as(String username) {
+		driver.get("http://localhost:" + port);
+		driver.findElement(By.linkText("Login")).click();
+		driver.findElement(By.id("password")).clear();
+		driver.findElement(By.id("password")).sendKeys("admin1999");
+		driver.findElement(By.id("username")).clear();
+		driver.findElement(By.id("username")).sendKeys(username);
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+	}
+
+	private void showDashboardWithChallenges() {
+		driver.findElement(By.linkText("Admin")).click();
+		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[4]/a/span[2]")).click();
+		driver.findElement(By.id("month")).click();
+		new Select(driver.findElement(By.id("month"))).selectByVisibleText("January");
+		driver.findElement(By.xpath("//option[@value='1']")).click();
+		driver.findElement(By.xpath("//input[@value='Change']")).click();
+		try {
+			assertEquals("Julio Enrique Guerrero", driver.findElement(By.xpath("//b")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
+		try {
+			assertEquals("Gym for Dummies", driver.findElement(By.xpath("//h5[2]/b")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
+	}
+
+	private void showDashboardWithoutChallenges() {
+		driver.findElement(By.id("month")).click();
+		new Select(driver.findElement(By.id("month"))).selectByVisibleText("February");
+		driver.findElement(By.xpath("//option[@value='2']")).click();
+		driver.findElement(By.xpath("//input[@value='Change']")).click();
+		try {
+			assertEquals("There are no challenges ending this month. Create one!",
+					driver.findElement(By.xpath("//h2")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
+		try {
+			assertEquals("Create Challenge", driver.findElement(By.linkText("Create Challenge")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
+	}
+
+	private void showDashboardWithoutChallengesCompleted() {
+		driver.findElement(By.id("month")).click();
+		new Select(driver.findElement(By.id("month"))).selectByVisibleText("October");
+		driver.findElement(By.xpath("//option[@value='10']")).click();
+		driver.findElement(By.xpath("//input[@value='Change']")).click();
+		try {
+			assertEquals("No challenge is completed", driver.findElement(By.xpath("//h2")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
+	}
+
 }

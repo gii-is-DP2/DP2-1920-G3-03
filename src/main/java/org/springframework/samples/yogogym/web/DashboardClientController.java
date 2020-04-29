@@ -7,7 +7,7 @@ import org.springframework.samples.yogogym.service.DashboardClientService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -23,7 +23,7 @@ public class DashboardClientController {
 	}
 
 	@GetMapping("/client/{usernameClient}/dashboard")
-	public String getDashboard(@PathVariable("usernameClient") String usernameClient, Model model) {
+	public String getDashboard(@PathVariable("usernameClient") String usernameClient, ModelMap model) {
 		if (isTheRealUser(usernameClient)) {
 			dashboard(usernameClient, 28, "Month", model);
 			dashboard(usernameClient, null, "All", model);
@@ -33,7 +33,7 @@ public class DashboardClientController {
 		}
 	}
 
-	private void dashboard(String username, Integer days, String string, Model model) {
+	private void dashboard(String username, Integer days, String string, ModelMap model) {
 		List<Integer> countBodyPart = this.dashboardClientService.countBodyPart(days, username);
 		List<String> nameBodyPart = this.dashboardClientService.nameBodyPart(days, username);
 		List<Integer> countRepetitionType = this.dashboardClientService.countRepetitionType(days, username);
