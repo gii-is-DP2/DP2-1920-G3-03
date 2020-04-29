@@ -261,6 +261,7 @@ class TrainingControllerTests {
 		given(this.trainingService.findTrainingWithPublicClient()).willReturn(trainingList);
 		given(this.trainingService.findTrainingIdFromClient(CLIENT1_ID)).willReturn(trainingIdList);
 		given(this.trainingService.findTrainingIdFromClient(CLIENT2_ID)).willReturn(new ArrayList<>());
+		given(this.clientService.isPublicByTrainingId(CLIENT1_TRAINING4_ID)).willReturn(true);
 		try {
 			given(this.clientFormatter.parse(NIF1, Locale.ENGLISH)).willReturn(client1);
 		} catch (ParseException e) {
