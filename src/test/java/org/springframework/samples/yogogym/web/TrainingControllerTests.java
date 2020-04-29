@@ -684,7 +684,7 @@ class TrainingControllerTests {
     @WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
     @ParameterizedTest
 	@ValueSource(ints = {CLIENT1_TRAINING1_ID,CLIENT1_TRAINING3_ID})
-   	void testGetTrainingListCopyGood(int trainingId) throws Exception {
+   	void testGetTrainingListCopySuccessful(int trainingId) throws Exception {
    		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining", TRAINER1_USERNAME,CLIENT1_ID,trainingId))
    				.andExpect(status().isOk())
    				.andExpect(view().name("trainer/trainings/listCopyTraining"));

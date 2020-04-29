@@ -50,7 +50,7 @@ public class DashboardClientControllerE2ETest {
 	
 	@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
 	@Test
-	void testInitAllDashboardClient() throws Exception {
+	void testInitAllDashboardClientSuccessful() throws Exception {
 		mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
 				.andExpect(view().name("client/dashboards/dashboard"))
 				.andExpect(model().attribute("hasBodyPartsMonth", true))
@@ -68,6 +68,25 @@ public class DashboardClientControllerE2ETest {
 				.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE_ALL))
 				.andExpect(model().attribute("kcalMonth", SUM_KCAL))
 				.andExpect(model().attribute("kcalAll", SUM_KCAL_ALL));
+	}
+	
+	@WithMockUser(username = TEST_USERNAME2, authorities = { "client" })
+	@Test
+	void testInitEmptyDashboardClientSuccessful() throws Exception {
+		mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME2)).andExpect(status().isOk())
+				.andExpect(view().name("client/dashboards/dashboard"))
+				.andExpect(model().attribute("hasBodyPartsMonth", false))
+				.andExpect(model().attribute("hasBodyPartsAll", false))
+				.andExpect(model().attribute("hasRepetitionTypeMonth", false))
+				.andExpect(model().attribute("hasRepetitionTypeAll", false))
+				.andExpect(model().attribute("hasKcalMonth", false)).andExpect(model().attribute("hasKcalAll", false));
+	}
+	
+	@WithMockUser(username = TEST_USERNAME2, authorities = { "client" })
+	@Test
+	void testInitAllDashboardClientFailedUser() throws Exception {
+		mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+				.andExpect(view().name("exception"));
 	}
 
 }

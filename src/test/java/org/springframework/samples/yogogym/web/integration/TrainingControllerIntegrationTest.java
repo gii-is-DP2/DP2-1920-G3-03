@@ -54,9 +54,7 @@ public class TrainingControllerIntegrationTest {
 	void showListAndCopyTrainingSuccessful() throws Exception {
 		ModelMap model = new ModelMap();
 		String username = "trainer1";
-		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(username, "trainer1999"));
-		SecurityContextHolder.setContext(securityContext);
+		logIn(username);
 		createTrainingEmpty(3,7);
 		
 		String view = this.trainingController.getTrainingListCopy(11, 1, username, model);
@@ -71,9 +69,7 @@ public class TrainingControllerIntegrationTest {
 	void showListAndCopyTrainingFailedOtherClient() throws Exception {
 		ModelMap model = new ModelMap();
 		String username = "trainer1";
-		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(username, "trainer1999"));
-		SecurityContextHolder.setContext(securityContext);
+		logIn(username);
 		createTrainingEmpty(3,4);
 		
 		String view = this.trainingController.getTrainingListCopy(11, 2, username, model);
@@ -88,9 +84,7 @@ public class TrainingControllerIntegrationTest {
 	void showListAndCopyTrainingFailedClientNotPublic() throws Exception {
 		ModelMap model = new ModelMap();
 		String username = "trainer1";
-		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(username, "trainer1999"));
-		SecurityContextHolder.setContext(securityContext);
+		logIn(username);
 		createTrainingEmpty(3,4);
 		
 		String view = this.trainingController.getTrainingListCopy(11, 1, username, model);
@@ -104,9 +98,8 @@ public class TrainingControllerIntegrationTest {
 	void showListAndCopyTrainingFailedTrainingNotEmpty() throws Exception {
 		ModelMap model = new ModelMap();
 		String username = "trainer1";
-		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(username, "trainer1999"));
-		SecurityContextHolder.setContext(securityContext);
+		logIn(username);
+		
 		String view = this.trainingController.getTrainingListCopy(1, 1, username, model);
 		assertEquals(view, "exception");
 		String view2 = this.trainingController.processTrainingCopy(1, 2, 1, username, model);
@@ -147,6 +140,12 @@ public class TrainingControllerIntegrationTest {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	private void logIn(String username) {
+		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(username, "trainer1999"));
+		SecurityContextHolder.setContext(securityContext);
 	}
 
 }
