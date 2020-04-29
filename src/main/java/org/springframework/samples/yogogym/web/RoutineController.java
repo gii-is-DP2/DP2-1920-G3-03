@@ -34,7 +34,6 @@ import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -70,7 +69,7 @@ public class RoutineController {
 	// TRAINER ==================================================================================
 	
 	@GetMapping("/trainer/{trainerUsername}/routines")
-	public String RoutinesList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
+	public String RoutinesList(@PathVariable("trainerUsername") String trainerUsername, ModelMap model) {
 		
 		if(!isLoggedTrainer(trainerUsername))
 			return "exception";
@@ -91,7 +90,7 @@ public class RoutineController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}")
 	public String ClientRoutineDetails(@PathVariable("trainerUsername") String trainerUsername,
 			@PathVariable("clientId") int clientId, @PathVariable("routineId") int routineId,
-			@PathVariable("trainingId") int trainingId, Model model) {
+			@PathVariable("trainingId") int trainingId, ModelMap model) {
 		
 		if(!routineExist(routineId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
@@ -115,7 +114,7 @@ public class RoutineController {
 	}
 
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create")
-	public String initRoutineCreateForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId,@PathVariable("trainerUsername")final String trainerUsername, final Model model) {
+	public String initRoutineCreateForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId,@PathVariable("trainerUsername")final String trainerUsername, final ModelMap model) {
 		
 		if(isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
@@ -275,7 +274,7 @@ public class RoutineController {
 	// CLIENT
 	
 	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/routine/create")
-	public String initProcessForm(@PathVariable("trainingId") int trainingId,@PathVariable("clientUsername")final String clientUsername, final Model model)
+	public String initProcessForm(@PathVariable("trainingId") int trainingId,@PathVariable("clientUsername")final String clientUsername, final ModelMap model)
 	{
 		if(isTrainingFinished(trainingId)|| !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId))
 			return "exception";
@@ -289,7 +288,7 @@ public class RoutineController {
 	}
 	
 	@PostMapping("/client/{clientUsername}/trainings/{trainingId}/routine/create")
-	public String postProcessForm(@Valid Routine routine,BindingResult result, @PathVariable("trainingId") int trainingId,@PathVariable("clientUsername")final String clientUsername, final Model model, RedirectAttributes redirectAttrs)
+	public String postProcessForm(@Valid Routine routine,BindingResult result, @PathVariable("trainingId") int trainingId,@PathVariable("clientUsername")final String clientUsername, final ModelMap model, RedirectAttributes redirectAttrs)
 	{
 		if(isTrainingFinished(trainingId) || !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId))
 			return "exception";
@@ -336,7 +335,7 @@ public class RoutineController {
 	}
 	
 	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/update")
-	public String initUpdateForm(@PathVariable("trainingId") int trainingId,@PathVariable("routineId") int routineId,@PathVariable("clientUsername")final String clientUsername, final Model model)
+	public String initUpdateForm(@PathVariable("trainingId") int trainingId,@PathVariable("routineId") int routineId,@PathVariable("clientUsername")final String clientUsername, final ModelMap model)
 	{
 		if(!routineExist(routineId) || isTrainingFinished(trainingId)|| !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId))
 			return "exception";
@@ -414,7 +413,13 @@ public class RoutineController {
 	public String getLoggedUsername()
 	{
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String trainerUsername = ((UserDetails)principal).getUsername();
+		
+		String trainerUsername = "";
+		
+		if(principal instanceof String)
+			trainerUsername = principal.toString();
+		else
+			trainerUsername = ((UserDetails)principal).getUsername();
 		
 		return trainerUsername;
 	}

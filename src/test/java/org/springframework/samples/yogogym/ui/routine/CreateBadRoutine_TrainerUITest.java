@@ -12,9 +12,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -37,7 +36,6 @@ public class CreateBadRoutine_TrainerUITest {
 		utils = new UtilsRoutineUI(port, driver);		
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateEmptyRoutine() throws Exception {
 				
@@ -48,7 +46,6 @@ public class CreateBadRoutine_TrainerUITest {
 		utils.createRoutine(username,password,newRoutineName, newRoutineDescription, newRoutineRepsPerWeek,0);
 	}
 	
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateNameEmptyRoutine() throws Exception {
 				
@@ -59,7 +56,6 @@ public class CreateBadRoutine_TrainerUITest {
 		utils.createRoutine(username,password,newRoutineName, newRoutineDescription, newRoutineRepsPerWeek,0);
 	}
 	
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateDescriptionEmptyRoutine() throws Exception {
 				
@@ -70,7 +66,7 @@ public class CreateBadRoutine_TrainerUITest {
 		utils.createRoutine(username,password,newRoutineName, newRoutineDescription, newRoutineRepsPerWeek,0);
 	}
 	
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Transactional
 	@Test
 	public void testCreateRepsPerWeekEmptyRoutine() throws Exception {
 		
@@ -81,7 +77,6 @@ public class CreateBadRoutine_TrainerUITest {
 		utils.createRoutine(username,password,newRoutineName, newRoutineDescription, newRoutineRepsPerWeek,0);
 	}
 	
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateRepsPerWeekRoutineGreaterThanMax() throws Exception {
 		
@@ -92,7 +87,6 @@ public class CreateBadRoutine_TrainerUITest {
 		utils.createRoutine(username,password,newRoutineName, newRoutineDescription, newRoutineRepsPerWeek,0);
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateRepsPerWeekRoutineNegative() throws Exception {
 		
@@ -103,7 +97,6 @@ public class CreateBadRoutine_TrainerUITest {
 		utils.createRoutine(username,password,newRoutineName, newRoutineDescription, newRoutineRepsPerWeek,0);
 	}
 	
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateRepsPerWeekRoutineCero() throws Exception {
 
