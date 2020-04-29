@@ -190,6 +190,58 @@ public class DietController {
 			 "/trainings/" + trainingId + "/diets/" + diet.getId();
 		}
 	}
+	
+	//CLIENT
+	@GetMapping("/clients/{clientId}/trainings/{trainingId}/diets/create")
+	public String initDietCreateForm(@PathVariable("clientId") int clientId,
+			@PathVariable("trainingId") int trainingId, Model model) {
+		
+		Diet diet = new Diet();
+		Client client = this.clientService.findClientById(clientId);
+		Training training = this.trainingService.findTrainingById(trainingId);
+		List<DietType> dietTypes = Arrays.asList(DietType.values());
+
+		model.addAttribute("diet", diet);
+		model.addAttribute("client", client);
+		model.addAttribute("dietTypes", dietTypes);
+		model.addAttribute("training", training);
+
+		return "client/diets/dietsCreateOrUpdate";
+	}
+	
+	@PostMapping("/clients/{clientId}/trainings/{trainingId}/diets/create")
+	public String processDietCreateForm(@Valid Diet diet, BindingResult result, @PathVariable("clientId") int clientId,
+			@PathVariable("trainingId") int trainingId, Model model) {
+		DietType dietType = this.dietService.selectDietType(trainingId);
+		
+		if(isTrainingFinished(trainingId))
+			return "exception";
+
+		if (result.hasErrors()) {
+			
+			model.addAttribute("dietType", dietType);
+			return "client/diets/dietsCreateOrUpdate";
+			
+		} else {
+			
+			Training training = this.trainingService.findTrainingById(trainingId);
+			
+			diet.setType(dietType);
+			diet = generateDiet(diet, clientId);
+					
+			training.setDiet(diet);
+
+			try {
+				this.trainingService.saveTraining(training);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return "redirect:/clients/" + clientId + "/trainings/"+ training.getId();
+			
+		}
+	}
+
 
 	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
