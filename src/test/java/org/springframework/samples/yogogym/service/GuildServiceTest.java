@@ -45,7 +45,7 @@ public class GuildServiceTest {
 	void shouldFindClientsByGuild() {
 		Guild guild = this.guildService.findGuildById(1);
 		Collection<Client> clients = this.guildService.findAllClientesByGuild(guild);
-		assertThat(clients.size()).isEqualTo(3);
+		assertThat(clients.size()).isEqualTo(2);
 	}
 	
 	@Test
