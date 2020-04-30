@@ -17,10 +17,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DeleteGuildNotYoursUITest {
-	
+
 	@LocalServerPort
 	private int port;
-	
+
 	private WebDriver driver;
 	private String baseUrl;
 	private boolean acceptNextAlert = true;
@@ -34,20 +34,11 @@ public class DeleteGuildNotYoursUITest {
 	}
 
 	@Test
-	public void testUntitledTestCase() throws Exception {
-		driver.get("http://localhost:"+port);
-		driver.findElement(By.linkText("Login")).click();
-		driver.findElement(By.id("username")).click();
-		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys("client4");
-		driver.findElement(By.id("password")).clear();
-		driver.findElement(By.id("password")).sendKeys("client1999");
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		driver.findElement(By.linkText("Client")).click();
-		driver.findElement(By.linkText("Guilds")).click();
-		driver.findElement(By.linkText("Calisthenics")).click();
-		driver.get("http://localhost:"+port+"/client/client4/guilds/1/delete");
-		assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
+	public void testDeleteGuildNotYours() throws Exception {
+
+		as("client4");
+		accessDeleteGuildNotYours();
+		exceptionViewShown();
 	}
 
 	@AfterEach
@@ -59,4 +50,32 @@ public class DeleteGuildNotYoursUITest {
 		}
 	}
 
+	private void as(String username) {
+
+		driver.get("http://localhost:" + port);
+		driver.findElement(By.linkText("Login")).click();
+		driver.findElement(By.id("username")).click();
+		driver.findElement(By.id("username")).clear();
+		driver.findElement(By.id("username")).sendKeys(username);
+		driver.findElement(By.id("password")).clear();
+		driver.findElement(By.id("password")).sendKeys("client1999");
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+
+	}
+
+	private void accessDeleteGuildNotYours() {
+
+		driver.findElement(By.linkText("Client")).click();
+		driver.findElement(By.linkText("Guilds")).click();
+		driver.findElement(By.linkText("Calisthenics")).click();
+		driver.get("http://localhost:" + port + "/client/client4/guilds/1/delete");
+	}
+
+	private void exceptionViewShown() {
+		try {
+			assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
+	}
 }

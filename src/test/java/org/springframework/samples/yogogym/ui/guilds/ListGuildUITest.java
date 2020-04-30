@@ -37,17 +37,10 @@ public class ListGuildUITest {
 	}
 
 	@Test
-	public void testUntitledTestCase() throws Exception {
-		driver.get("http://localhost:"+port);
-		driver.findElement(By.linkText("Login")).click();
-		driver.findElement(By.id("username")).click();
-		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys("client1");
-		driver.findElement(By.id("password")).clear();
-		driver.findElement(By.id("password")).sendKeys("client1999");
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		driver.findElement(By.linkText("Client")).click();
-		driver.findElement(By.linkText("Guilds")).click();
+	public void testListGuild() throws Exception {
+		
+		as("client1");
+		listGuilds();
 	}
 
 	@AfterEach
@@ -57,6 +50,24 @@ public class ListGuildUITest {
 		if (!"".equals(verificationErrorString)) {
 			fail(verificationErrorString);
 		}
+	}
+	
+	private void as(String username) {
+		
+		driver.get("http://localhost:"+port);
+		driver.findElement(By.linkText("Login")).click();
+		driver.findElement(By.id("username")).click();
+		driver.findElement(By.id("username")).clear();
+		driver.findElement(By.id("username")).sendKeys(username);
+		driver.findElement(By.id("password")).clear();
+		driver.findElement(By.id("password")).sendKeys("client1999");
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+	}
+	
+	private void listGuilds() {
+		
+		driver.findElement(By.linkText("Client")).click();
+		driver.findElement(By.linkText("Guilds")).click();
 	}
 
 }

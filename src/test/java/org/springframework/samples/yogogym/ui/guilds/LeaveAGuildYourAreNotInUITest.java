@@ -34,19 +34,11 @@ public class LeaveAGuildYourAreNotInUITest {
 	}
 
 	@Test
-	public void testUntitledTestCase() throws Exception {
-		driver.get("http://localhost:"+port);
-		driver.findElement(By.linkText("Login")).click();
-		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys("client6");
-		driver.findElement(By.id("password")).clear();
-		driver.findElement(By.id("password")).sendKeys("client1999");
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		driver.findElement(By.linkText("Client")).click();
-		driver.findElement(By.linkText("Guilds")).click();
-		driver.findElement(By.linkText("Calisthenics")).click();
-		driver.get("http://localhost:"+port+"/client/client6/guilds/1/leave");
-		assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
+	public void testLeaveAGuildYouAreNotIn() throws Exception {
+		
+		as("client6");
+		leaveGuild();
+		exceptionViewShown();
 	}
 
 	@AfterEach
@@ -57,6 +49,31 @@ public class LeaveAGuildYourAreNotInUITest {
 			fail(verificationErrorString);
 		}
 	}
+	private void as(String username) {
 
+		driver.get("http://localhost:" + port);
+		driver.findElement(By.linkText("Login")).click();
+		driver.findElement(By.id("username")).clear();
+		driver.findElement(By.id("username")).sendKeys(username);
+		driver.findElement(By.id("password")).clear();
+		driver.findElement(By.id("password")).sendKeys("client1999");
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+	}
+
+	private void leaveGuild() {
+
+		driver.findElement(By.linkText("Client")).click();
+		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[6]/a/span[2]")).click();
+		driver.findElement(By.linkText("Calisthenics")).click();
+		driver.get("http://localhost:"+port+"/client/client6/guilds/1/leave");
+	}
+	
+	private void exceptionViewShown() {
+		try {
+			assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
+	}
 
 }

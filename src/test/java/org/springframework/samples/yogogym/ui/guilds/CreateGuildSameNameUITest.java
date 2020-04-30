@@ -38,14 +38,28 @@ public class CreateGuildSameNameUITest {
 
 	@Test
 	public void testUntitledTestCase() throws Exception {
+
+		as("client4");
+		createSameName();
+		showErrors();
+
+	}
+
+	private void as(String username) {
+
 		driver.get("http://localhost:" + port);
 		driver.findElement(By.linkText("Login")).click();
 		driver.findElement(By.id("username")).click();
 		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys("client4");
+		driver.findElement(By.id("username")).sendKeys(username);
 		driver.findElement(By.id("password")).clear();
 		driver.findElement(By.id("password")).sendKeys("client1999");
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
+
+	}
+
+	private void createSameName() {
+
 		driver.findElement(By.linkText("Client")).click();
 		driver.findElement(By.linkText("Guilds")).click();
 		driver.findElement(By.linkText("Create a Guild")).click();
@@ -60,8 +74,17 @@ public class CreateGuildSameNameUITest {
 		driver.findElement(By.id("description")).clear();
 		driver.findElement(By.id("description")).sendKeys("Give me an error");
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		assertEquals("There is already a guild with that name",
-				driver.findElement(By.xpath("//form[@id='guild']/div/div[3]/div/span[2]")).getText());
+
+	}
+
+	private void showErrors() {
+		try {
+			assertEquals("There is already a guild with that name",
+					driver.findElement(By.xpath("//form[@id='guild']/div/div[3]/div/span[2]")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
+
 	}
 
 	@AfterEach

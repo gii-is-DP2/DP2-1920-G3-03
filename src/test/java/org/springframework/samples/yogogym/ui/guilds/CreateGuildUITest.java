@@ -34,15 +34,28 @@ public class CreateGuildUITest {
 	}
 
 	@Test
-	public void testUntitledTestCase() throws Exception {
+	public void testCreateGuild() throws Exception {
+
+		as("client4");
+		createGuild();
+
+	}
+
+	private void as(String username) {
+
 		driver.get("http://localhost:" + port);
 		driver.findElement(By.linkText("Login")).click();
 		driver.findElement(By.id("username")).click();
 		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys("client4");
+		driver.findElement(By.id("username")).sendKeys(username);
 		driver.findElement(By.id("password")).clear();
 		driver.findElement(By.id("password")).sendKeys("client1999");
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
+
+	}
+
+	private void createGuild() {
+
 		driver.findElement(By.linkText("Client")).click();
 		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[6]/a/span[2]")).click();
 		driver.findElement(By.linkText("Create a Guild")).click();
@@ -57,6 +70,7 @@ public class CreateGuildUITest {
 		driver.findElement(By.id("description")).sendKeys("Runners");
 		driver.findElement(By.id("description")).click();
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
+
 	}
 
 	@AfterEach

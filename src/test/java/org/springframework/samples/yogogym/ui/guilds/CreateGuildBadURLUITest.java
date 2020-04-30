@@ -37,14 +37,36 @@ public class CreateGuildBadURLUITest {
 	}
 
 	@Test
-	public void testUntitledTestCase() throws Exception {
+	public void testCreateGuildBadUrl() throws Exception {
+
+		as("client4");
+		createBadUrl();
+		showErrors();
+	}
+
+	@AfterEach
+	public void tearDown() throws Exception {
+		driver.quit();
+		String verificationErrorString = verificationErrors.toString();
+		if (!"".equals(verificationErrorString)) {
+			fail(verificationErrorString);
+		}
+	}
+
+	private void as(String username) {
+
 		driver.get("http://localhost:" + port);
 		driver.findElement(By.linkText("Login")).click();
 		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys("client4");
+		driver.findElement(By.id("username")).sendKeys(username);
 		driver.findElement(By.id("password")).clear();
 		driver.findElement(By.id("password")).sendKeys("client1999");
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
+
+	}
+
+	private void createBadUrl() {
+
 		driver.findElement(By.linkText("Client")).click();
 		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[6]/a/span[2]")).click();
 		driver.findElement(By.linkText("Create a Guild")).click();
@@ -57,17 +79,16 @@ public class CreateGuildBadURLUITest {
 		driver.findElement(By.id("description")).sendKeys("Example");
 		driver.findElement(By.xpath("//body/div")).click();
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		assertEquals("The link must start with https://",
-				driver.findElement(By.xpath("//form[@id='guild']/div/div[2]/div/span[2]")).getText());
 	}
 
-	@AfterEach
-	public void tearDown() throws Exception {
-		driver.quit();
-		String verificationErrorString = verificationErrors.toString();
-		if (!"".equals(verificationErrorString)) {
-			fail(verificationErrorString);
+	private void showErrors() {
+
+		try {
+			assertEquals("The link must start with https://",
+					driver.findElement(By.xpath("//form[@id='guild']/div/div[2]/div/span[2]")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
 		}
-	}
 
+	}
 }
