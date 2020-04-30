@@ -18,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CopyTrainingSuccessUITest {
+public class CopyTrainingListTrainingNotEmptyUITest {
 
 	@LocalServerPort
 	private int port;
@@ -35,8 +35,8 @@ public class CopyTrainingSuccessUITest {
 	@Test
 	public void testCopyTrainingUI() throws Exception {
 		as("trainer1");
-		prepareNewTraining();
-		copyTraining();
+		listTrainingToCopy();
+		exceptionViewShown();
 	}
 
 	@AfterEach
@@ -64,35 +64,17 @@ public class CopyTrainingSuccessUITest {
 		}
 	}
 
-	private void prepareNewTraining() {
-		driver.findElement(By.linkText("Trainer")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[2]/a/span[2]")).click();
-		driver.findElement(By.linkText("Add Training")).click();
-		driver.findElement(By.id("name")).click();
-		driver.findElement(By.id("name")).clear();
-		driver.findElement(By.id("name")).sendKeys("Entrenamiento3");
-		driver.findElement(By.id("initialDate")).click();
-		driver.findElement(By.xpath("//div[@id='ui-datepicker-div']/div/a[2]/span")).click();
-		driver.findElement(By.xpath("//div[@id='ui-datepicker-div']/div/a[2]/span")).click();
-		driver.findElement(By.xpath("//div[@id='ui-datepicker-div']/div/a[2]/span")).click();
-		driver.findElement(By.xpath("//div[@id='ui-datepicker-div']/div/a[2]/span")).click();
-		driver.findElement(By.xpath("//div[@id='ui-datepicker-div']/div/a[2]/span")).click();
-		driver.findElement(By.linkText("1")).click();
-		driver.findElement(By.id("endDate")).click();
-		driver.findElement(By.xpath("//div[@id='ui-datepicker-div']/div/a[2]/span")).click();
-		driver.findElement(By.xpath("//div[@id='ui-datepicker-div']/div/a[2]/span")).click();
-		driver.findElement(By.xpath("//div[@id='ui-datepicker-div']/div/a[2]/span")).click();
-		driver.findElement(By.xpath("//div[@id='ui-datepicker-div']/div/a[2]/span")).click();
-		driver.findElement(By.xpath("//div[@id='ui-datepicker-div']/div/a[2]/span")).click();
-		driver.findElement(By.linkText("7")).click();
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
+	private void listTrainingToCopy() {
+		driver.get("http://localhost:" + port + "/trainer/trainer1/clients/1/trainings/1/copyTraining");
+	}
+	
+	private void exceptionViewShown() {
+		try {
+			assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
 	}
 
-	private void copyTraining() {
-		// driver.findElement(By.linkText("Entrenamiento3")).click();
-		driver.findElement(By.linkText("Copy Training")).click();
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		driver.findElement(By.linkText("Entrenamiento3")).click();
-	}
 
 }

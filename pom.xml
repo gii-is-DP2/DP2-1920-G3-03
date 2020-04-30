@@ -278,6 +278,28 @@
 			</plugin>
         </plugins>
     </build>
+    
+    <!-- Profiles 
+    <profiles>
+    	<profile>
+    		<id>Run with MySQL</id>
+    		<activation>
+    			<activeByDefault>false</activeByDefault>
+    		</activation>
+    		<properties>
+    			<spring-boot.run.profiles>mysql</spring-boot.run.profiles>
+    		</properties>
+    	</profile>
+    	<profile>
+    		<id>Test with MySQL</id>
+    		<activation>
+    			<activeByDefault>false</activeByDefault>
+    		</activation>
+    		<properties>
+    			<spring.profiles.active>mysql</spring.profiles.active>
+    		</properties>
+    	</profile>
+    </profiles> -->
 
     <!-- Apache 2 license -->
     <licenses>
