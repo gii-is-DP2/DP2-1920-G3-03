@@ -64,7 +64,7 @@ public class TrainingServiceTests {
 		now.set(Calendar.MILLISECOND, 0);
 	}
 	
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	//@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void shouldFindAllTrainings() {
 		Collection<Training> trainings = this.trainingService.findAllTrainings();
@@ -76,7 +76,7 @@ public class TrainingServiceTests {
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
 	}
 	
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	//@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void shouldFindAllClientTrainings() {
 		Collection<Training> trainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
@@ -88,7 +88,7 @@ public class TrainingServiceTests {
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
 	}
 	
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	//@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void shouldFindCorrectTraining() {
 		Training training = this.trainingService.findTrainingById(TRAINING_ID);
@@ -97,7 +97,7 @@ public class TrainingServiceTests {
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
 	}
 	
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	//@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void shouldCountConcurrentTrainingsForInit() throws ParseException {
 		List<Integer> ids = this.trainingService.findTrainingFromClient(CLIENT_ID).stream().map(x->Integer.valueOf(x.getId())).collect(Collectors.toList());
@@ -110,7 +110,7 @@ public class TrainingServiceTests {
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
 	}
 	
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	//@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void shouldCountConcurrentTrainingsForEnd() throws ParseException {
 		List<Integer> ids = this.trainingService.findTrainingFromClient(CLIENT_ID).stream().map(x->Integer.valueOf(x.getId())).collect(Collectors.toList());
@@ -123,7 +123,7 @@ public class TrainingServiceTests {
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
 	}
 	
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	//@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void shouldCountConcurrentTrainingsForIncluding() throws ParseException {
 		List<Integer> ids = this.trainingService.findTrainingFromClient(CLIENT_ID).stream().map(x->Integer.valueOf(x.getId())).collect(Collectors.toList());
