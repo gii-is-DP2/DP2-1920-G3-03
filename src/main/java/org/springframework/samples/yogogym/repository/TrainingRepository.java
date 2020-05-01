@@ -2,6 +2,7 @@ package org.springframework.samples.yogogym.repository;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -16,17 +17,14 @@ public interface TrainingRepository extends  CrudRepository<Training, String>{
 	@Query("SELECT training FROM Training training WHERE training.id=:id")
 	public Training findTrainingById(@Param("id")int id);
 	
-	@Query("SELECT training FROM Client client JOIN client.trainings training WHERE client.id=:clientId AND training.id!=:trainingId AND (:init BETWEEN training.initialDate AND training.endDate) ORDER BY training.initialDate ASC")
-	public Collection<Training> prueba(@Param("clientId") int clientId, @Param("trainingId") int trainingId, @Param("init") Date init);
+	@Query("SELECT training FROM Training training WHERE training.id IN :ids AND training.id!=:trainingId AND (:init BETWEEN training.initialDate AND training.endDate) ORDER BY training.initialDate ASC")
+	public Collection<Training> countConcurrentTrainingsForInit(@Param("ids") List<Integer> ids, @Param("trainingId") int trainingId, @Param("init") Date init);
 	
-	@Query("SELECT training FROM Client client JOIN client.trainings training WHERE client.id=:clientId AND training.id!=:trainingId AND (:init BETWEEN training.initialDate AND training.endDate) ORDER BY training.initialDate ASC")
-	public Collection<Training> countConcurrentTrainingsForInit(@Param("clientId") int clientId, @Param("trainingId") int trainingId, @Param("init") Date init);
+	@Query("SELECT training FROM Training training WHERE training.id IN :ids AND training.id!=:trainingId AND (:end BETWEEN training.initialDate AND training.endDate) ORDER BY training.initialDate ASC")
+	public Collection<Training> countConcurrentTrainingsForEnd(@Param("ids") List<Integer> ids, @Param("trainingId") int trainingId, @Param("end") Date end);
 	
-	@Query("SELECT training FROM Client client JOIN client.trainings training WHERE client.id=:clientId AND training.id!=:trainingId AND (:end BETWEEN training.initialDate AND training.endDate) ORDER BY training.initialDate ASC")
-	public Collection<Training> countConcurrentTrainingsForEnd(@Param("clientId") int clientId, @Param("trainingId") int trainingId, @Param("end") Date end);
-	
-	@Query("SELECT training FROM Training training WHERE training.id!=:clientId AND training.id!=:trainingId AND ((training.initialDate BETWEEN :init AND :end) AND (training.endDate BETWEEN :init AND :end)) ORDER BY training.initialDate ASC")
-	public Collection<Training> countConcurrentTrainingsForIncluding(@Param("clientId") int clientId, @Param("trainingId") int trainingId, @Param("init") Date init, @Param("end") Date end);
+	@Query("SELECT training FROM Training training WHERE training.id IN :ids AND training.id!=:trainingId AND training.id!=:trainingId AND ((training.initialDate BETWEEN :init AND :end) AND (training.endDate BETWEEN :init AND :end)) ORDER BY training.initialDate ASC")
+	public Collection<Training> countConcurrentTrainingsForIncluding(@Param("ids") List<Integer> ids, @Param("trainingId") int trainingId, @Param("init") Date init, @Param("end") Date end);
 
 	//Copy training
 	@Query("SELECT t FROM Client client left join client.trainings t WHERE client.isPublic=true")

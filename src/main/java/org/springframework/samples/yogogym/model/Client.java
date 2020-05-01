@@ -31,6 +31,7 @@ import javax.validation.constraints.Min;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 
 /**
@@ -69,7 +70,7 @@ public class Client extends Person {
 	
 	@Column(name="isPublic")
 	protected Boolean isPublic;
-	
+
 	@OneToMany(cascade = CascadeType.ALL)
 	protected Collection<Training> trainings;
 
@@ -78,7 +79,6 @@ public class Client extends Person {
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	protected List<Inscription> inscriptions;
-	
 	
 	protected List<Inscription> getInscriptionsInternal() {
 		if (this.inscriptions == null) {
@@ -90,5 +90,5 @@ public class Client extends Person {
 	public void addInscription(Inscription inscription) {
 		List<Inscription> l = getInscriptionsInternal();
 		l.add(inscription);
-	}
+	}	
 }

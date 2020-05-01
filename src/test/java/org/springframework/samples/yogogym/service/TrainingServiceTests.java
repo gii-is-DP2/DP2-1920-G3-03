@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -95,7 +96,8 @@ public class TrainingServiceTests {
 	
 	@Test
 	public void shouldCountConcurrentTrainingsForInit() throws ParseException {
-		Collection<Training> concurrentTrainings = this.trainingService.countConcurrentTrainingsForInit(CLIENT_ID, -1, dateFormat.parse("2020-01-05"));
+		List<Integer> ids = this.trainingService.findTrainingFromClient(CLIENT_ID).stream().map(x->Integer.valueOf(x.getId())).collect(Collectors.toList());
+		Collection<Training> concurrentTrainings = this.trainingService.countConcurrentTrainingsForInit(ids, -1, dateFormat.parse("2020-01-05"));
 		assertThat(concurrentTrainings).isNotNull();
 		assertThat(concurrentTrainings.size()).isEqualTo(1);
 		Training training = EntityUtils.getById(concurrentTrainings, Training.class, TRAINING_ID);
@@ -106,7 +108,8 @@ public class TrainingServiceTests {
 	
 	@Test
 	public void shouldCountConcurrentTrainingsForEnd() throws ParseException {
-		Collection<Training> concurrentTrainings = this.trainingService.countConcurrentTrainingsForEnd(CLIENT_ID, -1, dateFormat.parse("2020-01-12"));
+		List<Integer> ids = this.trainingService.findTrainingFromClient(CLIENT_ID).stream().map(x->Integer.valueOf(x.getId())).collect(Collectors.toList());
+		Collection<Training> concurrentTrainings = this.trainingService.countConcurrentTrainingsForEnd(ids, -1, dateFormat.parse("2020-01-12"));
 		assertThat(concurrentTrainings).isNotNull();
 		assertThat(concurrentTrainings.size()).isEqualTo(1);
 		Training training = EntityUtils.getById(concurrentTrainings, Training.class, TRAINING_ID);
@@ -117,7 +120,8 @@ public class TrainingServiceTests {
 	
 	@Test
 	public void shouldCountConcurrentTrainingsForIncluding() throws ParseException {
-		Collection<Training> concurrentTrainings = this.trainingService.countConcurrentTrainingsForIncluding(CLIENT_ID, -1, dateFormat.parse("2019-12-31"), dateFormat.parse("2020-01-15"));
+		List<Integer> ids = this.trainingService.findTrainingFromClient(CLIENT_ID).stream().map(x->Integer.valueOf(x.getId())).collect(Collectors.toList());
+		Collection<Training> concurrentTrainings = this.trainingService.countConcurrentTrainingsForIncluding(ids, -1, dateFormat.parse("2019-12-31"), dateFormat.parse("2020-01-15"));
 		assertThat(concurrentTrainings).isNotNull();
 		assertThat(concurrentTrainings.size()).isEqualTo(1);
 		Training training = EntityUtils.getById(concurrentTrainings, Training.class, TRAINING_ID);
