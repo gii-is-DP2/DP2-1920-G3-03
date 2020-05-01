@@ -120,7 +120,7 @@ public class TrainingControllerIntegrationTest {
 		training.setRoutines(new ArrayList<>());
 		
 		try {
-			this.trainingService.saveTraining(training,client);
+			this.trainingService.saveTraining(training, client);
 		} catch (DataAccessException e) {
 			e.printStackTrace();
 		} catch (PastInitException e) {
