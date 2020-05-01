@@ -72,7 +72,7 @@ INSERT INTO foods(id,name,kcal,protein,fat,carb,weight,food_type) VALUES (1,'Bre
 INSERT INTO foods(id,name,kcal,protein,fat,carb,weight,food_type) VALUES (2,'Apple',57,10,20,30,20,2);
 INSERT INTO foods(id,name,kcal,protein,fat,carb,weight,food_type) VALUES (3,'Steak',120,60,20,30,20,3);
 INSERT INTO foods(id,name,kcal,protein,fat,carb,weight,food_type) VALUES (4,'Banana',65,20,20,30,20,4);
-INSERT INTO foods(id,name,kcal,protein,fat,carb,weight,food_type) VALUES (5,'Scrambled Eggs',100,40,20,30,20,5);
+INSERT INTO foods(id,name,kcal,protein,fat,carb,weight,food_type) VALUES (5,'Scrambled Eggs',100,40,20,30,20,4);
 
 /* DIET */
 
@@ -237,26 +237,26 @@ INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,
 /* ROUTINE LINE */
 
 /* Routine 1*/
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (1, null, 2, 1, 0.0, 46, 1);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (2, null, 20,1, 0.0, 45, 1);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (3, null,1,1,0.0,44,1);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (4, null,20,1,0.0,49,1);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (5, null,10,1,0.0,45,1);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (6, null,5,1,0.0,46,1);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (1, null, 2.0, 1, 0.0, 46, 1);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (2, null, 20.0, 1, 0.0, 45, 1);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (3, null, 1.0, 1, 0.0, 44, 1);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (4, null, 20.0, 1, 0.0,49, 1);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (5, null, 10.0, 1, 0.0, 45, 1);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (6, null, 5.0, 1, 0.0, 46, 1);
 
 /* Routine 2 */
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (7,10,null,3,30,15,2);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (8,10,null,5,20,20,2);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (9,20,null,2,10,31,2);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (10,null,2,2,15,37,2);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (11,10,null,3,20,43,2);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (7, 10, null, 3, 30.0, 15, 2);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (8, 10, null, 5, 20.0, 20, 2);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (9, 20, null, 2, 10.0, 31, 2);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (10, null, 2.0, 2, 15.0, 37, 2);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (11, 10, null, 3, 20.0, 43, 2);
 
 /* Routine 9 */
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (12,10,null,3,30,15,9);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (13,10,null,5,20,20,9);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (14,20,null,2,10,31,9);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (15,null,2,2,15,37,9);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (16,10,null,3,20,43,9);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (12, 10, null, 3, 30.0, 15, 9);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (13, 10, null, 5, 20.0, 20, 9);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (14, 20, null, 2, 10.0, 31, 9);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (15, null, 2.0, 2, 15.0, 37, 9);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (16, 10, null, 3, 20.0, 43, 9);
 
 /* CHALLENGE */
 

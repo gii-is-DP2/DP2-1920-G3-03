@@ -1,7 +1,5 @@
 package org.springframework.samples.yogogym.service;
 
-
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.text.SimpleDateFormat;
