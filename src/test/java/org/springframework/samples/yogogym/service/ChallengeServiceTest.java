@@ -163,7 +163,7 @@ public class ChallengeServiceTest {
 		assertThat(challenge.getDescription()).isEqualTo("UpdateTest");
 	}
 	
-	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldDeleteChallenge() {
 		
