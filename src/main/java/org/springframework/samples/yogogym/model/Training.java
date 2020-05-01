@@ -57,9 +57,4 @@ public class Training extends BaseEntity{
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "diet_id")
 	protected Diet diet;
-	
-	@ManyToOne
-	@NotNull
-	@JoinColumn(name = "client_id")
-	protected Client client;
 }

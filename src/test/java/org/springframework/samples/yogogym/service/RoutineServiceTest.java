@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 public class RoutineServiceTest {
 	
+	@Autowired
+	protected ClientService clientService;
 	@Autowired
 	protected RoutineService routineService;
 	@Autowired
@@ -205,8 +208,9 @@ public class RoutineServiceTest {
 		training.setInitialDate(Calendar.getInstance().getTime());
 		training.setEndDate(newEndDate);
 		training.setEditingPermission(editPerm);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 		try {
-			this.trainingService.saveTraining(training);
+			this.trainingService.saveTraining(training,client);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

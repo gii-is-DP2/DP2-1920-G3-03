@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
@@ -26,6 +27,8 @@ import org.springframework.stereotype.Service;
 public class RoutineLineServiceTest {
 	
 	@Autowired
+	protected ClientService clientService;
+	@Autowired
 	protected RoutineService routineService;
 	@Autowired
 	protected TrainingService trainingService;
@@ -38,6 +41,7 @@ public class RoutineLineServiceTest {
 	private final int routineId = 1;
 	private final int exerciseId = 1;
 	private final int routineLineId = 1;
+	private final String clientUsername = "client1";
 	
 	
 	@Test
@@ -140,9 +144,10 @@ public class RoutineLineServiceTest {
 	void shouldNotCreateRoutineLineTimeAndRepSetted(){
 		
 		Training training = setUpTraining(trainingId,1);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 		
 		try {
-			this.trainingService.saveTraining(training);
+			this.trainingService.saveTraining(training,client);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -193,9 +198,10 @@ public class RoutineLineServiceTest {
 	void shouldDeleteRoutineLine(){
 		
 		Training training = setUpTraining(trainingId,1);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 		
 		try {
-			this.trainingService.saveTraining(training);
+			this.trainingService.saveTraining(training,client);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -237,9 +243,10 @@ public class RoutineLineServiceTest {
 		Date newEndDate = cal.getTime();
 		
 		res.setEndDate(newEndDate);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 		
 		try {
-			this.trainingService.saveTraining(res);
+			this.trainingService.saveTraining(res,client);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

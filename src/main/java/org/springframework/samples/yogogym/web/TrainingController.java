@@ -142,11 +142,11 @@ public class TrainingController {
 			model.put("training", training);
 			return "trainer/trainings/trainingCreateOrUpdate";
 		} else {
-			if(!training.getAuthor().equals(trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)||!training.getClient().equals(client)) {
+			if(!training.getAuthor().equals(trainerUsername)||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
 				return "exception";
 			}
 			try {			
-				this.trainingService.saveTraining(training);
+				this.trainingService.saveTraining(training,client);
 			} 
 			catch (Exception e) {
 				if(e instanceof PastInitException) {
@@ -245,14 +245,13 @@ public class TrainingController {
 			}
 			
 			training.setAuthor(oldTraining.getAuthor());
-			training.setClient(oldTraining.getClient());
 			training.setInitialDate(oldTraining.getInitialDate());
 			training.setDiet(oldTraining.getDiet());
 			training.setRoutines(oldTraining.getRoutines());
 			training.setId(trainingId);
 			
 			try {
-				this.trainingService.saveTraining(training);
+				this.trainingService.saveTraining(training,client);
 			} 
 			catch (Exception e) {
 				if(e instanceof PastInitException) {
@@ -292,13 +291,15 @@ public class TrainingController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete")
 	public String processDeleteTrainingForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername,RedirectAttributes redirectAttrs) {
 		
+		Client client = this.clientService.findClientById(clientId);
+		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
 		if(training==null||!isClientOfLoggedTrainer(clientId,trainerUsername)||!training.getAuthor().equals(trainerUsername)) {
 			return "exception";
 		}
 		else {
-			this.trainingService.deleteTraining(training);
+			this.trainingService.deleteTraining(training,client);
 			redirectAttrs.addFlashAttribute("deleteMessage", "The training was deleted successfully");
 			return "redirect:/trainer/{trainerUsername}/trainings";
 		}
@@ -330,6 +331,8 @@ public class TrainingController {
 	
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining")
 	public String processTrainingCopy(@ModelAttribute("trainingIdToCopy") int idTrainingToCopy, @PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, ModelMap model) {
+		
+		Client client = this.clientService.findClientById(clientId);
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
@@ -367,7 +370,6 @@ public class TrainingController {
 			nuevo.setRoutines(routines);
 		}
 		nuevo.setAuthor(training.getAuthor());
-		nuevo.setClient(training.getClient());
 		nuevo.setEditingPermission(training.getEditingPermission());
 		nuevo.setEndDate(training.getEndDate());
 		nuevo.setId(training.getId());
@@ -375,7 +377,7 @@ public class TrainingController {
 		nuevo.setName(training.getName());
 		
 		try {
-			this.trainingService.saveTraining(nuevo);
+			this.trainingService.saveTraining(nuevo,client);
 		}catch(Exception e) {
 			
 		}
@@ -457,11 +459,11 @@ public class TrainingController {
 			model.put("training", training);
 			return "client/trainings/trainingCreateOrUpdate";
 		} else {
-			if(!training.getAuthor().equals(clientUsername)||training.getEditingPermission().equals(EditingPermission.TRAINER)||!training.getClient().equals(client)) {
+			if(!training.getAuthor().equals(clientUsername)||training.getEditingPermission().equals(EditingPermission.TRAINER)) {
 				return "exception";
 			}
 			try {			
-				this.trainingService.saveTraining(training);
+				this.trainingService.saveTraining(training,client);
 			} 
 			catch (Exception e) {
 				if(e instanceof PastInitException) {
@@ -560,14 +562,13 @@ public class TrainingController {
 			}
 			
 			training.setAuthor(oldTraining.getAuthor());
-			training.setClient(oldTraining.getClient());
 			training.setInitialDate(oldTraining.getInitialDate());
 			training.setDiet(oldTraining.getDiet());
 			training.setRoutines(oldTraining.getRoutines());
 			training.setId(trainingId);
 			
 			try {
-				this.trainingService.saveTraining(training);
+				this.trainingService.saveTraining(training,client);
 			} 
 			catch (Exception e) {
 				if(e instanceof PastInitException) {
@@ -607,13 +608,15 @@ public class TrainingController {
 	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/delete")
 	public String processDeleteTrainingForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientUsername") String clientUsername,RedirectAttributes redirectAttrs) {
 		
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		
 		Training training = this.trainingService.findTrainingById(trainingId);
 				
 		if(training==null||!isLoggedUser(clientUsername,false)||!training.getAuthor().equals(clientUsername)) {
 			return "exception";
 		}
 		else {
-			this.trainingService.deleteTraining(training);
+			this.trainingService.deleteTraining(training,client);
 			redirectAttrs.addFlashAttribute("deleteMessage", "The training was deleted successfully");
 			return "redirect:/client/{clientUsername}/trainings";
 		}

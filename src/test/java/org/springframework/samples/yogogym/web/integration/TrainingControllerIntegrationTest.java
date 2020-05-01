@@ -59,10 +59,9 @@ public class TrainingControllerIntegrationTest {
 		training.setInitialDate(calCopy.getTime());
 		calCopy.add(Calendar.DAY_OF_MONTH, 15);
 		training.setEndDate(calCopy.getTime());
-		training.setClient(client);
 		training.setRoutines(new ArrayList<>());
 		
-		this.trainingService.saveTraining(training);
+		this.trainingService.saveTraining(training,client);
 		
 		String view = this.trainingController.getTrainingListCopy(11, 1, username, model);
 		assertEquals(view, "trainer/trainings/listCopyTraining");
@@ -89,10 +88,9 @@ public class TrainingControllerIntegrationTest {
 		training.setInitialDate(calCopy.getTime());
 		calCopy.add(Calendar.DAY_OF_MONTH, 7);
 		training.setEndDate(calCopy.getTime());
-		training.setClient(client);
 		training.setRoutines(new ArrayList<>());
 		
-		this.trainingService.saveTraining(training);
+		this.trainingService.saveTraining(training,client);
 		
 		String view = this.trainingController.getTrainingListCopy(11, 1, username, model);
 		assertEquals(view, "trainer/trainings/listCopyTraining");
