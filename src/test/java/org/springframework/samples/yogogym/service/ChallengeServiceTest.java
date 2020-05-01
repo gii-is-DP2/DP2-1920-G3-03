@@ -147,7 +147,7 @@ public class ChallengeServiceTest {
 		});		
 
 	}
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	
 	@Test
 	void shouldUpdateOwner() {
 		
