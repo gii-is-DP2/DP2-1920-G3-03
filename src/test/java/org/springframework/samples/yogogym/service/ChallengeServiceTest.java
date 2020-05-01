@@ -31,7 +31,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class ChallengeServiceTest {
 
 	@Autowired
@@ -42,7 +41,6 @@ public class ChallengeServiceTest {
 	final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	final Calendar cal = Calendar.getInstance();
 	
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldFindAllChallenges(){
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAll();
