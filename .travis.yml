@@ -1,4 +1,9 @@
+dist: trusty
 language: java
 jdk:
   - openjdk8
-script: ./mvnw test
+services:
+  - mysql
+before_install:
+  - mysql -e 'CREATE DATABASE yogogym;'
+script: mvn test -Dspring.profiles.active=mysql-travis

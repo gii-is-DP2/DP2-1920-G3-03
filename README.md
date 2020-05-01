@@ -286,7 +286,7 @@ Como cliente quiero poder crear gremios, para que en un futuro puedan inscribirs
 * **Crear un gremio siendo un cliente con otro gremio ya creado por él mismo:** Dado un cliente, al intentar crear un gremio si este ya ha creado un gremio, saltará una excepción en el campo de creador, informando de que dicho cliente ya posee un gremio creado por él, ya que un cliente solo puede tener un gremio.
 * **Crear un gremio con una mal url:** Dado un cliente, al intentar crear un gremio, si este introduce en el campo de logo una url que no comience por "https://" lanzará una excepción.
 * **Actualizar un gremio:** Dado un cliente, al introducirse en aquel gremio creado por el mismo, aparecerá un botón de editar, en el cuál podrá cambiar el nombre, la descripción o el logo.
-  Actualizar posee exactamente las mismas restricciones que crear.
+  Actualizar posee exactamente las mismas restricciones que crear, excepto la del mismo creador.
 * **Eliminar un gremio:** Dado un cliente, al intentar crear su gremio, en la vista de la información de dicho gremio aparecerá un botón de eliminar, al pulsarlo se eliminará dicho gremio.
 * **Eliminar un gremio sin ser el creador:** Dado un cliente, al intentar eliminar un gremio que no ha sido creado por él, le lanzará a una página de error, y dicha acción no se llevará a cabo.
 

@@ -507,7 +507,6 @@ public class RoutineControllerTest {
 		Training training = new Training();
 		training.setId(id);
 		training.setName("training 1");
-		training.setClient(client);
 		training.setInitialDate(cal.getTime());
 
 		cal.add(Calendar.DAY_OF_MONTH, DaysToFinishTraining);

@@ -71,7 +71,6 @@ public class Client extends Person {
 	@Column(name="isPublic")
 	protected Boolean isPublic;
 
-	@ToString.Exclude
 	@OneToMany(cascade = CascadeType.ALL)
 	protected Collection<Training> trainings;
 
@@ -80,7 +79,6 @@ public class Client extends Person {
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	protected List<Inscription> inscriptions;
-	
 	
 	protected List<Inscription> getInscriptionsInternal() {
 		if (this.inscriptions == null) {

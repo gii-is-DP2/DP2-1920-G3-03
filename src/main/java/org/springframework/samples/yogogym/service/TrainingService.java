@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -85,12 +86,11 @@ public class TrainingService {
 	@Transactional(rollbackFor = {PastInitException.class, PastEndException.class, EndBeforeEqualsInitException.class, 
 		InitInTrainingException.class, EndInTrainingException.class, PeriodIncludingTrainingException.class, LongerThan90DaysException.class})
 	
-	public void saveTraining(Training training) throws DataAccessException, PastInitException, EndBeforeEqualsInitException,
+	public void saveTraining(Training training, Client client) throws DataAccessException, PastInitException, EndBeforeEqualsInitException,
 	InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		
-		Client client = training.getClient();
 		Date initialDate = training.getInitialDate();
 		Date endDate = training.getEndDate();
 		
@@ -133,11 +133,12 @@ public class TrainingService {
 				trainingId = training.getId();
 			}
 			
-			Collection<Training> concurrentInit = this.countConcurrentTrainingsForInit(training.getClient().getId(), 
+			List<Integer> ids = client.getTrainings().stream().map(x->Integer.valueOf(x.getId())).collect(Collectors.toList());
+			Collection<Training> concurrentInit = this.countConcurrentTrainingsForInit(ids, 
 				trainingId, training.getInitialDate());
-			Collection<Training> concurrentEnd = this.countConcurrentTrainingsForEnd(training.getClient().getId(), 
+			Collection<Training> concurrentEnd = this.countConcurrentTrainingsForEnd(ids, 
 				trainingId, training.getEndDate());
-			Collection<Training> concurrentIncluding = this.countConcurrentTrainingsForIncluding(training.getClient().getId(), 
+			Collection<Training> concurrentIncluding = this.countConcurrentTrainingsForIncluding(ids, 
 				trainingId, training.getInitialDate(), training.getEndDate());
 			
 			if(concurrentInit.size()>0) {
@@ -172,24 +173,23 @@ public class TrainingService {
 	}
 	
 	@Transactional
-	public Collection<Training> countConcurrentTrainingsForInit(int clientId, int trainingId, Date init) {
-		return this.trainingRepository.countConcurrentTrainingsForInit(clientId, trainingId, init);
+	public Collection<Training> countConcurrentTrainingsForInit(List<Integer> ids, int trainingId, Date init) {
+		return this.trainingRepository.countConcurrentTrainingsForInit(ids, trainingId, init);
 	}
 	
 	@Transactional
-	public Collection<Training> countConcurrentTrainingsForEnd(int clientId, int trainingId, Date end) {
-		return this.trainingRepository.countConcurrentTrainingsForEnd(clientId, trainingId, end);
+	public Collection<Training> countConcurrentTrainingsForEnd(List<Integer> ids, int trainingId, Date end) {
+		return this.trainingRepository.countConcurrentTrainingsForEnd(ids, trainingId, end);
 	}
 	
 	@Transactional
-	public Collection<Training> countConcurrentTrainingsForIncluding(int clientId, int trainingId, Date init, Date end) {
-		return this.trainingRepository.countConcurrentTrainingsForIncluding(clientId, trainingId, init, end);
+	public Collection<Training> countConcurrentTrainingsForIncluding(List<Integer> ids, int trainingId, Date init, Date end) {
+		return this.trainingRepository.countConcurrentTrainingsForIncluding(ids, trainingId, init, end);
 	}
 
 	
 	@Transactional
-	public void deleteTraining(Training training) throws DataAccessException {
-		Client client = training.getClient();
+	public void deleteTraining(Training training, Client client) throws DataAccessException {
 		client.getTrainings().remove(training);
 		this.clientRepository.save(client);
 		this.trainingRepository.delete(training);
