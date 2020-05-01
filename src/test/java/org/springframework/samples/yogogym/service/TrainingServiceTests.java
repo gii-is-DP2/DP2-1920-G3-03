@@ -134,7 +134,6 @@ public class TrainingServiceTests {
 	
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	@Transactional
 	public void shouldInsertTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
 		
 		Collection<Training> allTrainings = this.trainingService.findAllTrainings();
