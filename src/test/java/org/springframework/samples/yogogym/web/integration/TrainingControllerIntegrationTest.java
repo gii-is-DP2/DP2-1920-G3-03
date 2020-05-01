@@ -117,11 +117,10 @@ public class TrainingControllerIntegrationTest {
 		training.setInitialDate(calCopy.getTime());
 		calCopy.add(Calendar.DAY_OF_MONTH, endDay);
 		training.setEndDate(calCopy.getTime());
-		training.setClient(client);
 		training.setRoutines(new ArrayList<>());
 		
 		try {
-			this.trainingService.saveTraining(training);
+			this.trainingService.saveTraining(training,client);
 		} catch (DataAccessException e) {
 			e.printStackTrace();
 		} catch (PastInitException e) {
