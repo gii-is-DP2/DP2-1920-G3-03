@@ -31,6 +31,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class ChallengeServiceTest {
 
 	@Autowired
@@ -53,6 +54,7 @@ public class ChallengeServiceTest {
 		assertThat(challenge.getName()).isEqualTo("Challenge2");	
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldSaveChallenge() {
 		
@@ -83,6 +85,7 @@ public class ChallengeServiceTest {
 		assertThat(found).isLessThan(newSize);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldNotSaveChallengeWhenMore3SameWeek() {
 		
@@ -117,7 +120,7 @@ public class ChallengeServiceTest {
 		});		
 
 	}
-	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldNotSaveChallengeWhenSameNameSameWeek() {
 		
@@ -144,7 +147,7 @@ public class ChallengeServiceTest {
 		});		
 
 	}
-	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldUpdateOwner() {
 		
