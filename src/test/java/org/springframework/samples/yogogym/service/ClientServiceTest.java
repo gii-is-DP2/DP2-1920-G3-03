@@ -109,5 +109,11 @@ public class ClientServiceTest {
 		List<Integer> points = this.clientService.classificationPointAll();
 		assertThat(points.size()).isEqualTo(1);
 	}
+	
+	@Test
+	void shouldClientPublicByTrainingId() {
+		Boolean isPublic = this.clientService.isPublicByTrainingId(3);
+		assertThat(isPublic).isEqualTo(false);
+	}
 
 }
