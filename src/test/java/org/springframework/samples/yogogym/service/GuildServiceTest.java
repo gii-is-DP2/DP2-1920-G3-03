@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.yogogym.model.Client;
@@ -17,10 +19,13 @@ import org.springframework.samples.yogogym.service.exceptions.GuildLogoException
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class GuildServiceTest {
 
 	@Autowired
@@ -48,6 +53,7 @@ public class GuildServiceTest {
 		assertThat(clients.size()).isEqualTo(2);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldSaveGuild() {
 		
@@ -66,6 +72,7 @@ public class GuildServiceTest {
 		assertThat(guild.getLogo().equals("https://i.blogs.es/fd396a/hook/450_1000.jpg"));
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldNotSaveGuildWithSameName() {
 		
@@ -85,6 +92,7 @@ public class GuildServiceTest {
 		});	
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldNotSaveGuildWithSameCreator() {
 		
@@ -117,6 +125,7 @@ public class GuildServiceTest {
 		});
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldDeleteGuild() {
 		
@@ -150,6 +159,7 @@ public class GuildServiceTest {
 		assertThat(foundBefore).isEqualTo(foundAfter);	
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldJoinGuild() {
 		
@@ -159,6 +169,7 @@ public class GuildServiceTest {
 		assertTrue(c.getGuild().equals(g));
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldLeaveGuild() {
 		

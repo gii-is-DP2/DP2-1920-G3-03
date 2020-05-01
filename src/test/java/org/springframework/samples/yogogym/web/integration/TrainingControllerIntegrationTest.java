@@ -11,11 +11,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.TrainingService;
+import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
+import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
+import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysException;
+import org.springframework.samples.yogogym.service.exceptions.PastEndException;
+import org.springframework.samples.yogogym.service.exceptions.PastInitException;
+import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
 import org.springframework.samples.yogogym.web.TrainingController;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -46,22 +54,8 @@ public class TrainingControllerIntegrationTest {
 	void showListAndCopyTrainingSuccessful() throws Exception {
 		ModelMap model = new ModelMap();
 		String username = "trainer1";
-		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(username, "trainer1999"));
-		SecurityContextHolder.setContext(securityContext);
-		Client client = this.clientService.findClientById(1);
-		Training training = new Training();
-		training.setName("Prueba1");
-		training.setEditingPermission(EditingPermission.TRAINER);
-		training.setAuthor("trainer1");
-		Calendar calCopy = (Calendar) cal.clone();
-		calCopy.add(Calendar.DAY_OF_MONTH, 9);
-		training.setInitialDate(calCopy.getTime());
-		calCopy.add(Calendar.DAY_OF_MONTH, 15);
-		training.setEndDate(calCopy.getTime());
-		training.setRoutines(new ArrayList<>());
-		
-		this.trainingService.saveTraining(training,client);
+		logIn(username);
+		createTrainingEmpty(3,7);
 		
 		String view = this.trainingController.getTrainingListCopy(11, 1, username, model);
 		assertEquals(view, "trainer/trainings/listCopyTraining");
@@ -72,30 +66,31 @@ public class TrainingControllerIntegrationTest {
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Transactional
 	@Test
-	void showListAndCopyTrainingFailedTrainingEmpty() throws Exception {
+	void showListAndCopyTrainingFailedOtherClient() throws Exception {
 		ModelMap model = new ModelMap();
 		String username = "trainer1";
-		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(username, "trainer1999"));
-		SecurityContextHolder.setContext(securityContext);
-		Client client = this.clientService.findClientById(1);
-		Training training = new Training();
-		training.setName("Prueba");
-		training.setEditingPermission(EditingPermission.TRAINER);
-		training.setAuthor("trainer1");
-		Calendar calCopy = (Calendar) cal.clone();
-		calCopy.add(Calendar.DAY_OF_MONTH, 3);
-		training.setInitialDate(calCopy.getTime());
-		calCopy.add(Calendar.DAY_OF_MONTH, 7);
-		training.setEndDate(calCopy.getTime());
-		training.setRoutines(new ArrayList<>());
+		logIn(username);
+		createTrainingEmpty(3,4);
 		
-		this.trainingService.saveTraining(training,client);
+		String view = this.trainingController.getTrainingListCopy(11, 2, username, model);
+		assertEquals(view, "exception");
+		String view2 = this.trainingController.processTrainingCopy(1, 11, 2, username, model);
+		assertEquals(view2, "exception");
+	}
+	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Transactional
+	@Test
+	void showListAndCopyTrainingFailedClientNotPublic() throws Exception {
+		ModelMap model = new ModelMap();
+		String username = "trainer1";
+		logIn(username);
+		createTrainingEmpty(3,4);
 		
 		String view = this.trainingController.getTrainingListCopy(11, 1, username, model);
 		assertEquals(view, "trainer/trainings/listCopyTraining");
-		String view2 = this.trainingController.processTrainingCopy(1, 11, 1, username, model);
-		assertEquals(view2, "redirect:/trainer/{trainerUsername}/trainings");
+		String view2 = this.trainingController.processTrainingCopy(3, 11, 1, username, model);
+		assertEquals(view2, "exception");
 	}
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
@@ -103,13 +98,54 @@ public class TrainingControllerIntegrationTest {
 	void showListAndCopyTrainingFailedTrainingNotEmpty() throws Exception {
 		ModelMap model = new ModelMap();
 		String username = "trainer1";
-		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(username, "trainer1999"));
-		SecurityContextHolder.setContext(securityContext);
+		logIn(username);
+		
 		String view = this.trainingController.getTrainingListCopy(1, 1, username, model);
 		assertEquals(view, "exception");
 		String view2 = this.trainingController.processTrainingCopy(1, 2, 1, username, model);
 		assertEquals(view2, "exception");
+	}
+	
+	private void createTrainingEmpty(int initialDay, int endDay) {
+		Client client = this.clientService.findClientById(1);
+		Training training = new Training();
+		training.setName("Prueba"+initialDay+endDay);
+		training.setEditingPermission(EditingPermission.TRAINER);
+		training.setAuthor("trainer1");
+		Calendar calCopy = (Calendar) cal.clone();
+		calCopy.add(Calendar.DAY_OF_MONTH, initialDay);
+		training.setInitialDate(calCopy.getTime());
+		calCopy.add(Calendar.DAY_OF_MONTH, endDay);
+		training.setEndDate(calCopy.getTime());
+		training.setClient(client);
+		training.setRoutines(new ArrayList<>());
+		
+		try {
+			this.trainingService.saveTraining(training);
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+		} catch (PastInitException e) {
+			e.printStackTrace();
+		} catch (EndBeforeEqualsInitException e) {
+			e.printStackTrace();
+		} catch (InitInTrainingException e) {
+			e.printStackTrace();
+		} catch (EndInTrainingException e) {
+			e.printStackTrace();
+		} catch (PeriodIncludingTrainingException e) {
+			e.printStackTrace();
+		} catch (PastEndException e) {
+			e.printStackTrace();
+		} catch (LongerThan90DaysException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private void logIn(String username) {
+		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(username, "trainer1999"));
+		SecurityContextHolder.setContext(securityContext);
 	}
 
 }

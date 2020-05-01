@@ -29,6 +29,9 @@ public interface ClientRepository extends  CrudRepository<Client, String>{
 	@Query("SELECT DISTINCT c FROM Client c LEFT JOIN c.inscriptions i WHERE i.status=1")
 	public List<Client> findClientsWithSubmittedInscriptions();
 	
+	@Query("SELECT c.isPublic FROM Client c LEFT JOIN c.trainings t WHERE t.id=:id")
+	public Boolean isPublic(@Param("id") int id);
+	
 	//Clasification
 	@Query("SELECT c.user.username FROM Client c left join c.inscriptions i WHERE i.status = 2 AND (i.challenge.initialDate BETWEEN :dateBefore AND :dateAfter) GROUP BY c.user.username ORDER BY SUM(i.challenge.points) DESC")
 	List<String> classificationNameDate(@Param("dateBefore") Date dateBefore, @Param("dateAfter") Date dateAfter);

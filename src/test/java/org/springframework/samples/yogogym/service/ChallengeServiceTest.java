@@ -13,6 +13,8 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
@@ -25,8 +27,11 @@ import org.springframework.samples.yogogym.service.exceptions.ChallengeMore3Exce
 import org.springframework.samples.yogogym.service.exceptions.ChallengeSameNameException;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeWithInscriptionsException;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class ChallengeServiceTest {
 
 	@Autowired
@@ -49,6 +54,7 @@ public class ChallengeServiceTest {
 		assertThat(challenge.getName()).isEqualTo("Challenge2");	
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldSaveChallenge() {
 		
@@ -79,6 +85,7 @@ public class ChallengeServiceTest {
 		assertThat(found).isLessThan(newSize);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldNotSaveChallengeWhenMore3SameWeek() {
 		
@@ -113,7 +120,7 @@ public class ChallengeServiceTest {
 		});		
 
 	}
-	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldNotSaveChallengeWhenSameNameSameWeek() {
 		
@@ -156,7 +163,7 @@ public class ChallengeServiceTest {
 		assertThat(challenge.getDescription()).isEqualTo("UpdateTest");
 	}
 	
-	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldDeleteChallenge() {
 		

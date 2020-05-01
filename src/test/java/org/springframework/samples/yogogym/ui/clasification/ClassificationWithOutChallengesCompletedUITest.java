@@ -1,5 +1,6 @@
 package org.springframework.samples.yogogym.ui.clasification;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
@@ -54,6 +55,12 @@ public class ClassificationWithOutChallengesCompletedUITest {
 		driver.findElement(By.id("username")).clear();
 		driver.findElement(By.id("username")).sendKeys(username);
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		try {
+			assertEquals(username, driver
+					.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul[2]/li/a/strong")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
 	}
 
 	private void showClassification() {
