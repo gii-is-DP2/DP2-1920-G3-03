@@ -18,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ClassificationWithChallengesCompletedUITest {
+public class ClassificationOtherUserUITest {
 
 	@LocalServerPort
 	private int port;
@@ -36,6 +36,7 @@ public class ClassificationWithChallengesCompletedUITest {
 	public void testClassificationUI() throws Exception {
 		as("client3");
 		showClassification();
+		exceptionViewShown();
 	}
 
 	@AfterEach
@@ -64,8 +65,15 @@ public class ClassificationWithChallengesCompletedUITest {
 	}
 
 	private void showClassification() {
-		driver.findElement(By.linkText("Client")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[4]/a/span[2]")).click();
+		driver.get("http://localhost:" + port + "/client/client1/clasification");
+	}
+
+	private void exceptionViewShown() {
+		try {
+			assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
 	}
 
 }

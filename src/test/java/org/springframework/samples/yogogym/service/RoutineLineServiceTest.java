@@ -10,6 +10,8 @@ import java.util.Date;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.yogogym.model.Client;
@@ -22,8 +24,11 @@ import org.springframework.samples.yogogym.service.exceptions.ExerciseNotCorrect
 import org.springframework.samples.yogogym.service.exceptions.RoutineLineRepAndTimeSetted;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class RoutineLineServiceTest {
 	
 	@Autowired
@@ -66,6 +71,7 @@ public class RoutineLineServiceTest {
 		assertTrue(notNull && repsOrTimeNotEmptyAndGreaterThanMin && seriesNotNull && weightNotNull && sameRepAndTime && sameSeries && sameWeight);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldCreateRoutineLine(){
 		
@@ -194,6 +200,7 @@ public class RoutineLineServiceTest {
 		assertThrows(ExerciseNotCorrectRepetitionType.class, ()->{this.routineLineService.saveRoutineLine(routineLine, trainingId);});	
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldDeleteRoutineLine(){
 		

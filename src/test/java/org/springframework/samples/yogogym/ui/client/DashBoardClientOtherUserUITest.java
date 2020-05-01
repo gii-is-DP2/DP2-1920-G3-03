@@ -1,4 +1,4 @@
-package org.springframework.samples.yogogym.ui.clasification;
+package org.springframework.samples.yogogym.ui.client;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -18,8 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ClassificationWithChallengesCompletedUITest {
-
+public class DashBoardClientOtherUserUITest {
 	@LocalServerPort
 	private int port;
 
@@ -33,9 +32,10 @@ public class ClassificationWithChallengesCompletedUITest {
 	}
 
 	@Test
-	public void testClassificationUI() throws Exception {
-		as("client3");
-		showClassification();
+	public void testDashBoardClientUI() throws Exception {
+		as("client1");
+		initDashboard();
+		exceptionViewShown();
 	}
 
 	@AfterEach
@@ -63,9 +63,15 @@ public class ClassificationWithChallengesCompletedUITest {
 		}
 	}
 
-	private void showClassification() {
-		driver.findElement(By.linkText("Client")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[4]/a/span[2]")).click();
+	private void initDashboard() {
+		driver.get("http://localhost:" + port + "/client/client2/dashboard");
 	}
-
+	
+	private void exceptionViewShown() {
+		try {
+			assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
+	}
 }
