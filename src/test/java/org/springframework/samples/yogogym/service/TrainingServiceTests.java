@@ -41,7 +41,7 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-//@ExtendWith(SpringExtension.class)
+@ExtendWith(SpringExtension.class)
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 public class TrainingServiceTests {
@@ -64,6 +64,7 @@ public class TrainingServiceTests {
 		now.set(Calendar.MILLISECOND, 0);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void shouldFindAllTrainings() {
 		Collection<Training> trainings = this.trainingService.findAllTrainings();
@@ -75,6 +76,7 @@ public class TrainingServiceTests {
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void shouldFindAllClientTrainings() {
 		Collection<Training> trainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
@@ -86,6 +88,7 @@ public class TrainingServiceTests {
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void shouldFindCorrectTraining() {
 		Training training = this.trainingService.findTrainingById(TRAINING_ID);
@@ -94,6 +97,7 @@ public class TrainingServiceTests {
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void shouldCountConcurrentTrainingsForInit() throws ParseException {
 		List<Integer> ids = this.trainingService.findTrainingFromClient(CLIENT_ID).stream().map(x->Integer.valueOf(x.getId())).collect(Collectors.toList());
@@ -106,6 +110,7 @@ public class TrainingServiceTests {
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void shouldCountConcurrentTrainingsForEnd() throws ParseException {
 		List<Integer> ids = this.trainingService.findTrainingFromClient(CLIENT_ID).stream().map(x->Integer.valueOf(x.getId())).collect(Collectors.toList());
@@ -118,6 +123,7 @@ public class TrainingServiceTests {
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	public void shouldCountConcurrentTrainingsForIncluding() throws ParseException {
 		List<Integer> ids = this.trainingService.findTrainingFromClient(CLIENT_ID).stream().map(x->Integer.valueOf(x.getId())).collect(Collectors.toList());
@@ -166,6 +172,7 @@ public class TrainingServiceTests {
 		
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	@Transactional
 	public void shouldNotInsertTrainingDueToPastInitDate() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
@@ -187,6 +194,7 @@ public class TrainingServiceTests {
 		
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@ParameterizedTest
 	@ValueSource(ints = {-1,0})
 	@Transactional
@@ -209,6 +217,7 @@ public class TrainingServiceTests {
 		
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	@Transactional
 	public void shouldNotInsertTrainingDueToLongerThan90Days() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
@@ -230,6 +239,7 @@ public class TrainingServiceTests {
 		
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@ParameterizedTest
 	@ValueSource(ints = {2,4,6,7})
 	@Transactional
@@ -253,6 +263,7 @@ public class TrainingServiceTests {
 		assertThat(clientTrainings.size()).isNotEqualTo(foundClient+2);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@ParameterizedTest
 	@ValueSource(ints = {7,8,13,14})
 	@Transactional
@@ -276,6 +287,7 @@ public class TrainingServiceTests {
 		assertThat(clientTrainings.size()).isNotEqualTo(foundClient+2);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	@Transactional
 	public void shouldNotInsertTrainingDuePeriodIncludingTraining() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
@@ -298,6 +310,7 @@ public class TrainingServiceTests {
 		assertThat(clientTrainings.size()).isNotEqualTo(foundClient+2);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	@Transactional
 	public void shouldUpdateTraining() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
@@ -341,6 +354,7 @@ public class TrainingServiceTests {
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo(dateFormat.format(newEndDate));
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	@Transactional
 	public void shouldNotUpdateTrainingDueToPastEnd() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
@@ -365,6 +379,7 @@ public class TrainingServiceTests {
 		assertThat(dateFormat.format(training.getEndDate())).isNotEqualTo(dateFormat.format(newEndDate));
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	@Transactional
 	public void shouldNotUpdateTrainingDueToLongerThan90Days() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
@@ -396,6 +411,7 @@ public class TrainingServiceTests {
 		assertThat(dateFormat.format(training.getEndDate())).isNotEqualTo(dateFormat.format(newEndDate));
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@ParameterizedTest
 	@ValueSource(ints = {8,9,14,15})
 	@Transactional
@@ -431,6 +447,7 @@ public class TrainingServiceTests {
 		
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	@Transactional
 	public void shouldNotUpdateTrainingDueToIncludingTraining() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
