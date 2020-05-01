@@ -40,5 +40,4 @@ public class RoutineLine extends BaseEntity{
 	@JoinColumn(name = "exercise_id")
 	@NotNull
 	protected Exercise exercise;
-
 }
