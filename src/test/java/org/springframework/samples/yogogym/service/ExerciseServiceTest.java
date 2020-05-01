@@ -22,6 +22,8 @@ import org.springframework.samples.yogogym.service.exceptions.ChallengeMore3Exce
 import org.springframework.samples.yogogym.service.exceptions.ChallengeSameNameException;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeWithInscriptionsException;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -65,6 +67,7 @@ public class ExerciseServiceTest {
 		assertThat(notNullAndEmpty && hasFoundAll);		
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldCreateExercise(){
 		
@@ -99,6 +102,7 @@ public class ExerciseServiceTest {
 		assertThat(hasBeenAdded && sameName && sameDescription && sameEquipment && sameKcal && sameIntensity && sameRepetitionType && sameBodyPart);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldDeleteExercise() throws DataAccessException, ChallengeSameNameException, ChallengeMore3Exception, ChallengeWithInscriptionsException{
 		

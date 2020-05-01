@@ -22,6 +22,8 @@ import org.springframework.samples.yogogym.model.Diet;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.DietType;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -47,6 +49,7 @@ public class DietServiceTest {
 		assertThat(diet.getName()).isEqualTo("Dieta 2");	
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldCreateDiet() {
 		

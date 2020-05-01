@@ -21,6 +21,8 @@ import org.springframework.samples.yogogym.model.Inscription;
 import org.springframework.samples.yogogym.model.Enums.Intensity;
 import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -82,6 +84,7 @@ public class InscriptionServiceTest {
 		assertThat(inscription.getStatus()).isEqualTo(Status.FAILED);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldCreateInscription() {
 		

@@ -19,6 +19,8 @@ import org.springframework.samples.yogogym.service.exceptions.GuildLogoException
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -51,6 +53,7 @@ public class GuildServiceTest {
 		assertThat(clients.size()).isEqualTo(3);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldSaveGuild() {
 		
@@ -69,6 +72,7 @@ public class GuildServiceTest {
 		assertThat(guild.getLogo().equals("https://i.blogs.es/fd396a/hook/450_1000.jpg"));
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldNotSaveGuildWithSameName() {
 		
@@ -88,6 +92,7 @@ public class GuildServiceTest {
 		});	
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldNotSaveGuildWithSameCreator() {
 		
@@ -120,6 +125,7 @@ public class GuildServiceTest {
 		});
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldDeleteGuild() {
 		
@@ -153,6 +159,7 @@ public class GuildServiceTest {
 		assertThat(foundBefore).isEqualTo(foundAfter);	
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldJoinGuild() {
 		
@@ -162,6 +169,7 @@ public class GuildServiceTest {
 		assertTrue(c.getGuild().equals(g));
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldLeaveGuild() {
 		

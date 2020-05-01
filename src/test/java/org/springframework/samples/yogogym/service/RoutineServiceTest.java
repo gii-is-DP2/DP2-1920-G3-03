@@ -21,6 +21,8 @@ import org.springframework.samples.yogogym.service.exceptions.MaxRoutinesExcepti
 import org.springframework.samples.yogogym.service.exceptions.NotEditableException;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -58,6 +60,7 @@ public class RoutineServiceTest {
 	
 	
 	//TRAINER
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldCreateRoutine_trainer() 
 	{
@@ -87,6 +90,7 @@ public class RoutineServiceTest {
 		testCreateExceptions(2,trainerUsername,EditingPermission.TRAINER);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldDeleteRoutine_trainer(){
 		
@@ -112,6 +116,7 @@ public class RoutineServiceTest {
 	
 	//CLIENT
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldCreateRoutine_client()
 	{
@@ -123,6 +128,7 @@ public class RoutineServiceTest {
 		createRoutine(clientUsername,newEndDate,trainingId);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldDeleteRoutine_client(){
 		
