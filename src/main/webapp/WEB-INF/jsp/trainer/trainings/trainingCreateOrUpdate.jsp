@@ -49,7 +49,6 @@
 		<form:form modelAttribute="training" class="form-horizontal" id="trainingForm">
 			<div class="form-group has-feedback">
 				<input type="hidden" name="id" id="id" class="form-control" value="${training.id}"/>
-				<input type="hidden" name="client" value="${client.nif}"/>
 				<input type="hidden" name="author" value="${training['new'] ? principalUsername : training.author}"/>
 				<yogogym:inputField label="Name" name="name"/>
 				<yogogym:inputField label="Initial Date" name="initialDate" readonly="${!training['new']}" pattern="^\d{4}\/\d{2}\/\d{2}$" placeholder="yyyy/MM/dd"/>

@@ -72,7 +72,6 @@ public class TrainingServiceTests {
 		assertThat(training.getName()).isEqualTo("Entrenamiento1");
 		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
-		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
 	}
 	
 	@Test
@@ -84,7 +83,6 @@ public class TrainingServiceTests {
 		assertThat(training.getName()).isEqualTo("Entrenamiento1");
 		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
-		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
 	}
 	
 	@Test
@@ -93,7 +91,6 @@ public class TrainingServiceTests {
 		assertThat(training.getName()).isEqualTo("Entrenamiento1");
 		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
-		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
 	}
 	
 	@Test
@@ -105,7 +102,6 @@ public class TrainingServiceTests {
 		assertThat(training.getName()).isEqualTo("Entrenamiento1");
 		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
-		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
 	}
 	
 	@Test
@@ -117,7 +113,6 @@ public class TrainingServiceTests {
 		assertThat(training.getName()).isEqualTo("Entrenamiento1");
 		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
-		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
 	}
 	
 	@Test
@@ -129,7 +124,6 @@ public class TrainingServiceTests {
 		assertThat(training.getName()).isEqualTo("Entrenamiento1");
 		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
-		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
 	}
 	
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
@@ -147,7 +141,9 @@ public class TrainingServiceTests {
 		Calendar endDate = (Calendar) now.clone();
 		endDate.add(Calendar.DAY_OF_MONTH, 7);
 		
-		this.trainingService.saveTraining(training);
+		Client client = this.clientService.findClientById(CLIENT_ID);
+		
+		this.trainingService.saveTraining(training,client);
 		
 		allTrainings = this.trainingService.findAllTrainings();
 		assertThat(allTrainings.size()).isEqualTo(foundAll+1);
@@ -162,7 +158,6 @@ public class TrainingServiceTests {
 		.isEqualTo(dateFormat.format(initDate.getTime()));
 		assertThat(dateFormat.format(training.getEndDate()))
 		.isEqualTo(dateFormat.format(endDate.getTime()));
-		assertThat(training.getClient().getUser().getUsername()).isEqualTo("client1");
 		
 	}
 	
@@ -176,8 +171,9 @@ public class TrainingServiceTests {
 		int foundClient = clientTrainings.size();
 		
 		Training training = createSampleTraining(-1,7);
-			
-		assertThrows(PastInitException.class, ()->this.trainingService.saveTraining(training));
+		
+		Client client = this.clientService.findClientById(CLIENT_ID);
+		assertThrows(PastInitException.class, ()->this.trainingService.saveTraining(training,client));
 		
 		allTrainings = this.trainingService.findAllTrainings();
 		assertThat(allTrainings.size()).isNotEqualTo(foundAll+1);
@@ -198,7 +194,8 @@ public class TrainingServiceTests {
 		
 		Training training = createSampleTraining(0,addEndDate);
 		
-		assertThrows(EndBeforeEqualsInitException.class, ()->this.trainingService.saveTraining(training));
+		Client client = this.clientService.findClientById(CLIENT_ID);
+		assertThrows(EndBeforeEqualsInitException.class, ()->this.trainingService.saveTraining(training,client));
 		
 		allTrainings = this.trainingService.findAllTrainings();
 		assertThat(allTrainings.size()).isNotEqualTo(foundAll+1);
@@ -218,7 +215,8 @@ public class TrainingServiceTests {
 		
 		Training training = createSampleTraining(0,92);
 		
-		assertThrows(LongerThan90DaysException.class, ()->this.trainingService.saveTraining(training));
+		Client client = this.clientService.findClientById(CLIENT_ID);
+		assertThrows(LongerThan90DaysException.class, ()->this.trainingService.saveTraining(training,client));
 		
 		allTrainings = this.trainingService.findAllTrainings();
 		assertThat(allTrainings.size()).isNotEqualTo(foundAll+1);
@@ -238,10 +236,11 @@ public class TrainingServiceTests {
 		int foundClient = clientTrainings.size();
 		
 		Training training = createSampleTraining(2,7);
-		this.trainingService.saveTraining(training);
+		Client client = this.clientService.findClientById(CLIENT_ID);
+		this.trainingService.saveTraining(training,client);
 		
 		Training training2 = createSampleTraining(addInitialDate,20);
-		assertThrows(InitInTrainingException.class, ()->this.trainingService.saveTraining(training2));
+		assertThrows(InitInTrainingException.class, ()->this.trainingService.saveTraining(training2,client));
 		
 		allTrainings = this.trainingService.findAllTrainings();
 		assertThat(allTrainings.size()).isNotEqualTo(foundAll+2);
@@ -260,10 +259,11 @@ public class TrainingServiceTests {
 		int foundClient = clientTrainings.size();
 		
 		Training training = createSampleTraining(7,14);
-		this.trainingService.saveTraining(training);
+		Client client = this.clientService.findClientById(CLIENT_ID);
+		this.trainingService.saveTraining(training,client);
 		
 		Training training2 = createSampleTraining(0,addEndDate);
-		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(training2));
+		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(training2,client));
 		
 		allTrainings = this.trainingService.findAllTrainings();
 		assertThat(allTrainings.size()).isNotEqualTo(foundAll+2);
@@ -281,10 +281,11 @@ public class TrainingServiceTests {
 		int foundClient = clientTrainings.size();
 		
 		Training training = createSampleTraining(3,8);
-		this.trainingService.saveTraining(training);
+		Client client = this.clientService.findClientById(CLIENT_ID);
+		this.trainingService.saveTraining(training,client);
 		
 		Training training2 = createSampleTraining(2,9);
-		assertThrows(PeriodIncludingTrainingException.class, ()->this.trainingService.saveTraining(training2));
+		assertThrows(PeriodIncludingTrainingException.class, ()->this.trainingService.saveTraining(training2,client));
 		
 		allTrainings = this.trainingService.findAllTrainings();
 		assertThat(allTrainings.size()).isNotEqualTo(foundAll+2);
@@ -302,7 +303,8 @@ public class TrainingServiceTests {
 		int foundClient = clientTrainings.size();
 		
 		Training training = createSampleTraining(2,7);
-		this.trainingService.saveTraining(training);
+		Client client = this.clientService.findClientById(CLIENT_ID);
+		this.trainingService.saveTraining(training,client);
 		
 		allTrainings = this.trainingService.findAllTrainings();
 		assertThat(allTrainings.size()).isEqualTo(foundAll+1);
@@ -321,7 +323,7 @@ public class TrainingServiceTests {
 		BeanUtils.copyProperties(training, auxTraining);
 		auxTraining.setName(newName);
 		auxTraining.setEndDate(newEndDate);
-		this.trainingService.saveTraining(auxTraining);
+		this.trainingService.saveTraining(auxTraining,client);
 		
 		allTrainings = this.trainingService.findAllTrainings();
 		assertThat(allTrainings.size()).isEqualTo(foundAll+1);
@@ -350,7 +352,8 @@ public class TrainingServiceTests {
 		auxTraining.setName(newName);
 		auxTraining.setEndDate(newEndDate);
 		
-		assertThrows(PastEndException.class, ()->this.trainingService.saveTraining(auxTraining));
+		Client client = this.clientService.findClientById(CLIENT_ID);
+		assertThrows(PastEndException.class, ()->this.trainingService.saveTraining(auxTraining,client));
 		
 		training = this.trainingService.findTrainingById(TRAINING_ID);
 		assertThat(training.getName()).isNotEqualTo(newName);
@@ -362,7 +365,8 @@ public class TrainingServiceTests {
 	public void shouldNotUpdateTrainingDueToLongerThan90Days() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
 		
 		Training training = createSampleTraining(2,9);
-		this.trainingService.saveTraining(training);
+		Client client = this.clientService.findClientById(CLIENT_ID);
+		this.trainingService.saveTraining(training,client);
 		
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		List<Training> clientTrainingsList = new ArrayList<Training>(clientTrainings);
@@ -378,7 +382,7 @@ public class TrainingServiceTests {
 		auxTraining.setName(newName);
 		auxTraining.setEndDate(newEndDate);
 		
-		assertThrows(LongerThan90DaysException.class, ()->this.trainingService.saveTraining(auxTraining));
+		assertThrows(LongerThan90DaysException.class, ()->this.trainingService.saveTraining(auxTraining,client));
 		
 		clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		clientTrainingsList = new ArrayList<Training>(clientTrainings);
@@ -393,9 +397,10 @@ public class TrainingServiceTests {
 	public void shouldNotUpdateTrainingDueToEndInTraining(int addEndDate) throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
 		
 		Training training2 = createSampleTraining(8,15);
-		this.trainingService.saveTraining(training2);
+		Client client = this.clientService.findClientById(CLIENT_ID);
+		this.trainingService.saveTraining(training2,client);
 		Training training = createSampleTraining(2,7);
-		this.trainingService.saveTraining(training);
+		this.trainingService.saveTraining(training,client);
 		
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		List<Training> clientTrainingsList =  new ArrayList<Training>(clientTrainings);
@@ -410,8 +415,8 @@ public class TrainingServiceTests {
 		BeanUtils.copyProperties(afterCreateTraining, auxTraining);
 		auxTraining.setName(newName);
 		auxTraining.setEndDate(newEndDate);
-		
-		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(auxTraining));
+
+		assertThrows(EndInTrainingException.class, ()->this.trainingService.saveTraining(auxTraining,client));
 		
 		clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		clientTrainingsList = new ArrayList<Training>(clientTrainings);
@@ -426,9 +431,10 @@ public class TrainingServiceTests {
 	public void shouldNotUpdateTrainingDueToIncludingTraining() throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
 		
 		Training training2 = createSampleTraining(8,15);
-		this.trainingService.saveTraining(training2);
+		Client client = this.clientService.findClientById(CLIENT_ID);
+		this.trainingService.saveTraining(training2,client);
 		Training training = createSampleTraining(2,7);
-		this.trainingService.saveTraining(training);
+		this.trainingService.saveTraining(training,client);
 		
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		List<Training> clientTrainingsList = (List<Training>) clientTrainings;
@@ -444,7 +450,7 @@ public class TrainingServiceTests {
 		auxTraining.setName(newName);
 		auxTraining.setEndDate(newEndDate);
 		
-		assertThrows(PeriodIncludingTrainingException.class, ()->this.trainingService.saveTraining(auxTraining));
+		assertThrows(PeriodIncludingTrainingException.class, ()->this.trainingService.saveTraining(auxTraining,client));
 		
 		clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		clientTrainingsList = new ArrayList<Training>(clientTrainings);
@@ -465,7 +471,8 @@ public class TrainingServiceTests {
 		
 		Training training = this.trainingService.findTrainingById(TRAINING_ID);
 		assertThat(training).isNotNull();
-		this.trainingService.deleteTraining(training);
+		Client client = this.clientService.findClientById(CLIENT_ID);
+		this.trainingService.deleteTraining(training,client);
 		assertThat(this.trainingService.findTrainingById(TRAINING_ID)).isNull();
 		
 		allTrainings = this.trainingService.findAllTrainings();
@@ -511,8 +518,6 @@ public class TrainingServiceTests {
 		training.setEndDate(endDate.getTime());
 		training.setEditingPermission(EditingPermission.BOTH);
 		training.setAuthor("trainer1");
-		Client client = this.clientService.findClientById(CLIENT_ID);
-		training.setClient(client);
 		
 		return training;
 	}

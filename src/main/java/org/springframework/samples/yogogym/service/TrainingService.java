@@ -85,12 +85,11 @@ public class TrainingService {
 	@Transactional(rollbackFor = {PastInitException.class, PastEndException.class, EndBeforeEqualsInitException.class, 
 		InitInTrainingException.class, EndInTrainingException.class, PeriodIncludingTrainingException.class, LongerThan90DaysException.class})
 	
-	public void saveTraining(Training training) throws DataAccessException, PastInitException, EndBeforeEqualsInitException,
+	public void saveTraining(Training training, Client client) throws DataAccessException, PastInitException, EndBeforeEqualsInitException,
 	InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		
-		Client client = training.getClient();
 		Date initialDate = training.getInitialDate();
 		Date endDate = training.getEndDate();
 		
@@ -133,11 +132,11 @@ public class TrainingService {
 				trainingId = training.getId();
 			}
 			
-			Collection<Training> concurrentInit = this.countConcurrentTrainingsForInit(training.getClient().getId(), 
+			Collection<Training> concurrentInit = this.countConcurrentTrainingsForInit(client.getId(), 
 				trainingId, training.getInitialDate());
-			Collection<Training> concurrentEnd = this.countConcurrentTrainingsForEnd(training.getClient().getId(), 
+			Collection<Training> concurrentEnd = this.countConcurrentTrainingsForEnd(client.getId(), 
 				trainingId, training.getEndDate());
-			Collection<Training> concurrentIncluding = this.countConcurrentTrainingsForIncluding(training.getClient().getId(), 
+			Collection<Training> concurrentIncluding = this.countConcurrentTrainingsForIncluding(client.getId(), 
 				trainingId, training.getInitialDate(), training.getEndDate());
 			
 			if(concurrentInit.size()>0) {
@@ -188,8 +187,7 @@ public class TrainingService {
 
 	
 	@Transactional
-	public void deleteTraining(Training training) throws DataAccessException {
-		Client client = training.getClient();
+	public void deleteTraining(Training training, Client client) throws DataAccessException {
 		client.getTrainings().remove(training);
 		this.clientRepository.save(client);
 		this.trainingRepository.delete(training);

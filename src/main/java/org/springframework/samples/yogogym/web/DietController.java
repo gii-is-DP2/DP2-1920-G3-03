@@ -111,6 +111,8 @@ public class DietController {
 	public String processDietCreateForm(@Valid Diet diet, BindingResult result, @PathVariable("clientId") int clientId,
 			@PathVariable("trainerUsername") String trainerUsername, 
 			@PathVariable("trainingId") int trainingId, Model model) {
+		
+		Client client = this.clientService.findClientById(clientId);
 
 		if(!isClientOfLoggedTrainer(clientId,trainerUsername) || isTrainingFinished(trainingId))
 			return "exception";
@@ -129,7 +131,7 @@ public class DietController {
 			training.setDiet(diet);
 
 			try {
-				this.trainingService.saveTraining(training);
+				this.trainingService.saveTraining(training,client);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -163,6 +165,8 @@ public class DietController {
 	public String processDietUpdateForm(@PathVariable("trainerUsername") String trainerUsername, @Valid Diet diet, BindingResult result, @PathVariable("clientId") int clientId,
 			 @PathVariable("trainingId") int trainingId, @PathVariable("dietId") int dietId, ModelMap model) {
 		
+		Client client = this.clientService.findClientById(clientId);
+		
 		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
 			return "exception";
 
@@ -181,7 +185,7 @@ public class DietController {
 			training.setDiet(diet);
 			
 			try {
-				this.trainingService.saveTraining(training);
+				this.trainingService.saveTraining(training,client);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

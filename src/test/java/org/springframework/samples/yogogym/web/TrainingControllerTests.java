@@ -130,7 +130,6 @@ class TrainingControllerTests {
 		Training training1 = new Training();
 		training1.setId(CLIENT1_TRAINING1_ID);
 		training1.setName("Training 1");
-		training1.setClient(client1);
 		training1.setInitialDate(initialDate);
 		training1.setEndDate(endDate);
 		training1.setEditingPermission(EditingPermission.TRAINER);
@@ -155,7 +154,6 @@ class TrainingControllerTests {
 		Training training4 = new Training();
 		training4.setId(CLIENT1_TRAINING4_ID);
 		training4.setName("Training 4");
-		training4.setClient(client1);
 		training4.setInitialDate(initialDate);
 		training4.setEndDate(endDate);
 		training4.setEditingPermission(EditingPermission.TRAINER);
@@ -174,7 +172,6 @@ class TrainingControllerTests {
 		Training training8 = new Training();
 		training8.setId(CLIENT1_TRAINING8_ID);
 		training8.setName("Training 8");
-		training8.setClient(client1);
 		training8.setInitialDate(initialDate);
 		training8.setEndDate(endDate);
 		training8.setEditingPermission(EditingPermission.BOTH);
@@ -231,7 +228,6 @@ class TrainingControllerTests {
 		Training training7 = new Training();
 		training7.setId(CLIENT2_TRAINING7_ID);
 		training7.setName("Training 2");
-		training7.setClient(client2);
 		training7.setInitialDate(initialDate);
 		training7.setEndDate(endDate);
 		training7.setEditingPermission(EditingPermission.TRAINER);
@@ -392,7 +388,7 @@ class TrainingControllerTests {
 	@Test
 	void testTrainerProcessTrainingCreationFormHasErrorsPastInitDate() throws Exception {
 		
-		doThrow(new PastInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new PastInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER2_USERNAME,CLIENT2_ID)
 		 	.with(csrf())
@@ -408,7 +404,7 @@ class TrainingControllerTests {
 	@Test
 	void testTrainerProcessTrainingCreationFormHasErrorsPastEnd() throws Exception {
 		
-		doThrow(new PastEndException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new PastEndException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER2_USERNAME,CLIENT2_ID)
 		 	.with(csrf())
@@ -424,7 +420,7 @@ class TrainingControllerTests {
 	@Test
 	void testTrainerProcessTrainingCreationFormHasErrorsEndBeforeEqualsInit() throws Exception {
 		
-		doThrow(new EndBeforeEqualsInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new EndBeforeEqualsInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER2_USERNAME,CLIENT2_ID)
 		 	.with(csrf())
@@ -440,7 +436,7 @@ class TrainingControllerTests {
 	@Test
 	void testTrainerProcessTrainingCreationFormHasErrorsLongerThan90Days() throws Exception {
 		
-		doThrow(new LongerThan90DaysException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new LongerThan90DaysException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER2_USERNAME,CLIENT2_ID)
 		 	.with(csrf())
@@ -456,7 +452,7 @@ class TrainingControllerTests {
 	@Test
 	void testTrainerProcessTrainingCreationFormHasErrorsInitInTraining() throws Exception {
 		
-		doThrow(new InitInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new InitInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER2_USERNAME,CLIENT2_ID)
 		 	.with(csrf())
@@ -472,7 +468,7 @@ class TrainingControllerTests {
 	@Test
 	void testTrainerProcessTrainingCreationFormHasErrorsEndInTraining() throws Exception {
 		
-		doThrow(new EndInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new EndInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER2_USERNAME,CLIENT2_ID)
 		 	.with(csrf())
@@ -488,7 +484,7 @@ class TrainingControllerTests {
 	@Test
 	void testTrainerProcessTrainingCreationFormHasErrorsPeriodIncludingTraining() throws Exception {
 		
-		doThrow(new PeriodIncludingTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new PeriodIncludingTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER2_USERNAME,CLIENT2_ID)
 		 	.with(csrf())
@@ -562,7 +558,7 @@ class TrainingControllerTests {
    	@Test
    	void testTrainerProcessTrainingUpdateFormHasErrorsPastInitDate() throws Exception {
    		
-   		doThrow(new PastInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new PastInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit", TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID)
 		 	.with(csrf())
@@ -578,7 +574,7 @@ class TrainingControllerTests {
    	@Test
    	void testTrainerProcessTrainingUpdateFormHasErrorsPastEnd() throws Exception {
    		
-   		doThrow(new PastEndException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new PastEndException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit", TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID)
 		 	.with(csrf())
@@ -594,7 +590,7 @@ class TrainingControllerTests {
    	@Test
    	void testTrainerProcessTrainingUpdateFormHasErrorsEndBeforeEqualsInit() throws Exception {
    		
-   		doThrow(new EndBeforeEqualsInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new EndBeforeEqualsInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit", TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID)
 		 	.with(csrf())
@@ -610,7 +606,7 @@ class TrainingControllerTests {
    	@Test
    	void testTrainerProcessTrainingUpdateFormHasErrorsLongerThan90Days() throws Exception {
    		
-   		doThrow(new LongerThan90DaysException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new LongerThan90DaysException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit", TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID)
 		 	.with(csrf())
@@ -626,7 +622,7 @@ class TrainingControllerTests {
    	@Test
    	void testTrainerProcessTrainingUpdateFormHasErrorsInitInTraining() throws Exception {
    		
-   		doThrow(new InitInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new InitInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit", TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID)
 		 	.with(csrf())
@@ -642,7 +638,7 @@ class TrainingControllerTests {
    	@Test
    	void testTrainerProcessTrainingUpdateFormHasErrorsEndInTraining() throws Exception {
    		
-   		doThrow(new EndInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new EndInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit", TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID)
 		 	.with(csrf())
@@ -658,7 +654,7 @@ class TrainingControllerTests {
    	@Test
    	void testTrainerProcessTrainingUpdateFormHasErrorsPeriodIncludingTraining() throws Exception {
    		
-   		doThrow(new PeriodIncludingTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new PeriodIncludingTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit", TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID)
 		 	.with(csrf())
@@ -838,7 +834,7 @@ class TrainingControllerTests {
 	@Test
 	void testClientProcessTrainingCreationFormHasErrorsPastInitDate() throws Exception {
 		
-		doThrow(new PastInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new PastInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/client/{clientUsername}/trainings/create",CLIENT2_USERNAME)
 		 	.with(csrf())
@@ -854,7 +850,7 @@ class TrainingControllerTests {
 	@Test
 	void testClientProcessTrainingCreationFormHasErrorsPastEnd() throws Exception {
 		
-		doThrow(new PastEndException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new PastEndException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/client/{clientUsername}/trainings/create",CLIENT2_USERNAME)
 		 	.with(csrf())
@@ -870,7 +866,7 @@ class TrainingControllerTests {
 	@Test
 	void testClientProcessTrainingCreationFormHasErrorsEndBeforeEqualsInit() throws Exception {
 		
-		doThrow(new EndBeforeEqualsInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new EndBeforeEqualsInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/client/{clientUsername}/trainings/create",CLIENT2_USERNAME)
 		 	.with(csrf())
@@ -886,7 +882,7 @@ class TrainingControllerTests {
 	@Test
 	void testClientProcessTrainingCreationFormHasErrorsLongerThan90Days() throws Exception {
 		
-		doThrow(new LongerThan90DaysException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new LongerThan90DaysException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/client/{clientUsername}/trainings/create",CLIENT2_USERNAME)
 		 	.with(csrf())
@@ -902,7 +898,7 @@ class TrainingControllerTests {
 	@Test
 	void testClientProcessTrainingCreationFormHasErrorsInitInTraining() throws Exception {
 		
-		doThrow(new InitInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new InitInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/client/{clientUsername}/trainings/create",CLIENT2_USERNAME)
 		 	.with(csrf())
@@ -918,7 +914,7 @@ class TrainingControllerTests {
 	@Test
 	void testClientProcessTrainingCreationFormHasErrorsEndInTraining() throws Exception {
 		
-		doThrow(new EndInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new EndInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/client/{clientUsername}/trainings/create",CLIENT2_USERNAME)
 		 	.with(csrf())
@@ -934,7 +930,7 @@ class TrainingControllerTests {
 	@Test
 	void testClientProcessTrainingCreationFormHasErrorsPeriodIncludingTraining() throws Exception {
 		
-		doThrow(new PeriodIncludingTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+		doThrow(new PeriodIncludingTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
 		
 		mockMvc.perform(post("/client/{clientUsername}/trainings/create",CLIENT2_USERNAME)
 		 	.with(csrf())
@@ -1008,7 +1004,7 @@ class TrainingControllerTests {
    	@Test
    	void testClientProcessTrainingUpdateFormHasErrorsPastInitDate() throws Exception {
    		
-   		doThrow(new PastInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new PastInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/edit", CLIENT1_USERNAME,CLIENT1_TRAINING2_ID)
 		 	.with(csrf())
@@ -1024,7 +1020,7 @@ class TrainingControllerTests {
    	@Test
    	void testClientProcessTrainingUpdateFormHasErrorsPastEnd() throws Exception {
    		
-   		doThrow(new PastEndException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new PastEndException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/edit", CLIENT1_USERNAME,CLIENT1_TRAINING2_ID)
 		 	.with(csrf())
@@ -1040,7 +1036,7 @@ class TrainingControllerTests {
    	@Test
    	void testClientProcessTrainingUpdateFormHasErrorsEndBeforeEqualsInit() throws Exception {
    		
-   		doThrow(new EndBeforeEqualsInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new EndBeforeEqualsInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/edit", CLIENT1_USERNAME,CLIENT1_TRAINING2_ID)
 		 	.with(csrf())
@@ -1056,7 +1052,7 @@ class TrainingControllerTests {
    	@Test
    	void testClientProcessTrainingUpdateFormHasErrorsLongerThan90Days() throws Exception {
    		
-   		doThrow(new LongerThan90DaysException()).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new LongerThan90DaysException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/edit", CLIENT1_USERNAME,CLIENT1_TRAINING2_ID)
 		 	.with(csrf())
@@ -1072,7 +1068,7 @@ class TrainingControllerTests {
    	@Test
    	void testClientProcessTrainingUpdateFormHasErrorsInitInTraining() throws Exception {
    		
-   		doThrow(new InitInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new InitInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/edit", CLIENT1_USERNAME,CLIENT1_TRAINING2_ID)
 		 	.with(csrf())
@@ -1088,7 +1084,7 @@ class TrainingControllerTests {
    	@Test
    	void testClientProcessTrainingUpdateFormHasErrorsEndInTraining() throws Exception {
    		
-   		doThrow(new EndInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new EndInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/edit", CLIENT1_USERNAME,CLIENT1_TRAINING2_ID)
 		 	.with(csrf())
@@ -1104,7 +1100,7 @@ class TrainingControllerTests {
    	@Test
    	void testClientProcessTrainingUpdateFormHasErrorsPeriodIncludingTraining() throws Exception {
    		
-   		doThrow(new PeriodIncludingTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class));
+   		doThrow(new PeriodIncludingTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
    		
    		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/edit", CLIENT1_USERNAME,CLIENT1_TRAINING2_ID)
 		 	.with(csrf())
