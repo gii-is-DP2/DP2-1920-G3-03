@@ -35,6 +35,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 
 /**
@@ -74,7 +75,7 @@ public class Client extends Person {
 	@Column(name="isPublic")
 	protected Boolean isPublic;
 	
-	@LazyCollection(LazyCollectionOption.FALSE)
+	@ToString.Exclude
 	@OneToMany(cascade = CascadeType.ALL)
 	protected Collection<Training> trainings;
 

@@ -26,13 +26,13 @@ public class TrainingControllerE2ETest {
 	private MockMvc mockMvc;
 	
 
-//	@WithMockUser(username = "trainer1", authorities = { "trainer" })
-//	@Test
-//	void testListCopyTrainingSuccessful() throws Exception {
-//		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining",
-//				"trainer1", String.valueOf(6), String.valueOf(10))).andExpect(status().isOk())
-//				.andExpect(view().name("trainer/trainings/listCopyTraining"));
-//	}
+	@WithMockUser(username = "trainer1", authorities = { "trainer" })
+	@Test
+	void testListCopyTrainingSuccessful() throws Exception {
+		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining",
+				"trainer1", String.valueOf(6), String.valueOf(10))).andExpect(status().isOk())
+				.andExpect(view().name("trainer/trainings/listCopyTraining"));
+	}
 
 	@WithMockUser(username = "trainer1", authorities = { "trainer" })
 	@Test
