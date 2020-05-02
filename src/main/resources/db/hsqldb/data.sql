@@ -113,7 +113,6 @@ INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,di
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (12, DATEADD(day, -7, CURRENT_DATE), DATEADD(day, 7, CURRENT_DATE), 'Entrenamiento1', 1, 'client5', null);
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (13, DATEADD(day, 14, CURRENT_DATE), DATEADD(day, 21, CURRENT_DATE), 'Entrenamiento2', 2, 'trainer1', null);
 
-
 /* ROUTINE */
 
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (1,'Cardio', 'Augment resistance',3,1);

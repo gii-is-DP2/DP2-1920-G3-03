@@ -592,7 +592,7 @@ public class TrainingControllerE2ETest {
 			.param("endDate", inputFormatter.format(endDateUpdated))
 			.param("editingPermission", EditingPermission.BOTH.toString())
 			.param("author", CLIENT6_USERNAME))
-			.andExpect(status().isOk())
+			.andExpect(status().isFound())
 			.andExpect(model().attributeHasErrors("training"))
 			.andExpect(model().attributeHasFieldErrors("training", "endDate"))
 			.andExpect(model().errorCount(1))
