@@ -2,6 +2,7 @@ package org.springframework.samples.yogogym.web.e2e;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -57,6 +58,7 @@ public class TrainingControllerE2ETest {
 	private static final int NEW_TRAINING_ID = 14;
 	
 	private SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy/MM/dd");
+	private SimpleDateFormat detailsFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 	
 	private static Date initialDate;
 	private static Date endDate;
@@ -270,7 +272,6 @@ public class TrainingControllerE2ETest {
 			.andExpect(view().name("exception"));
 	}
 
-	//TODO Arreglar fechas
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
 	@Test
 	void testTrainerTrainingDetails() throws Exception {
@@ -279,8 +280,8 @@ public class TrainingControllerE2ETest {
 		 		.andExpect(model().attributeExists("client"))
 				.andExpect(model().attributeExists("training"))
 				.andExpect(model().attribute("training", hasProperty("name", is("Entrenamiento1"))))
-				//.andExpect(model().attribute("training", hasProperty("initialDate", equalTo(detailsFormatter.parse("2020-01-01 00:00:00.0")))))
-				//.andExpect(model().attribute("training", hasProperty("endDate", equalTo(detailsFormatter.parse("2020-01-14 00:00:00.0")))))
+				.andExpect(model().attribute("training", hasProperty("initialDate", hasToString("2020-01-01 00:00:00.0"))))
+				.andExpect(model().attribute("training", hasProperty("endDate", hasToString("2020-01-14 00:00:00.0"))))
 				.andExpect(model().attribute("training", hasProperty("author", is(TRAINER1_USERNAME))))
 				.andExpect(model().attribute("training", hasProperty("editingPermission", equalTo(EditingPermission.TRAINER))))
 				.andExpect(model().attribute("training", hasProperty("routines", hasItem(hasProperty("name",is("Cardio"))))))
@@ -466,12 +467,20 @@ public class TrainingControllerE2ETest {
 			.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
 	}
 	
-	//TODO Arreglar fechas
-	
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
 	@ParameterizedTest
 	@ValueSource(ints = {CLIENT6_TRAINING2_ID,CLIENT6_TRAINING3_ID})
 	void testTrainerInitTrainingUpdateForm(int trainingId) throws Exception {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+	    calendar.set(Calendar.MINUTE, 0);
+	    calendar.set(Calendar.SECOND, 0);
+	    calendar.set(Calendar.MILLISECOND, 0);
+		calendar.add(Calendar.DAY_OF_MONTH, trainingId==CLIENT6_TRAINING2_ID?-7:14);
+		Date initialDate = calendar.getTime();
+		calendar.add(Calendar.DAY_OF_MONTH, trainingId==CLIENT6_TRAINING2_ID?14:7);
+		Date endDate = calendar.getTime();
+		
 		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit", TRAINER1_USERNAME,CLIENT6_ID,trainingId))
 		 		.andExpect(status().isOk())
 		  		.andExpect(model().attributeExists("client"))
@@ -479,8 +488,8 @@ public class TrainingControllerE2ETest {
 		  		.andExpect(model().attributeExists("actualDate"))
 		  		.andExpect(model().attributeExists("training"))
 		  		.andExpect(model().attribute("training", hasProperty("name", is(trainingId==CLIENT6_TRAINING2_ID?"Entrenamiento1":"Entrenamiento2"))))
-				//.andExpect(model().attribute("training", hasProperty("initialDate", equalTo(trainingId==1?inputFormatter.parse("2020/01/01"):inputFormatter.parse("2020/01/14")))))
-				//.andExpect(model().attribute("training", hasProperty("endDate", equalTo(trainingId==1?inputFormatter.parse("2020/02/01"):inputFormatter.parse("2020/02/14")))))
+				.andExpect(model().attribute("training", hasProperty("initialDate", hasToString(detailsFormatter.format(initialDate)))))
+				.andExpect(model().attribute("training", hasProperty("endDate", hasToString(detailsFormatter.format(endDate)))))
 				.andExpect(model().attribute("training", hasProperty("author", is(trainingId==CLIENT6_TRAINING2_ID?TRAINER1_USERNAME:CLIENT6_USERNAME))))
 				.andExpect(model().attribute("training", hasProperty("editingPermission", equalTo(trainingId==CLIENT6_TRAINING2_ID?EditingPermission.TRAINER:EditingPermission.BOTH))))
 				.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
@@ -592,7 +601,7 @@ public class TrainingControllerE2ETest {
 			.param("endDate", inputFormatter.format(endDateUpdated))
 			.param("editingPermission", EditingPermission.BOTH.toString())
 			.param("author", CLIENT6_USERNAME))
-			.andExpect(status().isFound())
+			.andExpect(status().isOk())
 			.andExpect(model().attributeHasErrors("training"))
 			.andExpect(model().attributeHasFieldErrors("training", "endDate"))
 			.andExpect(model().errorCount(1))
@@ -759,16 +768,14 @@ public class TrainingControllerE2ETest {
 			.andExpect(view().name("exception"));
 	}
 	
-	
-	//TODO Arreglar Fechas
 	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
 	@Test
 	void testClientTrainingDetails() throws Exception {
 		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}",CLIENT1_USERNAME,CLIENT1_TRAINING1_ID))
 		 		.andExpect(status().isOk())
 		 		.andExpect(model().attribute("training", hasProperty("name", is("Entrenamiento1"))))
-				//.andExpect(model().attribute("training", hasProperty("initialDate", equalTo(detailsFormatter.parse("2020-01-01 00:00:00.0")))))
-				//.andExpect(model().attribute("training", hasProperty("endDate", equalTo(detailsFormatter.parse("2020-01-14 00:00:00.0")))))
+				.andExpect(model().attribute("training", hasProperty("initialDate", hasToString("2020-01-01 00:00:00.0"))))
+				.andExpect(model().attribute("training", hasProperty("endDate", hasToString("2020-01-14 00:00:00.0"))))
 				.andExpect(model().attribute("training", hasProperty("author", is(TRAINER1_USERNAME))))
 				.andExpect(model().attribute("training", hasProperty("editingPermission", equalTo(EditingPermission.TRAINER))))
 				.andExpect(model().attribute("training", hasProperty("routines", hasItem(hasProperty("name",is("Cardio"))))))
@@ -953,12 +960,20 @@ public class TrainingControllerE2ETest {
 			.andExpect(view().name("client/trainings/trainingCreateOrUpdate"));
 	}
 
-	//TODO Arreglar fechas
-	
 	@WithMockUser(username=CLIENT5_USERNAME, authorities= {"client"})
 	@ParameterizedTest
    	@ValueSource(ints = {CLIENT5_TRAINING2_ID,CLIENT5_TRAINING3_ID})
 	void testClientInitTrainingUpdateForm(int trainingId) throws Exception {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+	    calendar.set(Calendar.MINUTE, 0);
+	    calendar.set(Calendar.SECOND, 0);
+	    calendar.set(Calendar.MILLISECOND, 0);
+		calendar.add(Calendar.DAY_OF_MONTH, trainingId==CLIENT5_TRAINING2_ID?-7:14);
+		Date initialDate = calendar.getTime();
+		calendar.add(Calendar.DAY_OF_MONTH, trainingId==CLIENT5_TRAINING2_ID?14:7);
+		Date endDate = calendar.getTime();
+		
 		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/edit", CLIENT5_USERNAME,trainingId))
 		 		.andExpect(status().isOk())
 		  		.andExpect(model().attributeExists("client"))
@@ -966,8 +981,8 @@ public class TrainingControllerE2ETest {
 		  		.andExpect(model().attributeExists("actualDate"))
 		  		.andExpect(model().attributeExists("training"))
 		  		.andExpect(model().attribute("training", hasProperty("name", is(trainingId==CLIENT5_TRAINING2_ID?"Entrenamiento1":"Entrenamiento2"))))
-				//.andExpect(model().attribute("training", hasProperty("initialDate", equalTo(trainingId==1?inputFormatter.parse("2020/01/01"):inputFormatter.parse("2020/01/14")))))
-				//.andExpect(model().attribute("training", hasProperty("endDate", equalTo(trainingId==1?inputFormatter.parse("2020/02/01"):inputFormatter.parse("2020/02/14")))))
+				.andExpect(model().attribute("training", hasProperty("initialDate", hasToString(detailsFormatter.format(initialDate)))))
+				.andExpect(model().attribute("training", hasProperty("endDate", hasToString(detailsFormatter.format(endDate)))))
 				.andExpect(model().attribute("training", hasProperty("author", is(trainingId==CLIENT5_TRAINING2_ID?CLIENT5_USERNAME:TRAINER1_USERNAME))))
 				.andExpect(model().attribute("training", hasProperty("editingPermission", equalTo(trainingId==CLIENT5_TRAINING2_ID?EditingPermission.CLIENT:EditingPermission.BOTH))))
 				.andExpect(view().name("client/trainings/trainingCreateOrUpdate"));
