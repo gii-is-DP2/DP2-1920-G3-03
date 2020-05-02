@@ -106,7 +106,12 @@ INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,di
 /* Always Updated Trainings */
 
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (9, DATEADD(day, 100, CURRENT_DATE), DATEADD(day, 101, CURRENT_DATE), 'Test', 2, 'trainer1', null);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (10, DATEADD(day, -7, CURRENT_DATE), DATEADD(day, 7, CURRENT_DATE), 'Entrenamiento1', 2, 'client6', null);
+
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (10, DATEADD(day, -7, CURRENT_DATE), DATEADD(day, 7, CURRENT_DATE), 'Entrenamiento1', 0, 'trainer1', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (11, DATEADD(day, 14, CURRENT_DATE), DATEADD(day, 21, CURRENT_DATE), 'Entrenamiento2', 2, 'client6', null);
+
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (12, DATEADD(day, -7, CURRENT_DATE), DATEADD(day, 7, CURRENT_DATE), 'Entrenamiento1', 1, 'client5', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (13, DATEADD(day, 14, CURRENT_DATE), DATEADD(day, 21, CURRENT_DATE), 'Entrenamiento2', 2, 'trainer1', null);
 
 
 /* ROUTINE */
@@ -313,8 +318,11 @@ INSERT INTO clients_trainings(client_id,trainings_id) VALUES (2,3);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (3,4);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (4,5);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (5,6);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (5,12);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (5,13);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,7);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,10);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,11);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (7,8);
 
 

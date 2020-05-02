@@ -99,7 +99,7 @@ public class DeleteTrainingNotBeingAuthorUITest {
   }
   
   private void accessDeleteTrainingNotBeingAuthor() {
-	  driver.get("http://localhost:" + port + "/trainer/trainer1/clients/6/trainings/10/delete");
+	  driver.get("http://localhost:" + port + "/trainer/trainer1/clients/6/trainings/11/delete");
   }
   
   private void exceptionViewShown() {
