@@ -49,7 +49,7 @@ INSERT INTO clients(id,email,first_name,last_name,nif,age,fat_percentage,height,
 
 INSERT INTO users(username,password,enabled) VALUES ('client9','client1999',TRUE);
 INSERT INTO authorities(id,authority,username) VALUES (11,'client','client9');
-INSERT INTO clients(id,email,first_name,last_name,nif,age,fat_percentage,height,is_public,weight,guild_id,username) VALUES (9, 'caralfe@yogogym.com','Carmen', 'Alejandra Fernandez', '12345678J',18,20.0,170.0,true,72.4,1,'client9');
+INSERT INTO clients(id,email,first_name,last_name,nif,age,fat_percentage,height,is_public,weight,guild_id,username) VALUES (9, 'caralfe@yogogym.com','Carmen', 'Alejandra Fernandez', '12345678J',18,20.0,170.0,true,72.4,null,'client9');
 
 INSERT INTO users(username,password,enabled) VALUES ('client10','client1999',TRUE);
 INSERT INTO authorities(id,authority,username) VALUES (12,'client','client10');
