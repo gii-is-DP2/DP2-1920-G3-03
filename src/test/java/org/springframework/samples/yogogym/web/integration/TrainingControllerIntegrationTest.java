@@ -2,6 +2,7 @@ package org.springframework.samples.yogogym.web.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -120,7 +121,7 @@ public class TrainingControllerIntegrationTest {
 		training.setRoutines(new ArrayList<>());
 		
 		try {
-			this.trainingService.saveTraining(training,client);
+			this.trainingService.saveTraining(training, client);
 		} catch (DataAccessException e) {
 			e.printStackTrace();
 		} catch (PastInitException e) {

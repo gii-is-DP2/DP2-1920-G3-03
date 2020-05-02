@@ -106,14 +106,14 @@ public class UpdateTrainingLongerThan90DaysUITest {
   private void accessUpdateView() {
 	  driver.findElement(By.linkText("Trainer")).click();
 	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento1')])[2]")).click();
+	  driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento2')])[4]")).click();
 	  driver.findElement(By.linkText("Edit Training")).click();
   }
   
   private void updateTrainingLongerThan90Days() {
 	  driver.findElement(By.id("name")).clear();
 	  driver.findElement(By.id("name")).sendKeys("Entrenamiento1");
-	  calEnd.add(Calendar.DAY_OF_MONTH, 84);
+	  calEnd.add(Calendar.DAY_OF_MONTH, 21+84);
 	  driver.findElement(By.id("endDate")).clear();
 	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calEnd.getTime()));
 	  driver.findElement(By.id("bs-example-navbar-collapse-1")).click();
