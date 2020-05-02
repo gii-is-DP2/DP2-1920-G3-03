@@ -39,7 +39,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @Transactional
-public class RoutineControllerIntegrationE2ETest {
+public class RoutineControllerE2ETest {
 
 	@Autowired
 	RoutineService routineService;
@@ -55,39 +55,12 @@ public class RoutineControllerIntegrationE2ETest {
 	// TRAINER============================================================================
 
 	void testWrongAuth(int mode, String path, Object... uriVars) throws Exception {
+		
 		if (mode == 0) {
 			mockMvc.perform(get(path, uriVars)).andExpect(status().isOk()).andExpect(view().name("exception"));
 		} else {
 			mockMvc.perform(post(path, uriVars)).andExpect(status().isForbidden());
 		}
-	}
-
-	@WithMockUser(username = "client1", authorities = { "client" })
-	@Ignore
-	void testWrongAuthority() throws Exception {
-
-		String trainerUsername = "trainer1";
-		int trainingId = 9;
-		int clientId = 1;
-		int routineId = 9;
-
-		// Authority is not trainer
-		testWrongAuth(0, "/trainer/{trainerUsername}/routines", trainerUsername);
-		testWrongAuth(0, "/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}",
-				trainerUsername, clientId, trainingId, routineId);
-		testWrongAuth(0, "/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create",
-				trainerUsername, clientId, trainingId);
-		testWrongAuth(1, "/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/create",
-				trainerUsername, clientId, trainingId);
-		testWrongAuth(0,
-				"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/edit",
-				trainerUsername, clientId, trainingId, routineId);
-		testWrongAuth(1,
-				"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/edit",
-				trainerUsername, clientId, trainingId, routineId);
-		testWrongAuth(0,
-				"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/delete",
-				trainerUsername, clientId, trainingId, routineId);
 	}
 
 	@WithMockUser(username = "trainer1", authorities = { "trainer" })
@@ -538,7 +511,6 @@ public class RoutineControllerIntegrationE2ETest {
 		Training training = new Training();
 		training.setId(id);
 		training.setName("training 1");
-		training.setClient(client);
 		training.setInitialDate(cal.getTime());
 
 		cal.add(Calendar.DAY_OF_MONTH, DaysToFinishTraining);

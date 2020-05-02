@@ -39,7 +39,6 @@ import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 @WebMvcTest(value = RoutineController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration= SecurityConfiguration.class)
@@ -106,7 +105,11 @@ public class RoutineControllerTest {
 		Trainer trainer_t2 = createTrainer(testTrainerUsername_t2,clients_t2);
 		
 		given(this.clientService.findClientById(testClientId_t2)).willReturn(client_t2);
-		given(this.trainerService.findTrainer(testTrainerUsername_t2)).willReturn(trainer_t2);	
+		given(this.trainerService.findTrainer(testTrainerUsername_t2)).willReturn(trainer_t2);
+		
+		//Client 1
+		Client client_c1 = createClient(1, "client1");
+		given(this.clientService.findClientByUsername(testClientUsername_c1)).willReturn(client_c1);
 	}
 	
 	void testWrongAuth(int mode,String path,Object... uriVars) throws Exception
@@ -295,8 +298,8 @@ public class RoutineControllerTest {
 		.param("name", routine.getName())
 		.param("description", routine.getDescription())
 		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
-	.andExpect(status().is3xxRedirection())
-	.andExpect(view().name("redirect:/client/" + testClientUsername_c1 + "/trainings/" + testTrainingId));
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/client/" + testClientUsername_c1 + "/trainings/" + testTrainingId));
 	}
 	
 	//Update Routine

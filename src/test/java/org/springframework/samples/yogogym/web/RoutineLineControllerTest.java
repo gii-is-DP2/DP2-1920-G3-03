@@ -66,6 +66,9 @@ public class RoutineLineControllerTest {
 	private static final int testClientId_t2 = 2;
 	private static final String testTrainerUsername_t2 = "trainer2";
 	
+	//Client 1
+	private static final String testClientUsername_c1 = "client1";
+	
 	@MockBean
 	private RoutineService routineService;
 	
@@ -133,6 +136,10 @@ public class RoutineLineControllerTest {
 		
 		given(this.clientService.findClientById(testClientId_t2)).willReturn(client_t2);
 		given(this.trainerService.findTrainer(testTrainerUsername_t2)).willReturn(trainer_t2);	
+		
+		//Client 1
+		Client client_c1 = createClient(1,testClientUsername_c1);
+		given(this.clientService.findClientByUsername(testClientUsername_c1)).willReturn(client_c1);
 	}
 	
 	void testWrongAuth(int mode,String path,Object... uriVars) throws Exception
@@ -233,9 +240,9 @@ public class RoutineLineControllerTest {
 			.param("weight", routineLine.getWeight().toString())
 			.param("series", routineLine.getSeries().toString())
 			.param("exercise.id",String.valueOf(testExerciseId_t1)))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/trainer/" + testTrainerUsername_t1 + "/clients/" + testClientId_t1 + "/trainings/"
-				+ testTrainingId_t1 + "/routines/" + testRoutineId_t1));
+			.andExpect(status().is3xxRedirection())
+			.andExpect(view().name("redirect:/trainer/" + testTrainerUsername_t1 + "/clients/" + testClientId_t1 + "/trainings/"
+					+ testTrainingId_t1 + "/routines/" + testRoutineId_t1));
 	}
 	
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
@@ -279,6 +286,168 @@ public class RoutineLineControllerTest {
 		.andExpect(view().name("redirect:/trainer/"+ testTrainerUsername_t1 + "/clients/" + testClientId_t1 + "/trainings/" + testTrainingId_t1 + "/routines/" + testRoutineId_t1));
 	}
 	
+	//CLIENT ============================================================================================================
+	
+	//Create
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testInitCreateRoutineLine_Client() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/routines/{routineId}/routineLine/create",testClientUsername_c1,testTrainingId_t1,testRoutineId_t1))
+		.andExpect(status().isOk())
+		.andExpect(view().name("client/routines/routinesLineCreateOrUpdate"))
+		.andExpect(model().attributeExists("routineLine"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineLine_Client() throws Exception
+	{
+		Exercise exercise = this.exerciseService.findExerciseById(testExerciseId_t1);
+		RoutineLine routineLine = createRoutineLine(10, null, 5, 5.0, exercise);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routines/{routineId}/routineLine/create",testClientUsername_c1,testTrainingId_t1,testRoutineId_t1)
+		.with(csrf())
+		.param("routineId", String.valueOf(testRoutineId_t1))
+		.param("reps", routineLine.getReps().toString())
+		.param("time", "")
+		.param("weight", routineLine.getWeight().toString())
+		.param("series", routineLine.getSeries().toString())
+		.param("exercise.id",String.valueOf(testExerciseId_t1)))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/client/" + testClientUsername_c1 + "/trainings/" + testTrainingId_t1));
+	}
+	
+	//Update
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testInitUpdateRoutineLine_Client() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/update",testClientUsername_c1,testTrainingId_t1,testRoutineId_t1,testRoutineLineId_t1))
+		.andExpect(status().isOk())
+		.andExpect(view().name("client/routines/routinesLineCreateOrUpdate"))
+		.andExpect(model().attributeExists("routineLine"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessUpdateRoutineLine_Client() throws Exception
+	{
+		Exercise exercise = this.exerciseService.findExerciseById(testExerciseId_t1);
+		RoutineLine routineLine = createRoutineLine(10, null, 5, 5.0, exercise);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/update",testClientUsername_c1,testTrainingId_t1,testRoutineId_t1,testRoutineLineId_t1)
+		.with(csrf())
+		.param("routineId", String.valueOf(testRoutineId_t1))
+		.param("reps", routineLine.getReps().toString())
+		.param("time", "")
+		.param("weight", routineLine.getWeight().toString())
+		.param("series", routineLine.getSeries().toString())
+		.param("exercise.id",String.valueOf(testExerciseId_t1)))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/client/" + testClientUsername_c1 + "/trainings/" + testTrainingId_t1));
+	}
+	
+	//Delete
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testDeleteRoutineLine_Client() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/delete",testClientUsername_c1,testTrainingId_t1,testRoutineId_t1,testRoutineLineId_t1))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/client/" + testClientUsername_c1 + "/trainings/" + testTrainingId_t1));
+	}	
+	
+	//Bad information
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineLineEmpty_Client() throws Exception
+	{		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routines/{routineId}/routineLine/create",testClientUsername_c1,testTrainingId_t1,testRoutineId_t1)
+		.with(csrf())
+		.param("reps", "")
+		.param("time", "")
+		.param("weight","")
+		.param("series", "")
+		.param("exercise.id","1"))
+		.andExpect(view().name("client/routines/routinesLineCreateOrUpdate"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineLineBadSeries_Client() throws Exception
+	{		
+		
+		Exercise exercise = createExercise(RepetitionType.REPS);
+		RoutineLine routineLine = createRoutineLine(10, null, 50, 5.0, exercise);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routines/{routineId}/routineLine/create",testClientUsername_c1,testTrainingId_t1,testRoutineId_t1)
+		.with(csrf())
+		.param("reps", (routineLine.getReps()==null)?"":routineLine.getReps().toString())
+		.param("time", (routineLine.getTime()==null)?"":routineLine.getTime().toString())
+		.param("weight", routineLine.getWeight().toString())
+		.param("series", routineLine.getSeries().toString())
+		.param("exercise.id","1"))
+		.andExpect(view().name("client/routines/routinesLineCreateOrUpdate"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineLineBadReps_Client() throws Exception
+	{		
+		
+		Exercise exercise = createExercise(RepetitionType.TIME);
+		RoutineLine routineLine = createRoutineLine(10, null, 50, 5.0, exercise);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routines/{routineId}/routineLine/create",testClientUsername_c1,testTrainingId_t1,testRoutineId_t1)
+		.with(csrf())
+		.param("reps", (routineLine.getReps()==null)?"":routineLine.getReps().toString())
+		.param("time", (routineLine.getTime()==null)?"":routineLine.getTime().toString())
+		.param("weight", routineLine.getWeight().toString())
+		.param("series", routineLine.getSeries().toString())
+		.param("exercise.id","1"))
+		.andExpect(view().name("client/routines/routinesLineCreateOrUpdate"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineLineBadTime_Client() throws Exception
+	{		
+		
+		Exercise exercise = createExercise(RepetitionType.REPS);
+		RoutineLine routineLine = createRoutineLine(null, 10.0, 50, 5.0, exercise);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routines/{routineId}/routineLine/create",testClientUsername_c1,testTrainingId_t1,testRoutineId_t1)
+		.with(csrf())
+		.param("reps", (routineLine.getReps()==null)?"":routineLine.getReps().toString())
+		.param("time", (routineLine.getTime()==null)?"":routineLine.getTime().toString())
+		.param("weight", routineLine.getWeight().toString())
+		.param("series", routineLine.getSeries().toString())
+		.param("exercise.id","1"))
+		.andExpect(view().name("client/routines/routinesLineCreateOrUpdate"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineLineRepsTimeSetted_Client() throws Exception
+	{		
+		
+		Exercise exercise = createExercise(RepetitionType.REPS);
+		RoutineLine routineLine = createRoutineLine(10, 10.0, 50, 5.0, exercise);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routines/{routineId}/routineLine/create",testClientUsername_c1,testTrainingId_t1,testRoutineId_t1)
+		.with(csrf())
+		.param("reps", (routineLine.getReps()==null)?"":routineLine.getReps().toString())
+		.param("time", (routineLine.getTime()==null)?"":routineLine.getTime().toString())
+		.param("weight", routineLine.getWeight().toString())
+		.param("series", routineLine.getSeries().toString())
+		.param("exercise.id","1"))
+		.andExpect(view().name("client/routines/routinesLineCreateOrUpdate"));
+	}
 	
 	//Derivative Methods
 	
@@ -286,6 +455,18 @@ public class RoutineLineControllerTest {
 	{
 		Exercise exercise = new Exercise();
 		exercise.setId(id);
+		exercise.setName("Exercise name test");
+		exercise.setDescription("Description Exercise test");
+		exercise.setKcal(20);
+		exercise.setRepetitionType(type);
+		exercise.setBodyPart(BodyParts.ALL);
+		
+		return exercise;
+	}
+	
+	protected Exercise createExercise(RepetitionType type)
+	{
+		Exercise exercise = new Exercise();
 		exercise.setName("Exercise name test");
 		exercise.setDescription("Description Exercise test");
 		exercise.setKcal(20);
@@ -303,6 +484,18 @@ public class RoutineLineControllerTest {
 		routineLine.setTime(time);
 		routineLine.setWeight(50.0);
 		routineLine.setSeries(5);
+		routineLine.setExercise(exercise);
+		
+		return routineLine;
+	}
+	
+	protected RoutineLine createRoutineLine(final Integer reps, final Double time, final Integer series, final Double weight, Exercise exercise)
+	{
+		RoutineLine routineLine = new RoutineLine();
+		routineLine.setReps(reps);
+		routineLine.setTime(time);
+		routineLine.setWeight(weight);
+		routineLine.setSeries(series);
 		routineLine.setExercise(exercise);
 		
 		return routineLine;

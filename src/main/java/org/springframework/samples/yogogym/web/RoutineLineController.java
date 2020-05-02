@@ -325,7 +325,7 @@ public class RoutineLineController {
 			
 			model.addAttribute("exercises", selectVals);
 			
-			return "trainer/routines/routinesLineCreateOrUpdate";
+			return "client/routines/routinesLineCreateOrUpdate";
 		} else {
 			
 			Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
@@ -408,7 +408,7 @@ public class RoutineLineController {
 			
 			model.addAttribute("exercises", selectVals);
 			
-			return "trainer/routines/routinesLineCreateOrUpdate";
+			return "client/routines/routinesLineCreateOrUpdate";
 		} else {
 			
 			Routine routine = this.routineService.findRoutineById(routineId);
