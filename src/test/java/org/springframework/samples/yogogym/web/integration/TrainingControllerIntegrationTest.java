@@ -2,6 +2,7 @@ package org.springframework.samples.yogogym.web.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 

@@ -274,51 +274,147 @@ class TrainingControllerTests {
 	//TRAINER
 	
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
-	@Test
-	void testTrainerWrongAccess() throws Exception {
-		testWrongAuth(0,"/client/{clientUsername}/trainings",CLIENT1_USERNAME);
-		testWrongAuth(0,"/client/{clientUsername}/trainings/{trainingId}",CLIENT1_USERNAME,CLIENT1_TRAINING1_ID);
-		testWrongAuth(0,"/client/{clientUsername}/trainings/create",CLIENT1_USERNAME);
-		testWrongAuth(1,"/client/{clientUsername}/trainings/create",CLIENT1_USERNAME);
-		testWrongAuth(0,"/client/{clientUsername}/trainings/{trainingId}/edit",CLIENT1_USERNAME,CLIENT1_TRAINING1_ID);
-		testWrongAuth(1,"/client/{clientUsername}/trainings/{trainingId}/edit",CLIENT1_USERNAME,CLIENT1_TRAINING1_ID);
-		testWrongAuth(0,"/client/{clientUsername}/trainings/{trainingId}/delete",CLIENT1_USERNAME,CLIENT1_TRAINING1_ID);
+	@ParameterizedTest
+	@ValueSource(strings = {"/client/{clientUsername}/trainings",
+		"/client/{clientUsername}/trainings/{trainingId}","/client/{clientUsername}/trainings/create",
+		"/client/{clientUsername}/trainings/{trainingId}/edit","/client/{clientUsername}/trainings/{trainingId}/delete"})
+	void testTrainerPerformGetClientSectionError(String path) throws Exception {
+		if(path.contains("trainingId")) {
+			mockMvc.perform(get(path,CLIENT1_USERNAME,CLIENT1_TRAINING1_ID))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+		else {
+			mockMvc.perform(get(path,CLIENT1_USERNAME))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+	}
+	
+	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
+	@ParameterizedTest
+	@ValueSource(strings = {"/client/{clientUsername}/trainings/create",
+		"/client/{clientUsername}/trainings/{trainingId}/edit"})
+	void testTrainerPerformPostClientSectionError(String path) throws Exception {
+		if(path.contains("trainingId")) {
+			mockMvc.perform(post(path,CLIENT1_USERNAME,CLIENT1_TRAINING1_ID)
+				.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+		else {
+			mockMvc.perform(post(path,CLIENT1_USERNAME)
+				.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
 	}
 	
 	@WithMockUser(username=TRAINER2_USERNAME, authorities= {"trainer"})
-	@Test
-	void testTrainerWrongUsername() throws Exception {
-		testWrongAuth(0,"/trainer/{trainerUsername}/trainings",TRAINER1_USERNAME);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER1_USERNAME,CLIENT1_ID);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER1_USERNAME,CLIENT1_ID);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID);
+	@ParameterizedTest
+	@ValueSource(strings = {"/trainer/{trainerUsername}/trainings",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/create",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete"})
+	void testTrainerPerformGetWrongUsernameError(String path) throws Exception {
+		if(path.contains("trainingId")) {
+			mockMvc.perform(get(path,TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+		else if(path.contains("clientId")) {
+			mockMvc.perform(get(path,TRAINER1_USERNAME,CLIENT1_ID))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+		else {
+			mockMvc.perform(get(path,TRAINER1_USERNAME))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
 	}
 	
 	@WithMockUser(username=TRAINER2_USERNAME, authorities= {"trainer"})
-	@Test
-	void testTrainerWrongClients() throws Exception {
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}",TRAINER2_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER2_USERNAME,CLIENT1_ID);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER2_USERNAME,CLIENT1_ID);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",TRAINER2_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",TRAINER2_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete",TRAINER2_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID);
+	@ParameterizedTest
+	@ValueSource(strings = {"/trainer/{trainerUsername}/clients/{clientId}/trainings/create",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit"})
+	void testTrainerPerformPostWrongUsernameError(String path) throws Exception {
+		if(path.contains("trainingId")) {
+			mockMvc.perform(post(path,TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID)
+				.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+		else {
+			mockMvc.perform(post(path,TRAINER1_USERNAME,CLIENT1_ID)
+				.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+	}
+	
+	@WithMockUser(username=TRAINER2_USERNAME, authorities= {"trainer"})
+	@ParameterizedTest
+	@ValueSource(strings = {"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/create",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete"})
+	void testTrainerPerformGetWrongClientError(String path) throws Exception {
+		if(path.contains("trainingId")) {
+			mockMvc.perform(get(path,TRAINER2_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+		else {
+			mockMvc.perform(get(path,TRAINER2_USERNAME,CLIENT1_ID))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+	}
+	
+	@WithMockUser(username=TRAINER2_USERNAME, authorities= {"trainer"})
+	@ParameterizedTest
+	@ValueSource(strings = {"/trainer/{trainerUsername}/clients/{clientId}/trainings/create",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit"})
+	void testTrainerPerformPostWrongClientError(String path) throws Exception {
+		if(path.contains("trainingId")) {
+			mockMvc.perform(post(path,TRAINER2_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID)
+				.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+		else {
+			mockMvc.perform(post(path,TRAINER2_USERNAME,CLIENT1_ID)
+				.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
 	}
 	
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
 	@Test
-	void testTrainerNoEditingPermission() throws Exception {
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING2_ID);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING2_ID);
+	void testTrainerPerformGetNoEditingPermissionError() throws Exception {
+		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING2_ID))
+			.andExpect(status().isOk())
+			.andExpect(view().name("exception"));
+	}
+	
+	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
+	@Test
+	void testTrainerPerformPostNoEditingPermissionError() throws Exception {
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING2_ID)
+			.with(csrf()))
+			.andExpect(status().isOk())
+			.andExpect(view().name("exception"));
 	}
 	
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
 	@Test
 	void testTrainerDeleteNoAuthor() throws Exception {
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING8_ID);
+		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING2_ID))
+			.andExpect(status().isOk())
+			.andExpect(view().name("exception"));
 	}
 	
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
@@ -357,8 +453,7 @@ class TrainingControllerTests {
 			 	.param("initialDate", dateFormat.format(initialDate))
 			 	.param("endDate", dateFormat.format(endDate))
 			 	.param("editingPermission", EditingPermission.TRAINER.toString())
-			 	.param("author", TRAINER2_USERNAME)
-			 	.param("client", NIF2))
+			 	.param("author", TRAINER2_USERNAME))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings/"+CLIENT2_TRAINING7_ID));
 	}
@@ -371,16 +466,14 @@ class TrainingControllerTests {
 			 	.param("name", "")
 			 	.param("initialDate", "")
 			 	.param("endDate", "")
-			 	.param("editingPermission", "")
-			 	.param("author", TRAINER2_USERNAME)
-			 	.param("client", NIF2))
+			 	.param("editingPermission", EditingPermission.TRAINER.toString())
+			 	.param("author", TRAINER2_USERNAME))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
 				.andExpect(model().attributeHasFieldErrors("training", "name"))
 				.andExpect(model().attributeHasFieldErrors("training", "initialDate"))
 				.andExpect(model().attributeHasFieldErrors("training", "endDate"))
-				.andExpect(model().attributeHasFieldErrors("training", "editingPermission"))
-				.andExpect(model().errorCount(4))
+				.andExpect(model().errorCount(3))
 				.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
 	}
 	
@@ -396,22 +489,6 @@ class TrainingControllerTests {
 			.andExpect(status().isOk())
 			.andExpect(model().attributeHasErrors("training"))
 			.andExpect(model().attributeHasFieldErrors("training", "initialDate"))
-			.andExpect(model().errorCount(1))
-			.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
-	}
-	
-	@WithMockUser(username=TRAINER2_USERNAME, authorities= {"trainer"})
-	@Test
-	void testTrainerProcessTrainingCreationFormHasErrorsPastEnd() throws Exception {
-		
-		doThrow(new PastEndException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
-		
-		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER2_USERNAME,CLIENT2_ID)
-		 	.with(csrf())
-		 	.params(createTrainingClient2(true)))
-			.andExpect(status().isOk())
-			.andExpect(model().attributeHasErrors("training"))
-			.andExpect(model().attributeHasFieldErrors("training", "endDate"))
 			.andExpect(model().errorCount(1))
 			.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
 	}
@@ -529,8 +606,7 @@ class TrainingControllerTests {
     			.param("initialDate", dateFormat.format(initialDate))
 				.param("endDate", dateFormat.format(endDateUpdated))
 				.param("editingPermission", EditingPermission.BOTH.toString())
-				.param("author", TRAINER1_USERNAME)
-				.param("client", NIF1))
+				.param("author", TRAINER1_USERNAME))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}"));
 	}
@@ -543,32 +619,15 @@ class TrainingControllerTests {
 				.param("name", "")
 				.param("initialDate", dateFormat.format(initialDate))
 				.param("endDate", "")
-				.param("editingPermission", "")
-				.param("author", TRAINER1_USERNAME)
-				.param("client", NIF1))
+				.param("editingPermission", EditingPermission.BOTH.toString())
+				.param("author", TRAINER1_USERNAME))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
 				.andExpect(model().attributeHasFieldErrors("training", "name"))
 				.andExpect(model().attributeHasFieldErrors("training", "endDate"))
-				.andExpect(model().errorCount(3))
+				.andExpect(model().errorCount(2))
 				.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
 	}
-    
-    @WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
-   	@Test
-   	void testTrainerProcessTrainingUpdateFormHasErrorsPastInitDate() throws Exception {
-   		
-   		doThrow(new PastInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
-   		
-   		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit", TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID)
-		 	.with(csrf())
-		 	.params(updateTrainingClient1(true)))
-			.andExpect(status().isOk())
-			.andExpect(model().attributeHasErrors("training"))
-			.andExpect(model().attributeHasFieldErrors("training", "initialDate"))
-			.andExpect(model().errorCount(1))
-			.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
-   	}
    	
     @WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
    	@Test
@@ -614,22 +673,6 @@ class TrainingControllerTests {
 			.andExpect(status().isOk())
 			.andExpect(model().attributeHasErrors("training"))
 			.andExpect(model().attributeHasFieldErrors("training", "endDate"))
-			.andExpect(model().errorCount(1))
-			.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
-   	}
-   	
-    @WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
-   	@Test
-   	void testTrainerProcessTrainingUpdateFormHasErrorsInitInTraining() throws Exception {
-   		
-   		doThrow(new InitInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
-   		
-   		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit", TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID)
-		 	.with(csrf())
-		 	.params(updateTrainingClient1(true)))
-			.andExpect(status().isOk())
-			.andExpect(model().attributeHasErrors("training"))
-			.andExpect(model().attributeHasFieldErrors("training", "initialDate"))
 			.andExpect(model().errorCount(1))
 			.andExpect(view().name("trainer/trainings/trainingCreateOrUpdate"));
    	}
@@ -731,40 +774,111 @@ class TrainingControllerTests {
     //CLIENT
     
     @WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
-	@Test
-	void testClientWrongAccess() throws Exception {
-		testWrongAuth(0,"/trainer/{trainerUsername}/trainings",TRAINER1_USERNAME);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER1_USERNAME,CLIENT1_ID);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/create",TRAINER1_USERNAME,CLIENT1_ID);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID);
+	@ParameterizedTest
+	@ValueSource(strings = {"/trainer/{trainerUsername}/trainings",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/create",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/delete"})
+	void testClientPerformGetTrainerSectionError(String path) throws Exception {
+		if(path.contains("trainingId")) {
+			mockMvc.perform(get(path,TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+		else if(path.contains("clientId")) {
+			mockMvc.perform(get(path,TRAINER1_USERNAME,CLIENT1_ID))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+		else {
+			mockMvc.perform(get(path,TRAINER1_USERNAME))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+	}
+	
+	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
+	@ParameterizedTest
+	@ValueSource(strings = {"/trainer/{trainerUsername}/clients/{clientId}/trainings/create",
+		"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit"})
+	void testClientPerformPostTrainerSectionError(String path) throws Exception {
+		if(path.contains("trainingId")) {
+			mockMvc.perform(post(path,TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID)
+				.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+		else {
+			mockMvc.perform(post(path,TRAINER1_USERNAME,CLIENT1_ID)
+				.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
 	}
 	
 	@WithMockUser(username=CLIENT2_USERNAME, authorities= {"client"})
-	@Test
-	void testClientWrongUsername() throws Exception {
-		testWrongAuth(0,"/client/{clientUsername}/trainings",CLIENT1_USERNAME);
-		testWrongAuth(0,"/client/{clientUsername}/trainings/{trainingId}",CLIENT1_USERNAME,CLIENT1_TRAINING2_ID);
-		testWrongAuth(0,"/client/{clientUsername}/trainings/create",CLIENT1_USERNAME);
-		testWrongAuth(1,"/client/{clientUsername}/trainings/create",CLIENT1_USERNAME);
-		testWrongAuth(0,"/client/{clientUsername}/trainings/{trainingId}/edit",CLIENT1_USERNAME,CLIENT1_TRAINING2_ID);
-		testWrongAuth(1,"/client/{clientUsername}/trainings/{trainingId}/edit",CLIENT1_USERNAME,CLIENT1_TRAINING2_ID);
-		testWrongAuth(0,"/client/{clientUsername}/trainings/{trainingId}/delete",CLIENT1_USERNAME,CLIENT1_TRAINING2_ID);
+	@ParameterizedTest
+	@ValueSource(strings = {"/client/{clientUsername}/trainings",
+		"/client/{clientUsername}/trainings/{trainingId}",
+		"/client/{clientUsername}/trainings/create",
+		"/client/{clientUsername}/trainings/{trainingId}/edit",
+		"/client/{clientUsername}/trainings/{trainingId}/delete"})
+	void testClientPerformGetWrongUsernameError(String path) throws Exception {
+		if(path.contains("trainingId")) {
+			mockMvc.perform(get(path,CLIENT1_USERNAME,CLIENT1_TRAINING2_ID))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+		else {
+			mockMvc.perform(get(path,CLIENT1_USERNAME))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+	}
+	
+	@WithMockUser(username=CLIENT2_USERNAME, authorities= {"client"})
+	@ParameterizedTest
+	@ValueSource(strings = {"/client/{clientUsername}/trainings/create",
+		"/client/{clientUsername}/trainings/{trainingId}/edit"})
+	void testClientPerformPostWrongUsernameError(String path) throws Exception {
+		if(path.contains("trainingId")) {
+			mockMvc.perform(post(path,CLIENT1_USERNAME,CLIENT1_TRAINING2_ID)
+				.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
+		else {
+			mockMvc.perform(post(path,CLIENT1_USERNAME)
+				.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+		}
 	}
 	
 	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
 	@Test
-	void testClientNoEditingPermission() throws Exception {
-		testWrongAuth(0,"/client/{clientUsername}/trainings/{trainingId}/edit",CLIENT1_USERNAME,CLIENT1_TRAINING1_ID);
-		testWrongAuth(1,"/client/{clientUsername}/trainings/{trainingId}/edit",CLIENT1_USERNAME,CLIENT1_TRAINING1_ID);
+	void testClientPerformGetNoEditingPermissionError() throws Exception {
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/edit",CLIENT1_USERNAME,CLIENT1_TRAINING1_ID))
+			.andExpect(status().isOk())
+			.andExpect(view().name("exception"));
+	}
+	
+	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
+	@Test
+	void testClientPerformPostNoEditingPermissionError() throws Exception {
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/edit",CLIENT1_USERNAME,CLIENT1_TRAINING1_ID)
+			.with(csrf()))
+			.andExpect(status().isOk())
+			.andExpect(view().name("exception"));
 	}
 	
 	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
 	@Test
 	void testClientDeleteNoAuthor() throws Exception {
-		testWrongAuth(0,"/client/{clientUsername}/trainings/{trainingId}/delete",CLIENT1_USERNAME,CLIENT1_TRAINING3_ID);
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/delete",CLIENT1_USERNAME,CLIENT1_TRAINING1_ID))
+			.andExpect(status().isOk())
+			.andExpect(view().name("exception"));
 	}
 	
 	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
@@ -803,8 +917,7 @@ class TrainingControllerTests {
 			 	.param("initialDate", dateFormat.format(initialDate))
 			 	.param("endDate", dateFormat.format(endDate))
 			 	.param("editingPermission", EditingPermission.CLIENT.toString())
-			 	.param("author", CLIENT2_USERNAME)
-			 	.param("client", NIF2))
+			 	.param("author", CLIENT2_USERNAME))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/client/{clientUsername}/trainings/"+CLIENT2_TRAINING7_ID));
 	}
@@ -817,16 +930,14 @@ class TrainingControllerTests {
 			 	.param("name", "")
 			 	.param("initialDate", "")
 			 	.param("endDate", "")
-			 	.param("editingPermission", "")
-			 	.param("author", CLIENT2_USERNAME)
-			 	.param("client", NIF2))
+			 	.param("editingPermission", EditingPermission.CLIENT.toString())
+			 	.param("author", CLIENT2_USERNAME))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
 				.andExpect(model().attributeHasFieldErrors("training", "name"))
 				.andExpect(model().attributeHasFieldErrors("training", "initialDate"))
 				.andExpect(model().attributeHasFieldErrors("training", "endDate"))
-				.andExpect(model().attributeHasFieldErrors("training", "editingPermission"))
-				.andExpect(model().errorCount(4))
+				.andExpect(model().errorCount(3))
 				.andExpect(view().name("client/trainings/trainingCreateOrUpdate"));
 	}
 	
@@ -842,22 +953,6 @@ class TrainingControllerTests {
 			.andExpect(status().isOk())
 			.andExpect(model().attributeHasErrors("training"))
 			.andExpect(model().attributeHasFieldErrors("training", "initialDate"))
-			.andExpect(model().errorCount(1))
-			.andExpect(view().name("client/trainings/trainingCreateOrUpdate"));
-	}
-	
-	@WithMockUser(username=CLIENT2_USERNAME, authorities= {"client"})
-	@Test
-	void testClientProcessTrainingCreationFormHasErrorsPastEnd() throws Exception {
-		
-		doThrow(new PastEndException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
-		
-		mockMvc.perform(post("/client/{clientUsername}/trainings/create",CLIENT2_USERNAME)
-		 	.with(csrf())
-		 	.params(createTrainingClient2(false)))
-			.andExpect(status().isOk())
-			.andExpect(model().attributeHasErrors("training"))
-			.andExpect(model().attributeHasFieldErrors("training", "endDate"))
 			.andExpect(model().errorCount(1))
 			.andExpect(view().name("client/trainings/trainingCreateOrUpdate"));
 	}
@@ -975,8 +1070,7 @@ class TrainingControllerTests {
     			.param("initialDate", dateFormat.format(initialDate))
 				.param("endDate", dateFormat.format(endDateUpdated))
 				.param("editingPermission", EditingPermission.BOTH.toString())
-				.param("author", trainingId==2 ? CLIENT1_USERNAME : TRAINER1_USERNAME)
-				.param("client", NIF1))
+				.param("author", trainingId==2 ? CLIENT1_USERNAME : TRAINER1_USERNAME))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/client/{clientUsername}/trainings/{trainingId}"));
 	}
@@ -989,32 +1083,15 @@ class TrainingControllerTests {
 				.param("name", "")
 				.param("initialDate", dateFormat.format(initialDate))
 				.param("endDate", "")
-				.param("editingPermission", "")
-				.param("author", CLIENT1_USERNAME)
-				.param("client", NIF1))
+				.param("editingPermission", EditingPermission.CLIENT.toString())
+				.param("author", CLIENT1_USERNAME))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("training"))
 				.andExpect(model().attributeHasFieldErrors("training", "name"))
 				.andExpect(model().attributeHasFieldErrors("training", "endDate"))
-				.andExpect(model().errorCount(3))
+				.andExpect(model().errorCount(2))
 				.andExpect(view().name("client/trainings/trainingCreateOrUpdate"));
 	}
-    
-    @WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
-   	@Test
-   	void testClientProcessTrainingUpdateFormHasErrorsPastInitDate() throws Exception {
-   		
-   		doThrow(new PastInitException()).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
-   		
-   		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/edit", CLIENT1_USERNAME,CLIENT1_TRAINING2_ID)
-		 	.with(csrf())
-		 	.params(updateTrainingClient1(false)))
-			.andExpect(status().isOk())
-			.andExpect(model().attributeHasErrors("training"))
-			.andExpect(model().attributeHasFieldErrors("training", "initialDate"))
-			.andExpect(model().errorCount(1))
-			.andExpect(view().name("client/trainings/trainingCreateOrUpdate"));
-   	}
    	
     @WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
    	@Test
@@ -1060,22 +1137,6 @@ class TrainingControllerTests {
 			.andExpect(status().isOk())
 			.andExpect(model().attributeHasErrors("training"))
 			.andExpect(model().attributeHasFieldErrors("training", "endDate"))
-			.andExpect(model().errorCount(1))
-			.andExpect(view().name("client/trainings/trainingCreateOrUpdate"));
-   	}
-   	
-    @WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
-   	@Test
-   	void testClientProcessTrainingUpdateFormHasErrorsInitInTraining() throws Exception {
-   		
-   		doThrow(new InitInTrainingException("","")).when(this.trainingService).saveTraining(Mockito.any(Training.class),Mockito.any(Client.class));
-   		
-   		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/edit", CLIENT1_USERNAME,CLIENT1_TRAINING2_ID)
-		 	.with(csrf())
-		 	.params(updateTrainingClient1(false)))
-			.andExpect(status().isOk())
-			.andExpect(model().attributeHasErrors("training"))
-			.andExpect(model().attributeHasFieldErrors("training", "initialDate"))
 			.andExpect(model().errorCount(1))
 			.andExpect(view().name("client/trainings/trainingCreateOrUpdate"));
    	}
@@ -1128,7 +1189,6 @@ class TrainingControllerTests {
 		params.add("endDate", dateFormat.format(endDate));
 		params.add("editingPermission", EditingPermission.BOTH.toString());
 		params.add("author", isPrincipalTrainer?TRAINER2_USERNAME:CLIENT2_USERNAME);
-		params.add("client", NIF2);
 		
 		return params;
 	}
@@ -1142,21 +1202,8 @@ class TrainingControllerTests {
 		params.add("endDate", dateFormat.format(endDate));
 		params.add("editingPermission", EditingPermission.BOTH.toString());
 		params.add("author", isTraining1?TRAINER1_USERNAME:CLIENT1_USERNAME);
-		params.add("client", NIF1);
 		
 		return params;
-	}
-    
-    private void testWrongAuth(int mode,String path,Object... uriVars) throws Exception {
-		if(mode == 0) {
-			mockMvc.perform(get(path,uriVars))
-			.andExpect(status().isOk())
-			.andExpect(view().name("exception"));			
-		}
-		else {
-			mockMvc.perform(post(path,uriVars))
-			.andExpect(status().isForbidden());
-		}
 	}
 	 
 }

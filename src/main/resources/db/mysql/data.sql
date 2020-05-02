@@ -105,9 +105,18 @@ INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,di
 
 /* Always Updated Trainings */
 
+<<<<<<< HEAD
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (9, DATE_ADD(CURDATE(), INTERVAL 100 DAY), DATE_ADD(CURDATE(), INTERVAL 101 DAY), 'Test', 2, 'trainer1', null);
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (10, DATE_ADD(CURDATE(), INTERVAL -7 DAY), DATE_ADD(CURDATE(), INTERVAL 7 DAY), 'Entrenamiento1', 2, 'client6', null);
+=======
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (9, DATE_ADD(CURRENT_DATE, INTERVAL 100 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 101 DAY), 'Test', 2, 'trainer1', null);
+>>>>>>> feature/HU12-13-19_training_controller_e2e_tests_v2
 
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (10, DATE_ADD(CURRENT_DATE, INTERVAL -7 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 7 DAY), 'Entrenamiento1', 0, 'trainer1', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (11, DATE_ADD(CURRENT_DATE, INTERVAL 14 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 21 DAY), 'Entrenamiento2', 2, 'client6', null);
+
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (12, DATE_ADD(CURRENT_DATE, INTERVAL -7 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 7 DAY), 'Entrenamiento1', 1, 'client5', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (13, DATE_ADD(CURRENT_DATE, INTERVAL 14 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 21 DAY), 'Entrenamiento2', 2, 'trainer1', null);
 
 /* ROUTINE */
 
@@ -314,8 +323,11 @@ INSERT INTO clients_trainings(client_id,trainings_id) VALUES (2,3);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (3,4);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (4,5);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (5,6);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (5,12);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (5,13);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,7);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,10);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,11);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (7,8);
 
 

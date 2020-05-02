@@ -68,7 +68,7 @@ public class TrainingServiceTests {
 	public void shouldFindAllTrainings() {
 		Collection<Training> trainings = this.trainingService.findAllTrainings();
 		assertThat(trainings).isNotNull();
-		assertThat(trainings.size()).isEqualTo(10);
+		assertThat(trainings.size()).isEqualTo(13);
 		Training training = EntityUtils.getById(trainings, Training.class, TRAINING_ID);
 		assertThat(training.getName()).isEqualTo("Entrenamiento1");
 		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
@@ -221,7 +221,7 @@ public class TrainingServiceTests {
 		Collection<Training> clientTrainings = this.trainingService.findTrainingFromClient(CLIENT_ID);
 		int foundClient = clientTrainings.size();
 		
-		Training training = createSampleTraining(0,92);
+		Training training = createSampleTraining(0,91);
 		
 		Client client = this.clientService.findClientById(CLIENT_ID);
 		assertThrows(LongerThan90DaysException.class, ()->this.trainingService.saveTraining(training,client));
@@ -502,7 +502,7 @@ public class TrainingServiceTests {
 	@Transactional
 	public void shouldFindTrainingWithPublicClient() {
 		Collection<Training> trainingsPublic = this.trainingService.findTrainingWithPublicClient();
-		assertThat(trainingsPublic.size()).isEqualTo(11);
+		assertThat(trainingsPublic.size()).isEqualTo(14);
 	}
 	
 	@ParameterizedTest
