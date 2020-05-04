@@ -19,34 +19,15 @@
             	}
             });
             $(document).ready(function createSelect() {
-            	if (window.location.href.indexOf("trainer") > -1) {
-		    		document.getElementById("clientSelect").style.display = "none";
-		    		document.getElementById("bothSelect").innerHTML = "Yes, my client can edit his/her the training.";
-		    	}
-        		else{
-		    		document.getElementById("trainerSelect").style.display = "none";
-		    		document.getElementById("bothSelect").innerHTML = "Yes, my trainer can edit my training.";
-		    	}
-            	if(${training['new']}){
-            		if (window.location.href.indexOf("trainer") > -1) {
+            	if(${!training['new']}){
+            		if(${training['editingPermission']!='BOTH'}){
             			document.getElementById("editingPermission").selectedIndex = "0";
-    		    	}
+            		}
             		else{
             			document.getElementById("editingPermission").selectedIndex = "1";
-    		    	}
+            		}
             	}
-            	else{
-            		if(${training['editingPermission']=='TRAINER'}){
-	            		document.getElementById("editingPermission").selectedIndex = "0";
-	            	}
-	            	else if(${training['editingPermission']=='CLIENT'}){
-	            		document.getElementById("editingPermission").selectedIndex = "1";
-	            	}
-	            	else{
-	            		document.getElementById("editingPermission").selectedIndex = "2";
-	            	}
-            	}
-		  	});
+            });
         </script>
     </jsp:attribute>
 	<jsp:body>
@@ -68,24 +49,33 @@
 		<form:form modelAttribute="training" class="form-horizontal" id="trainingForm">
 			<div class="form-group has-feedback">
 				<input type="hidden" name="id" id="id" class="form-control" value="${training.id}"/>
-				<input type="hidden" name="client" value="${client.nif}"/>
-				<input type="hidden" name="author" value="${principalUsername}"/>
+				<input type="hidden" name="author" value="${training['new'] ? principalUsername : training.author}"/>
 				<yogogym:inputField label="Name" name="name"/>
 				<yogogym:inputField label="Initial Date" name="initialDate" readonly="${!training['new']}" pattern="^\d{4}\/\d{2}\/\d{2}$" placeholder="yyyy/MM/dd"/>
 	            <yogogym:inputField label="End Date" name="endDate" readonly="${!(training['new']||(!training['new']&&endDateAux>=actualDate))}" pattern="^\d{4}\/\d{2}\/\d{2}$" placeholder="yyyy/MM/dd"/>
 	            <div class="form-group">
-		            <label class="col-sm-2 control-label">Share Editing Permission</label>
+		            <label class="col-sm-2 control-label">Editing Permission</label>
 		            <div class="col-sm-10">
-					    <select class="form-control" id="editingPermission" name="editingPermission">
-					    	<option id="trainerSelect" value="TRAINER">No, my client cannot edit his/her training.</option>
-					    	<option id="clientSelect" value="CLIENT">No, my trainer cannot edit my training.</option>
-			            	<option id="bothSelect" value="BOTH"></option>
-			            </select>
+		            	<c:choose>
+		            		<c:when test="${training.author!=null&&training.author!=principalUsername}">
+		            			<select class="form-control" id="editingPermission" name="editingPermission" disabled>
+							    	<option value="CLIENT">Only the client can manage the training.</option>
+					            	<option value="BOTH">You and your client can manage the training.</option>
+					            </select>
+					            <input type="hidden" name="editingPermission" value="${training.editingPermission=='CLIENT' ? 'CLIENT' : 'BOTH' }"/>
+		            		</c:when>
+		            		<c:otherwise>
+		            			<select class="form-control" id="editingPermission" name="editingPermission">
+							    	<option value="TRAINER">Only you can manage the training.</option>
+					            	<option value="BOTH">You and your client can manage the training.</option>
+					            </select>
+		            		</c:otherwise>
+		            	</c:choose>
 		            </div>
 	            </div>
             </div>
 			<div class="form-group">
-	            <div class="col-sm-offset-2 col-sm-10">
+	            <div class="col-sm-offset-10 col-sm-10">
 	                <c:choose>
 	                    <c:when test="${training['new']}">
 	                        <button class="btn btn-default" type="submit">Add Training</button>

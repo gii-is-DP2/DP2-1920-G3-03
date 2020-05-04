@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class RoutineLineController {
@@ -188,7 +189,7 @@ public class RoutineLineController {
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/update")
 	public String processRoutineLineUpdateForm(@Valid RoutineLine routineLine,BindingResult result, @ModelAttribute("exercise.id")final int exerciseId,
 			@PathVariable("trainerUsername") String trainerUsername, @ModelAttribute("routineId") int routineId,
-			@PathVariable("clientId") int clientId, @PathVariable("trainingId") int trainingId,@PathVariable("routineLineId")final int routineLineId, final ModelMap model){
+			@PathVariable("clientId") int clientId, @PathVariable("trainingId") int trainingId,@PathVariable("routineLineId")final int routineLineId, final ModelMap model, RedirectAttributes redirectAttrs){
 			
 		if(!routineExist(routineId) || !routineLineExist(routineLineId) || isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
@@ -219,6 +220,7 @@ public class RoutineLineController {
 			return "trainer/routines/routinesLineCreateOrUpdate";
 		} else {
 						
+			Routine routine = this.routineService.findRoutineById(routineId);
 			routineLine.setId(routineLineId);
 			Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
 			routineLine.setExercise(exercise);
@@ -231,19 +233,23 @@ public class RoutineLineController {
 			{
 				e.printStackTrace();
 			}
-
+			
+			String updateRoutineLine = " 'RoutineLine #" + routineLine.getId() + "' " + "has been updated succesfully from '" + routine.getName() + "'";
+			redirectAttrs.addFlashAttribute("updateRoutineLine", updateRoutineLine);
+			
 			return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId + "/trainings/"
 					+ trainingId + "/routines/" + routineId;
 		}
 	}
 	
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/delete")
-	public String deleteRoutineLine(@PathVariable("routineId")int routineId,@PathVariable("routineLineId")int routineLineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername, Model model)
+	public String deleteRoutineLine(@PathVariable("routineId")int routineId,@PathVariable("routineLineId")int routineLineId, @PathVariable("clientId")int clientId, @PathVariable("trainingId")int trainingId, @PathVariable("trainerUsername")String trainerUsername, Model model, RedirectAttributes redirectAttrs)
 	{
 		if(!routineExist(routineId) || !routineLineExist(routineLineId) || isTrainingFinished(trainingId) || !isClientOfLoggedTrainer(clientId) || !isLoggedTrainer(trainerUsername))
 			return "exception";
 		
 		RoutineLine routineLine = this.routineLineService.findRoutineLineById(routineLineId);
+		Routine routine = this.routineService.findRoutineById(routineId);
 		
 		try
 		{
@@ -254,6 +260,9 @@ public class RoutineLineController {
 			e.printStackTrace();
 		}
 		
+		String deleteRoutineLine = " 'RoutineLine #" + routineLine.getId() + "' " + "has been deleted succesfully from '" + routine.getName() + "'";
+		redirectAttrs.addFlashAttribute("deleteRoutineLine", deleteRoutineLine);
+		
 		return "redirect:/trainer/"+ trainerUsername + "/clients/" + clientId + "/trainings/" + trainingId + "/routines/" + routineId;
 	}
 	
@@ -262,7 +271,9 @@ public class RoutineLineController {
 	public String initRoutineLineCreateForm(@PathVariable("trainingId") int trainingId,
 			@PathVariable("routineId") int routineId, @PathVariable("clientUsername")final String clientUsername, final ModelMap model) {
 		
-		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId))
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		
+		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId,client))
 			return "exception";
 		
 		RoutineLine routineLine = new RoutineLine();
@@ -277,8 +288,6 @@ public class RoutineLineController {
 			else
 				selectVals.put(e.getId(),  e.getName());
 		}
-		
-		Client client = this.clientService.findClientByUsername(clientUsername);
 			
 		model.addAttribute("routineId", routineId);
 		model.addAttribute("client", client);
@@ -292,12 +301,12 @@ public class RoutineLineController {
 	public String processRoutineLineCreateForm(@Valid RoutineLine routineLine, BindingResult result, @PathVariable("trainingId") int trainingId,
 			@PathVariable("routineId") int routineId, @PathVariable("clientUsername")final String clientUsername, @ModelAttribute("exercise.id")final int exerciseId, final ModelMap model) {
 		
-		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId))
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		
+		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId,client))
 			return "exception";
 		
 		if (result.hasErrors()) {
-			
-			Client client = this.clientService.findClientByUsername(clientUsername);
 			
 			Collection<Exercise> exerciseCollection = this.exerciseService.findAllExercise();
 			Map<Integer,String> selectVals = new TreeMap<>();
@@ -316,7 +325,7 @@ public class RoutineLineController {
 			
 			model.addAttribute("exercises", selectVals);
 			
-			return "trainer/routines/routinesLineCreateOrUpdate";
+			return "client/routines/routinesLineCreateOrUpdate";
 		} else {
 			
 			Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
@@ -342,7 +351,9 @@ public class RoutineLineController {
 	public String initRoutineLineUpdateForm(@PathVariable("clientUsername")final String clientUsername,
 			@PathVariable("routineId") int routineId, @PathVariable("routineLineId") int routineLineId,@PathVariable("trainingId")final int trainingId,final ModelMap model) {
 		
-		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId))
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		
+		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId,client))
 			return "exception";
 		
 		RoutineLine routineLine = this.routineLineService.findRoutineLineById(routineLineId);
@@ -357,8 +368,6 @@ public class RoutineLineController {
 			else
 				selectVals.put(e.getId(),  e.getName());
 		}
-		
-		Client client = this.clientService.findClientByUsername(clientUsername);
 			
 		model.addAttribute("routineId", routineId);
 		model.addAttribute("client", client);
@@ -371,16 +380,16 @@ public class RoutineLineController {
 	@PostMapping("/client/{clientUsername}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/update")
 	public String processRoutineLineUpdateForm(@Valid RoutineLine routineLine,BindingResult result, @ModelAttribute("exercise.id")final int exerciseId,
 			@PathVariable("clientUsername") String clientUsername, @ModelAttribute("routineId") int routineId,
-			@PathVariable("trainingId") int trainingId,@PathVariable("routineLineId")final int routineLineId, final ModelMap model){
-			
-		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId))
+			@PathVariable("trainingId") int trainingId,@PathVariable("routineLineId")final int routineLineId, final ModelMap model, RedirectAttributes redirectAttrs){
+		
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		
+		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId,client))
 			return "exception";
 		
 		if (result.hasErrors()) {
 			
 			routineLine.setId(this.routineLineService.findRoutineLineById(routineLineId).getId());
-			
-			Client client = this.clientService.findClientByUsername(clientUsername);
 			
 			Collection<Exercise> exerciseCollection = this.exerciseService.findAllExercise();
 			Map<Integer,String> selectVals = new TreeMap<>();
@@ -399,9 +408,10 @@ public class RoutineLineController {
 			
 			model.addAttribute("exercises", selectVals);
 			
-			return "trainer/routines/routinesLineCreateOrUpdate";
+			return "client/routines/routinesLineCreateOrUpdate";
 		} else {
-						
+			
+			Routine routine = this.routineService.findRoutineById(routineId);
 			routineLine.setId(routineLineId);
 			Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
 			routineLine.setExercise(exercise);
@@ -415,17 +425,23 @@ public class RoutineLineController {
 				e.printStackTrace();
 			}
 
+			String updateRoutineLine = " 'RoutineLine #" + routineLine.getId() + "' " + "has been updated succesfully from '" + routine.getName() + "'";
+			redirectAttrs.addFlashAttribute("updateRoutineLine", updateRoutineLine);
+			
 			return "redirect:/client/" + clientUsername + "/trainings/" + trainingId;
 		}
 	}
 	
 	@GetMapping("client/{clientUsername}/trainings/{trainingId}/routines/{routineId}/routineLine/{routineLineId}/delete")
-	public String deleteRoutineLine(@PathVariable("routineId")int routineId,@PathVariable("routineLineId")int routineLineId, @PathVariable("trainingId")int trainingId, @PathVariable("clientUsername")String clientUsername, Model model)
+	public String deleteRoutineLine(@PathVariable("routineId")int routineId,@PathVariable("routineLineId")int routineLineId, @PathVariable("trainingId")int trainingId, @PathVariable("clientUsername")String clientUsername, Model model, RedirectAttributes redirectAttrs)
 	{
-		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId))
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		
+		if(!routineExist(routineId) || isTrainingFinished(trainingId) || !isLoggedTrainer(clientUsername) || !isTrainingFromClient(trainingId,client))
 			return "exception";
 		
 		RoutineLine routineLine = this.routineLineService.findRoutineLineById(routineLineId);
+		Routine routine = this.routineService.findRoutineById(routineId);
 		
 		try
 		{
@@ -435,6 +451,9 @@ public class RoutineLineController {
 		{
 			e.printStackTrace();
 		}
+		
+		String deleteRoutineLine = " 'RoutineLine #" + routineLine.getId() + "' " + "has been deleted succesfully from '" + routine.getName() + "'";
+		redirectAttrs.addFlashAttribute("deleteRoutineLine", deleteRoutineLine);
 		
 		return "redirect:/client/" + clientUsername + "/trainings/" + trainingId;
 	}
@@ -489,10 +508,8 @@ public class RoutineLineController {
 		return training.getEndDate().before(actualDate);
 	}
 	
-	public Boolean isTrainingFromClient(final int trainingId)
+	public Boolean isTrainingFromClient(final int trainingId, Client client)
 	{
-		Training training = this.trainingService.findTrainingById(trainingId);
-		Client client = training.getClient();
 	
 		return getLoggedUsername().trim().toLowerCase().equals(client.getUser().getUsername().trim().toLowerCase());
 	}

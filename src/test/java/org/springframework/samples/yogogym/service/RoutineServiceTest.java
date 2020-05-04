@@ -10,8 +10,11 @@ import java.util.Date;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
@@ -19,10 +22,15 @@ import org.springframework.samples.yogogym.service.exceptions.MaxRoutinesExcepti
 import org.springframework.samples.yogogym.service.exceptions.NotEditableException;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class RoutineServiceTest {
 	
+	@Autowired
+	protected ClientService clientService;
 	@Autowired
 	protected RoutineService routineService;
 	@Autowired
@@ -55,6 +63,7 @@ public class RoutineServiceTest {
 	
 	
 	//TRAINER
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldCreateRoutine_trainer() 
 	{
@@ -84,6 +93,7 @@ public class RoutineServiceTest {
 		testCreateExceptions(2,trainerUsername,EditingPermission.TRAINER);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldDeleteRoutine_trainer(){
 		
@@ -109,6 +119,7 @@ public class RoutineServiceTest {
 	
 	//CLIENT
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldCreateRoutine_client()
 	{
@@ -120,6 +131,7 @@ public class RoutineServiceTest {
 		createRoutine(clientUsername,newEndDate,trainingId);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldDeleteRoutine_client(){
 		
@@ -202,10 +214,12 @@ public class RoutineServiceTest {
 		Routine routine = this.routineService.findRoutineById(routineId);
 		//Get the specified training that contained the deleted routine
 		Training training = this.trainingService.findTrainingById(trainingId);
+		training.setInitialDate(Calendar.getInstance().getTime());
 		training.setEndDate(newEndDate);
 		training.setEditingPermission(editPerm);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 		try {
-			this.trainingService.saveTraining(training);
+			this.trainingService.saveTraining(training,client);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

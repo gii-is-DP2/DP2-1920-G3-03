@@ -39,7 +39,6 @@ import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 @WebMvcTest(value = RoutineController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration= SecurityConfiguration.class)
@@ -56,6 +55,9 @@ public class RoutineControllerTest {
 	//Trainer 2
 	private static final String testTrainerUsername_t2 = "trainer2";	
 	private static final int testClientId_t2 = 2;
+	
+	//Client 1
+	private static final String testClientUsername_c1 = "client1";
 	
 	@MockBean
 	private RoutineService routineService;	
@@ -75,7 +77,7 @@ public class RoutineControllerTest {
 		//Trainer 1
 		Collection<RoutineLine> routinesLines = new ArrayList<>();
 		
-		Routine routine= createRoutine(testRoutineId, routinesLines);
+		Routine routine= createRoutine(routinesLines);
 		
 		Client client = createClient(testClientId, "client1");
 		
@@ -103,7 +105,11 @@ public class RoutineControllerTest {
 		Trainer trainer_t2 = createTrainer(testTrainerUsername_t2,clients_t2);
 		
 		given(this.clientService.findClientById(testClientId_t2)).willReturn(client_t2);
-		given(this.trainerService.findTrainer(testTrainerUsername_t2)).willReturn(trainer_t2);	
+		given(this.trainerService.findTrainer(testTrainerUsername_t2)).willReturn(trainer_t2);
+		
+		//Client 1
+		Client client_c1 = createClient(1, "client1");
+		given(this.clientService.findClientByUsername(testClientUsername_c1)).willReturn(client_c1);
 	}
 	
 	void testWrongAuth(int mode,String path,Object... uriVars) throws Exception
@@ -266,6 +272,174 @@ public class RoutineControllerTest {
 		.andExpect(view().name("redirect:/trainer/" + testTrainerUsername + "/routines"));
 	}
 	
+	//CLIENT ================================================================================================================
+			
+	//createRoutine
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testInitCreateRoutineForm_Client() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/routine/create",testClientUsername_c1,testTrainingId))
+		.andExpect(status().isOk())
+		.andExpect(view().name("client/routines/routinesCreateOrUpdate"))
+		.andExpect(model().attributeExists("routine"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineForm_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/create",testClientUsername_c1,testTrainingId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/client/" + testClientUsername_c1 + "/trainings/" + testTrainingId));
+	}
+	
+	//Update Routine
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testInitUpdateRoutineForm_Client() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/update",testClientUsername_c1,testTrainingId,testRoutineId))
+		.andExpect(status().isOk())
+		.andExpect(view().name("client/routines/routinesCreateOrUpdate"))
+		.andExpect(model().attributeExists("routine"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessUpdateRoutineForm_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/update",testClientUsername_c1,testTrainingId,testRoutineId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/client/" + testClientUsername_c1 + "/trainings/" + testTrainingId));
+	}
+		
+	//Delete Routine
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testDeleteRoutineForm_Client() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/delete",testClientUsername_c1,testTrainingId,testRoutineId))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/client/" + testClientUsername_c1 + "/trainings/" + testTrainingId));
+	}
+	
+	//shouldNotCreateRoutineBadInput
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineFormBadName_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		routine.setName("");
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/create",testClientUsername_c1,testTrainingId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(view().name("trainer/routines/routinesCreateOrUpdate"));
+	}
+
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineFormBadDesc_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		routine.setDescription("");
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/create",testClientUsername_c1,testTrainingId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(view().name("trainer/routines/routinesCreateOrUpdate"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineFormBadReps_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		routine.setRepsPerWeek(50);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/create",testClientUsername_c1,testTrainingId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(view().name("trainer/routines/routinesCreateOrUpdate"));
+	}
+	
+	//shouldNotUpdateRoutineBadInput
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessUpdateRoutineFormBadName_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		routine.setName("");
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/update",testClientUsername_c1,testTrainingId,testRoutineId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(view().name("client/routines/routinesCreateOrUpdate"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessUpdateRoutineFormBadDesc_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		routine.setDescription("");
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/update",testClientUsername_c1,testTrainingId,testRoutineId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(view().name("client/routines/routinesCreateOrUpdate"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessUpdateRoutineFormBadReps_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		routine.setRepsPerWeek(50);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/update",testClientUsername_c1,testTrainingId,testRoutineId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(view().name("client/routines/routinesCreateOrUpdate"));
+	}
+	
 	//Derivative Methods
 	
 	protected Exercise createExercise(final int id, RepetitionType type) 
@@ -294,7 +468,7 @@ public class RoutineControllerTest {
 		return routineLine;
 	}
 
-	protected Routine createRoutine(final int id, Collection<RoutineLine> routinesLines) 
+	protected Routine createRoutine(Collection<RoutineLine> routinesLines) 
 	{
 		Routine routine = new Routine();
 		routine.setName("Routine Test");
@@ -336,7 +510,6 @@ public class RoutineControllerTest {
 		Training training = new Training();
 		training.setId(id);
 		training.setName("training 1");
-		training.setClient(client);
 		training.setInitialDate(cal.getTime());
 
 		cal.add(Calendar.DAY_OF_MONTH, DaysToFinishTraining);
