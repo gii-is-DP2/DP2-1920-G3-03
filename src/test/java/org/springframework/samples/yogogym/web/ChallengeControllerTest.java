@@ -18,6 +18,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -507,20 +509,19 @@ public class ChallengeControllerTest {
 	}
 	
 	@WithMockUser(value = "client2", authorities = {"client"})
-	@Test
-	void testWrongClient() throws Exception {
+	@ParameterizedTest
+	@ValueSource(strings = {"/client/{clientUsername}/challenges","/client/{clientUsername}/challenges/{challengeId}",
+							"/client/{clientUsername}/challenges/mine","/client/{clientUsername}/challenges/mine/{challengeId}"})
+	void testWrongClient(String path) throws Exception {
 		
-		mockMvc.perform(get("/client/{clientUsername}/challenges", testClientUsername1)).andExpect(status().isOk())
+		if(path.contains("challengeId")) {
+			mockMvc.perform(get(path,testClientUsername1, testChallengeId2)).andExpect(status().isOk())
 			.andExpect(view().name("exception"));
-		
-		mockMvc.perform(get("/client/{clientUsername}/challenges/{challengeId}",testClientUsername1, testChallengeId1)).andExpect(status().isOk())
-		.andExpect(view().name("exception"));
-		
-		mockMvc.perform(get("/client/{clientUsername}/challenges/mine", testClientUsername1)).andExpect(status().isOk())
-		.andExpect(view().name("exception"));
-		
-		mockMvc.perform(get("/client/{clientUsername}/challenges/mine/{challengeId}",testClientUsername1, testChallengeId2)).andExpect(status().isOk())
-		.andExpect(view().name("exception"));
+		}
+		else {
+			mockMvc.perform(get(path, testClientUsername1)).andExpect(status().isOk())
+			.andExpect(view().name("exception"));
+		}
 	}
 	
 }
