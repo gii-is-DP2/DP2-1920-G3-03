@@ -9,5 +9,4 @@ before_install:
 before_install:
   - export TZ=Spain/Madrid
 script:
-  - mvn test 
-  - mvn test -Dspring.profiles.active=mysql-travis
+  - mvn test -Dspring.profiles.active=mysql-travis,test=TrainingControllerE2ETest
