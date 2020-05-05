@@ -84,13 +84,12 @@ public class ExerciseControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(model().attributeExists("exercises"))
 			.andExpect(model().attribute("exercises", hasSize(2)))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("name", is("Exercise test 1")))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("description", is("Desc 1")))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("kcal", equalTo(100)))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("intensity", equalTo(Intensity.LOW)))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("bodyPart", equalTo(BodyParts.ARMS)))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("repetitionType", equalTo(RepetitionType.TIME_AND_REPS)))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("equipment", nullValue()))))
+			.andExpect(model().attribute("exercises", hasItem(allOf(hasProperty("name", is("Exercise test 1")),
+				hasProperty("description", is("Desc 1")),hasProperty("kcal", equalTo(100)),
+				hasProperty("intensity", equalTo(Intensity.LOW)),
+				hasProperty("bodyPart", equalTo(BodyParts.ARMS)),
+				hasProperty("repetitionType", equalTo(RepetitionType.TIME_AND_REPS)),
+				hasProperty("equipment", nullValue())))))
 			.andExpect(view().name("mainMenu/exercises/exercisesList"));
 	}
 	
@@ -102,13 +101,12 @@ public class ExerciseControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(model().attributeExists("exercises"))
 			.andExpect(model().attribute("exercises", hasSize(2)))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("name", is("Exercise test 1")))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("description", is("Desc 1")))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("kcal", equalTo(100)))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("intensity", equalTo(Intensity.LOW)))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("bodyPart", equalTo(BodyParts.ARMS)))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("repetitionType", equalTo(RepetitionType.TIME_AND_REPS)))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("equipment", nullValue()))))
+			.andExpect(model().attribute("exercises", hasItem(allOf(hasProperty("name", is("Exercise test 1")),
+				hasProperty("description", is("Desc 1")),hasProperty("kcal", equalTo(100)),
+				hasProperty("intensity", equalTo(Intensity.LOW)),
+				hasProperty("bodyPart", equalTo(BodyParts.ARMS)),
+				hasProperty("repetitionType", equalTo(RepetitionType.TIME_AND_REPS)),
+				hasProperty("equipment", nullValue())))))
 			.andExpect(view().name("mainMenu/exercises/exercisesList"));
 	}
 	
@@ -120,13 +118,12 @@ public class ExerciseControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(model().attributeExists("exercises"))
 			.andExpect(model().attribute("exercises", hasSize(2)))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("name", is("Exercise test 1")))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("description", is("Desc 1")))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("kcal", equalTo(100)))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("intensity", equalTo(Intensity.LOW)))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("bodyPart", equalTo(BodyParts.ARMS)))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("repetitionType", equalTo(RepetitionType.TIME_AND_REPS)))))
-			.andExpect(model().attribute("exercises", hasItem(hasProperty("equipment", nullValue()))))
+			.andExpect(model().attribute("exercises", hasItem(allOf(hasProperty("name", is("Exercise test 1")),
+				hasProperty("description", is("Desc 1")),hasProperty("kcal", equalTo(100)),
+				hasProperty("intensity", equalTo(Intensity.LOW)),
+				hasProperty("bodyPart", equalTo(BodyParts.ARMS)),
+				hasProperty("repetitionType", equalTo(RepetitionType.TIME_AND_REPS)),
+				hasProperty("equipment", nullValue())))))
 			.andExpect(view().name("mainMenu/exercises/exercisesList"));
 	}
 
