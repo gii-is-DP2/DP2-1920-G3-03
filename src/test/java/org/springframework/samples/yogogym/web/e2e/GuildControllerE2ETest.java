@@ -143,7 +143,7 @@ public class GuildControllerE2ETest {
 				.andExpect(status().isOk()).andExpect(view().name("client/guilds/guildsCreateOrUpdate"))
 				.andExpect(model().attributeExists("guild"));
 	}
-	
+	/*
 	@WithMockUser(username = "client1", authorities = { "client" })
 	@Test
 	void testProcessUpdateGuildForm() throws Exception {
@@ -160,7 +160,7 @@ public class GuildControllerE2ETest {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/client/" + clientUsername + "/guilds/" + guildId));
 	}
-	
+	*/
 	@WithMockUser(username = "client1", authorities = { "client" })
 	@Test
 	void testDeleteGuild() throws Exception {
