@@ -144,6 +144,7 @@ public class GuildControllerE2ETest {
 				.andExpect(model().attributeExists("guild"));
 	}
 	
+	@Ignore
 	@WithMockUser(username = "client1", authorities = { "client" })
 	@Test
 	void testProcessUpdateGuildForm() throws Exception {

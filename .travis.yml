@@ -8,4 +8,4 @@ before_install:
   - mysql -e 'CREATE DATABASE yogogym;'
   - export TZ=Spain/Madrid
 script:
-  - mvn test -Dspring.profiles.active=mysql-travis -Dtest="**/*E2ETest.java"
+  - mvn test -Dspring.profiles.active=mysql-travis -Dtest=GuildControllerE2ETest.java

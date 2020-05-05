@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @Transactional
-public class ExerciseControllerE2ETests {
+public class ExerciseControllerE2ETest {
 	
 	private static final int EXERCISE1_ID = 1;
 
