@@ -44,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-public class TrainingServiceTests {
+public class TrainingServiceTest {
 	
 	@Autowired
 	private TrainingService trainingService;
