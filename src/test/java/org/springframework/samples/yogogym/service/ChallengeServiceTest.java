@@ -20,7 +20,9 @@ import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Equipment;
 import org.springframework.samples.yogogym.model.Exercise;
+import org.springframework.samples.yogogym.model.Enums.BodyParts;
 import org.springframework.samples.yogogym.model.Enums.Intensity;
+import org.springframework.samples.yogogym.model.Enums.RepetitionType;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeMore3Exception;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeSameNameException;
 import org.springframework.samples.yogogym.service.exceptions.ChallengeWithInscriptionsException;
@@ -217,6 +219,8 @@ public class ChallengeServiceTest {
 		exercise.setName("ExerciseTest");
 		exercise.setDescription("Test");
 		exercise.setIntensity(Intensity.LOW);
+		exercise.setRepetitionType(RepetitionType.REPS);
+		exercise.setBodyPart(BodyParts.ALL);
 		exercise.setKcal(10);
 		exercise.setEquipment(equipment);
 		c.setName("ChallengeTest");

@@ -18,7 +18,9 @@ import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Equipment;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Inscription;
+import org.springframework.samples.yogogym.model.Enums.BodyParts;
 import org.springframework.samples.yogogym.model.Enums.Intensity;
+import org.springframework.samples.yogogym.model.Enums.RepetitionType;
 import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.DirtiesContext;
@@ -104,6 +106,8 @@ public class InscriptionServiceTest {
 		exercise.setName("ExerciseTest");
 		exercise.setDescription("Test");
 		exercise.setIntensity(Intensity.LOW);
+		exercise.setRepetitionType(RepetitionType.REPS);
+		exercise.setBodyPart(BodyParts.ALL);
 		exercise.setKcal(10);
 		exercise.setEquipment(equipment);
 		
