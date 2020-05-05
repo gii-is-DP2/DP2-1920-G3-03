@@ -4,12 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.samples.yogogym.model.Enums.DietType;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
 
 class TrainingValidatorTests extends ValidatorTests{
@@ -33,33 +38,13 @@ class TrainingValidatorTests extends ValidatorTests{
 		assertThat(constraintViolations.size()).isEqualTo(0);	
 	}
 	
-	@Test
-	void shouldNotValidateWhenTrainingNameEmpty() throws ParseException {
+	@ParameterizedTest
+	@ValueSource(strings = {"" , "  "})
+	void shouldNotValidateWhenTrainingNameEmptyOrBlank(String name) throws ParseException {
 		
 		Training training = new Training();
 		
-		training.setName("");
-		training.setInitialDate(dateFormat.parse("2020-01-01"));
-		training.setEndDate(dateFormat.parse("2020-01-14"));
-		training.setEditingPermission(EditingPermission.BOTH);
-		training.setAuthor("trainer1");
-		
-		Validator validator = createValidator();
-		Set<ConstraintViolation<Training>> constraintViolations = validator.validate(training);
-		
-		assertThat(constraintViolations.size()).isEqualTo(1);
-		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
-		
-		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-		assertThat(violation.getMessage()).isEqualTo("must not be blank");		
-	}
-	
-	@Test
-	void shouldNotValidateWhenTrainingNameBlank() throws ParseException {
-		
-		Training training = new Training();
-		
-		training.setName("   ");
+		training.setName(name);
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
 		training.setEditingPermission(EditingPermission.BOTH);
@@ -180,8 +165,9 @@ class TrainingValidatorTests extends ValidatorTests{
 		assertThat(violation.getMessage()).isEqualTo("must not be null");		
 	}
 	
-	@Test
-	void shouldNotValidateWhenTrainingAuthorEmpty() throws ParseException {
+	@ParameterizedTest
+	@ValueSource(strings = {"" , "  "})
+	void shouldNotValidateWhenTrainingAuthorEmptyOrBlank(String author) throws ParseException {
 		
 		Training training = new Training();
 		
@@ -189,28 +175,7 @@ class TrainingValidatorTests extends ValidatorTests{
 		training.setInitialDate(dateFormat.parse("2020-01-01"));
 		training.setEndDate(dateFormat.parse("2020-01-14"));
 		training.setEditingPermission(EditingPermission.BOTH);
-		training.setAuthor("");
-		
-		Validator validator = createValidator();
-		Set<ConstraintViolation<Training>> constraintViolations = validator.validate(training);
-		
-		assertThat(constraintViolations.size()).isEqualTo(1);
-		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
-		
-		assertThat(violation.getPropertyPath().toString()).isEqualTo("author");
-		assertThat(violation.getMessage()).isEqualTo("must not be blank");		
-	}
-	
-	@Test
-	void shouldNotValidateWhenTrainingAuthorBlank() throws ParseException {
-		
-		Training training = new Training();
-		
-		training.setName("Training 1");
-		training.setInitialDate(dateFormat.parse("2020-01-01"));
-		training.setEndDate(dateFormat.parse("2020-01-14"));
-		training.setEditingPermission(EditingPermission.BOTH);
-		training.setAuthor("   ");
+		training.setAuthor(author);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Training>> constraintViolations = validator.validate(training);
@@ -240,6 +205,68 @@ class TrainingValidatorTests extends ValidatorTests{
 		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("author");
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");		
+	}
+	
+	@Test
+	void shouldNotValidateWhenTrainingRoutinesNotValid() throws ParseException {
+		
+		Training training = new Training();
+		
+		training.setName("Training 1");
+		training.setInitialDate(dateFormat.parse("2020-01-01"));
+		training.setEndDate(dateFormat.parse("2020-01-14"));
+		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor("trainer1");
+		
+		List<Routine> routines = new ArrayList<>();
+		Routine routine = new Routine();
+		routine.setName("");
+		routine.setDescription("Routine description");
+		routine.setRepsPerWeek(5);
+		routines.add(routine);
+		
+		training.setRoutines(routines);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Training>> constraintViolations = validator.validate(training);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
+		
+		assertThat(violation.getPropertyPath().toString()).isEqualTo("routines[0].name");
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");		
+	}
+	
+	@Test
+	void shouldNotValidateWhenTrainingDietNotValid() throws ParseException {
+		
+		Training training = new Training();
+		
+		training.setName("Training 1");
+		training.setInitialDate(dateFormat.parse("2020-01-01"));
+		training.setEndDate(dateFormat.parse("2020-01-14"));
+		training.setEditingPermission(EditingPermission.BOTH);
+		training.setAuthor("trainer1");
+		
+		Diet diet = new Diet();
+		diet.setName("");
+		diet.setDescription("Diet description");
+		diet.setType(DietType.DEFINITION);
+		diet.setKcal(10);
+		diet.setProtein(10);
+		diet.setFat(10);
+		diet.setCarb(10);
+		
+		training.setDiet(diet);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Training>> constraintViolations = validator.validate(training);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+		ConstraintViolation<Training> violation = constraintViolations.iterator().next();
+		
+		assertThat(violation.getPropertyPath().toString()).isEqualTo("diet.name");
 		assertThat(violation.getMessage()).isEqualTo("must not be blank");		
 	}
 

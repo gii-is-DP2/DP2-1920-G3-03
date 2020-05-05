@@ -20,7 +20,10 @@ import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.User;
+import org.springframework.samples.yogogym.model.Enums.BodyParts;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
+import org.springframework.samples.yogogym.model.Enums.Intensity;
+import org.springframework.samples.yogogym.model.Enums.RepetitionType;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
@@ -43,6 +46,7 @@ import org.springframework.util.MultiValueMap;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -189,13 +193,17 @@ class TrainingControllerTests {
 		training6.setId(CLIENT1_TRAINING6_ID);
 		training6.setRoutines(new ArrayList<>());
 		
-		Collection<Training> trainingList = new ArrayList<>();
-		trainingList.add(training1);
-		trainingList.add(training2);
-		trainingList.add(training3);
-		trainingList.add(training4);
-		trainingList.add(training5);
-		trainingList.add(training6);
+		Collection<Training> trainingList1 = new ArrayList<>();
+		trainingList1.add(training1);
+		trainingList1.add(training2);
+		trainingList1.add(training3);
+		trainingList1.add(training4);
+		trainingList1.add(training5);
+		trainingList1.add(training6);
+		trainingList1.add(training8);
+		
+		client1.setTrainings(trainingList1);
+		
 		Collection<Integer> trainingIdList = new ArrayList<>();
 		trainingIdList.add(CLIENT1_TRAINING1_ID);
 		trainingIdList.add(CLIENT1_TRAINING2_ID);
@@ -251,10 +259,11 @@ class TrainingControllerTests {
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING5_ID)).willReturn(training5);
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING6_ID)).willReturn(training6);
 		given(this.trainingService.findTrainingById(CLIENT1_TRAINING8_ID)).willReturn(training8);
+		given(this.trainingService.findTrainingFromClient(CLIENT1_ID)).willReturn(trainingList1);
 		given(this.trainingService.findTrainingFromClient(CLIENT2_ID)).willReturn(trainingList2);
 		
 		//Copy Training
-		given(this.trainingService.findTrainingWithPublicClient()).willReturn(trainingList);
+		given(this.trainingService.findTrainingWithPublicClient()).willReturn(trainingList1);
 		given(this.trainingService.findTrainingIdFromClient(CLIENT1_ID)).willReturn(trainingIdList);
 		given(this.trainingService.findTrainingIdFromClient(CLIENT2_ID)).willReturn(new ArrayList<>());
 		given(this.clientService.isPublicByTrainingId(CLIENT1_TRAINING4_ID)).willReturn(true);
@@ -416,6 +425,22 @@ class TrainingControllerTests {
 			.andExpect(status().isOk())
 			.andExpect(view().name("exception"));
 	}
+	
+	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
+	@Test
+	void testTrainerTrainingList() throws Exception {
+		mockMvc.perform(get("/trainer/{trainerUsername}/trainings",TRAINER1_USERNAME))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("trainer"))
+				.andExpect(model().attributeExists("actualDate"))
+				.andExpect(model().attribute("trainer", hasProperty("clients", hasSize(1))))
+				.andExpect(model().attribute("trainer", hasProperty("clients", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_ID)),hasProperty("trainings", hasSize(7)))))))
+				.andExpect(model().attribute("trainer", hasProperty("clients", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_ID)),hasProperty("trainings", hasItem(allOf(
+					hasProperty("id", equalTo(CLIENT1_TRAINING1_ID)),hasProperty("name", is("Training 1")),
+					hasProperty("initialDate", equalTo(initialDate)),hasProperty("endDate", equalTo(endDate)),
+					hasProperty("editingPermission", equalTo(EditingPermission.TRAINER)),hasProperty("author", is(TRAINER1_USERNAME)),
+					hasProperty("diet", nullValue()),hasProperty("routines", is(new ArrayList<>()))))))))));
+	}			
 	
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
 	@Test
@@ -762,15 +787,6 @@ class TrainingControllerTests {
 		 		.andExpect(view().name("exception"));
 	}
     
-    @WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
-	@Test
-	void testClientTrainingList() throws Exception {
-		mockMvc.perform(get("/trainer/{trainerUsername}/trainings",TRAINER1_USERNAME)).andExpect(status().isOk())
-		.andExpect(model().attributeExists("trainer"))
-		.andExpect(model().attributeExists("actualDate"))
-		.andExpect(view().name("trainer/trainings/trainingsList"));
-	}
-    
     //CLIENT
     
     @WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
@@ -880,6 +896,19 @@ class TrainingControllerTests {
 			.andExpect(status().isOk())
 			.andExpect(view().name("exception"));
 	}
+	
+	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
+	@Test
+	void testClientTrainingList() throws Exception {
+		mockMvc.perform(get("/client/{clientUsername}/trainings",CLIENT1_USERNAME))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("trainings"))
+				.andExpect(model().attribute("trainings", hasSize(7)))
+				.andExpect(model().attribute("trainings", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_TRAINING1_ID)),
+					hasProperty("name", is("Training 1")),hasProperty("initialDate", equalTo(initialDate)),hasProperty("endDate", equalTo(endDate)),
+					hasProperty("editingPermission", equalTo(EditingPermission.TRAINER)),hasProperty("author", is(TRAINER1_USERNAME)),
+					hasProperty("diet", nullValue()),hasProperty("routines", is(new ArrayList<>()))))));
+	}	
 	
 	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
 	@Test
