@@ -6,7 +6,6 @@ services:
   - mysql
 before_install:
   - mysql -e 'CREATE DATABASE yogogym;'
-before_install:
   - export TZ=Spain/Madrid
 script:
   - mvn test -Dspring.profiles.active=mysql-travis,test=TrainingControllerE2ETest
