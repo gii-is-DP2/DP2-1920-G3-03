@@ -18,33 +18,34 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ParticipateChallengeClientUITest {
+public class ParticipateChallengesClientUITest {
 
 	private static final String CHALLENGE_1 = "Challenge1";
+	private static final String CHALLENGE_3 = "Challenge3";
 	private static final String CHALLENGE_4 = "Challenge4";
 	private static final String CHALLENGE_5 = "Challenge5";
-	private static final String URL = "https://test.com";
 	private static final String CLIENT_1 = "client1";
 	private static final String CLIENT_2 = "client2";
+	private static final String CLIENT_PASSWORD = "client1999";
 	private static final String ADMIN = "admin1";
+	private static final String ADMIN_PASSWORD = "admin1999";
 	private static final String COMPLETED = "COMPLETED";
 	private static final String PARTICIPATING = "PARTICIPATING";
 	private static final String FAILED = "FAILED";
 	private static final String SUBMITTED = "SUBMITTED";
-	private static final boolean INITIAL = true;
-	private static final boolean NOT_INITIAL = false;
 	
 	
 	@LocalServerPort
 	private int port;
-
 	private WebDriver driver;
 	private StringBuffer verificationErrors = new StringBuffer();
+	UtilsChallengesUI utils;
 
 	@BeforeEach
 	public void setUp() throws Exception {
 		driver = new FirefoxDriver();
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		utils = new UtilsChallengesUI(port, driver);
 	}
 
 	@AfterEach
@@ -60,8 +61,9 @@ public class ParticipateChallengeClientUITest {
 	@Test
 	public void clientListNewChallenges() {
 
-		as(CLIENT_1, INITIAL);
-		listNewChallenges();
+		utils.init();
+		utils.as(CLIENT_1, CLIENT_PASSWORD);
+		utils.listNewChallenges();
 
 		// There is the challenge 4 to inscribe
 		try {
@@ -69,14 +71,14 @@ public class ParticipateChallengeClientUITest {
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
-
 	}
 
 	@Test
 	public void listInscribedChallenges() {
 
-		as(CLIENT_1, INITIAL);
-		listMyChallenges();
+		utils.init();
+		utils.as(CLIENT_1, CLIENT_PASSWORD);
+		utils.listMyChallenges();
 
 		// There is the Challenge 1 in my challenges and its status is Failed
 		try {
@@ -95,10 +97,11 @@ public class ParticipateChallengeClientUITest {
 	@Test
 	public void participateInChallenge() {
 		
-		as(CLIENT_2, INITIAL);
-		listNewChallenges();
-		inscribeChallenge(CHALLENGE_4);
-		listMyChallenges();
+		utils.init();
+		utils.as(CLIENT_2, CLIENT_PASSWORD);
+		utils.listNewChallenges();
+		utils.inscribeChallenge(CHALLENGE_4);
+		utils.listMyChallenges();
 
 		// There is the Challenge 4 in my challenges and its status is participating
 		try {
@@ -117,9 +120,12 @@ public class ParticipateChallengeClientUITest {
 	@Test
 	public void completeChallenge() {
 	
-		as(CLIENT_1, INITIAL);
-		listMyChallenges();
-		submitUrlChallenge(CHALLENGE_5, URL);
+		String url = "https://test.com";
+		
+		utils.init();
+		utils.as(CLIENT_1, CLIENT_PASSWORD);
+		utils.listMyChallenges();
+		utils.submitUrlChallenge(CHALLENGE_5, url);
 
 		// The status changes to submitted
 		try {
@@ -129,21 +135,21 @@ public class ParticipateChallengeClientUITest {
 			verificationErrors.append(e.toString());
 		}
 
-		logout(CLIENT_1);
-		as(ADMIN, NOT_INITIAL);
-		showSubmittedChallenge();
+		utils.logout(CLIENT_1);
+		utils.as(ADMIN, ADMIN_PASSWORD);
+		utils.showSubmittedChallenge(CHALLENGE_5);
 
 		// The submitted challenge has the previus url
 		try {
-			assertEquals(URL, driver.findElement(By.linkText(URL)).getText());
+			assertEquals(url, driver.findElement(By.linkText(url)).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
 
-		evaluateChallenge();
-		logout(ADMIN);
-		as(CLIENT_1, NOT_INITIAL);
-		listMyChallenges();
+		utils.evaluateChallenge(COMPLETED);
+		utils.logout(ADMIN);
+		utils.as(CLIENT_1, CLIENT_PASSWORD);
+		utils.listMyChallenges();
 
 		// The status changes to completed
 		try {
@@ -154,71 +160,18 @@ public class ParticipateChallengeClientUITest {
 		}
 	}
 	
+	@Test
+	public void submitChallengeBadUrl() {
 	
+		String unvalidUrl = "unvalidUrl";
+		
+		utils.init();
+		utils.as(CLIENT_1, CLIENT_PASSWORD);
+		utils.listMyChallenges();
+		utils.submitUrlChallenge(CHALLENGE_3, unvalidUrl);
 
-	private void listNewChallenges() {
-
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/a/span")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[2]/a/span[2]")).click();
-	}
-	
-	private void listMyChallenges() {
-
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/a/span")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[3]/a/span[2]")).click();
-	}
-
-	private void showSubmittedChallenge() {
-
-		driver.findElement(By.linkText("Admin")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[2]/a/span[2]")).click();
-		driver.findElement(By.linkText("Challenge5")).click();
-	}
-	
-	private void inscribeChallenge(String challenge) {
-
-		driver.findElement(By.linkText(challenge)).click();
-		driver.findElement(By.linkText("Inscribe me!")).click();
-	}
-
-	private void submitUrlChallenge(String challenge, String url) {
-
-		driver.findElement(By.linkText(challenge)).click();
-		driver.findElement(By.id("url")).click();
-		driver.findElement(By.id("url")).clear();
-		driver.findElement(By.id("url")).sendKeys(url);
-		driver.findElement(By.xpath("//input[@value='Submit!']")).click();
-	}
-
-	private void evaluateChallenge() {
-
-		driver.findElement(By.xpath("//input[@value='Evaluate!']")).click();
-	}
-
-	private void as(String username, boolean initial) {
-
-		if (initial)
-			driver.get("http://localhost:" + port);
-
-		driver.findElement(By.linkText("Login")).click();
-		driver.findElement(By.id("password")).clear();
-
-		if (username.contains("client")) {
-			driver.findElement(By.id("password")).sendKeys("client1999");
-		} else {
-			driver.findElement(By.id("password")).sendKeys("admin1999");
-		}
-
-		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys(username);
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-	}
-
-	private void logout(String username) {
-
-		driver.findElement(By.linkText(username)).click();
-		driver.findElement(By.linkText("Logout")).click();
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		// It was not submitted
+		assertEquals(unvalidUrl, driver.findElement(By.id("url")).getAttribute("value"));
 	}
 	
 }

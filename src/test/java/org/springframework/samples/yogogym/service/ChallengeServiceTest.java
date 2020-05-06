@@ -34,6 +34,13 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 public class ChallengeServiceTest {
 
+	private static final int CHALLENGE_ID_1 = 1;
+	private static final int CHALLENGE_ID_2 = 2;
+	private static final int CHALLENGE_ID_4 = 4;
+	private static final int CLIENT_ID_1 = 1;
+	private static final String CLIENT_USERNAME_3 = "client3";
+	
+	
 	@Autowired
 	protected ChallengeService challengeService;
 	@Autowired
@@ -42,15 +49,18 @@ public class ChallengeServiceTest {
 	final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	final Calendar cal = Calendar.getInstance();
 	
+	
 	@Test
 	void shouldFindAllChallenges(){
+		
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAll();
 		assertThat(challenges.size()).isEqualTo(5);
 	}
 	
 	@Test
 	void shouldFindChallengeById(){
-		Challenge challenge = this.challengeService.findChallengeById(2);
+		
+		Challenge challenge = this.challengeService.findChallengeById(CHALLENGE_ID_2);
 		assertThat(challenge.getName()).isEqualTo("Challenge2");	
 	}
 	
@@ -65,7 +75,7 @@ public class ChallengeServiceTest {
 		try {
 			this.challengeService.saveChallenge(c);
 		} catch (Exception ex) {
-			//ex.printStackTrace();
+			ex.printStackTrace();
 		}
 		
 		List<Challenge> afterAdding = (List<Challenge>) this.challengeService.findAll();
@@ -88,10 +98,8 @@ public class ChallengeServiceTest {
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldNotSaveChallengeWhenMore3SameWeek() {
-		
-		cal.set(2050, 1, 1);
-		Date initialDate = cal.getTime();
-		dateFormat.format(initialDate);
+			
+		Date initialDate = getDateOf(2050, 1, 1);
 		
 		Challenge c1 = createTestingChallenge();
 		Challenge c2 = createTestingChallenge();
@@ -124,9 +132,7 @@ public class ChallengeServiceTest {
 	@Test
 	void shouldNotSaveChallengeWhenSameNameSameWeek() {
 		
-		cal.set(2030, 1, 1);
-		Date initialDate = cal.getTime();
-		dateFormat.format(initialDate);
+		Date initialDate = getDateOf(2030, 1, 1);
 		
 		Challenge c1 = createTestingChallenge();
 		Challenge c2 = createTestingChallenge();
@@ -149,9 +155,9 @@ public class ChallengeServiceTest {
 	}
 	
 	@Test
-	void shouldUpdateOwner() {
+	void shouldUpdateChallenge() {
 		
-		Challenge challenge = this.challengeService.findChallengeById(1);
+		Challenge challenge = this.challengeService.findChallengeById(CHALLENGE_ID_1);
 		challenge.setDescription("UpdateTest");;
 		try {
 			this.challengeService.saveChallenge(challenge);
@@ -159,7 +165,7 @@ public class ChallengeServiceTest {
 			e.printStackTrace();
 		}
 		
-		challenge = this.challengeService.findChallengeById(1);
+		challenge = this.challengeService.findChallengeById(CHALLENGE_ID_1);
 		assertThat(challenge.getDescription()).isEqualTo("UpdateTest");
 	}
 	
@@ -170,7 +176,7 @@ public class ChallengeServiceTest {
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAll();
 		int foundBefore = challenges.size();
 		
-		Challenge challenge = this.challengeService.findChallengeById(4);
+		Challenge challenge = this.challengeService.findChallengeById(CHALLENGE_ID_4);
 		try {
 			this.challengeService.deleteChallenge(challenge);
 		} catch (ChallengeWithInscriptionsException e) {
@@ -194,17 +200,35 @@ public class ChallengeServiceTest {
 	
 	@Test
 	void shouldFindSubmittedChallenges(){
+		
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findSubmittedChallenges();
 		assertThat(challenges.size()).isEqualTo(1);
 	}
 	
 	@Test
 	void shouldFindAllChallengesClients(){
-		Client client = this.clientService.findClientById(1);
+		
+		Client client = this.clientService.findClientById(CLIENT_ID_1);
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAllChallengesClients(client.getId(), client.getInscriptions());
 		assertThat(challenges.size()).isEqualTo(1);
 	}
 	
+	
+	// Classification
+	@Test
+	void shouldFindChallengesByUsername() {
+		List<Challenge> challenges = this.challengeService.findChallengesByUsername(CLIENT_USERNAME_3);
+		assertThat(challenges.size()).isEqualTo(1);
+	}
+
+	@Test
+	void shouldSumPointChallengesByUsername() {
+		Integer sum = this.challengeService.sumPointChallengesByUsername(CLIENT_USERNAME_3);
+		assertThat(sum).isEqualTo(10);
+	}
+	
+	
+	// UTILS
 	private Challenge createTestingChallenge() {
 		Challenge c = new Challenge();
 		cal.set(2040, 1, 1);
@@ -236,17 +260,12 @@ public class ChallengeServiceTest {
 		return c;
 	}
 	
-	//Classification
-	@Test
-	void shouldFindChallengesByUsername(){
-		List<Challenge> challenges = this.challengeService.findChallengesByUsername("client3");
-		assertThat(challenges.size()).isEqualTo(1);
-	}
-	
-	@Test
-	void shouldSumPointChallengesByUsername(){
-		Integer sum = this.challengeService.sumPointChallengesByUsername("client3");
-		assertThat(sum).isEqualTo(10);
+	private Date getDateOf(int year, int month, int day) {
+		
+		cal.set(year, month, day);
+		Date date = cal.getTime();
+		dateFormat.format(date);
+		return date;
 	}
 	
 }

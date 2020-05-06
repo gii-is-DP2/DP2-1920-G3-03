@@ -21,18 +21,20 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class DashboardChallengesAdminUITest {
 
 	private static final String ADMIN = "admin1";
+	private static final String ADMIN_PASSWORD = "admin1999";
 	
-	
+
 	@LocalServerPort
 	private int port;
-
 	private WebDriver driver;
 	private StringBuffer verificationErrors = new StringBuffer();
+	UtilsChallengesUI utils;
 
 	@BeforeEach
 	public void setUp() throws Exception {
 		driver = new FirefoxDriver();
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		utils = new UtilsChallengesUI(port, driver);
 	}
 	
 	@AfterEach
@@ -48,8 +50,9 @@ public class DashboardChallengesAdminUITest {
 	@Test
 	public void DashboardWithChallenges() {
 		
-		as(ADMIN);
-		dashboardOfMonth(1);
+		utils.init();
+		utils.as(ADMIN, ADMIN_PASSWORD);
+		utils.dashboardOfMonth(1);
 		
 		// Check there is data of the User and Guild with more points
 		try {
@@ -67,8 +70,9 @@ public class DashboardChallengesAdminUITest {
 	@Test
 	public void DashboardWithoutCompletedChallenges() {
 		
-		as(ADMIN);
-		dashboardOfMonth(10);
+		utils.init();
+		utils.as(ADMIN, ADMIN_PASSWORD);
+		utils.dashboardOfMonth(10);
 		
 		// Check there is a message telling that there are not completed challenges
 		try {
@@ -81,8 +85,9 @@ public class DashboardChallengesAdminUITest {
 	@Test
 	public void DashboardWithoutChallenges() {
 		
-		as(ADMIN);
-		dashboardOfMonth(2);
+		utils.init();
+		utils.as(ADMIN, ADMIN_PASSWORD);
+		utils.dashboardOfMonth(2);
 		
 		// Check there is a message telling that there are no challenges and the option to create one
 		try {
@@ -96,29 +101,6 @@ public class DashboardChallengesAdminUITest {
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
-	}
-
-	
-	
-
-	private void as(String username) {
-		
-		driver.get("http://localhost:" + port);
-		driver.findElement(By.linkText("Login")).click();
-		driver.findElement(By.id("password")).clear();
-		driver.findElement(By.id("password")).sendKeys("admin1999");
-		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys(username);
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-	}
-	
-	private void dashboardOfMonth(int month) {
-		
-		driver.findElement(By.linkText("Admin")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[4]/a/span[2]")).click();
-		driver.findElement(By.id("month")).click();
-		driver.findElement(By.xpath("//option[@value='" + month + "']")).click();
-		driver.findElement(By.xpath("//input[@value='Change']")).click();
 	}
 
 }
