@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
@@ -40,9 +42,10 @@ public class DashboardsAdminServiceTest {
 		assertThat(challenges.size()).isEqualTo(3);
 	}
 
-	@Test
-	void shouldNotFindChallengesOfMonth(){
-		Collection<Challenge> challenges = this.dashboardService.getChallengesOfMonth(2);
+	@ParameterizedTest
+	@ValueSource(ints = {2,4,5,6})
+	void shouldNotFindChallengesOfMonth(int month){
+		Collection<Challenge> challenges = this.dashboardService.getChallengesOfMonth(month);
 		assertThat(challenges.size()).isEqualTo(0);
 	}
 	

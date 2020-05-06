@@ -30,6 +30,13 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 public class InscriptionServiceTest {
 
+	private static final int CHALLENGE_ID_1 = 1;
+	private static final int CHALLENGE_ID_50 = 50;
+	private static final int INSCRIPTION_ID_1 = 1;
+	private static final int INSCRIPTION_ID_2 = 2;
+	private static final int CLIENT_ID_1 = 1;
+	private static final String URL = "http://test.com";
+	
 	@Autowired
 	protected InscriptionService inscriptionService;
 	@Autowired
@@ -38,27 +45,31 @@ public class InscriptionServiceTest {
 	
 	@Test
 	void shouldFindInscriptionsByChallengeId(){
-		Collection<Inscription> inscriptions = this.inscriptionService.findInscriptionsByChallengeId(1);
+		
+		Collection<Inscription> inscriptions = this.inscriptionService.findInscriptionsByChallengeId(CHALLENGE_ID_1);
 		assertThat(inscriptions.size()).isEqualTo(2);
 		
-		inscriptions = this.inscriptionService.findInscriptionsByChallengeId(50);
+		inscriptions = this.inscriptionService.findInscriptionsByChallengeId(CHALLENGE_ID_50);
 		assertThat(inscriptions.size()).isEqualTo(0);
 	}
 	
 	@Test
 	void shouldFindSubmittedInscriptions(){
+		
 		Collection<Inscription> inscriptions = this.inscriptionService.findSubmittedInscriptions();
 		assertThat(inscriptions.size()).isEqualTo(1);	
 	}
 	
 	@Test
 	void shouldFindInscriptionsByInscriptionId(){
-		Inscription inscription = this.inscriptionService.findInscriptionByInscriptionId(1);
+		
+		Inscription inscription = this.inscriptionService.findInscriptionByInscriptionId(INSCRIPTION_ID_1);
 		assertThat(inscription.getUrl()).isEqualTo("https://allamericanfitness.com/wp-content/uploads/2016/11/Treadmill-XR-Console.jpg");	
 	}
 	
 	@Test
 	void shouldFindAllInscriptions(){
+		
 		Collection<Inscription> inscriptions = this.inscriptionService.findAll();
 		assertThat(inscriptions.size()).isEqualTo(7);	
 	}
@@ -66,11 +77,11 @@ public class InscriptionServiceTest {
 	@Test
 	void shouldFindInscriptionByClientAndChallenge(){
 		
-		Client client = this.clientService.findClientById(1);
+		Client client = this.clientService.findClientById(CLIENT_ID_1);
 		Challenge challenge = client.getInscriptions().get(1).getChallenge();
 		Inscription inscription = this.inscriptionService.findInscriptionByClientAndChallenge(client, challenge);
 		
-		assertThat(inscription.getId()).isEqualTo(2);
+		assertThat(inscription.getId()).isEqualTo(INSCRIPTION_ID_2);
 	}
 	
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
@@ -80,6 +91,32 @@ public class InscriptionServiceTest {
 		Collection<Inscription> inscriptions = this.inscriptionService.findAll();
 		int found = inscriptions.size();
 		Inscription i = new Inscription();
+		
+		Challenge c = createFilledChallenge();
+		
+		i.setChallenge(c);
+		i.setStatus(Status.PARTICIPATING);
+		i.setUrl(URL);
+		
+		this.inscriptionService.saveInscription(i);
+		
+		i = this.inscriptionService.findInscriptionByInscriptionId(found + 1);
+		assertThat(i.getUrl()).isEqualTo(URL);
+	}
+	
+	@Test
+	void shouldUpdateInscription() {
+		
+		Inscription i = this.inscriptionService.findInscriptionByInscriptionId(INSCRIPTION_ID_1);
+		i.setUrl(URL + "update");
+		this.inscriptionService.saveInscription(i);;
+		
+		i = this.inscriptionService.findInscriptionByInscriptionId(INSCRIPTION_ID_1);
+		assertThat(i.getUrl()).isEqualTo(URL + "update");
+	}
+	
+	//UTILS
+	private Challenge createFilledChallenge() {
 		
 		Date initialDate = new Date();
 		Date endDate = new Date();
@@ -108,25 +145,7 @@ public class InscriptionServiceTest {
 		c.setWeight(10.);
 		c.setExercise(exercise);
 		
-		i.setChallenge(c);
-		i.setStatus(Status.PARTICIPATING);
-		i.setUrl("http://test.com");
-		
-		this.inscriptionService.saveInscription(i);
-		
-		i = this.inscriptionService.findInscriptionByInscriptionId(found + 1);
-		assertThat(i.getUrl()).isEqualTo("http://test.com");
-	}
-	
-	@Test
-	void shouldUpdateInscription() {
-		
-		Inscription i = this.inscriptionService.findInscriptionByInscriptionId(1);
-		i.setUrl("https://TestUpdate.com");;
-		this.inscriptionService.saveInscription(i);;
-		
-		i = this.inscriptionService.findInscriptionByInscriptionId(1);
-		assertThat(i.getUrl()).isEqualTo("https://TestUpdate.com");
+		return c;
 	}
 
 }

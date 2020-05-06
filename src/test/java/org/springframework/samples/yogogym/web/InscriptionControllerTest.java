@@ -54,8 +54,8 @@ public class InscriptionControllerTest {
 	private static final String testClientUsername2 = "client2";
 	
 	
-	private static final Calendar testInitialTrainingDate = Calendar.getInstance();
-	private static final Calendar testEndTrainingDate = Calendar.getInstance();
+	private static final Calendar testInitialDate = Calendar.getInstance();
+	private static final Calendar testEndDate = Calendar.getInstance();
 	
 	
 	@MockBean
@@ -72,39 +72,17 @@ public class InscriptionControllerTest {
 	@BeforeEach
 	void setUp()
 	{	
-		testEndTrainingDate.add(Calendar.DAY_OF_MONTH, 1);
-		Date initialDate = testInitialTrainingDate.getTime();
-		Date endDate = testEndTrainingDate.getTime();
-		Exercise exercise = new Exercise();
-		exercise.setName("Exercise Test");
+		testEndDate.add(Calendar.DAY_OF_MONTH, 1);
+		Date initialDate = testInitialDate.getTime();
+		Date endDate = testEndDate.getTime();
 		
 		// Challenge 1:
-		Challenge challenge1 = new Challenge();
-		challenge1.setId(testChallengeId1);
-		challenge1.setName("Challenge1 Name Test");
-		challenge1.setDescription("Challenge Description Test");
-		challenge1.setInitialDate(initialDate);
-		challenge1.setEndDate(endDate);
-		challenge1.setPoints(100);
-		challenge1.setReward("Reward Test");
-		challenge1.setReps(100);
-		challenge1.setWeight(100.);
-		challenge1.setExercise(exercise);
+		Challenge challenge1 = createChallenge(testChallengeId1, "Challenge1 Name Test", initialDate, endDate);
 		
 		given(this.challengeService.findChallengeById(testChallengeId1)).willReturn(challenge1);
 		
 		// Challenge 2:
-		Challenge challenge2 = new Challenge();
-		challenge2.setId(testChallengeId2);
-		challenge2.setName("Challenge2 Name Test");
-		challenge2.setDescription("Challenge Description Test");
-		challenge2.setInitialDate(initialDate);
-		challenge2.setEndDate(endDate);
-		challenge2.setPoints(100);
-		challenge2.setReward("Reward Test");
-		challenge2.setReps(100);
-		challenge2.setWeight(100.);
-		challenge2.setExercise(exercise);
+		Challenge challenge2 = createChallenge(testChallengeId2, "Challenge2 Name Test", initialDate, endDate);
 
 		given(this.challengeService.findChallengeById(testChallengeId2)).willReturn(challenge2);
 		
@@ -127,26 +105,14 @@ public class InscriptionControllerTest {
 		given(this.inscriptionService.findInscriptionByInscriptionId(testInscriptionId2)).willReturn(inscription2);
 		
 		// Client 1:
-		Client client1 = new Client();
-		User userClient1 = new User();
-		userClient1.setUsername(testClientUsername1);
-		userClient1.setEnabled(true);
-		client1.setUser(userClient1);
-		client1.setId(testClientId1);
-		
+		Client client1 = createClient(testClientId1,testClientUsername1);
 		client1.addInscription(inscription1);
 		
 		given(this.clientService.findClientByInscriptionId(testInscriptionId1)).willReturn(client1);
 		given(this.clientService.findClientByUsername(testClientUsername1)).willReturn(client1);
 		
 		// Client 2:
-		Client client2 = new Client();
-		User userClient2 = new User();
-		userClient2.setUsername(testClientUsername2);
-		userClient2.setEnabled(true);
-		client2.setUser(userClient2);
-		client2.setId(testClientId2);
-		
+		Client client2 = createClient(testClientId2,testClientUsername2);
 		client2.addInscription(inscription2);
 		
 		given(this.clientService.findClientByInscriptionId(testInscriptionId2)).willReturn(client2);
@@ -238,4 +204,37 @@ public class InscriptionControllerTest {
 		.andExpect(view().name("exception"));
 	}
 	
+	
+	// UTILS
+	private Challenge createChallenge(int id, String name, Date initialDate, Date endDate) {
+
+		Exercise exercise1 = new Exercise();
+		exercise1.setName("Exercise Test");
+
+		Challenge c = new Challenge();
+		c.setId(id);
+		c.setName(name);
+		c.setDescription("Challenge Description Test");
+		c.setInitialDate(initialDate);
+		c.setEndDate(endDate);
+		c.setPoints(100);
+		c.setReward("Reward Test");
+		c.setReps(100);
+		c.setWeight(100.);
+		c.setExercise(exercise1);
+
+		return c;
+	}
+	
+	private Client createClient(int id, String username) {
+		
+		Client client = new Client();
+		User userClient = new User();
+		userClient.setUsername(username);
+		userClient.setEnabled(true);
+		client.setUser(userClient);
+		client.setId(id);
+		
+		return client;
+	}
 }
