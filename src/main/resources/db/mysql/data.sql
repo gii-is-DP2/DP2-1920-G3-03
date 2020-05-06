@@ -94,14 +94,14 @@ INSERT INTO diets_foods(diet_id,foods_id) VALUES (4,3);
 
 /* TRAINING */
 
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (1, '2020-01-01', '2020-01-14', 'Entrenamiento1', 0, 'trainer1', 1);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (2, '2020-02-01', '2020-02-14', 'Entrenamiento2', 2, 'trainer1', 2);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (3, '2020-03-01', '2020-03-10', 'Entrenamiento3', 0, 'trainer1', 3);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (4, '2020-04-01', '2020-04-20', 'Entrenamiento4', 0, 'trainer2', 4);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (5, '2020-01-01', '2020-01-10', 'Entrenamiento1', 1, 'client4', null);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (6, '2020-02-01', '2020-02-20', 'Entrenamiento2', 1, 'client5', null);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (7, '2020-03-01', '2020-03-10', 'Entrenamiento3', 1, 'client6', null);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (8, '2020-04-01', '2020-04-20', 'Entrenamiento4', 1, 'client7', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (1, '2020-01-01 00:00:00.0', '2020-01-14 00:00:00.0', 'Entrenamiento1', 0, 'trainer1', 1);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (2, '2020-02-01 00:00:00.0', '2020-02-14 00:00:00.0', 'Entrenamiento2', 2, 'trainer1', 2);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (3, '2020-03-01 00:00:00.0', '2020-03-10 00:00:00.0', 'Entrenamiento3', 0, 'trainer1', 3);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (4, '2020-04-01 00:00:00.0', '2020-04-20 00:00:00.0', 'Entrenamiento4', 0, 'trainer2', 4);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (5, '2020-01-01 00:00:00.0', '2020-01-10 00:00:00.0', 'Entrenamiento1', 1, 'client4', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (6, '2020-02-01 00:00:00.0', '2020-02-20 00:00:00.0', 'Entrenamiento2', 1, 'client5', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (7, '2020-03-01 00:00:00.0', '2020-03-10 00:00:00.0', 'Entrenamiento3', 1, 'client6', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (8, '2020-04-01 00:00:00.0', '2020-04-20 00:00:00.0', 'Entrenamiento4', 1, 'client7', null);
 
 /* Always Updated Trainings */
 
@@ -279,6 +279,7 @@ INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (3,0,null,3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (4,0,null,3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (5,2,'https://google.com',1);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (6,1,'https://google.com',3);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (7,0,'https://google.com',5);
 
 /* CLIENT_INSCRIPTION */
 
@@ -288,6 +289,7 @@ INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,3);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (2,4);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (3,5);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (4,6);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,7);
 
 /* PHRASES */
 
