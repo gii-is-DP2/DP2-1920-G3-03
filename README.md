@@ -42,10 +42,10 @@ Como administrador quiero añadir retos semanales al gimnasio, que los clientes 
 
 #### Escenarios:
 
-* **Añadir reto semanal a semana sin retos:** Dado un administrador [admin1] y una semana [01/01/2030] sin retos, cuando este intente añadir un challenge aportando la información necesaria [name="ChallengeTest", description="Test1", initialDate="01/01/2030", endDate="05/01/2030", points=10,reps=10,reward="Test",weight=10. , exercise=Exercise1], entonces el reto se creará correctamente.
-* **Añadir reto semanal ya existente:** Dado un administrador[admin1], el reto anterior creado  y un reto [igual que el anterior pero con description= "Test2"] cuando este intente crearlo con el mismo nombre e initialDate que el anterior, entonces se le indicará que esto no es posible debido a que ya existe.
-* **Añadir reto semanal a semana con 3 retos:** Dado un administrador[admin1]  y una semana con 2 retos con initialDate=[10/10/2020], cuando este intente añadir dos con los mismos datos que en el primer caso pero con el mismo initialDate de esta semana y endDate=[15/10/2020] y nombres "ChallengeTest1" y "ChallengeTest2", entonces el primero se creará, pero el segundo indicará que hay un máximo de 3 test por semana.
-* **Añadir reto semanal en fecha anterior:** Dado un administrador[admin1] , cuando este intente añadir un reto con los mismos datos que el primero pero con initialDate [01/02/2010], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
+* **Añadir reto semanal a semana sin retos:** Dado un administrador [admin1] y una semana [01/01/2030] sin retos, cuando este intente añadir un challenge aportando la información necesaria [name="Challenge Name", description="Challenge Desc", initialDate="01/01/2030", endDate="05/01/2030", points=10,reps=12,reward="Reward",weight=20. , exercise=Exercise1], entonces el reto se creará correctamente.
+* **Añadir reto semanal ya existente:** Dado un administrador[admin1], creará un reto igual que el anterior  pero con nombre= "Challenge Same Name"]. Cuando este intente crear uno con el mismo nombre e initialDate que el anterior, entonces se le indicará que esto no es posible debido a que ya existe.
+* **Añadir reto semanal a semana con 3 retos:** Dado un administrador[admin1]  y una semana con 2 retos con initialDate=[01/03/2030], cuando este intente añadir dos con los mismos datos que en el primer caso pero con el mismo initialDate de esta semana y endDate=[05/03/2030] y nombres "Challenge 3" y "Challenge 4", entonces el primero se creará, pero el segundo indicará que hay un máximo de 3 test por semana.
+* **Añadir reto semanal en fecha anterior:** Dado un administrador[admin1] , cuando este intente añadir un reto con los mismos datos que el primero pero con initialDate [01/01/2010], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
 
 ---
 
@@ -380,10 +380,10 @@ Como cliente quiero poder participar en los distintos retos propuestos por el gi
 
 #### Escenarios
 
-* **Listar los retos en los que aún no me he inscrito:** Dado un cliente[client1], pinchará en la sección "new challenges", verá un listado con los diferentes retos propuestos y seleccionará el que desee, por ejemplo, el challenge descrito en la HU01, verá los requisitos que se piden para completarlo y si desea intentarlo pinchará en el botón "inscribe me", añadiéndosele dicho reto a la sección "my challenges" pero con un estado "participating" hasta que adjunte una foto[url] demostrando que lo ha completado y pasará al estado "submitted".
- * **Listar los retos en los que participa:** Dado un cliente[client1],  pinchará en la sección "my challenges", verá un listado con los diferentes retos en los que se ha inscrito, entre ellos el anterior.
-* **Participar en un reto cuando no hay retos:** Dado un cliente[client1], , pinchará en la sección "new challenges", si dicho cliente se ha inscrito en todos los retos disponibles, no le saldrá ningún reto en dicha lista.
-* **Pedir confirmar un reto que ha completado:** Dado un cliente[client1], , pinchará en la sección "my challenges", si dicho cliente ha completado algún reto, pinchará sobre el[Challenge descrito anteriormente], rellenará la url de la foto de prueba[https://test.com], y clicará en enviar. El administrador[admin1] podrá ver esos retos enviados, y decidirá si han sido completados o fallados en base a la url proporcionada.
+* **Listar los retos en los que no me he inscrito** Dado un cliente[client1], pinchará en la sección "new challenges", verá un listado con los diferentes retos propuestos, en este caso el "Challenge4", ya que aún no participa en el.
+* **Listar los retos en los que me he inscrito** Dado un cliente[client1], pinchará en la sección "my challenges", verá un listado con los diferentes retos en los que está inscrito, por ejemplo el "Challenge1", con estado "FAILED".
+* **Inscribirme en un reto** Dado un cliente[client2], pinchará en la sección "new challenges", verá un listado con los diferentes retos en los que está inscrito, por ejemplo el "Challenge4", clickará sobre él, verá los requisitos que se piden, y podrá inscribirse en el. Una vez hecho esto, ese reto aparecerá en "my challenges" con estado "PARTICIPATING".
+* **Completar un reto** Dado un cliente[client1], pinchará en "my challenges", después en el reto[Challenge5] con estado "PARTICIPATING", y pondrá una url donde demuestre que lo ha completado, y clickará submit, pasando al estado "submitted". El admin[admin1] irá a "submitted challenges", clickará sobre ese reto, y pondrá el estado "COMPLETED". Entonces en "my challenges" de [client1] el [Challenge5] aparecerá como completado.
 ---
 
 #### HU22 - Clasificación de los Retos
