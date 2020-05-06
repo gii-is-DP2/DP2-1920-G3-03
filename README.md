@@ -48,7 +48,7 @@ Como administrador quiero añadir retos semanales al gimnasio, que los clientes 
 * **Añadir reto semanal en fecha anterior:** Dado un administrador[admin1] , cuando este intente añadir un reto con los mismos datos que el primero pero con initialDate [01/01/2010], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
 * **Añadir reto con errores en el formulario:** Dado un administrador[admin1] , cuando este intente añadir un reto con los siguientes errores: Campos vacíos, fecha inicial posterior a la final o puntos negativos, se deberán indicar los errores.
 
-* **Todos los escenarios anteriores también ocurrirán cuando se actualice un reto** Solo se pueden actualizar los retos que no tienen inscripciones.
+* **Todos los escenarios anteriores también ocurrirán cuando se actualice un reto.** Solo se pueden actualizar los retos que no tienen inscripciones.
 
 ---
 
