@@ -1,9 +1,9 @@
 package org.springframework.samples.yogogym.web.e2e;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
@@ -271,6 +272,23 @@ public class TrainingControllerE2ETest {
 			.andExpect(status().isOk())
 			.andExpect(view().name("exception"));
 	}
+	
+	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
+	@Test
+	void testTrainerTrainingList() throws Exception {
+		mockMvc.perform(get("/trainer/{trainerUsername}/trainings",TRAINER1_USERNAME))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("trainer"))
+				.andExpect(model().attributeExists("actualDate"))
+				.andExpect(model().attribute("trainer", hasProperty("clients", hasSize(4))))
+				.andExpect(model().attribute("trainer", hasProperty("clients", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_ID)),hasProperty("trainings", hasSize(3)))))))
+				.andExpect(model().attribute("trainer", hasProperty("clients", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_ID)),hasProperty("trainings", hasItem(allOf(
+					hasProperty("id", equalTo(CLIENT1_TRAINING1_ID)),hasProperty("name", is("Entrenamiento1")),
+					hasProperty("initialDate", hasToString("2020-01-01 00:00:00.0")),hasProperty("endDate", hasToString("2020-01-14 00:00:00.0")),
+					hasProperty("editingPermission", equalTo(EditingPermission.TRAINER)),hasProperty("author", is(TRAINER1_USERNAME)),
+					hasProperty("diet", hasProperty("name",is("Dieta 1"))),
+					hasProperty("routines", allOf(hasItem(hasProperty("name",is("Cardio"))),hasItem(hasProperty("name",is("Brazos")))))))))))));
+	}	
 
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
 	@Test
@@ -767,6 +785,21 @@ public class TrainingControllerE2ETest {
 			.andExpect(status().isOk())
 			.andExpect(view().name("exception"));
 	}
+	
+	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
+	@Test
+	void testClientTrainingList() throws Exception {
+		mockMvc.perform(get("/client/{clientUsername}/trainings",CLIENT1_USERNAME))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("trainings"))
+				.andExpect(model().attribute("trainings", hasSize(3)))
+				.andExpect(model().attribute("trainings", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_TRAINING1_ID)),
+					hasProperty("name", is("Entrenamiento1")),hasProperty("initialDate", hasToString("2020-01-01 00:00:00.0")),
+					hasProperty("endDate", hasToString("2020-01-14 00:00:00.0")),
+					hasProperty("editingPermission", equalTo(EditingPermission.TRAINER)),hasProperty("author", is(TRAINER1_USERNAME)),
+					hasProperty("diet", hasProperty("name",is("Dieta 1"))),
+					hasProperty("routines", allOf(hasItem(hasProperty("name",is("Cardio"))),hasItem(hasProperty("name",is("Brazos")))))))));
+	}	
 	
 	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
 	@Test

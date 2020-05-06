@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -52,9 +53,11 @@ public class Training extends BaseEntity{
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "training_id")
+	@Valid
 	protected Collection<Routine> routines;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "diet_id")
+	@Valid
 	protected Diet diet;
 }

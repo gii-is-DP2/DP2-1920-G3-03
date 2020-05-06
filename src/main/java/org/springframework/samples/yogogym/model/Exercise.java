@@ -8,8 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.samples.yogogym.model.Enums.BodyParts;
 import org.springframework.samples.yogogym.model.Enums.Intensity;
@@ -37,17 +39,21 @@ public class Exercise extends BaseEntity {
 	protected  Integer			kcal;
 
 	@Column(name = "intensity")
+	@NotNull
 	protected  Intensity	intensity;
 	
 	@Column(name = "body_part")
+	@NotNull
 	protected BodyParts bodyPart;
 
 	@Column(name = "repetition_type")
+	@NotNull
 	protected RepetitionType repetitionType;
 	
 	//Relations:
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "equipment_id")
+	@Valid
 	protected Equipment equipment;
 	
 }
