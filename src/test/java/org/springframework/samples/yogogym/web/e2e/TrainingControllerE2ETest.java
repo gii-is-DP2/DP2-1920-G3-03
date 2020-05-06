@@ -1,9 +1,11 @@
 package org.springframework.samples.yogogym.web.e2e;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.hasToString;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,9 +15,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +26,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
+import org.springframework.samples.yogogym.service.RoutineService;
+import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
@@ -63,6 +68,9 @@ public class TrainingControllerE2ETest {
 	
 	private static Date initialDate;
 	private static Date endDate;
+	
+	@Autowired
+	TrainingService trainingService;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -293,6 +301,11 @@ public class TrainingControllerE2ETest {
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
 	@Test
 	void testTrainerTrainingDetails() throws Exception {
+		
+		Training training = this.trainingService.findTrainingById(CLIENT1_TRAINING1_ID);
+		
+		
+		
 		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID))
 		 		.andExpect(status().isOk())
 		 		.andExpect(model().attributeExists("client"))

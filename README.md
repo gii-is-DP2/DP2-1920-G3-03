@@ -45,7 +45,10 @@ Como administrador quiero añadir retos semanales al gimnasio, que los clientes 
 * **Añadir reto semanal a semana sin retos:** Dado un administrador [admin1] y una semana [01/01/2030] sin retos, cuando este intente añadir un challenge aportando la información necesaria [name="Challenge Name", description="Challenge Desc", initialDate="01/01/2030", endDate="05/01/2030", points=10,reps=12,reward="Reward",weight=20. , exercise=Exercise1], entonces el reto se creará correctamente.
 * **Añadir reto semanal ya existente:** Dado un administrador[admin1], creará un reto igual que el anterior  pero con nombre= "Challenge Same Name"]. Cuando este intente crear uno con el mismo nombre e initialDate que el anterior, entonces se le indicará que esto no es posible debido a que ya existe.
 * **Añadir reto semanal a semana con 3 retos:** Dado un administrador[admin1]  y una semana con 2 retos con initialDate=[01/03/2030], cuando este intente añadir dos con los mismos datos que en el primer caso pero con el mismo initialDate de esta semana y endDate=[05/03/2030] y nombres "Challenge 3" y "Challenge 4", entonces el primero se creará, pero el segundo indicará que hay un máximo de 3 test por semana.
-* **Añadir reto semanal en fecha anterior:** Dado un administrador[admin1] , cuando este intente añadir un reto con los mismos datos que el primero pero con initialDate [01/01/2010], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
+* **Añadir reto semanal en fecha anterior:** Dado un administrador[admin1], cuando este intente añadir un reto con los mismos datos que el primero pero con initialDate [01/01/2010], entonces se le indicará que no es posible debido a que solo se puede añadir en fechas posteriores.
+* **Añadir reto con errores en el formulario:** Dado un administrador[admin1], cuando este intente añadir un reto con los siguientes errores: Campos vacíos, fecha inicial posterior a la final o puntos o repeticiones negativos, se deberán indicar los errores.
+* **Todos los escenarios anteriores también ocurrirán cuando se actualice un reto:** Solo se pueden actualizar los retos que no tienen inscripciones
+* **Eliminar un reto:** Dado un administrador[admin1] y un reto sin inscripciones, este clickará sobre él y podrá eliminarlo.
 
 ---
 
@@ -384,6 +387,7 @@ Como cliente quiero poder participar en los distintos retos propuestos por el gi
 * **Listar los retos en los que me he inscrito** Dado un cliente[client1], pinchará en la sección "my challenges", verá un listado con los diferentes retos en los que está inscrito, por ejemplo el "Challenge1", con estado "FAILED".
 * **Inscribirme en un reto** Dado un cliente[client2], pinchará en la sección "new challenges", verá un listado con los diferentes retos en los que está inscrito, por ejemplo el "Challenge4", clickará sobre él, verá los requisitos que se piden, y podrá inscribirse en el. Una vez hecho esto, ese reto aparecerá en "my challenges" con estado "PARTICIPATING".
 * **Completar un reto** Dado un cliente[client1], pinchará en "my challenges", después en el reto[Challenge5] con estado "PARTICIPATING", y pondrá una url donde demuestre que lo ha completado, y clickará submit, pasando al estado "submitted". El admin[admin1] irá a "submitted challenges", clickará sobre ese reto, y pondrá el estado "COMPLETED". Entonces en "my challenges" de [client1] el [Challenge5] aparecerá como completado.
+* **Completar un reto poniendo una url no valida** Dado un cliente[client1], pinchará en "my challenges", después en el reto[Challenge2] con estado "PARTICIPATING", y pondrá una url no válida, por lo que el sistema no debe dejarle enviarlo.
 ---
 
 #### HU22 - Clasificación de los Retos
