@@ -199,10 +199,10 @@ public class ChallengeServiceTest {
 	}
 	
 	@Test
-	void shouldFindAllChallengesCLients(){
-		Client client = this.clientService.findClientById(2);
+	void shouldFindAllChallengesClients(){
+		Client client = this.clientService.findClientById(1);
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAllChallengesClients(client.getId(), client.getInscriptions());
-		assertThat(challenges.size()).isEqualTo(2);
+		assertThat(challenges.size()).isEqualTo(1);
 	}
 	
 	private Challenge createTestingChallenge() {

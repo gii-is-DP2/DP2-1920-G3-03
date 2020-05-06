@@ -73,19 +73,6 @@ public class InscriptionServiceTest {
 		assertThat(inscription.getId()).isEqualTo(2);
 	}
 	
-	@Test
-	void shouldFindInscriptionByClientAndChallengeAndFailedBecauseDate(){
-		
-		Client client = this.clientService.findClientById(1);
-		Challenge challenge = client.getInscriptions().get(3).getChallenge();
-		
-		assertThat(client.getInscriptions().get(3).getStatus()).isEqualTo(Status.PARTICIPATING);
-		
-		Inscription inscription = this.inscriptionService.findInscriptionByClientAndChallenge(client, challenge);
-		
-		assertThat(inscription.getStatus()).isEqualTo(Status.FAILED);
-	}
-	
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldCreateInscription() {
