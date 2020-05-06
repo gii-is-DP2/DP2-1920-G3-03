@@ -20,6 +20,21 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ParticipateChallengeClientUITest {
 
+	private static final String CHALLENGE_1 = "Challenge1";
+	private static final String CHALLENGE_4 = "Challenge4";
+	private static final String CHALLENGE_5 = "Challenge5";
+	private static final String URL = "https://test.com";
+	private static final String CLIENT_1 = "client1";
+	private static final String CLIENT_2 = "client2";
+	private static final String ADMIN = "admin1";
+	private static final String COMPLETED = "COMPLETED";
+	private static final String PARTICIPATING = "PARTICIPATING";
+	private static final String FAILED = "FAILED";
+	private static final String SUBMITTED = "SUBMITTED";
+	private static final boolean INITIAL = true;
+	private static final boolean NOT_INITIAL = false;
+	
+	
 	@LocalServerPort
 	private int port;
 
@@ -32,20 +47,6 @@ public class ParticipateChallengeClientUITest {
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	}
 
-	@Test
-	public void testParticipateChallengeClientUI() throws Exception {
-		driver.get("http://localhost:" + port);
-		as("client1");
-		inscribeChallengeFourSuccessful();
-		submitChallengeFour();
-		logout("client1");
-		as("admin1");
-		evaluateChallengeFour();
-		logout("admin1");
-		as("client1");
-		statusOfMyChallenges();
-	}
-
 	@AfterEach
 	public void tearDown() throws Exception {
 		driver.quit();
@@ -55,113 +56,169 @@ public class ParticipateChallengeClientUITest {
 		}
 	}
 
-	private void as(String username) {
-		driver.findElement(By.linkText("Login")).click();
-		driver.findElement(By.id("password")).clear();
-		if (username.equals("client1")) {
-			driver.findElement(By.id("password")).sendKeys("client1999");
-		} else {
-			driver.findElement(By.id("password")).sendKeys("admin1999");
+	
+	@Test
+	public void clientListNewChallenges() {
+
+		as(CLIENT_1, INITIAL);
+		listNewChallenges();
+
+		// There is the challenge 4 to inscribe
+		try {
+			assertEquals(CHALLENGE_4, driver.findElement(By.linkText(CHALLENGE_4)).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
 		}
-		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys(username);
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
+
 	}
 
-	private void inscribeChallengeFourSuccessful() {
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/a/span")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[2]/a/span[2]")).click();
+	@Test
+	public void listInscribedChallenges() {
+
+		as(CLIENT_1, INITIAL);
+		listMyChallenges();
+
+		// There is the Challenge 1 in my challenges and its status is Failed
 		try {
-			assertEquals("Challenge4", driver.findElement(By.linkText("Challenge4")).getText());
-		} catch (Error e) {
-			verificationErrors.append(e.toString());
-		}
-		driver.findElement(By.linkText("Challenge4")).click();
-		try {
-			assertEquals("Inscribe me!", driver.findElement(By.linkText("Inscribe me!")).getText());
-		} catch (Error e) {
-			verificationErrors.append(e.toString());
-		}
-		driver.findElement(By.linkText("Inscribe me!")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/a/span")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[3]/a/span[2]")).click();
-		try {
-			assertEquals("Challenge4", driver.findElement(By.linkText("Challenge4")).getText());
+			assertEquals(CHALLENGE_1, driver.findElement(By.linkText(CHALLENGE_1)).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
 		try {
-			assertEquals("PARTICIPATING",
-					driver.findElement(By.xpath("//table[@id='challengesTable']/tbody/tr[5]/td[6]")).getText());
+			assertEquals(FAILED,
+					driver.findElement(By.xpath("//table[@id='challengesTable']/tbody/tr/td[6]")).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
 	}
 
-	private void submitChallengeFour() {
-		driver.findElement(By.linkText("Client")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[2]/a/span[2]")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/a/span")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[2]/a/span[2]")).click();
-		driver.findElement(By.linkText("Client")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[3]/a/span[2]")).click();
-		driver.findElement(By.linkText("Challenge4")).click();
-		driver.findElement(By.id("url")).click();
-		driver.findElement(By.id("url")).clear();
-		driver.findElement(By.id("url")).sendKeys("https://test.com");
-		driver.findElement(By.xpath("//input[@value='Submit!']")).click();
+	@Test
+	public void participateInChallenge() {
+		
+		as(CLIENT_2, INITIAL);
+		listNewChallenges();
+		inscribeChallenge(CHALLENGE_4);
+		listMyChallenges();
+
+		// There is the Challenge 4 in my challenges and its status is participating
 		try {
-			assertEquals("https://test.com", driver.findElement(By.linkText("https://test.com")).getText());
+			assertEquals(CHALLENGE_4, driver.findElement(By.linkText(CHALLENGE_4)).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
+		try {
+			assertEquals(PARTICIPATING,
+					driver.findElement(By.xpath("//table[@id='challengesTable']/tbody/tr[2]/td[6]")).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
 	}
 
-	private void logout(String username) {
-		if (username.equals("client1")) {
-			driver.findElement(By.linkText(username)).click();
-		}
-		driver.findElement(By.linkText("Logout")).click();
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-	}
+	@Test
+	public void completeChallenge() {
+	
+		as(CLIENT_1, INITIAL);
+		listMyChallenges();
+		submitUrlChallenge(CHALLENGE_5, URL);
 
-	private void evaluateChallengeFour() {
-		driver.findElement(By.linkText("Admin")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[2]/a/span[2]")).click();
+		// The status changes to submitted
 		try {
-			assertEquals("Challenge4", driver.findElement(By.linkText("Challenge4")).getText());
+			assertEquals(SUBMITTED,
+					driver.findElement(By.xpath("//table[@id='inscriptionTable']/tbody/tr/td/b")).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
-		driver.findElement(By.linkText("Challenge4")).click();
-		driver.findElement(By.xpath("//input[@value='Evaluate!']")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul[2]/li/a/strong")).click();
-	}
 
-	private void statusOfMyChallenges() {
-		driver.findElement(By.linkText("Client")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[3]/a/span[2]")).click();
+		logout(CLIENT_1);
+		as(ADMIN, NOT_INITIAL);
+		showSubmittedChallenge();
+
+		// The submitted challenge has the previus url
 		try {
-			assertEquals("Challenge4", driver.findElement(By.linkText("Challenge4")).getText());
+			assertEquals(URL, driver.findElement(By.linkText(URL)).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
+
+		evaluateChallenge();
+		logout(ADMIN);
+		as(CLIENT_1, NOT_INITIAL);
+		listMyChallenges();
+
+		// The status changes to completed
 		try {
-			assertEquals("COMPLETED",
-					driver.findElement(By.xpath("//table[@id='challengesTable']/tbody/tr[5]/td[6]")).getText());
-		} catch (Error e) {
-			verificationErrors.append(e.toString());
-		}
-		try {
-			assertEquals("Challenge5", driver.findElement(By.linkText("Challenge5")).getText());
-		} catch (Error e) {
-			verificationErrors.append(e.toString());
-		}
-		try {
-			assertEquals("PARTICIPATING",
+			assertEquals(COMPLETED,
 					driver.findElement(By.xpath("//table[@id='challengesTable']/tbody/tr[4]/td[6]")).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
 	}
+	
+	
+
+	private void listNewChallenges() {
+
+		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/a/span")).click();
+		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[2]/a/span[2]")).click();
+	}
+	
+	private void listMyChallenges() {
+
+		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/a/span")).click();
+		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[3]/a/span[2]")).click();
+	}
+
+	private void showSubmittedChallenge() {
+
+		driver.findElement(By.linkText("Admin")).click();
+		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[2]/a/span[2]")).click();
+		driver.findElement(By.linkText("Challenge5")).click();
+	}
+	
+	private void inscribeChallenge(String challenge) {
+
+		driver.findElement(By.linkText(challenge)).click();
+		driver.findElement(By.linkText("Inscribe me!")).click();
+	}
+
+	private void submitUrlChallenge(String challenge, String url) {
+
+		driver.findElement(By.linkText(challenge)).click();
+		driver.findElement(By.id("url")).click();
+		driver.findElement(By.id("url")).clear();
+		driver.findElement(By.id("url")).sendKeys(url);
+		driver.findElement(By.xpath("//input[@value='Submit!']")).click();
+	}
+
+	private void evaluateChallenge() {
+
+		driver.findElement(By.xpath("//input[@value='Evaluate!']")).click();
+	}
+
+	private void as(String username, boolean initial) {
+
+		if (initial)
+			driver.get("http://localhost:" + port);
+
+		driver.findElement(By.linkText("Login")).click();
+		driver.findElement(By.id("password")).clear();
+
+		if (username.contains("client")) {
+			driver.findElement(By.id("password")).sendKeys("client1999");
+		} else {
+			driver.findElement(By.id("password")).sendKeys("admin1999");
+		}
+
+		driver.findElement(By.id("username")).clear();
+		driver.findElement(By.id("username")).sendKeys(username);
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+	}
+
+	private void logout(String username) {
+
+		driver.findElement(By.linkText(username)).click();
+		driver.findElement(By.linkText("Logout")).click();
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+	}
+	
 }
