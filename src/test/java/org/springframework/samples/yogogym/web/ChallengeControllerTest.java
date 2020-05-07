@@ -18,6 +18,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -54,9 +56,8 @@ public class ChallengeControllerTest {
 	private static final int testClientId1 = 1;
 	private static final String testClientUsername1 = "client1";
 	
-	
-	private static final Calendar testInitialTrainingDate = Calendar.getInstance();
-	private static final Calendar testEndTrainingDate = Calendar.getInstance();
+	private static final Calendar testInitialDate = Calendar.getInstance();
+	private static final Calendar testEndDate = Calendar.getInstance();
 	
 	
 	@MockBean
@@ -77,39 +78,18 @@ public class ChallengeControllerTest {
 	@BeforeEach
 	void setUp()
 	{	
-		//Challenge 1:
-		testEndTrainingDate.add(Calendar.DAY_OF_MONTH, 1);
-		Date initialDate = testInitialTrainingDate.getTime();
-		Date endDate = testEndTrainingDate.getTime();
-		Exercise exercise1 = new Exercise();
-		exercise1.setName("Exercise Test");
 		
-		Challenge challenge1 = new Challenge();
-		challenge1.setId(testChallengeId1);
-		challenge1.setName("Challenge1 Name Test");
-		challenge1.setDescription("Challenge Description Test");
-		challenge1.setInitialDate(initialDate);
-		challenge1.setEndDate(endDate);
-		challenge1.setPoints(100);
-		challenge1.setReward("Reward Test");
-		challenge1.setReps(100);
-		challenge1.setWeight(100.);
-		challenge1.setExercise(exercise1);
+		testEndDate.add(Calendar.DAY_OF_MONTH, 1);
+		Date initialDate = testInitialDate.getTime();
+		Date endDate = testEndDate.getTime();
+		
+		//Challenge 1:
+		Challenge challenge1 = createChallenge(testChallengeId1, "Challenge1 Name Test", initialDate, endDate);
 		
 		given(this.challengeService.findChallengeById(testChallengeId1)).willReturn(challenge1);
 		
 		// Challenge 2 (With Inscription):
-		Challenge challenge2 = new Challenge();
-		challenge2.setId(testChallengeId2);
-		challenge2.setName("Challenge2 Name Test");
-		challenge2.setDescription("Challenge Description Test");
-		challenge2.setInitialDate(initialDate);
-		challenge2.setEndDate(endDate);
-		challenge2.setPoints(100);
-		challenge2.setReward("Reward Test");
-		challenge2.setReps(100);
-		challenge2.setWeight(100.);
-		challenge2.setExercise(exercise1);
+		Challenge challenge2 = createChallenge(testChallengeId2, "Challenge2 Name Test", initialDate, endDate);
 		
 		Inscription inscription1 = new Inscription();
 		inscription1.setChallenge(challenge2);
@@ -152,8 +132,8 @@ public class ChallengeControllerTest {
 		mockMvc.perform(get("/admin/challenges/{challengeId}", testChallengeId1)).andExpect(status().isOk())
 				.andExpect(model().attribute("challenge", hasProperty("name", is("Challenge1 Name Test"))))
 				.andExpect(model().attribute("challenge", hasProperty("description", is("Challenge Description Test"))))
-				.andExpect(model().attribute("challenge", hasProperty("initialDate", is(testInitialTrainingDate.getTime()))))
-				.andExpect(model().attribute("challenge", hasProperty("endDate", is(testEndTrainingDate.getTime()))))
+				.andExpect(model().attribute("challenge", hasProperty("initialDate", is(testInitialDate.getTime()))))
+				.andExpect(model().attribute("challenge", hasProperty("endDate", is(testEndDate.getTime()))))
 				.andExpect(model().attribute("challenge", hasProperty("points", is(100))))
 				.andExpect(model().attribute("challenge", hasProperty("id", is(1))))
 				.andExpect(model().attribute("challenge", hasProperty("reward", is("Reward Test"))))
@@ -171,8 +151,8 @@ public class ChallengeControllerTest {
 				.andExpect(model().attribute("challenge", hasProperty("name", is("Challenge2 Name Test"))))
 				.andExpect(model().attribute("challenge", hasProperty("description", is("Challenge Description Test"))))
 				.andExpect(model().attribute("challenge",
-						hasProperty("initialDate", is(testInitialTrainingDate.getTime()))))
-				.andExpect(model().attribute("challenge", hasProperty("endDate", is(testEndTrainingDate.getTime()))))
+						hasProperty("initialDate", is(testInitialDate.getTime()))))
+				.andExpect(model().attribute("challenge", hasProperty("endDate", is(testEndDate.getTime()))))
 				.andExpect(model().attribute("challenge", hasProperty("points", is(100))))
 				.andExpect(model().attribute("challenge", hasProperty("id", is(2))))
 				.andExpect(model().attribute("challenge", hasProperty("reward", is("Reward Test"))))
@@ -456,8 +436,8 @@ public class ChallengeControllerTest {
 		mockMvc.perform(get("/client/{clientUsername}/challenges/{challengeId}",testClientUsername1, testChallengeId1)).andExpect(status().isOk())
 				.andExpect(model().attribute("challenge", hasProperty("name", is("Challenge1 Name Test"))))
 				.andExpect(model().attribute("challenge", hasProperty("description", is("Challenge Description Test"))))
-				.andExpect(model().attribute("challenge", hasProperty("initialDate", is(testInitialTrainingDate.getTime()))))
-				.andExpect(model().attribute("challenge", hasProperty("endDate", is(testEndTrainingDate.getTime()))))
+				.andExpect(model().attribute("challenge", hasProperty("initialDate", is(testInitialDate.getTime()))))
+				.andExpect(model().attribute("challenge", hasProperty("endDate", is(testEndDate.getTime()))))
 				.andExpect(model().attribute("challenge", hasProperty("points", is(100))))
 				.andExpect(model().attribute("challenge", hasProperty("id", is(1))))
 				.andExpect(model().attribute("challenge", hasProperty("reward", is("Reward Test"))))
@@ -488,8 +468,8 @@ public class ChallengeControllerTest {
 		mockMvc.perform(get("/client/{clientUsername}/challenges/mine/{challengeId}",testClientUsername1, testChallengeId2)).andExpect(status().isOk())
 		.andExpect(model().attribute("challenge", hasProperty("name", is("Challenge2 Name Test"))))
 		.andExpect(model().attribute("challenge", hasProperty("description", is("Challenge Description Test"))))
-		.andExpect(model().attribute("challenge", hasProperty("initialDate", is(testInitialTrainingDate.getTime()))))
-		.andExpect(model().attribute("challenge", hasProperty("endDate", is(testEndTrainingDate.getTime()))))
+		.andExpect(model().attribute("challenge", hasProperty("initialDate", is(testInitialDate.getTime()))))
+		.andExpect(model().attribute("challenge", hasProperty("endDate", is(testEndDate.getTime()))))
 		.andExpect(model().attribute("challenge", hasProperty("points", is(100))))
 		.andExpect(model().attribute("challenge", hasProperty("id", is(2))))
 		.andExpect(model().attribute("challenge", hasProperty("reward", is("Reward Test"))))
@@ -507,20 +487,40 @@ public class ChallengeControllerTest {
 	}
 	
 	@WithMockUser(value = "client2", authorities = {"client"})
-	@Test
-	void testWrongClient() throws Exception {
+	@ParameterizedTest
+	@ValueSource(strings = {"/client/{clientUsername}/challenges","/client/{clientUsername}/challenges/{challengeId}",
+							"/client/{clientUsername}/challenges/mine","/client/{clientUsername}/challenges/mine/{challengeId}"})
+	void testWrongClient(String path) throws Exception {
 		
-		mockMvc.perform(get("/client/{clientUsername}/challenges", testClientUsername1)).andExpect(status().isOk())
+		if(path.contains("challengeId")) {
+			mockMvc.perform(get(path,testClientUsername1, testChallengeId2)).andExpect(status().isOk())
 			.andExpect(view().name("exception"));
+		}
+		else {
+			mockMvc.perform(get(path, testClientUsername1)).andExpect(status().isOk())
+			.andExpect(view().name("exception"));
+		}
+	}
+	
+	// UTILS
+	private Challenge createChallenge(int id, String name, Date initialDate, Date endDate) {
 		
-		mockMvc.perform(get("/client/{clientUsername}/challenges/{challengeId}",testClientUsername1, testChallengeId1)).andExpect(status().isOk())
-		.andExpect(view().name("exception"));
+		Exercise exercise1 = new Exercise();
+		exercise1.setName("Exercise Test");
 		
-		mockMvc.perform(get("/client/{clientUsername}/challenges/mine", testClientUsername1)).andExpect(status().isOk())
-		.andExpect(view().name("exception"));
+		Challenge c = new Challenge();
+		c.setId(id);
+		c.setName(name);
+		c.setDescription("Challenge Description Test");
+		c.setInitialDate(initialDate);
+		c.setEndDate(endDate);
+		c.setPoints(100);
+		c.setReward("Reward Test");
+		c.setReps(100);
+		c.setWeight(100.);
+		c.setExercise(exercise1);
 		
-		mockMvc.perform(get("/client/{clientUsername}/challenges/mine/{challengeId}",testClientUsername1, testChallengeId2)).andExpect(status().isOk())
-		.andExpect(view().name("exception"));
+		return c;
 	}
 	
 }

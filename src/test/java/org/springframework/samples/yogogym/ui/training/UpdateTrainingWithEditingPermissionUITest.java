@@ -108,7 +108,7 @@ public class UpdateTrainingWithEditingPermissionUITest {
   private void accessUpdateView() {
 	  driver.findElement(By.linkText("Trainer")).click();
 	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento1')])[2]")).click();
+	  driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento1')])[3]")).click();
 	  driver.findElement(By.linkText("Edit Training")).click();
   }
   

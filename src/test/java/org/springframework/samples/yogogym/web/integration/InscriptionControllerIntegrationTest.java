@@ -12,19 +12,33 @@ import org.springframework.samples.yogogym.web.InscriptionController;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.ui.ModelMap;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class InscriptionControllerIntegrationTest {
 	
+	private static final int INSCRIPTION_ID_2 = 2;
+	private static final int INSCRIPTION_ID_4 = 4;
+	private static final int INSCRIPTION_ID_6 = 6;
+	
+	private static final int CHALLENGE_ID_1 = 1;
+	private static final int CHALLENGE_ID_4 = 4;
+	private static final int CHALLENGE_ID_5 = 5;
+	
+	private static final String CLIENT_USERNAME_1 = "client1";
+	private static final String CLIENT_USERNAME_2 = "client2";
 	
 	@Autowired
 	private InscriptionController inscriptionController;
 	
 	//ADMIN
 	
+	@Transactional
 	@Test
 	void listSubmittedInscriptionsAdmin() throws Exception{
 		ModelMap modelMap = new ModelMap();
@@ -32,90 +46,88 @@ public class InscriptionControllerIntegrationTest {
 		assertEquals(view, "admin/challenges/submittedInscriptionsList");
 	}
 	
+	@Transactional
 	@Test
 	void showSubmittedInscriptionsAdmin() throws Exception{
+		
 		ModelMap modelMap = new ModelMap();
-		int inscriptionId = 6;
-		String view = this.inscriptionController.showSubmittedInscriptionAdmin(inscriptionId, modelMap);
+		String view = this.inscriptionController.showSubmittedInscriptionAdmin(INSCRIPTION_ID_6, modelMap);
 		assertEquals(view, "admin/challenges/submittedChallengeDetails");
 	}
 	
+	@Transactional
 	@Test
 	void showSubmittedInscriptionsAdminErrorNotSubmitted() throws Exception{
 		ModelMap modelMap = new ModelMap();
-		int inscriptionId = 2;
-		String view = this.inscriptionController.showSubmittedInscriptionAdmin(inscriptionId, modelMap);
+		String view = this.inscriptionController.showSubmittedInscriptionAdmin(INSCRIPTION_ID_2, modelMap);
 		assertEquals(view, "exception");
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Transactional 
 	@Test
 	void evaluateChallengeAdmin() throws Exception{
 		
 		ModelMap modelMap = new ModelMap();
-		int challengeId = 5;
-		int inscriptionId = 2;
 		Inscription inscription = new Inscription();
 		inscription.setStatus(Status.SUBMITTED);
 		
-		String view = this.inscriptionController.evaluateChallengeAdmin(challengeId, inscriptionId, inscription, modelMap);
+		String view = this.inscriptionController.evaluateChallengeAdmin(CHALLENGE_ID_5, INSCRIPTION_ID_2, inscription, modelMap);
 		assertEquals(view, "redirect:/admin/inscriptions/submitted");
 	}
 	
 	//CLIENT
 	
-	/*    NO FUNCIONA AL GUARDAR LA INSCRIPCIÓN: DETACHED (CHALLENGE)
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Transactional 
 	@Test
 	void createInscriptionByChallengeIdClient() throws Exception{
 		
 		ModelMap modelMap = new ModelMap();
-		int challengeId = 5;
-		String client = "client1";
 		
-		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client1", "client1999"));
-		SecurityContextHolder.setContext(securityContext);
+		logInClient(CLIENT_USERNAME_1);
 
-		String view = this.inscriptionController.createInscriptionByChallengeId(client, challengeId, modelMap);
-		assertEquals(view, "redirect:/admin/inscriptions/submitted");
-	}*/
+		String view = this.inscriptionController.createInscriptionByChallengeId(CLIENT_USERNAME_1, CHALLENGE_ID_5, modelMap);
+		assertEquals(view, "redirect:/client/" + CLIENT_USERNAME_1 + "/challenges");
+	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Transactional 
 	@Test
 	void submitInscription() throws Exception{
 		
 		ModelMap modelMap = new ModelMap();
-		int challengeId = 4;
-		int inscriptionId = 4;
-		String client = "client2";
 		Inscription inscription = new Inscription();
 		inscription.setUrl("http://testingthetest.com");
 		
-		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client2", "client1999"));
-		SecurityContextHolder.setContext(securityContext);
+		logInClient(CLIENT_USERNAME_2);
 		
-		String view = this.inscriptionController.submitInscription(client, challengeId, inscriptionId, inscription, modelMap);
-		assertEquals(view, "redirect:/client/client2/challenges/mine/4");
+		String view = this.inscriptionController.submitInscription(CLIENT_USERNAME_2, CHALLENGE_ID_4, INSCRIPTION_ID_4, inscription, modelMap);
+		assertEquals(view, "redirect:/client/" + CLIENT_USERNAME_2 +"/challenges/mine/" + CHALLENGE_ID_4);
 	}
 	
+	@Transactional
 	@Test
 	void TestWrongClient() throws Exception{
 		
 		ModelMap modelMap = new ModelMap();
-		int challengeId = 1;
-		int inscriptionId = 4;
 		Inscription inscription = new Inscription();
 		inscription.setUrl("http://testingthetest.com");
-		String client = "client1";
+		
+		logInClient(CLIENT_USERNAME_2);
+		
+		String view = this.inscriptionController.createInscriptionByChallengeId(CLIENT_USERNAME_1, CHALLENGE_ID_1, modelMap);
+		assertEquals(view, "exception");
+		
+		view = this.inscriptionController.submitInscription(CLIENT_USERNAME_1, CHALLENGE_ID_1, INSCRIPTION_ID_4, inscription, modelMap);
+		assertEquals(view, "exception");
+	}
+	
+	private void logInClient(String clientUsername) {
 		
 		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client2", "client1999"));
+	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(clientUsername, "client1999"));
 		SecurityContextHolder.setContext(securityContext);
-		
-		String view = this.inscriptionController.createInscriptionByChallengeId(client, challengeId, modelMap);
-		assertEquals(view, "exception");
-		
-		view = this.inscriptionController.submitInscription(client, challengeId, inscriptionId, inscription, modelMap);
-		assertEquals(view, "exception");
 	}
 	
 }

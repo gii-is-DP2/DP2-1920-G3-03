@@ -28,6 +28,7 @@ import org.springframework.samples.yogogym.model.Enums.EditingPermission;
 import org.springframework.samples.yogogym.repository.RoutineRepository;
 import org.springframework.samples.yogogym.service.exceptions.MaxRoutinesException;
 import org.springframework.samples.yogogym.service.exceptions.NotEditableException;
+import org.springframework.samples.yogogym.service.exceptions.RoutineRepsPerWeekNotValid;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,7 +57,7 @@ public class RoutineService {
 	
 	
 	@Transactional(rollbackFor= {TrainingFinished.class})
-	public void saveRoutine(Routine routine, String username, int trainingId) throws DataAccessException, TrainingFinished, NotEditableException, MaxRoutinesException {
+	public void saveRoutine(Routine routine, String username, int trainingId) throws DataAccessException, TrainingFinished, NotEditableException, MaxRoutinesException, RoutineRepsPerWeekNotValid {
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
 		Calendar cal = Calendar.getInstance();
@@ -68,6 +69,8 @@ public class RoutineService {
 			throw new MaxRoutinesException();
 		else if(!CheckEditable(username,training))
 			throw new NotEditableException();
+		else if(!validRepsPerWeekValue(routine,1,20))
+			throw new RoutineRepsPerWeekNotValid();
 		else
 			routineRepository.save(routine);
 	}
@@ -135,5 +138,12 @@ public class RoutineService {
 			return true;
 		
 		return false;
+	}
+	
+	protected Boolean validRepsPerWeekValue(final Routine routine, int min, int max)
+	{
+		int num = routine.getRepsPerWeek();
+		
+		return num >= min && num <= max;
 	}
 }

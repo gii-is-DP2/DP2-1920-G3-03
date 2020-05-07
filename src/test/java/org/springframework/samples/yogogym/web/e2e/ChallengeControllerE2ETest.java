@@ -11,10 +11,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ChallengeControllerE2ETest {
 
+	private static final int CHALLENGE_ID_1 = 1;
+	private static final int CHALLENGE_ID_2 = 2;
+	private static final int CHALLENGE_ID_4 = 4;
+	private static final int CHALLENGE_ID_6 = 6;
+	
+	private static final String CLIENT_USERNAME_1 = "client1";
+	
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -41,11 +52,11 @@ public class ChallengeControllerE2ETest {
 	@WithMockUser(value = "admin1", authorities = { "admin" })
 	@Test
 	void testShowChallengeByIdAdminModifiable() throws Exception {
-		mockMvc.perform(get("/admin/challenges/{challengeId}", 4)).andExpect(status().isOk())
+		mockMvc.perform(get("/admin/challenges/{challengeId}", CHALLENGE_ID_4)).andExpect(status().isOk())
 				.andExpect(model().attribute("challenge", hasProperty("name", is("Challenge4"))))
 				.andExpect(model().attribute("challenge", hasProperty("description", is("Desc challenge 4"))))
 				.andExpect(model().attribute("challenge", hasProperty("points", is(30))))
-				.andExpect(model().attribute("challenge", hasProperty("id", is(4))))
+				.andExpect(model().attribute("challenge", hasProperty("id", is(CHALLENGE_ID_4))))
 				.andExpect(model().attribute("challenge", hasProperty("reward", is("Reward2"))))
 				.andExpect(model().attribute("challenge", hasProperty("reps", is(4))))
 				.andExpect(model().attribute("challenge", hasProperty("weight", is(40.0))))
@@ -57,11 +68,11 @@ public class ChallengeControllerE2ETest {
 	@Test
 	void testShowChallengeByIdAdminNotModifiableWithInscription() throws Exception {
 
-		mockMvc.perform(get("/admin/challenges/{challengeId}", 2)).andExpect(status().isOk())
+		mockMvc.perform(get("/admin/challenges/{challengeId}", CHALLENGE_ID_2)).andExpect(status().isOk())
 				.andExpect(model().attribute("challenge", hasProperty("name", is("Challenge2"))))
 				.andExpect(model().attribute("challenge", hasProperty("description", is("Desc challenge 2"))))
 				.andExpect(model().attribute("challenge", hasProperty("points", is(20))))
-				.andExpect(model().attribute("challenge", hasProperty("id", is(2))))
+				.andExpect(model().attribute("challenge", hasProperty("id", is(CHALLENGE_ID_2))))
 				.andExpect(model().attribute("challenge", hasProperty("reward", is("Reward2"))))
 				.andExpect(model().attribute("challenge", hasProperty("reps", is(5))))
 				.andExpect(model().attribute("challenge", hasProperty("weight", is(20.))))
@@ -77,6 +88,7 @@ public class ChallengeControllerE2ETest {
 				.andExpect(model().attributeExists("challenge"));
 	}
 
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@WithMockUser(value = "admin1", authorities = { "admin" })
 	@Test
 	void testProcessCreateChallengeForm() throws Exception {
@@ -149,6 +161,7 @@ public class ChallengeControllerE2ETest {
 				.andExpect(view().name("/admin/challenges/challengesCreateOrUpdate"));
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@WithMockUser(value = "admin1", authorities = { "admin" })
 	@Test
 	void testProcessCreateChallengeFormErrorSameName() throws Exception {
@@ -164,6 +177,7 @@ public class ChallengeControllerE2ETest {
 				.andExpect(status().isOk()).andExpect(view().name("/admin/challenges/challengesCreateOrUpdate"));
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@WithMockUser(value = "admin1", authorities = { "admin" })
 	@Test
 	void testProcessCreateChallengeFormErrorMore3SameWeek() throws Exception {
@@ -193,7 +207,7 @@ public class ChallengeControllerE2ETest {
 	@Test
 	void testInitUpdateChallengeForm() throws Exception
 	{
-		mockMvc.perform(get("/admin/challenges/{challengeId}/edit",4))
+		mockMvc.perform(get("/admin/challenges/{challengeId}/edit",CHALLENGE_ID_4))
 		.andExpect(status().isOk())
 		.andExpect(view().name("/admin/challenges/challengesCreateOrUpdate"))
 		.andExpect(model().attributeExists("challenge"));
@@ -203,18 +217,19 @@ public class ChallengeControllerE2ETest {
 	@Test
 	void testInitUpdateChallengeFormWithInscriptions() throws Exception
 	{
-		mockMvc.perform(get("/admin/challenges/{challengeId}/edit",1))
+		mockMvc.perform(get("/admin/challenges/{challengeId}/edit",CHALLENGE_ID_1))
 		.andExpect(status().isOk())
 		.andExpect(view().name("admin/challenges/challengeDetails"))
 		.andExpect(model().attributeExists("challenge"));
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@WithMockUser(value = "admin1", authorities = {"admin"})
 	@Test
 	void testProcessUpdateChallengeForm() throws Exception
 	{						
 		
-		mockMvc.perform(post("/admin/challenges/{challengeId}/edit",6)
+		mockMvc.perform(post("/admin/challenges/{challengeId}/edit",CHALLENGE_ID_6)
 			.with(csrf())
 			.param("name", "Test Update")
 			.param("description", "Test")
@@ -233,7 +248,7 @@ public class ChallengeControllerE2ETest {
 	@Test
 	void testProcessUpdateChallengeFormHasErrorsSameName() throws Exception {
 		
-		mockMvc.perform(post("/admin/challenges/{challengeId}/edit",4)
+		mockMvc.perform(post("/admin/challenges/{challengeId}/edit",CHALLENGE_ID_4)
 				.with(csrf())
 				.param("name", "Challenge3")
 				.param("description", "Test")
@@ -250,6 +265,7 @@ public class ChallengeControllerE2ETest {
 		
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@WithMockUser(username="admin1", authorities= {"admin"})
 	@Test
 	void testProcessUpdateChallengeFormHasErrorsMore3() throws Exception {
@@ -269,7 +285,7 @@ public class ChallengeControllerE2ETest {
 				.param("reward", "Reward").param("reps", "10").param("weight", "10.").param("exercise.id", "1"))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/admin/challenges"));
 		
-		mockMvc.perform(post("/admin/challenges/{challengeId}/edit",4)
+		mockMvc.perform(post("/admin/challenges/{challengeId}/edit",CHALLENGE_ID_4)
 				.with(csrf())
 				.param("name", "Test More 3 4")
 				.param("description", "Test")
@@ -289,7 +305,7 @@ public class ChallengeControllerE2ETest {
 	@WithMockUser(value = "admin1", authorities = {"admin"})
 	@Test
 	void testProcessUpdateChallengeHasErrorEmptyParameters() throws Exception {
-		mockMvc.perform(post("/admin/challenges/{challengeId}/edit",4)
+		mockMvc.perform(post("/admin/challenges/{challengeId}/edit",CHALLENGE_ID_4)
 				.with(csrf())
 				.param("name", "")
 				.param("description", "")
@@ -310,20 +326,21 @@ public class ChallengeControllerE2ETest {
 				.andExpect(view().name("/admin/challenges/challengesCreateOrUpdate"));
 	}
 	
-	/*@WithMockUser(value = "admin1", authorities = {"admin"})
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@WithMockUser(value = "admin1", authorities = {"admin"})
 	@Test
 	void testDeleteChallenge() throws Exception
 	{
-		mockMvc.perform(get("/admin/challenges/{challengeId}/delete",6))
+		mockMvc.perform(get("/admin/challenges/{challengeId}/delete",CHALLENGE_ID_4))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/admin/challenges"));
-	}*/
+	}
 	
 	@WithMockUser(value = "admin1", authorities = {"admin"})
 	@Test
 	void testDeleteChallengeErrorInscriptionsExist() throws Exception
 	{
-		mockMvc.perform(get("/admin/challenges/{challengeId}/delete",1))
+		mockMvc.perform(get("/admin/challenges/{challengeId}/delete",CHALLENGE_ID_1))
 		.andExpect(status().isOk())
 		.andExpect(view().name("exception"));
 	}
@@ -334,7 +351,7 @@ public class ChallengeControllerE2ETest {
 		@WithMockUser(value = "client1", authorities = {"client"})
 		@Test
 		void testListChallengesClient() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/challenges", "client1")).andExpect(status().isOk()).andExpect(model().attributeExists("challenges"))
+			mockMvc.perform(get("/client/{clientUsername}/challenges", CLIENT_USERNAME_1)).andExpect(status().isOk()).andExpect(model().attributeExists("challenges"))
 				.andExpect(view().name("client/challenges/challengesList"));
 		}
 		
@@ -342,11 +359,11 @@ public class ChallengeControllerE2ETest {
 		@Test
 		void testShowChallengeByIdClient() throws Exception {
 
-			mockMvc.perform(get("/client/{clientUsername}/challenges/{challengeId}","client1", 4)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/challenges/{challengeId}",CLIENT_USERNAME_1, CHALLENGE_ID_4)).andExpect(status().isOk())
 					.andExpect(model().attribute("challenge", hasProperty("name", is("Challenge4"))))
 					.andExpect(model().attribute("challenge", hasProperty("description", is("Desc challenge 4"))))
 					.andExpect(model().attribute("challenge", hasProperty("points", is(30))))
-					.andExpect(model().attribute("challenge", hasProperty("id", is(4))))
+					.andExpect(model().attribute("challenge", hasProperty("id", is(CHALLENGE_ID_4))))
 					.andExpect(model().attribute("challenge", hasProperty("reward", is("Reward2"))))
 					.andExpect(model().attribute("challenge", hasProperty("reps", is(4))))
 					.andExpect(model().attribute("challenge", hasProperty("weight", is(40.))))
@@ -357,26 +374,27 @@ public class ChallengeControllerE2ETest {
 		@Test
 		void testShowChallengeByIdClientAlreadyInscribed() throws Exception {
 
-			mockMvc.perform(get("/client/{clientUsername}/challenges/{challengeId}","client1", 1)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/challenges/{challengeId}",CLIENT_USERNAME_1, CHALLENGE_ID_1)).andExpect(status().isOk())
 					.andExpect(view().name("exception"));
 		}
 		
 		@WithMockUser(value = "client1", authorities = {"client"})
 		@Test
 		void testListMyChallengesClient() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/challenges/mine", "client1")).andExpect(status().isOk()).andExpect(model().attributeExists("inscriptions"))
+			mockMvc.perform(get("/client/{clientUsername}/challenges/mine", CLIENT_USERNAME_1)).andExpect(status().isOk()).andExpect(model().attributeExists("inscriptions"))
 				.andExpect(view().name("client/challenges/myChallengesList"));
 		}
 		
+		@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 		@WithMockUser(value = "client1", authorities = {"client"})
 		@Test
 		void testShowAndEditMyChallengeByIdClient() throws Exception {
 
-			mockMvc.perform(get("/client/{clientUsername}/challenges/mine/{challengeId}","client1", 1)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/challenges/mine/{challengeId}",CLIENT_USERNAME_1, CHALLENGE_ID_1)).andExpect(status().isOk())
 			.andExpect(model().attribute("challenge", hasProperty("name", is("Challenge1"))))
 			.andExpect(model().attribute("challenge", hasProperty("description", is("Desc challenge 1"))))
 			.andExpect(model().attribute("challenge", hasProperty("points", is(10))))
-			.andExpect(model().attribute("challenge", hasProperty("id", is(1))))
+			.andExpect(model().attribute("challenge", hasProperty("id", is(CHALLENGE_ID_1))))
 			.andExpect(model().attribute("challenge", hasProperty("reward", is("Reward1"))))
 			.andExpect(model().attribute("challenge", hasProperty("reps", is(10))))
 			.andExpect(model().attribute("challenge", hasProperty("weight", is(10.))))
@@ -387,25 +405,24 @@ public class ChallengeControllerE2ETest {
 		@Test
 		void testShowAndEditNotHisChallengeByIdClient() throws Exception {
 
-			mockMvc.perform(get("/client/{clientUsername}/challenges/mine/{challengeId}","client1", 4)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/challenges/mine/{challengeId}",CLIENT_USERNAME_1, CHALLENGE_ID_4)).andExpect(status().isOk())
 			.andExpect(view().name("exception"));
 		}
 		
 		@WithMockUser(value = "client2", authorities = {"client"})
-		@Test
-		void testWrongClient() throws Exception {
+		@ParameterizedTest
+		@ValueSource(strings = {"/client/{clientUsername}/challenges", "/client/{clientUsername}/challenges/{challengeId}", 
+								"/client/{clientUsername}/challenges/mine", "/client/{clientUsername}/challenges/mine/{challengeId}"})
+		void testWrongClient(String path) throws Exception {
 			
-			mockMvc.perform(get("/client/{clientUsername}/challenges", "client1")).andExpect(status().isOk())
+			if(path.contains("challengeId")) {
+				mockMvc.perform(get("/client/{clientUsername}/challenges/{challengeId}",CLIENT_USERNAME_1, CHALLENGE_ID_1)).andExpect(status().isOk())
 				.andExpect(view().name("exception"));
-			
-			mockMvc.perform(get("/client/{clientUsername}/challenges/{challengeId}","client1", 1)).andExpect(status().isOk())
-			.andExpect(view().name("exception"));
-			
-			mockMvc.perform(get("/client/{clientUsername}/challenges/mine", "client1")).andExpect(status().isOk())
-			.andExpect(view().name("exception"));
-			
-			mockMvc.perform(get("/client/{clientUsername}/challenges/mine/{challengeId}","client1", 1)).andExpect(status().isOk())
-			.andExpect(view().name("exception"));
+			}
+			else {
+				mockMvc.perform(get(path, CLIENT_USERNAME_1)).andExpect(status().isOk())
+				.andExpect(view().name("exception"));
+			}
 		}
 
 }

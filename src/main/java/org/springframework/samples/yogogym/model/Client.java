@@ -22,7 +22,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -32,6 +31,7 @@ import javax.validation.constraints.Min;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 
 /**
@@ -77,9 +77,8 @@ public class Client extends Person {
 	@ManyToOne(cascade = CascadeType.ALL)
 	protected Guild guild;
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)
 	protected List<Inscription> inscriptions;
-	
 	
 	protected List<Inscription> getInscriptionsInternal() {
 		if (this.inscriptions == null) {
@@ -91,5 +90,5 @@ public class Client extends Person {
 	public void addInscription(Inscription inscription) {
 		List<Inscription> l = getInscriptionsInternal();
 		l.add(inscription);
-	}
+	}	
 }

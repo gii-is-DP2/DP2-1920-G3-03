@@ -46,7 +46,6 @@ public class UpdateTrainingEndInTrainingUITest {
   @Test
   public void testUpdateTrainingEndInTrainingUI() throws Exception {
     as("trainer1");
-    createFutureTraining();
     accessUpdateView();
     updateTrainingEndInFutureTraining();
     errorsShown();
@@ -110,38 +109,25 @@ public class UpdateTrainingEndInTrainingUITest {
 	  }
   }
   
-  private void createFutureTraining() {
-	  driver.findElement(By.linkText("Trainer")).click();
-	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.xpath("(//a[contains(text(),'Add Training')])[4]")).click();
-	  driver.findElement(By.id("name")).clear();
-	  driver.findElement(By.id("name")).sendKeys("Entrenamiento nuevo");
-	  calInit.add(Calendar.DAY_OF_MONTH, 8);
-	  driver.findElement(By.id("initialDate")).clear();
-	  driver.findElement(By.id("initialDate")).sendKeys(formatterInput.format(calInit.getTime()));
-	  calEnd.add(Calendar.DAY_OF_MONTH, 15);
-	  driver.findElement(By.id("endDate")).clear();
-	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calEnd.getTime()));
-	  driver.findElement(By.xpath("//button[@type='submit']")).click();
-  }
-  
   private void accessUpdateView() {
 	  driver.findElement(By.linkText("Trainer")).click();
 	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento1')])[2]")).click();
+	  driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento1')])[3]")).click();
 	  driver.findElement(By.linkText("Edit Training")).click();
   }
   
   private void updateTrainingEndInFutureTraining() {
 	  driver.findElement(By.id("name")).clear();
 	  driver.findElement(By.id("name")).sendKeys("Entrenamiento1");
-	  calAux.add(Calendar.DAY_OF_MONTH, 8);
+	  calAux.add(Calendar.DAY_OF_MONTH, 14);
 	  driver.findElement(By.id("endDate")).clear();
 	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calAux.getTime()));
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
   private void errorsShown() {
+	  calInit.add(Calendar.DAY_OF_MONTH, 14);
+	  calEnd.add(Calendar.DAY_OF_MONTH, 21);
 	  try {
 	      assertEquals("The training cannot end in a period with other training (The other training is from " + formatterDetails.format(calInit.getTime()) + " to " + formatterDetails.format(calEnd.getTime()) + ")", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
 	    } catch (Error e) {

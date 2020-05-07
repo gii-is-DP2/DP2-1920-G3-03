@@ -49,7 +49,7 @@ INSERT INTO clients VALUES (8, 'lusoba@yogogym.com','Luisa', 'Soledad Basurto', 
 
 INSERT INTO users(username,password,enabled) VALUES ('client9','client1999',TRUE);
 INSERT INTO authorities VALUES (11,'client','client9');
-INSERT INTO clients VALUES (9, 'caralfe@yogogym.com','Carmen', 'Alejandra Fernandez', '12345678J',18,20.0,170.0,true,72.4,1,'client9');
+INSERT INTO clients VALUES (9, 'caralfe@yogogym.com','Carmen', 'Alejandra Fernandez', '12345678J',18,20.0,170.0,true,72.4, null ,'client9');
 
 INSERT INTO users(username,password,enabled) VALUES ('client10','client1999',TRUE);
 INSERT INTO authorities VALUES (12,'client','client10');
@@ -72,7 +72,7 @@ INSERT INTO foods(id,name,kcal,protein,fat,carb,weight,food_type) VALUES (1,'Bre
 INSERT INTO foods(id,name,kcal,protein,fat,carb,weight,food_type) VALUES (2,'Apple',57,10,20,30,20,2);
 INSERT INTO foods(id,name,kcal,protein,fat,carb,weight,food_type) VALUES (3,'Steak',120,60,20,30,20,3);
 INSERT INTO foods(id,name,kcal,protein,fat,carb,weight,food_type) VALUES (4,'Banana',65,20,20,30,20,4);
-INSERT INTO foods(id,name,kcal,protein,fat,carb,weight,food_type) VALUES (5,'Scrambled Eggs',100,40,20,30,20,5);
+INSERT INTO foods(id,name,kcal,protein,fat,carb,weight,food_type) VALUES (5,'Scrambled Eggs',100,40,20,30,20,4);
 
 /* DIET */
 
@@ -94,20 +94,24 @@ INSERT INTO diets_foods(diet_id,foods_id) VALUES (4,3);
 
 /* TRAINING */
 
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (1, '2020-01-01', '2020-01-14', 'Entrenamiento1', 0, 'trainer1', 1, 1);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (2, '2020-02-01', '2020-02-14', 'Entrenamiento2', 2, 'trainer1', 2, 1);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (3, '2020-03-01', '2020-03-10', 'Entrenamiento3', 0, 'trainer1', 3, 2);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (4, '2020-04-01', '2020-04-20', 'Entrenamiento4', 0, 'trainer2', 4, 3);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (5, '2020-01-01', '2020-01-10', 'Entrenamiento1', 1, 'client4', null, 4);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (6, '2020-02-01', '2020-02-20', 'Entrenamiento2', 1, 'client5', null, 5);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (7, '2020-03-01', '2020-03-10', 'Entrenamiento3', 1, 'client6', null, 6);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (8, '2020-04-01', '2020-04-20', 'Entrenamiento4', 1, 'client7', null, 7);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (1, '2020-01-01', '2020-01-14', 'Entrenamiento1', 0, 'trainer1', 1);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (2, '2020-02-01', '2020-02-14', 'Entrenamiento2', 2, 'trainer1', 2);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (3, '2020-03-01', '2020-03-10', 'Entrenamiento3', 0, 'trainer1', 3);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (4, '2020-04-01', '2020-04-20', 'Entrenamiento4', 0, 'trainer2', 4);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (5, '2020-01-01', '2020-01-10', 'Entrenamiento1', 1, 'client4', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (6, '2020-02-01', '2020-02-20', 'Entrenamiento2', 1, 'client5', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (7, '2020-03-01', '2020-03-10', 'Entrenamiento3', 1, 'client6', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (8, '2020-04-01', '2020-04-20', 'Entrenamiento4', 1, 'client7', null);
 
 /* Always Updated Trainings */
 
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (9, DATEADD(day, 100, CURRENT_DATE), DATEADD(day, 101, CURRENT_DATE), 'Test', 2, 'trainer1', null, 1);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id,client_id) VALUES (10, DATEADD(day, -7, CURRENT_DATE), DATEADD(day, 7, CURRENT_DATE), 'Entrenamiento1', 2, 'client6', null, 6);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (9, DATEADD(day, 100, CURRENT_DATE), DATEADD(day, 101, CURRENT_DATE), 'Test', 2, 'trainer1', null);
 
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (10, DATEADD(day, -7, CURRENT_DATE), DATEADD(day, 7, CURRENT_DATE), 'Entrenamiento1', 0, 'trainer1', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (11, DATEADD(day, 14, CURRENT_DATE), DATEADD(day, 21, CURRENT_DATE), 'Entrenamiento2', 2, 'client6', null);
+
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (12, DATEADD(day, -7, CURRENT_DATE), DATEADD(day, 7, CURRENT_DATE), 'Entrenamiento1', 1, 'client5', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (13, DATEADD(day, 14, CURRENT_DATE), DATEADD(day, 21, CURRENT_DATE), 'Entrenamiento2', 2, 'trainer1', null);
 
 /* ROUTINE */
 
@@ -237,26 +241,26 @@ INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,
 /* ROUTINE LINE */
 
 /* Routine 1*/
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (1, null, 2, 1, 0.0, 46, 1);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (2, null, 20,1, 0.0, 45, 1);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (3, null,1,1,0.0,44,1);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (4, null,20,1,0.0,49,1);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (5, null,10,1,0.0,45,1);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (6, null,5,1,0.0,46,1);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (1, null, 2.0, 1, 0.0, 46, 1);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (2, null, 20.0, 1, 0.0, 45, 1);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (3, null, 1.0, 1, 0.0, 44, 1);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (4, null, 20.0, 1, 0.0,49, 1);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (5, null, 10.0, 1, 0.0, 45, 1);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (6, null, 5.0, 1, 0.0, 46, 1);
 
 /* Routine 2 */
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (7,10,null,3,30,15,2);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (8,10,null,5,20,20,2);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (9,20,null,2,10,31,2);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (10,null,2,2,15,37,2);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (11,10,null,3,20,43,2);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (7, 10, null, 3, 30.0, 15, 2);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (8, 10, null, 5, 20.0, 20, 2);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (9, 20, null, 2, 10.0, 31, 2);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (10, null, 2.0, 2, 15.0, 37, 2);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (11, 10, null, 3, 20.0, 43, 2);
 
 /* Routine 9 */
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (12,10,null,3,30,15,9);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (13,10,null,5,20,20,9);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (14,20,null,2,10,31,9);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (15,null,2,2,15,37,9);
-INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (16,10,null,3,20,43,9);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (12, 10, null, 3, 30.0, 15, 9);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (13, 10, null, 5, 20.0, 20, 9);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (14, 20, null, 2, 10.0, 31, 9);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (15, null, 2.0, 2, 15.0, 37, 9);
+INSERT INTO routines_lines(id,reps,time,series,weight,exercise_id,routine_id) VALUES (16, 10, null, 3, 20.0, 43, 9);
 
 /* CHALLENGE */
 
@@ -264,7 +268,7 @@ INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,r
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (2,'Challenge2','Desc challenge 2','2020-10-01','2020-10-02','Reward2',20,5,20,2);
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (3,'Challenge3','Desc challenge 3','2020-10-10','2020-10-15','Reward3',30,4,40,10);
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (4,'Challenge4','Desc challenge 4','2020-10-10','2020-10-15','Reward2',30,4,40,10);
-INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (5,'Challenge5','Desc challenge 5','2018-12-12','2019-01-01','Reward5',30,4,40,10);
+INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (5,'Challenge5','Desc challenge 5','2021-01-01','2021-01-05','Reward5',30,4,40,10);
 
 /* INSCRIPTION */
 
@@ -313,8 +317,11 @@ INSERT INTO clients_trainings(client_id,trainings_id) VALUES (2,3);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (3,4);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (4,5);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (5,6);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (5,12);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (5,13);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,7);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,10);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,11);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (7,8);
 
 

@@ -18,6 +18,7 @@ package org.springframework.samples.yogogym.model;
 import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -45,7 +46,7 @@ public class Trainer extends Person {
     @JoinColumn(name = "username", referencedColumnName = "username")
 	protected User user;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	protected Collection<Client> clients;
 	
 }

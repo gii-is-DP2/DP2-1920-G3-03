@@ -120,7 +120,6 @@ public class WelcomeControllerTest {
 		Training training = new Training();
 		training.setId(testTrainingId);
 		training.setName("training 1");
-		training.setClient(client);
 		training.setInitialDate(initialDate);
 		training.setEndDate(endDate);
 		training.setDiet(null);
