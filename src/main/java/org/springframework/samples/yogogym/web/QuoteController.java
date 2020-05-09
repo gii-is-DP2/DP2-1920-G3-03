@@ -2,32 +2,30 @@ package org.springframework.samples.yogogym.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Quote;
+import org.springframework.samples.yogogym.service.QuoteService;
+import org.springframework.samples.yogogym.service.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-@Controller
+@RestController
 public class QuoteController {
 
-	// private final QuoteService quoteService;
-
 	@Autowired
-	public QuoteController() {
-	
-		// this.quoteService = quoteService;
-
-	}
+	QuoteService quoteService;
 
 	
 	@GetMapping("/mainMenu/quotes")
-	public String MainMenuQuote(RestTemplate restTemplate, Model model) {
+	public Quote getQuote() throws ResourceNotFoundException {
 
-		Quote quote = restTemplate.getForObject("https://api.kanye.rest", Quote.class);
-
-		model.addAttribute("quote", quote);
+		Quote quote = quoteService.getQuote();
+		if(quote==null)
+		throw new ResourceNotFoundException("No quote event found");
 		
-		return "/mainMenu/quotes/quote";
+		return quote; 
 	 }
-
+	
+	 
 }
