@@ -150,14 +150,14 @@ public class ChallengeControllerTest {
 		mockMvc.perform(get("/admin/challenges/{challengeId}", testChallengeId2)).andExpect(status().isOk())
 				.andExpect(model().attribute("challenge", hasProperty("name", is("Challenge2 Name Test"))))
 				.andExpect(model().attribute("challenge", hasProperty("description", is("Challenge Description Test"))))
-				.andExpect(model().attribute("challenge",
-						hasProperty("initialDate", is(testInitialDate.getTime()))))
+				.andExpect(model().attribute("challenge", hasProperty("initialDate", is(testInitialDate.getTime()))))
 				.andExpect(model().attribute("challenge", hasProperty("endDate", is(testEndDate.getTime()))))
 				.andExpect(model().attribute("challenge", hasProperty("points", is(100))))
 				.andExpect(model().attribute("challenge", hasProperty("id", is(2))))
 				.andExpect(model().attribute("challenge", hasProperty("reward", is("Reward Test"))))
 				.andExpect(model().attribute("challenge", hasProperty("reps", is(100))))
 				.andExpect(model().attribute("challenge", hasProperty("weight", is(100.))))
+				.andExpect((model().attributeDoesNotExist("isModifiable")))
 				.andExpect(view().name("admin/challenges/challengeDetails"));
 	}
 	
