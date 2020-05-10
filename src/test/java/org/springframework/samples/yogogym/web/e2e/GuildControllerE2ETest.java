@@ -152,7 +152,7 @@ public class GuildControllerE2ETest {
 		String clientUsername = "client2";
 		Integer guildId = 2;
 		Guild guild = createGuild(clientUsername);
-		
+		guild.setName("NameExample2");
 		mockMvc.perform(post("/client/{clientUsername}/guilds/{guildId}/edit",clientUsername, guildId).with(csrf())
 				.param("creator", guild.getCreator())
 				.param("description", guild.getDescription())
