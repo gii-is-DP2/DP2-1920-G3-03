@@ -101,9 +101,9 @@ public class DietService {
 			}
 		}
 		if((low>moderated)&&(low>moderated)&&(low>moderated))
-			res = DietType.MAINTENANCE;
-		if((moderated>low)&&(moderated>intense)&&(moderated>veryIntense))
 			res = DietType.VOLUME;
+		if((moderated>=low)&&(moderated>=intense)&&(moderated>=veryIntense))
+			res = DietType.MAINTENANCE;
 		if((intense>low)&&(intense>moderated)&&(intense>veryIntense))
 			res = DietType.DEFINITION;
 		if((veryIntense>low)&&(veryIntense>intense)&&(veryIntense>moderated))

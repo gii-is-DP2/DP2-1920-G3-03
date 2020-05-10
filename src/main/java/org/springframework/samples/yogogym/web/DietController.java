@@ -124,6 +124,10 @@ public class DietController {
 			Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 			Training training = this.trainingService.findTrainingById(trainingId);
 
+			if(diet.getType() == DietType.AUTO_ASSIGN){
+				DietType dietType = this.dietService.selectDietType(trainingId);
+				diet.setType(dietType);
+			}	
 			diet = generateDiet(diet, clientId);
 						
 			training.setDiet(diet);
@@ -212,23 +216,25 @@ public class DietController {
 	@PostMapping("/clients/{clientId}/trainings/{trainingId}/diets/create")
 	public String processDietCreateForm(@Valid Diet diet, BindingResult result, @PathVariable("clientId") int clientId,
 			@PathVariable("trainingId") int trainingId, Model model) {
-		DietType dietType = this.dietService.selectDietType(trainingId);
-		
+
 		if(isTrainingFinished(trainingId))
 			return "exception";
 
 		if (result.hasErrors()) {
-			
-			model.addAttribute("dietType", dietType);
+			List<DietType> dietTypes = Arrays.asList(DietType.values());
+			model.addAttribute("dietTypes", dietTypes);
 			return "client/diets/dietsCreateOrUpdate";
 			
 		} else {
 			
 			Training training = this.trainingService.findTrainingById(trainingId);
 			
-			diet.setType(dietType);
-			diet = generateDiet(diet, clientId);
-					
+			if(diet.getType() == DietType.AUTO_ASSIGN){
+				DietType dietType = this.dietService.selectDietType(trainingId);
+				diet.setType(dietType);
+			}	
+
+			diet = generateDiet(diet, clientId);	
 			training.setDiet(diet);
 
 			try {

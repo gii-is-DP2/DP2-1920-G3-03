@@ -50,7 +50,7 @@
 						</c:when>
 						<c:otherwise>
 						<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/${training.id}/diets/create" var="dietAddUrl" />
-							<a href="${fn:escapeXml(dietAddUrl)}">Add Diet</a>							
+							<td> <a href="${fn:escapeXml(dietAddUrl)}">Add Diet</a>	</td>							
 						</c:otherwise>
 					</c:choose>
 				</c:when>
