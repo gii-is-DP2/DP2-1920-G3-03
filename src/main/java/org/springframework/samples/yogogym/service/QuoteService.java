@@ -40,7 +40,7 @@ public class QuoteService {
 	private RestTemplate restTemplate;
 
 	@Autowired
-	public QuoteService(RestTemplate restTemplate) {
+	public QuoteService() {
 	}
 	
 	@Transactional
