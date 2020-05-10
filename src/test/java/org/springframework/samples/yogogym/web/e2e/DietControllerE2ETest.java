@@ -19,13 +19,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.samples.yogogym.model.Diet;
 import org.springframework.samples.yogogym.model.Enums.DietType;
-import org.springframework.samples.yogogym.service.ClientService;
-import org.springframework.samples.yogogym.service.DietService;
-import org.springframework.samples.yogogym.service.TrainerService;
-import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -40,37 +35,25 @@ public class DietControllerE2ETest {
 	private static final int testDietId = 1;
 	
 	private static final String testTrainerUsername = "trainer1";
+
 	
 	private static final int testClientId = 1;
 	
+	private static final int testClientId3 = 3;
+	
 	private static final int testTrainingId = 1;
+	
+	private static final int testTrainingIdActive = 9;
 	
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	Calendar testInitialTrainingDate = Calendar.getInstance();
 		
-	//Trainer 2
-	private static final String testTrainerUsername_t2 = "trainer2";
-	
-	private static final int testClientId_t2 = 2;
-	
-	@Autowired
-	private DietService dietService;
-	
-	@Autowired
-	private ClientService clientService;
-
-	@Autowired
-	private TrainerService trainerService;
-	
-	@Autowired
-	private TrainingService trainingService;
-	
 	@Autowired
 	private MockMvc mockMvc;
 		
 	@BeforeEach
-	void setUp()
-	{
+	void setUp(){
+		
 	}
 	
 	void testWrongAuth(int mode,String path,Object... uriVars) throws Exception
@@ -93,26 +76,9 @@ public class DietControllerE2ETest {
 	void testTrainerWrongClients() throws Exception
 	{
 		// Wrong client id
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,3,testTrainingId);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,3,testTrainingId);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,3,testTrainingId,testDietId);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,3,testTrainingId,testDietId);
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}",testTrainerUsername,testClientId3);
+
 	}
-	
-	@WithMockUser(username="trainer2", authorities= {"trainer"})
-	@Test
-	void testTrainerWrongAuthority() throws Exception
-	{
-		// Wrong trainer
-		// testWrongAuth(0,"/trainer/{trainerUsername}/routines",testTrainerUsername);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}",testTrainerUsername,testClientId,testTrainingId,testDietId);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId);
-		// testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/delete",testTrainerUsername,testClientId,testTrainingId,testDietId);
-	}
-	
 
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
 	@Test
@@ -123,53 +89,61 @@ public class DietControllerE2ETest {
 			.andExpect(view().name("trainer/diets/dietsDetails"))
 			.andDo(print());
 	}
-			
+	
+	//Create Diet
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
 	@Test
 	void testInitCreateDietForm() throws Exception
 	{
-		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId))
+		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingIdActive))
 		.andExpect(status().isOk())
 		.andExpect(view().name("trainer/diets/dietsCreateOrUpdate"))
 		.andExpect(model().attributeExists("diet"));
 	}
 	
-	void testProcessCorrectCreateDietForm(String name, String description, DietType dietType) throws Exception
-	{		
+	@WithMockUser(username="trainer1", authorities= {"trainer"})
+	@Test
+	void testProcessCorrectCreateDietForm() throws Exception{		
 		
-		Diet diet= new Diet();
-		diet.setName(name);
-		diet.setDescription(description);
-		diet.setType(dietType);
-		
-		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId)
-			.with(csrf())
-			.param("name", diet.getName())
-			.param("description", diet.getDescription())
-			.param("type",diet.getType().toString()))
-		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/trainer/"+ testTrainerUsername + "/clients/" + testClientId + "/trainings/"+testTrainingId));
+		Diet diet= createDiet();
 	
-	}
-
-	void testProcessWrongCreateDietForm(String name, String description, DietType dietType) throws Exception
-	{		
-		
-		Diet diet= new Diet();
-		diet.setName(name);
-		diet.setDescription(description);
-		diet.setType(dietType);
-		
-		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId)
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingIdActive)
 			.with(csrf())
 			.param("name", diet.getName())
 			.param("description", diet.getDescription())
-			.param("type",diet.getType().toString()))
+			.param("type",diet.getType().toString())
+			.param("kcal",diet.getKcal().toString())
+			.param("carb",diet.getCarb().toString())
+			.param("protein",diet.getProtein().toString())
+			.param("fat",diet.getFat().toString()))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/trainer/"+ testTrainerUsername + "/clients/" + testClientId + "/trainings/"+testTrainingIdActive));
+
+	}
+	
+	@WithMockUser(username="trainer1", authorities= {"trainer"})
+	@Test
+	void testProcessWrongtCreateDietForm() throws Exception{		
+		
+		Diet diet= createDiet();
+		diet.setCarb(-10);
+	
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingIdActive)
+			.with(csrf())
+			.param("name", diet.getName())
+			.param("description", diet.getDescription())
+			.param("type",diet.getType().toString())
+			.param("kcal",diet.getKcal().toString())
+			.param("carb",diet.getCarb().toString())
+			.param("protein",diet.getProtein().toString())
+			.param("fat",diet.getFat().toString()))
 		.andExpect(status().isOk())
 		.andExpect(view().name("trainer/diets/dietsCreateOrUpdate"));
-	
-	}
 
+	}
+	
+	
+	//update
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
 	@Test
 	void testInitUpdateDietForm() throws Exception
@@ -180,84 +154,61 @@ public class DietControllerE2ETest {
 		.andExpect(model().attributeExists("diet"));
 	}
 	
-	void testProcessCorrectUpdateDietForm(String name, String description, DietType dietType, 
-	Integer kcal, Integer carb, Integer protein, Integer fat) throws Exception
-	{
+	@WithMockUser(username="trainer1", authorities= {"trainer"})
+	@Test
+	void testProcessCorrectUpdateDietForm() throws Exception{
 		
-		Diet d= new Diet();
-		d.setName(name);
-		d.setDescription(description);
-		d.setType(dietType);
-
-		d.setKcal(kcal);
-		d.setCarb(carb);
-		d.setProtein(protein);
-		d.setFat(fat);
-		
+	Diet diet = createDiet();
+	
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId)
 			.with(csrf())
-			.param("name", d.getName())
-			.param("description", d.getDescription())
-			.param("type",d.getType().toString())
-			.param("kcal",d.getKcal().toString())
-			.param("carb",d.getCarb().toString())
-			.param("protein",d.getProtein().toString())
-			.param("fat",d.getFat().toString()))
-
+			.param("name", diet.getName())
+			.param("description", diet.getDescription())
+			.param("type",diet.getType().toString())
+			.param("kcal",diet.getKcal().toString())
+			.param("carb",diet.getCarb().toString())
+			.param("protein",diet.getProtein().toString())
+			.param("fat",diet.getFat().toString()))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/trainer/" + testTrainerUsername + "/clients/" + testClientId + "/trainings/" + testTrainingId + "/diets/" + testDietId));
 	}
-
-	void testProcessWrongUpdateDietForm(String name, String description, DietType dietType, 
-	Integer kcal, Integer carb, Integer protein, Integer fat) throws Exception
+	
+	@WithMockUser(username="trainer1", authorities= {"trainer"})
+	@Test
+	void testProcessWrongUpdateDietForm() throws Exception
 	{
 		
-		Diet d= new Diet();
-		d.setName(name);
-		d.setDescription(description);
-		d.setType(dietType);
-
-		d.setKcal(kcal);
-		d.setCarb(carb);
-		d.setProtein(protein);
-		d.setFat(fat);
+		Diet diet = createDiet();
+		diet.setCarb(-10);
 		
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId)
 			.with(csrf())
-			.param("name", d.getName())
-			.param("description", d.getDescription())
-			.param("type",d.getType().toString())
-			.param("kcal",d.getKcal().toString())
-			.param("carb",d.getCarb().toString())
-			.param("protein",d.getProtein().toString())
-			.param("fat",d.getFat().toString()))
+			.param("name", diet.getName())
+			.param("description", diet.getDescription())
+			.param("type",diet.getType().toString())
+			.param("kcal",diet.getKcal().toString())
+			.param("carb",diet.getCarb().toString())
+			.param("protein",diet.getProtein().toString())
+			.param("fat",diet.getFat().toString()))
 
 		.andExpect(status().isOk())
 		.andExpect(view().name("trainer/diets/dietsCreateOrUpdate"));
 	}
 
+	//Derivated Methods
 	
-	// @WithMockUser(username="trainer1", authorities= {"trainer"})
-	// @Test
-	// void testProcessCorrectCreateDietForm() throws Exception{
-	// 	testProcessCorrectCreateDietForm("diet1", "description 1", DietType.DEFINITION);
-	// }
-
-	// @WithMockUser(username="trainer1", authorities= {"trainer"})
-	// @Test
-	// void testProcessWrongCreateDietForm() throws Exception{
-	// 	testProcessWrongCreateDietForm(null, null, DietType.DEFINITION);
-	// }
+	protected Diet createDiet() {
+		
+		Diet diet= new Diet();
+		diet.setName("diet1");
+		diet.setDescription("description1");
+		diet.setType(DietType.DEFINITION);
+		diet.setCarb(10);
+		diet.setFat(10);
+		diet.setKcal(10);
+		diet.setProtein(10);
+		
+		return diet;
+	}
 	
-	@WithMockUser(username="trainer1", authorities= {"trainer"})
-	@Test
-	void testProcessCorrectUpdateDietForm() throws Exception{
-		testProcessCorrectUpdateDietForm("diet1", "description 1", DietType.DEFINITION, 10,10,10,10);
-	}
-
-	@WithMockUser(username="trainer1", authorities= {"trainer"})
-	@Test
-	void testProcessWrongtUpdateDietForm() throws Exception{
-		testProcessWrongUpdateDietForm("diet1", "description 1", DietType.DEFINITION, -10,-10,-10,-10);
-	}
 }

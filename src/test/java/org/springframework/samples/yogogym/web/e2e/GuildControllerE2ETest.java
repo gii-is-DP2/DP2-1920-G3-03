@@ -144,24 +144,24 @@ public class GuildControllerE2ETest {
 				.andExpect(model().attributeExists("guild"));
 	}
 	
-	/*
+	
 	@WithMockUser(username = "client1", authorities = { "client" })
 	@Test
 	void testProcessUpdateGuildForm() throws Exception {
 		
-		String clientUsername = "client1";
-		Integer guildId = 1;
+		String clientUsername = "client2";
+		Integer guildId = 2;
 		Guild guild = createGuild(clientUsername);
 		
 		mockMvc.perform(post("/client/{clientUsername}/guilds/{guildId}/edit",clientUsername, guildId).with(csrf())
-				.param("creator", clientUsername)
+				.param("creator", guild.getCreator())
 				.param("description", guild.getDescription())
 				.param("logo", guild.getLogo())
 				.param("name",guild.getName()))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/client/" + clientUsername + "/guilds/" + guildId));
 	}
-	*/
+	
 	
 	@WithMockUser(username = "client1", authorities = { "client" })
 	@Test
