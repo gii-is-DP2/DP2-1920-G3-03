@@ -171,21 +171,18 @@ public class ChallengeServiceTest {
 	
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void shouldDeleteChallenge() {
+	void shouldDeleteChallenge() throws ChallengeWithInscriptionsException {
 		
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAll();
 		int foundBefore = challenges.size();
-		
 		Challenge challenge = this.challengeService.findChallengeById(CHALLENGE_ID_4);
-		try {
-			this.challengeService.deleteChallenge(challenge);
-		} catch (ChallengeWithInscriptionsException e) {
-			e.printStackTrace();
-		}
+		
+		this.challengeService.deleteChallenge(challenge);
+		
 		challenges = (Collection<Challenge>) this.challengeService.findAll();
 		int foundAfter = challenges.size();
-		
-		assertThat(foundBefore).isGreaterThan(foundAfter);
+		assertThat(challenges.stream().anyMatch(c -> c.getId().equals(CHALLENGE_ID_4))).isFalse();
+		assertThat(foundAfter).isEqualTo(foundBefore - 1);
 	}
 	
 	@Test

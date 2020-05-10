@@ -96,7 +96,8 @@ public class ChallengeControllerE2ETest {
 		mockMvc.perform(post("/admin/challenges/new").with(csrf()).param("name", "Test").param("description", "Test")
 				.param("initialDate", "2090/01/01").param("endDate", "2090/01/02").param("points", "10")
 				.param("reward", "Reward").param("reps", "10").param("weight", "10.").param("exercise.id", "1"))
-				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/admin/challenges"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/admin/challenges"));
 	}
 	
 	@WithMockUser(value = "admin1", authorities = {"admin"})
