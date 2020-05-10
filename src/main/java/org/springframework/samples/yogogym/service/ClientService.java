@@ -86,6 +86,11 @@ public class ClientService {
 		return this.clientRepository.findAll();
 
 	}
+	
+	@Transactional
+	public Boolean isPublicByTrainingId(int trainingId) throws DataAccessException{
+		return this.clientRepository.isPublic(trainingId);
+	}
 
 	// Classification
 	public List<String> classificationNameDate() {

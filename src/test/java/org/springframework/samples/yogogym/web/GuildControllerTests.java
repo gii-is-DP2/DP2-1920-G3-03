@@ -144,6 +144,7 @@ public class GuildControllerTests {
 		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}/edit",testClientUsername2,testGuildId1);
 		testWrongAuth(1,"/client/{clientUsername}/guilds/{guildId}/edit",testClientUsername2,testGuildId1);
 		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}/delete",testClientUsername2,testGuildId1);
+		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}/leave",testClientUsername2,testGuildId1);
 	}
 	//HU5 - CRUD DE GREMIOS
 	@WithMockUser(value = "CarlosD", authorities = {"client"})
