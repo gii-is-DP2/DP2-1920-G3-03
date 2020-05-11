@@ -26,9 +26,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
-import org.springframework.samples.yogogym.service.RoutineService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
@@ -301,11 +299,6 @@ public class TrainingControllerE2ETest {
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
 	@Test
 	void testTrainerTrainingDetails() throws Exception {
-		
-		Training training = this.trainingService.findTrainingById(CLIENT1_TRAINING1_ID);
-		
-		
-		
 		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID))
 		 		.andExpect(status().isOk())
 		 		.andExpect(model().attributeExists("client"))
