@@ -10,23 +10,27 @@ import java.util.Date;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.dao.DataAccessException;
+import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.Training;
-import org.springframework.samples.yogogym.service.exceptions.EndBeforeEqualsInitException;
-import org.springframework.samples.yogogym.service.exceptions.EndInTrainingException;
-import org.springframework.samples.yogogym.service.exceptions.InitInTrainingException;
-import org.springframework.samples.yogogym.service.exceptions.PastEndException;
-import org.springframework.samples.yogogym.service.exceptions.PastInitException;
-import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
+import org.springframework.samples.yogogym.model.Enums.EditingPermission;
+import org.springframework.samples.yogogym.service.exceptions.MaxRoutinesException;
+import org.springframework.samples.yogogym.service.exceptions.NotEditableException;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class RoutineServiceTest {
 	
+	@Autowired
+	protected ClientService clientService;
 	@Autowired
 	protected RoutineService routineService;
 	@Autowired
@@ -36,8 +40,11 @@ public class RoutineServiceTest {
 	@Autowired
 	protected ExerciseService exerciseService;
 	
+	private final String trainerUsername = "trainer1";
+	private final String clientUsername = "client1";
 	private final int trainingId = 1;
 	private final int routineId = 1;
+	
 	
 	@Test
 	void shouldFindRoutineById(){
@@ -54,16 +61,107 @@ public class RoutineServiceTest {
 		assertTrue(notNull && sameNameAndNotEmpty && sameDescAndNotEmpty && sameRepsAndNotNull);
 	}
 	
+	
+	//TRAINER
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void shouldCreateRoutine() throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException{
-		
+	void shouldCreateRoutine_trainer() 
+	{
+		//Setting Training not Finished
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DAY_OF_MONTH, 1);
-		Date futureDate = cal.getTime();
+		Date  newEndDate = cal.getTime();
 		
+		createRoutine(trainerUsername,newEndDate,trainingId);
+	}
+	
+	@Test
+	void shouldNotCreateRoutineTrainingFinished_trainer(){
+		
+		testCreateExceptions(0,trainerUsername,EditingPermission.CLIENT);
+	}
+	
+	@Test
+	void shouldNotCreateRoutineNotEditableTraining_trainer(){
+		
+		testCreateExceptions(1,trainerUsername,EditingPermission.CLIENT);
+	}
+	
+	@Test
+	void shouldNotCreateRoutineMaxRoutines_trainer(){
+		
+		testCreateExceptions(2,trainerUsername,EditingPermission.TRAINER);
+	}
+	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Test
+	void shouldDeleteRoutine_trainer(){
+		
+		//Setting Training not Finished
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+		Date  newEndDate = cal.getTime();
+		
+		deleteRoutine(trainerUsername,newEndDate,EditingPermission.TRAINER);		
+	}
+	
+	@Test
+	void shouldNotDeleteRoutineTrainingFinished_trainer(){
+	
+		testDeleteExceptions(0,trainerUsername,EditingPermission.CLIENT);		
+	}
+	
+	@Test
+	void shouldNotDeleteRoutineNotEditable_trainer(){
+	
+		testDeleteExceptions(1,trainerUsername,EditingPermission.CLIENT);		
+	}
+	
+	//CLIENT
+	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Test
+	void shouldCreateRoutine_client()
+	{
+		//Setting Training not Finished
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+		Date  newEndDate = cal.getTime();
+				
+		createRoutine(clientUsername,newEndDate,trainingId);
+	}
+	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Test
+	void shouldDeleteRoutine_client(){
+		
+		//Setting Training not Finished
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+		Date  newEndDate = cal.getTime();
+		
+		deleteRoutine(clientUsername,newEndDate,EditingPermission.CLIENT);		
+	}
+	
+	@Test
+	void shouldNotDeleteRoutineTrainingFinished_client(){
+	
+		testDeleteExceptions(0,clientUsername,EditingPermission.TRAINER);		
+	}
+	
+	@Test
+	void shouldNotDeleteRoutineNotEditable_client(){
+	
+		testDeleteExceptions(1,clientUsername,EditingPermission.TRAINER);		
+	}
+	
+	//Base Methods
+	
+	void createRoutine(String username,Date newEndDate, final int trainingId)
+	{
 		//Setting future end date
 		Training training = this.trainingService.findTrainingById(trainingId);
-		training.setEndDate(futureDate);
+		training.setEndDate(newEndDate);
 		
 		//Check all routine and all of a specific training before adding
 		Collection<Routine> trainingRoutinesbeforeAdding = this.routineService.findAllRoutinesFromTraining(trainingId);
@@ -81,7 +179,7 @@ public class RoutineServiceTest {
 		//Update Training
 		try
 		{
-			this.trainingService.saveTraining(training);
+			this.routineService.saveRoutine(newRoutine, username, trainingId);
 		}
 		catch (Exception e)
 		{
@@ -110,35 +208,18 @@ public class RoutineServiceTest {
 		assertTrue(hasBeenAddedToRoutine && hasBeenAddedToTraining && sameName && sameDescription && sameRepetitionsPerWeek);		
 	}
 	
-	@Test
-	void shouldNotCreateRoutineTrainingFinished(){
-		
-		//Create the routine to be added
-		Routine newRoutine = new Routine();
-		newRoutine.setName("Name 1");
-		newRoutine.setDescription("Desc 1");
-		newRoutine.setRepsPerWeek(4);
-		
-		//Update Training
-		assertThrows(TrainingFinished.class, ()->{this.routineService.saveRoutine(newRoutine, trainingId);});
-	}
-	
-	@Test
-	void shouldDeleteRoutine(){
-		
-		final int routineId = 1;
-		final int trainingId = 1;
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DAY_OF_MONTH, 1);
-		Date  newEndDate = cal.getTime();
-		
+	void deleteRoutine(String username, Date newEndDate, EditingPermission editPerm)
+	{			
 		//Get the specified routine (routineId)
 		Routine routine = this.routineService.findRoutineById(routineId);
 		//Get the specified training that contained the deleted routine
 		Training training = this.trainingService.findTrainingById(trainingId);
+		training.setInitialDate(Calendar.getInstance().getTime());
 		training.setEndDate(newEndDate);
+		training.setEditingPermission(editPerm);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 		try {
-			this.trainingService.saveTraining(training);
+			this.trainingService.saveTraining(training,client);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -152,7 +233,7 @@ public class RoutineServiceTest {
 		
 		try
 		{
-			this.routineService.deleteRoutine(routine,trainingId);		
+			this.routineService.deleteRoutine(routine,username,trainingId);		
 		}
 		catch (Exception e)
 		{
@@ -177,11 +258,88 @@ public class RoutineServiceTest {
 		assertTrue(hasBeenDeletedFromTraining && hasBeenDeleted && notExist);
 	}
 	
-	@Test
-	void shouldNotDeleteRoutine(){
+	void testCreateExceptions(final int caseId, String username, EditingPermission editPerm)
+	{
+		Routine newRoutine = new Routine();
+		newRoutine.setName("Name 1");
+		newRoutine.setDescription("Desc 1");
+		newRoutine.setRepsPerWeek(4);
+		
+		switch(caseId)
+		{
+		//Training Finished
+		case 0:
+			assertThrows(TrainingFinished.class, ()->{this.routineService.saveRoutine(newRoutine,username,trainingId);});
+			break;
+		//Training not Editable
+		case 1:
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+			Date  newEndDate = cal.getTime();
+			
+			Training training = this.trainingService.findTrainingById(trainingId);
+			training.setEditingPermission(editPerm);
+			training.setEndDate(newEndDate);
+			
+			assertThrows(NotEditableException.class, ()->{this.routineService.saveRoutine(newRoutine,username,trainingId);});
+			break;
+		//Max Routines Reached
+		case 2:
+			cal = Calendar.getInstance();
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+			newEndDate = cal.getTime();
+			
+			training = this.trainingService.findTrainingById(trainingId);
+			training.setEditingPermission(editPerm);
+			training.setEndDate(newEndDate);
+		
+			CreateRoutinesForTraining(training,10);
+			
+			assertThrows(MaxRoutinesException.class, ()->{this.routineService.saveRoutine(newRoutine,username,trainingId);});
 				
-		//Get the specified routine (routineId)
-		Routine routine = this.routineService.findRoutineById(routineId);
-		assertThrows(TrainingFinished.class, ()->{this.routineService.saveRoutine(routine, trainingId);});
+			break;
+		}		
+	}
+	
+	void testDeleteExceptions(final int caseId, String username, EditingPermission editPerm)
+	{
+		Routine newRoutine = this.routineService.findRoutineById(routineId);
+		
+		Calendar cal = null;
+		Date newEndDate = null;
+		Training training = null;
+		
+		switch(caseId)
+		{
+		//Training Finished
+		case 0:
+			assertThrows(TrainingFinished.class, ()->{this.routineService.saveRoutine(newRoutine,username,trainingId);});
+			break;
+		//Training not Editable
+		case 1:
+			cal = Calendar.getInstance();
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+			newEndDate = cal.getTime();
+			
+			training = this.trainingService.findTrainingById(trainingId);
+			training.setEditingPermission(editPerm);
+			training.setEndDate(newEndDate);
+			
+			assertThrows(NotEditableException.class, ()->{this.routineService.saveRoutine(newRoutine,username,trainingId);});
+			break;
+		}
+	}
+	
+	void CreateRoutinesForTraining(Training training,int limit)
+	{		
+		for(int i = training.getRoutines().size(); i < limit; i++)
+		{
+			Routine routine = new Routine();
+			routine.setName("Routine " + i);
+			routine.setDescription("Desc "+i);
+			routine.setRepsPerWeek(5);
+			
+			training.getRoutines().add(routine);
+		}
 	}
 }

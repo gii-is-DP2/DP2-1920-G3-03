@@ -14,16 +14,25 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Diet;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.DietType;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class DietServiceTest {
 
+	@Autowired
+	protected ClientService clientService;
+	
 	@Autowired
 	protected DietService dietService;
 	
@@ -31,6 +40,7 @@ public class DietServiceTest {
 	protected TrainingService trainingService;
 	
 	private final int trainingId = 1;
+	private final int clientId = 1;
 	
 	@Test
 	void shouldFindAllDiets(){
@@ -44,6 +54,7 @@ public class DietServiceTest {
 		assertThat(diet.getName()).isEqualTo("Dieta 2");	
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldCreateDiet() {
 		
@@ -53,10 +64,11 @@ public class DietServiceTest {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		training.setEndDate(newDate);
+		Client client = this.clientService.findClientById(clientId);
 		
 		try
 		{
-			this.trainingService.saveTraining(training);
+			this.trainingService.saveTraining(training,client);
 		}
 		catch(Exception e)
 		{
@@ -111,9 +123,10 @@ public class DietServiceTest {
 		cal.add(Calendar.DAY_OF_MONTH, 1);
 		Date newDate = cal.getTime();
 		training.setEndDate(newDate);
+		Client client = this.clientService.findClientById(clientId);
 		
 		try {
-			this.trainingService.saveTraining(training);
+			this.trainingService.saveTraining(training,client);
 		}
 		catch(Exception e) {
 			e.printStackTrace();

@@ -21,7 +21,7 @@ public class ClientController {
 		this.clientService = clientService;
 		this.trainerService = trainerService;
 	}
-
+		
 	// TRAINER
 
 	@GetMapping("/trainer/{trainerUsername}/clients")

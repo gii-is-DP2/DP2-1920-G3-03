@@ -31,6 +31,11 @@
 
 --%>
 
+<yogogym:menuItem active="${name eq 'myTrainings'}" url="/client/${clientUsername}/trainings" title="My Trainings">
+	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+	<span>My Training</span>
+</yogogym:menuItem>
+
 <yogogym:menuItem active="${name eq 'newChallenges'}" url="/client/${clientUsername}/challenges" title="New Challenges">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>New Challenges</span>
@@ -41,9 +46,9 @@
 	<span>My Challenges</span>
 </yogogym:menuItem>
 
-<yogogym:menuItem active="${name eq 'clasifications'}" url="/client/${clientUsername}/clasification" title="Clasification">
+<yogogym:menuItem active="${name eq 'clasifications'}" url="/client/${clientUsername}/clasification" title="Classification">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Clasification</span>
+	<span>Classification</span>
 </yogogym:menuItem>
 
 <yogogym:menuItem active="${name eq 'dashboards'}" url="/client/${clientUsername}/dashboard" title="Dashboard">

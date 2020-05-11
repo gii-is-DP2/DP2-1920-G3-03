@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.samples.yogogym.model.Enums.DietType;
@@ -23,11 +23,11 @@ import lombok.EqualsAndHashCode;
 public class Diet extends BaseEntity{
 	
 	@Column(name = "name")
-	@NotEmpty
+	@NotBlank
 	protected String name;
 	
 	@Column(name = "description")
-	@NotEmpty
+	@NotBlank
 	protected String description;
 	
 	@Column(name = "type")

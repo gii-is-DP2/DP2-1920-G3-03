@@ -1,6 +1,7 @@
 package org.springframework.samples.yogogym.repository;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -28,7 +29,20 @@ public interface ClientRepository extends  CrudRepository<Client, String>{
 	@Query("SELECT DISTINCT c FROM Client c LEFT JOIN c.inscriptions i WHERE i.status=1")
 	public List<Client> findClientsWithSubmittedInscriptions();
 	
-	@Query("SELECT DISTINCT c FROM Client c LEFT JOIN c.inscriptions i WHERE i.status=2")
-	public List<Client> findClientsWithCompletedInscriptions();
+	@Query("SELECT c.isPublic FROM Client c LEFT JOIN c.trainings t WHERE t.id=:id")
+	public Boolean isPublic(@Param("id") int id);
+	
+	//Clasification
+	@Query("SELECT c.user.username FROM Client c left join c.inscriptions i WHERE i.status = 2 AND (i.challenge.initialDate BETWEEN :dateBefore AND :dateAfter) GROUP BY c.user.username ORDER BY SUM(i.challenge.points) DESC")
+	List<String> classificationNameDate(@Param("dateBefore") Date dateBefore, @Param("dateAfter") Date dateAfter);
+	
+	@Query("SELECT SUM(i.challenge.points) FROM Client c left join c.inscriptions i WHERE i.status = 2 AND (i.challenge.initialDate BETWEEN :dateBefore AND :dateAfter) GROUP BY c.user.username ORDER BY SUM(i.challenge.points) DESC")
+	List<Integer> classificationPointDate(@Param("dateBefore") Date dateBefore, @Param("dateAfter") Date dateAfter);
+	
+	@Query("SELECT c.user.username FROM Client c left join c.inscriptions i WHERE i.status = 2 GROUP BY c.user.username ORDER BY SUM(i.challenge.points) DESC")
+	List<String> classificationNameAll();
+	
+	@Query("SELECT SUM(i.challenge.points) FROM Client c left join c.inscriptions i WHERE i.status = 2 GROUP BY c.user.username ORDER BY SUM(i.challenge.points) DESC")
+	List<Integer> classificationPointAll();
 
 }

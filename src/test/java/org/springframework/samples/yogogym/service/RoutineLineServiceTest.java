@@ -10,19 +10,29 @@ import java.util.Date;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Training;
+import org.springframework.samples.yogogym.model.Enums.RepetitionType;
+import org.springframework.samples.yogogym.service.exceptions.ExerciseNotCorrectRepetitionType;
+import org.springframework.samples.yogogym.service.exceptions.RoutineLineRepAndTimeSetted;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
-import org.springframework.samples.yogogym.service.exceptions.TrainingRepAndTimeSetted;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class RoutineLineServiceTest {
 	
+	@Autowired
+	protected ClientService clientService;
 	@Autowired
 	protected RoutineService routineService;
 	@Autowired
@@ -36,6 +46,7 @@ public class RoutineLineServiceTest {
 	private final int routineId = 1;
 	private final int exerciseId = 1;
 	private final int routineLineId = 1;
+	private final String clientUsername = "client1";
 	
 	
 	@Test
@@ -43,7 +54,7 @@ public class RoutineLineServiceTest {
 		//Finds specified RoutineLine
 		RoutineLine routineLine = this.routineLineService.findRoutineLineById(1);
 		
-		//Check it fetchs something from the Database
+		//Check it fetches something from the Database
 		Boolean notNull = routineLine != null;
 		//Check for time or reps to be valid ( > 0 && != null)
 		Boolean repsOrTimeNotEmptyAndGreaterThanMin = (routineLine.getReps() != null && routineLine.getReps() > 0) || (routineLine.getTime() != null && routineLine.getTime() >= 0);
@@ -60,22 +71,12 @@ public class RoutineLineServiceTest {
 		assertTrue(notNull && repsOrTimeNotEmptyAndGreaterThanMin && seriesNotNull && weightNotNull && sameRepAndTime && sameSeries && sameWeight);
 	}
 	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void shouldCreateRoutineLine(){
 		
-		//Set training a valid end date
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DAY_OF_MONTH, 1);
-		Date newEndDate = cal.getTime();
-		Training training = this.trainingService.findTrainingById(trainingId);
-		training.setEndDate(newEndDate);
-		
-		try {
-			this.trainingService.saveTraining(training);
-		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
+		//Just to update database so now exception from training jumps
+		setUpTraining(trainingId,1);
 		
 		//Get all of routineLine before adding
 		Collection<RoutineLine> beforeAdding = this.routineLineService.findAllRoutinesLines();
@@ -140,12 +141,7 @@ public class RoutineLineServiceTest {
 		Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
 		
 		//Create the routineLine
-		RoutineLine routineLine = new RoutineLine();
-		routineLine.setReps(10);
-		routineLine.setTime(null);
-		routineLine.setSeries(5);
-		routineLine.setWeight(5.0);
-		routineLine.setExercise(exercise);
+		RoutineLine routineLine = createRoutineLine(exercise,10,20.0,null,20);
 				
 		assertThrows(TrainingFinished.class,() -> {this.routineLineService.saveRoutineLine(routineLine,trainingId);});
 	}
@@ -153,16 +149,11 @@ public class RoutineLineServiceTest {
 	@Test
 	void shouldNotCreateRoutineLineTimeAndRepSetted(){
 		
-		//Create new EndDate for Training
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DAY_OF_MONTH, 1);
-		Date newEndDate = cal.getTime();
+		Training training = setUpTraining(trainingId,1);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 		
-		//Update Training
-		Training training = this.trainingService.findTrainingById(trainingId);
-		training.setEndDate(newEndDate);
 		try {
-			this.trainingService.saveTraining(training);
+			this.trainingService.saveTraining(training,client);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -172,29 +163,52 @@ public class RoutineLineServiceTest {
 		Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
 		
 		//Create RoutineLine
-		RoutineLine routineLine = new RoutineLine();
-		routineLine.setReps(10);
-		routineLine.setTime(10.0);
-		routineLine.setSeries(5);
-		routineLine.setWeight(5.0);
-		routineLine.setExercise(exercise);
+		RoutineLine routineLine = createRoutineLine(exercise,10,20.0,5.0,20);
 		
-		assertThrows(TrainingRepAndTimeSetted.class, () -> {this.routineLineService.saveRoutineLine(routineLine, trainingId);});
+		assertThrows(RoutineLineRepAndTimeSetted.class, () -> {this.routineLineService.saveRoutineLine(routineLine, trainingId);});
 	}
 	
 	@Test
+	void shouldNotCreateRoutineLineWithExerciseTime()
+	{
+		//update Training so no exception regarding training occurs
+		setUpTraining(trainingId,1);
+		
+		//Update exercise in order to provoke exception
+		Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
+		exercise.setRepetitionType(RepetitionType.TIME);
+		
+		//Create Routine Line
+		RoutineLine routineLine = createRoutineLine(exercise, 10, 10.0, null, 10);
+		
+		assertThrows(ExerciseNotCorrectRepetitionType.class, ()->{this.routineLineService.saveRoutineLine(routineLine, trainingId);});	
+	}
+	
+	@Test
+	void shouldNotCreateRoutineLineWithExerciseReps()
+	{
+		//update Training so no exception regarding training occurs
+		setUpTraining(trainingId,1);
+		
+		//Update exercise in order to provoke exception
+		Exercise exercise = this.exerciseService.findExerciseById(exerciseId);
+		exercise.setRepetitionType(RepetitionType.REPS);
+		
+		//Create Routine Line
+		RoutineLine routineLine = createRoutineLine(exercise, 10, 10.0, 5.0, null);
+		
+		assertThrows(ExerciseNotCorrectRepetitionType.class, ()->{this.routineLineService.saveRoutineLine(routineLine, trainingId);});	
+	}
+	
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Test
 	void shouldDeleteRoutineLine(){
 		
-		//Create new EndDate for Training
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DAY_OF_MONTH, 1);
-		Date newEndDate = cal.getTime();
+		Training training = setUpTraining(trainingId,1);
+		Client client = this.clientService.findClientByUsername(clientUsername);
 		
-		//Update training
-		Training training = this.trainingService.findTrainingById(trainingId);
-		training.setEndDate(newEndDate);
 		try {
-			this.trainingService.saveTraining(training);
+			this.trainingService.saveTraining(training,client);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -224,6 +238,40 @@ public class RoutineLineServiceTest {
 		RoutineLine routineLine = this.routineLineService.findRoutineLineById(routineLineId);
 
 		assertThrows(TrainingFinished.class,()->{this.routineLineService.deleteRoutineLine(routineLine,trainingId);});
-			
+	}
+	
+	//Derivative Methods
+	protected Training setUpTraining(final int trainingId, final int DaysFromNowToFinishTraining)
+	{
+		Training res = this.trainingService.findTrainingById(trainingId);
+		
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, DaysFromNowToFinishTraining);
+		Date newEndDate = cal.getTime();
+		
+		res.setEndDate(newEndDate);
+		Client client = this.clientService.findClientByUsername(clientUsername);
+		
+		try {
+			this.trainingService.saveTraining(res,client);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return res;
+	}
+	
+	protected RoutineLine createRoutineLine(final Exercise exercise, final Integer series, final Double weight, final Double time, final Integer reps)
+	{
+		RoutineLine res = new RoutineLine();
+		
+		res.setSeries(series);
+		res.setReps(reps);
+		res.setWeight(weight);
+		res.setTime(time);
+		res.setExercise(exercise);
+		
+		return res;
 	}
 }

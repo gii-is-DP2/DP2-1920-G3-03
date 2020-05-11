@@ -28,7 +28,7 @@ class DietValidatorTests extends ValidatorTests{
 		ConstraintViolation<Diet> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-		assertThat(violation.getMessage()).isEqualTo("must not be empty");
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");
 		
 	}
 	
@@ -44,7 +44,7 @@ class DietValidatorTests extends ValidatorTests{
 		ConstraintViolation<Diet> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("name");
-		assertThat(violation.getMessage()).isEqualTo("must not be empty");
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");
 		
 	}
 	
@@ -60,7 +60,7 @@ class DietValidatorTests extends ValidatorTests{
 		ConstraintViolation<Diet> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-		assertThat(violation.getMessage()).isEqualTo("must not be empty");
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");
 		
 	}
 	
@@ -76,7 +76,7 @@ class DietValidatorTests extends ValidatorTests{
 		ConstraintViolation<Diet> violation = constraintViolations.iterator().next();
 		
 		assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-		assertThat(violation.getMessage()).isEqualTo("must not be empty");
+		assertThat(violation.getMessage()).isEqualTo("must not be blank");
 		
 	}
 		

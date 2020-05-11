@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,11 +23,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
 import org.springframework.samples.yogogym.model.Client;
+import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.User;
+import org.springframework.samples.yogogym.model.Enums.BodyParts;
+import org.springframework.samples.yogogym.model.Enums.RepetitionType;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.RoutineService;
 import org.springframework.samples.yogogym.service.TrainerService;
@@ -37,38 +39,32 @@ import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 @WebMvcTest(value = RoutineController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration= SecurityConfiguration.class)
 public class RoutineControllerTest {
 	
-	private static final int testRoutineId = 1;
-	
-	private static final String testTrainerUsername = "trainer1";
-	
-	private static final int testClientId = 1;
-	
+	//Trainer 1
+	private static final int testRoutineId = 1;	
+	private static final String testTrainerUsername = "trainer1";	
+	private static final int testClientId = 1;	
 	private static final int testTrainingId = 1;
 	
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-	Calendar testInitialTrainingDate = Calendar.getInstance();
-	Calendar testEndTrainingDate = testInitialTrainingDate;
-	
+		
 	//Trainer 2
-	private static final String testTrainerUsername_t2 = "trainer2";
-	
+	private static final String testTrainerUsername_t2 = "trainer2";	
 	private static final int testClientId_t2 = 2;
 	
-	@MockBean
-	private RoutineService routineService;
+	//Client 1
+	private static final String testClientUsername_c1 = "client1";
 	
+	@MockBean
+	private RoutineService routineService;	
 	@MockBean
 	private ClientService clientService;
-
 	@MockBean
-	private TrainerService trainerService;
-	
+	private TrainerService trainerService;	
 	@MockBean
 	private TrainingService trainingService;
 	
@@ -81,44 +77,19 @@ public class RoutineControllerTest {
 		//Trainer 1
 		Collection<RoutineLine> routinesLines = new ArrayList<>();
 		
-		Routine routine= new Routine();
-		routine.setName("Routine Test");
-		routine.setDescription("Routine Description Test");
-		routine.setRepsPerWeek(5);
-		routine.setRoutineLine(routinesLines);
+		Routine routine= createRoutine(routinesLines);
 		
-		Client client = new Client();
-		User user_client = new User();
-		user_client.setUsername("client1");
-		user_client.setEnabled(true);
-		client.setUser(user_client);
-		client.setId(testClientId);
+		Client client = createClient(testClientId, "client1");
 		
 		Collection<Client> clients = new ArrayList<>();
 		clients.add(client);
 		
-		Trainer trainer = new Trainer();
-		User user_trainer = new User();
-		user_trainer.setUsername(testTrainerUsername);
-		user_trainer.setEnabled(true);
-		trainer.setUser(user_trainer);
-		trainer.setClients(clients);
-				
-		Date initialDate = testInitialTrainingDate.getTime();
-		
-		testEndTrainingDate.add(Calendar.DAY_OF_MONTH, 1);
-		Date endDate = testEndTrainingDate.getTime();
-		
+		Trainer trainer = createTrainer(testTrainerUsername, clients);
+								
 		Collection<Routine> routines = new ArrayList<>();
+		routines.add(routine);
 		
-		Training training = new Training();
-		training.setId(testTrainingId);
-		training.setName("training 1");
-		training.setClient(client);
-		training.setInitialDate(initialDate);
-		training.setEndDate(endDate);
-		training.setDiet(null);
-		training.setRoutines(routines);
+		Training training = createTraining(testTrainingId,client,routines,1);
 		
 		given(this.clientService.findClientById(testClientId)).willReturn(client);
 		given(this.trainerService.findTrainer(testTrainerUsername)).willReturn(trainer);
@@ -126,25 +97,19 @@ public class RoutineControllerTest {
 		given(this.routineService.findRoutineById(testRoutineId)).willReturn(routine);
 		
 		//Trainer 2
-		Client client_t2 = new Client();
-		User user_client_t2 = new User();
-		user_client_t2.setUsername("client2");
-		user_client_t2.setEnabled(true);
-		client_t2.setUser(user_client_t2);
-		client_t2.setId(testClientId_t2);
+		Client client_t2 = createClient(testClientId_t2, "client2");
 		
 		Collection<Client> clients_t2 = new ArrayList<>();
 		clients_t2.add(client_t2);
 		
-		Trainer trainer_t2 = new Trainer();
-		User user_trainer_t2 = new User();
-		user_trainer_t2.setUsername(testTrainerUsername_t2);
-		user_trainer_t2.setEnabled(true);
-		trainer_t2.setUser(user_trainer_t2);
-		trainer_t2.setClients(clients_t2);
+		Trainer trainer_t2 = createTrainer(testTrainerUsername_t2,clients_t2);
 		
 		given(this.clientService.findClientById(testClientId_t2)).willReturn(client_t2);
-		given(this.trainerService.findTrainer(testTrainerUsername_t2)).willReturn(trainer_t2);	
+		given(this.trainerService.findTrainer(testTrainerUsername_t2)).willReturn(trainer_t2);
+		
+		//Client 1
+		Client client_c1 = createClient(1, "client1");
+		given(this.clientService.findClientByUsername(testClientUsername_c1)).willReturn(client_c1);
 	}
 	
 	void testWrongAuth(int mode,String path,Object... uriVars) throws Exception
@@ -266,7 +231,7 @@ public class RoutineControllerTest {
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/trainer/"+ testTrainerUsername + "/clients/" + testClientId + "/trainings/"+testTrainingId));
 	}
-	
+		
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
 	@Test
 	void testInitUpdateRoutineForm() throws Exception
@@ -305,5 +270,253 @@ public class RoutineControllerTest {
 		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/routines/{routineId}/delete",testTrainerUsername,testClientId,testTrainingId,testRoutineId))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/trainer/" + testTrainerUsername + "/routines"));
+	}
+	
+	//CLIENT ================================================================================================================
+			
+	//createRoutine
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testInitCreateRoutineForm_Client() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/routine/create",testClientUsername_c1,testTrainingId))
+		.andExpect(status().isOk())
+		.andExpect(view().name("client/routines/routinesCreateOrUpdate"))
+		.andExpect(model().attributeExists("routine"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineForm_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/create",testClientUsername_c1,testTrainingId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/client/" + testClientUsername_c1 + "/trainings/" + testTrainingId));
+	}
+	
+	//Update Routine
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testInitUpdateRoutineForm_Client() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/update",testClientUsername_c1,testTrainingId,testRoutineId))
+		.andExpect(status().isOk())
+		.andExpect(view().name("client/routines/routinesCreateOrUpdate"))
+		.andExpect(model().attributeExists("routine"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessUpdateRoutineForm_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/update",testClientUsername_c1,testTrainingId,testRoutineId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/client/" + testClientUsername_c1 + "/trainings/" + testTrainingId));
+	}
+		
+	//Delete Routine
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testDeleteRoutineForm_Client() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/delete",testClientUsername_c1,testTrainingId,testRoutineId))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/client/" + testClientUsername_c1 + "/trainings/" + testTrainingId));
+	}
+	
+	//shouldNotCreateRoutineBadInput
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineFormBadName_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		routine.setName("");
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/create",testClientUsername_c1,testTrainingId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(view().name("trainer/routines/routinesCreateOrUpdate"));
+	}
+
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineFormBadDesc_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		routine.setDescription("");
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/create",testClientUsername_c1,testTrainingId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(view().name("trainer/routines/routinesCreateOrUpdate"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessCreateRoutineFormBadReps_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		routine.setRepsPerWeek(50);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/create",testClientUsername_c1,testTrainingId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(view().name("trainer/routines/routinesCreateOrUpdate"));
+	}
+	
+	//shouldNotUpdateRoutineBadInput
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessUpdateRoutineFormBadName_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		routine.setName("");
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/update",testClientUsername_c1,testTrainingId,testRoutineId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(view().name("client/routines/routinesCreateOrUpdate"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessUpdateRoutineFormBadDesc_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		routine.setDescription("");
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/update",testClientUsername_c1,testTrainingId,testRoutineId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(view().name("client/routines/routinesCreateOrUpdate"));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testProcessUpdateRoutineFormBadReps_Client() throws Exception
+	{
+		Collection<RoutineLine> routinesLines = new ArrayList<>();
+		Routine routine = createRoutine(routinesLines);
+		routine.setRepsPerWeek(50);
+		
+		mockMvc.perform(post("/client/{clientUsername}/trainings/{trainingId}/routine/{routineId}/update",testClientUsername_c1,testTrainingId,testRoutineId)
+		.with(csrf())
+		.param("name", routine.getName())
+		.param("description", routine.getDescription())
+		.param("repsPerWeek",routine.getRepsPerWeek().toString()))
+		.andExpect(view().name("client/routines/routinesCreateOrUpdate"));
+	}
+	
+	//Derivative Methods
+	
+	protected Exercise createExercise(final int id, RepetitionType type) 
+	{
+		Exercise exercise = new Exercise();
+		exercise.setId(id);
+		exercise.setName("Exercise name test");
+		exercise.setDescription("Description Exercise test");
+		exercise.setKcal(20);
+		exercise.setRepetitionType(type);
+		exercise.setBodyPart(BodyParts.ALL);
+
+		return exercise;
+	}
+
+	protected RoutineLine createRoutineLine(final int id, final Integer reps, final Double time, Exercise exercise) 
+	{
+		RoutineLine routineLine = new RoutineLine();
+		routineLine.setId(id);
+		routineLine.setReps(reps);
+		routineLine.setTime(time);
+		routineLine.setWeight(50.0);
+		routineLine.setSeries(5);
+		routineLine.setExercise(exercise);
+
+		return routineLine;
+	}
+
+	protected Routine createRoutine(Collection<RoutineLine> routinesLines) 
+	{
+		Routine routine = new Routine();
+		routine.setName("Routine Test");
+		routine.setDescription("Routine Description Test");
+		routine.setRepsPerWeek(5);
+		routine.setRoutineLine(routinesLines);
+
+		return routine;
+	}
+
+	protected Client createClient(final int id, final String username) 
+	{
+		Client client = new Client();
+		User user_client = new User();
+		user_client.setUsername(username);
+		user_client.setEnabled(true);
+		client.setUser(user_client);
+		client.setId(id);
+
+		return client;
+	}
+
+	protected Trainer createTrainer(String trainerUsername, Collection<Client> clients) 
+	{
+		Trainer trainer = new Trainer();
+		User user_trainer = new User();
+		user_trainer.setUsername(trainerUsername);
+		user_trainer.setEnabled(true);
+		trainer.setUser(user_trainer);
+		trainer.setClients(clients);
+
+		return trainer;
+	}
+
+	protected Training createTraining(final int id, final Client client, Collection<Routine> routines, final int DaysToFinishTraining) 
+	{
+		Calendar cal = Calendar.getInstance();
+
+		Training training = new Training();
+		training.setId(id);
+		training.setName("training 1");
+		training.setInitialDate(cal.getTime());
+
+		cal.add(Calendar.DAY_OF_MONTH, DaysToFinishTraining);
+		training.setEndDate(cal.getTime());
+		training.setDiet(null);
+		training.setRoutines(routines);
+
+		return training;
 	}
 }

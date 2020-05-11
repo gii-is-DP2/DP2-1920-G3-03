@@ -23,7 +23,6 @@ import org.springframework.samples.yogogym.service.exceptions.ChallengeWithInscr
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -67,7 +66,7 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("/admin/challenges/{challengeId}")
-	public String showChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, Model model) {
+	public String showChallengeByIdAdmin(@PathVariable("challengeId") int challengeId, ModelMap model) {
 
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 		model.addAttribute("challenge", challenge);
@@ -143,7 +142,20 @@ public class ChallengeController {
             	}
             	
             	Collection<Exercise> exercises = this.exerciseService.findAllExercise();
-    			model.addAttribute("exercises",exercises);
+    			Map<Integer,String> selectVals = new TreeMap<>();
+    			
+    			String value = "";
+    			for(Exercise e:exercises)
+    			{
+    				value = e.getName();
+    				
+    				if(e.getEquipment() != null)
+    					value = value.concat(", Equipment: "+e.getEquipment().getName());
+    				
+    				selectVals.put(e.getId(), value);
+    			}
+    			model.addAttribute("exercises",selectVals);
+    			
                 return "/admin/challenges/challengesCreateOrUpdate";
             }
 
@@ -152,7 +164,7 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("/admin/challenges/{challengeId}/edit")
-	public String initUpdateForm(@PathVariable("challengeId")int challengeId, Model model) {
+	public String initUpdateForm(@PathVariable("challengeId")int challengeId, ModelMap model) {
 		
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 		Collection<Exercise> exercises = this.exerciseService.findAllExercise();
@@ -221,7 +233,20 @@ public class ChallengeController {
             	}
             	
             	Collection<Exercise> exercises = this.exerciseService.findAllExercise();
-    			model.addAttribute("exercises",exercises);
+    			Map<Integer,String> selectVals = new TreeMap<>();
+    			
+    			String value = "";
+    			for(Exercise e:exercises)
+    			{
+    				value = e.getName();
+    				
+    				if(e.getEquipment() != null)
+    					value = value.concat(", Equipment: "+e.getEquipment().getName());
+    				
+    				selectVals.put(e.getId(), value);
+    			}
+    			model.addAttribute("exercises",selectVals);
+    			
                 return "/admin/challenges/challengesCreateOrUpdate";
             }
 
@@ -230,7 +255,7 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("admin/challenges/{challengeId}/delete")
-	public String deleteChallenge(@PathVariable("challengeId") int challengeId, Model model) {
+	public String deleteChallenge(@PathVariable("challengeId") int challengeId, ModelMap model) {
 		
 		Challenge challenge = challengeService.findChallengeById(challengeId);
 		try {
@@ -258,7 +283,7 @@ public class ChallengeController {
 	}
 	
 	@GetMapping("/client/{clientUsername}/challenges/{challengeId}")
-	public String showChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
+	public String showChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, ModelMap model) {	  
 
 		if(!isLoggedPrincipal(clientUsername))
 			return "exception";
@@ -291,7 +316,7 @@ public class ChallengeController {
 	
 
 	@GetMapping("/client/{clientUsername}/challenges/mine/{challengeId}")
-	public String showAndEditMyChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, Model model) {	  
+	public String showAndEditMyChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, ModelMap model) {	  
 
 		if(!isLoggedPrincipal(clientUsername))
 			return "exception";
@@ -315,8 +340,14 @@ public class ChallengeController {
 	private boolean isLoggedPrincipal(String Username) {
 		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String principalUsername = ((UserDetails)principal).getUsername();
+		String principalUsername;
+		if (principal instanceof UserDetails) {
+			principalUsername = ((UserDetails) principal).getUsername();
+		} else {
+			principalUsername = principal.toString();
+		}
 		
 		return principalUsername.trim().toLowerCase().equals(Username.trim().toLowerCase());
 	}
+	
 }

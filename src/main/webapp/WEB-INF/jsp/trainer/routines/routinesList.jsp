@@ -6,6 +6,15 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="routines">
+
+	<c:if test="${deleteRoutine != null}">
+		<div class="text-center alert alert-success" role="alert">
+			<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+	  		<span class="sr-only">Success:</span>
+   			${deleteRoutine}
+   		</div>
+	</c:if>
+
     <h2>All Routines</h2>
 
 	<c:forEach var="client" items="${trainer.clients}">
