@@ -10,29 +10,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-
-import javax.transaction.Transactional;
-
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Guild;
-import org.springframework.samples.yogogym.model.Routine;
-import org.springframework.samples.yogogym.model.RoutineLine;
-import org.springframework.samples.yogogym.model.Trainer;
-import org.springframework.samples.yogogym.model.Training;
-import org.springframework.samples.yogogym.model.User;
-import org.springframework.samples.yogogym.model.Enums.BodyParts;
-import org.springframework.samples.yogogym.model.Enums.RepetitionType;
 import org.springframework.samples.yogogym.service.GuildService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -144,24 +128,24 @@ public class GuildControllerE2ETest {
 				.andExpect(model().attributeExists("guild"));
 	}
 	
-	/*
+	
 	@WithMockUser(username = "client1", authorities = { "client" })
 	@Test
 	void testProcessUpdateGuildForm() throws Exception {
 		
-		String clientUsername = "client1";
-		Integer guildId = 1;
+		String clientUsername = "client2";
+		Integer guildId = 2;
 		Guild guild = createGuild(clientUsername);
-		
+		guild.setName("NameExample2");
 		mockMvc.perform(post("/client/{clientUsername}/guilds/{guildId}/edit",clientUsername, guildId).with(csrf())
-				.param("creator", clientUsername)
+				.param("creator", guild.getCreator())
 				.param("description", guild.getDescription())
 				.param("logo", guild.getLogo())
 				.param("name",guild.getName()))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/client/" + clientUsername + "/guilds/" + guildId));
 	}
-	*/
+	
 	
 	@WithMockUser(username = "client1", authorities = { "client" })
 	@Test
