@@ -1,6 +1,7 @@
 package org.springframework.samples.yogogym.model;
 
 import java.util.Collection;
+import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +15,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -26,12 +29,18 @@ public class Message extends BaseEntity{
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	@Valid
+	@NotNull
 	protected User user;
 	
 	@Column(name = "content")
 	@NotBlank
 	@Size(max=256)
 	protected String content;
+	
+	@Column(name = "created_at")
+	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
+	@NotNull
+	protected Date createdAt;
 	
 	@Column(name = "edited")
 	@NotNull
@@ -44,6 +53,7 @@ public class Message extends BaseEntity{
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "message_id")
 	@Valid
+	@NotNull
 	protected Collection<Message> answers;
 
 }

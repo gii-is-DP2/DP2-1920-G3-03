@@ -101,4 +101,5 @@ public class GuildService {
 		Collection<String> res = this.guildRepository.findAllGuildNames();
 		return res;		
 	}
+	
 }

@@ -21,4 +21,5 @@ public interface GuildRepository extends CrudRepository<Guild, String>{
 
 	@Query("select g.name from Guild g")
 	Collection<String> findAllGuildNames();
+	
 }

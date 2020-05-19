@@ -28,6 +28,7 @@ import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.User;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.GuildService;
+import org.springframework.samples.yogogym.service.MessageService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
@@ -62,6 +63,9 @@ public class GuildControllerTests {
 	
 	@MockBean
 	private TrainerService trainerService;
+	
+	@MockBean
+	private MessageService messageService;
 	
 	@Autowired
 	private MockMvc mockMvc;

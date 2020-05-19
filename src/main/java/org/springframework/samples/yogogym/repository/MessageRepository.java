@@ -14,5 +14,8 @@ public interface MessageRepository extends  CrudRepository<Message, String>{
 	@Query("SELECT message FROM Message message WHERE message.id=:id")
 	public Message findMessageById(@Param("id")int id);
 	
+	@Query("SELECT forum.id FROM Forum forum WHERE forum.guild.id=:guildId")
+	public int findForumIdByGuildId(@Param("guildId")int guildId);
+	
 }
 	

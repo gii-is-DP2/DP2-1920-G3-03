@@ -64,4 +64,10 @@ public class MessageService {
 		return res;		
 	}
 	
+	public int findForumIdByGuildId(int guildId) throws DataAccessException{
+		int res = this.messageRepository.findForumIdByGuildId(guildId);
+		
+		return res;
+	}
+	
 }
