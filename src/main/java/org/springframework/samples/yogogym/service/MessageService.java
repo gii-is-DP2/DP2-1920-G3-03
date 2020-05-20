@@ -17,6 +17,9 @@ package org.springframework.samples.yogogym.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Message;
@@ -39,35 +42,39 @@ public class MessageService {
 	public MessageService(MessageRepository messageRepository) {
 		this.messageRepository = messageRepository;
 	}
-	
+
 	@Transactional
 	public Collection<Message> findAllForumParentMessages(int forumId) throws DataAccessException {
-		
+
 		Collection<Message> messages = (Collection<Message>) this.messageRepository.findMessagesFromForumId(forumId);
-		
+
 		Collection<Message> res = new ArrayList<>();
-		
-		for(Message m : messages) {
-			if(m.getIsParent()) {
+
+		for (Message m : messages) {
+			if (m.getIsParent()) {
 				res.add(m);
 			}
 		}
+
+		//res = res.stream().sorted(Comparator.comparing(Message::getCreatedAt)).collect(Collectors.toCollection(null));
 		
 		return res;
 	}
-	
+
 	@Transactional
 	public Message findMessageFromId(int messageId) throws DataAccessException {
-		
+
 		Message res = this.messageRepository.findMessageById(messageId);
-		
-		return res;		
-	}
-	
-	public int findForumIdByGuildId(int guildId) throws DataAccessException{
-		int res = this.messageRepository.findForumIdByGuildId(guildId);
-		
+
 		return res;
 	}
-	
+
+	@Transactional
+	public void saveMessage(Message message) throws DataAccessException {
+		try {
+			this.messageRepository.save(message);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

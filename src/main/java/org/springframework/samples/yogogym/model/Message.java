@@ -29,7 +29,6 @@ public class Message extends BaseEntity{
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	@Valid
-	@NotNull
 	protected User user;
 	
 	@Column(name = "content")
@@ -39,21 +38,17 @@ public class Message extends BaseEntity{
 	
 	@Column(name = "created_at")
 	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
-	@NotNull
 	protected Date createdAt;
 	
 	@Column(name = "edited")
-	@NotNull
 	protected Boolean edited;
 	
 	@Column(name = "isParent")
-	@NotNull
 	protected Boolean isParent;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "message_id")
 	@Valid
-	@NotNull
 	protected Collection<Message> answers;
-
+	
 }
