@@ -326,6 +326,8 @@ INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,11);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (7,8);
 
 INSERT INTO forums(id,guild_id) VALUES (1,1);
+INSERT INTO forums(id,guild_id) VALUES (2,2);
+INSERT INTO forums(id,guild_id) VALUES (3,3);
 
 /*Primeros mensajes*/
 INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (1,1,null,'client1','Mensaje de prueba','2020-05-15 14:23:25',false,true);

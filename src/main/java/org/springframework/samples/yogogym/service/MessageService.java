@@ -56,7 +56,9 @@ public class MessageService {
 			}
 		}
 
-		//res = res.stream().sorted(Comparator.comparing(Message::getCreatedAt)).collect(Collectors.toCollection(null));
+		Comparator<Message> messageComparator = Comparator.comparing(Message::getCreatedAt).reversed();
+
+		res = res.stream().sorted(messageComparator).collect(Collectors.toList());
 		
 		return res;
 	}
