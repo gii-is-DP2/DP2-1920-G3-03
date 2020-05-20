@@ -66,8 +66,9 @@ public class MessageController {
 		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		Guild guild = this.guildService.findGuildById(guildId);
+		Forum forum = this.forumService.findForumByGuildId(guildId);
 		
-		if(!isLoggedUser(clientUsername)||client.getGuild().getId()!=guildId) {
+		if(!isLoggedUser(clientUsername)||client.getGuild().getId()!=guildId||!forum.getId().equals(forumId)) {
 			return "exception";
 		}
 		
@@ -85,8 +86,9 @@ public class MessageController {
 		@Valid Message message, Model model, BindingResult result) {
 		
 		Client client = this.clientService.findClientByUsername(clientUsername);
+		Forum forum = this.forumService.findForumByGuildId(guildId);
 		
-		if(!isLoggedUser(clientUsername)||client.getGuild().getId()!=guildId) {
+		if(!isLoggedUser(clientUsername)||client.getGuild().getId()!=guildId||!forum.getId().equals(forumId)) {
 			return "exception";
 		}
 		
@@ -98,18 +100,15 @@ public class MessageController {
 		}
 		else
 		{
-			
-			Forum f = this.forumService.findForumByGuildId(guildId);
-			
 			message.setAnswers(new ArrayList<>());
 			message.setCreatedAt(Calendar.getInstance().getTime());
 			message.setEdited(false);
 			message.setIsParent(true);
 			message.setUser(client.getUser());
 			
-			f.getMessages().add(message);
+			forum.getMessages().add(message);
 					
-			this.forumService.saveForum(f);
+			this.forumService.saveForum(forum);
 			
 			return "redirect:/client/"+clientUsername + "/guilds/" + guildId + "/forums/" + forumId;
 		}
@@ -119,11 +118,13 @@ public class MessageController {
 	@PostMapping("/client/{clientUsername}/guilds/{guildId}/forums/{forumId}/messages/{messageId}")
 	public String processCreateAnswer(@PathVariable("clientUsername") String clientUsername,
 		@PathVariable("guildId") int guildId, @PathVariable("forumId") int forumId, 
-		@PathVariable("messageId") String msgId, @Valid Message message, Model model, BindingResult result) {
+		@PathVariable("messageId") String msgId, @Valid Message answer, Model model, BindingResult result) {
 		
 		Client client = this.clientService.findClientByUsername(clientUsername);
+		Forum forum = this.forumService.findForumByGuildId(guildId);
+		Message message = this.messageService.findMessageFromId(Integer.valueOf(msgId));
 		
-		if(!isLoggedUser(clientUsername)||client.getGuild().getId()!=guildId) {
+		if(!isLoggedUser(clientUsername)||client.getGuild().getId()!=guildId||!forum.getId().equals(forumId)||!forum.getMessages().contains(message)||!message.getIsParent()) {
 			return "exception";
 		}
 		
@@ -135,17 +136,15 @@ public class MessageController {
 		}
 		else
 		{
-			Message m = this.messageService.findMessageFromId(Integer.valueOf(msgId));
-						
-			message.setAnswers(new ArrayList<>());
-			message.setCreatedAt(Calendar.getInstance().getTime());
-			message.setEdited(false);
-			message.setIsParent(false);
-			message.setUser(client.getUser());
+			answer.setAnswers(new ArrayList<>());
+			answer.setCreatedAt(Calendar.getInstance().getTime());
+			answer.setEdited(false);
+			answer.setIsParent(false);
+			answer.setUser(client.getUser());
 			
-			m.getAnswers().add(message);
+			message.getAnswers().add(answer);
 					
-			this.messageService.saveMessage(m);
+			this.messageService.saveMessage(message);
 			
 			return "redirect:/client/"+clientUsername + "/guilds/" + guildId + "/forums/" + forumId;
 		}
