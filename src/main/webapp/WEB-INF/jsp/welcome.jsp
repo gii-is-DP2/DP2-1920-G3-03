@@ -14,7 +14,9 @@
 				<div class="row">
 			<h2 class="text-center"> Kanye West: <c:out value="${quote.quote}"/> </h2>
 				</div> 
-
+				<div class = "row">
+			<h2 class = "text-center"> API SPOTIFY: <c:out value="${track.name}"/></h2>
+				</div>
         </div>
        
         <div class="container">
