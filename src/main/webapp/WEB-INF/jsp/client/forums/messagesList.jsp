@@ -15,31 +15,54 @@
 	</div>
 	
 	<c:forEach var="message" items="${messages}">
-	<div class="row">
-		<div id="${message.id}" class="" style="margin:0 auto; width:70%; padding:20px; background-color:#bdc3c7; padding-top:10px;">
-			
+	
+	<div>
+		<div id="${message.id}" style="margin:0 auto; width:70%; padding:10px; background-color:#bdc3c7;">	
 			<div>
 				<div style="padding: 10px; background-color:rgba(255,255,255,0.8); float:left; min-width:90%; max-width:90%; border-color: #3c6382; border-style: solid; border-width: 0px 0px 0px 10px; box-shadow: 5px 5px rgba(0,0,0,0.1);">
-					<p><b><c:out value="${message.user.username}"/></b><small style="float:right; margin-left:1em; color:rgba(0,0,0,0.6)"><c:out value="${message.createdAt}"/></small></p>
+					<p>
+						<b>
+							<c:out value="${message.user.username}"/>
+						</b>
+						
+						<small style="float:right; margin-left:1em; color:rgba(0,0,0,0.6)">
+							<c:out value="${message.createdAt}"/>
+						</small>
+					</p>
+					
 					<br>
-					<c:out value="${message.content}"/>
+					
+					<p style="word-break: break-all; word-wrap: wrap;">
+						<c:out value="${message.content}"/>
+					</p>
 				</div>
 				
-				<button id="answer${message.id}" style="display:block; float:right;" type="button" style="float:right" onclick="popUpAnswer(this)">Answer</button>
-			
+				<button id="answer${message.id}" style="display:block; float:right;" type="button" style="float:right" onclick="popUpAnswer(this)">Answer</button>		
+				
+				<div style="clear:both"></div>
+				
 			</div>
-			
-			<br>
-			<br>
-			<br>
-			<br>
 			
 			<ul id="${message.id}a" style="list-style-type:none;">
 				<c:forEach var="answer" items="${message.answers}">
-					<li style="background-color:rgba(255,255,255,0.8); margin:10px 0px; padding: 10px;  border-color:#833471; border-style: solid; border-width: 0px 0px 0px 10px;  box-shadow: 5px 5px rgba(0,0,0,0.1);">
-						<p><b><c:out value="${answer.user.username}"/></b><small style="float:right; margin-left:1em; color:rgba(0,0,0,0.6)"><c:out value="${answer.createdAt}"/></small></p>
+					<li style="background-color:rgba(255,255,255,0.8); margin:10px 0px; padding: 10px;  border-color:#833471; border-style: solid; border-width: 0px 0px 0px 10px;  box-shadow: 5px 5px rgba(0,0,0,0.1); max-width:100%;">
+						
+						<p>
+							<b>
+								<c:out value="${answer.user.username}"/>
+							</b>
+							
+							<small style="float:right; margin-left:1em; color:rgba(0,0,0,0.6)">
+								<c:out value="${answer.createdAt}"/>
+							</small>
+							
+						</p>
+						
 						<br>
-						<c:out value="${answer.content}"/>
+						<p style="word-break: break-all; word-wrap: wrap;">
+							<c:out value="${answer.content}"/>
+						</p>
+						
 					</li>
 				</c:forEach>
 			</ul>
@@ -52,16 +75,33 @@
 	<script>
 	
 		//Utils
+		
+		function checkCharacters(textarea,max)
+		{	
+			var newLines = textarea.value.match(/(\r\n|\n|\r)/g).length;
+			
+			if(textarea.value.length + newLines > max)
+				textarea.value = textarea.value.substring(0, max - newLines);	
+		}
+		
 		function prepareState(elem)
 		{
 			var textarea = $(elem).find("textarea");
-			var col = 0;
+			var count = 0;
 			
 			$(textarea).keyup(function(){
-				var l = $(this).val().length;
-				col = l +1;
-				$(elem).find("#charcterWrapper").text(l+"/256");
-				$(elem).find("#charcterWrapper").css('color',"rgb("+col+",0,0)");
+				
+				var x = $(textarea).val();
+				
+		        var newLines = x.match(/(\r\n|\n|\r)/g);
+		        var addition = 0;
+		        if (newLines != null) {
+		            addition = newLines.length;
+		        }
+				
+		        var count = x.length + addition
+		        $(elem).find('#charcterWrapper').text(count+"/256");
+		        $(elem).find("#charcterWrapper").css('color',"rgb("+count+",0,0)");				
 			});
 		}
 	
@@ -114,7 +154,7 @@
 			var node = document.createElement("DIV");
 			node.id = "node"+e.parentNode.parentNode.id;
 			node.style.margin = "10px 0px 0px 0px";
-			node.style.backgroundColor = "rgba(0,0,0,0.1)";
+			node.style.backgroundColor = "rgba(255,255,255,0.8)";
 			node.style.borderColor = "#805977"; 
 			node.style.borderStyle = "solid"; 
 			node.style.borderWidth = "0px 0px 0px 10px";
