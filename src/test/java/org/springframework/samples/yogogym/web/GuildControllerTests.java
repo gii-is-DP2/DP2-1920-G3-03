@@ -182,34 +182,34 @@ public class GuildControllerTests {
 				.andExpect(view().name("client/guilds/guildsDetails"));
 	}
 	//GOOD
-	@WithMockUser(username = "client2", authorities = {"client"})
+	@WithMockUser(username = "client4", authorities = {"client"})
 	@Test
 	void testInitCreateGuildForm() throws Exception{
 		
-		mockMvc.perform(get("/client/{clientUsername}/guilds/create", testClientUsername2))
+		mockMvc.perform(get("/client/{clientUsername}/guilds/create", testClientUsername4))
 		.andExpect(status().isOk())
 		.andExpect(view().name("client/guilds/guildsCreateOrUpdate"))
 		.andExpect(model().attributeExists("guild"));
 	}
 	//CREATE
-	@WithMockUser(username = "client2", authorities = {"client"})
+	@WithMockUser(username = "client4", authorities = {"client"})
 	@Test
 	void testProcessCreateGuildForm() throws Exception{
-		mockMvc.perform(post("/client/{clientUsername}/guilds/create", testClientUsername2)
+		mockMvc.perform(post("/client/{clientUsername}/guilds/create", testClientUsername4)
 				.with(csrf())
 				.param("name", "Guild Example")
 				.param("description", "This is an example")
 				.param("creator", "VictorM")
 				.param("logo", "https://omega2001.es/wp-content/uploads/2016/02/red-informatica-1080x675.jpg"))
 			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/client/"+testClientUsername2+"/guilds"));
+			.andExpect(view().name("redirect:/client/"+testClientUsername4+"/guilds"));
 	}
 	
-	@WithMockUser(username = "client2", authorities = {"client"})
+	@WithMockUser(username = "client4", authorities = {"client"})
 	@Test
 	void testProcessCreateGuildHasErrorEmptyParameters() throws Exception {
 		
-		mockMvc.perform(post("/client/{clientUsername}/guilds/create", testClientUsername2)
+		mockMvc.perform(post("/client/{clientUsername}/guilds/create", testClientUsername4)
 				.with(csrf())
 				.param("name", "")
 				.param("description", "")
