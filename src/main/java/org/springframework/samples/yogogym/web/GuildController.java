@@ -13,8 +13,11 @@ import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.ForumService;
 import org.springframework.samples.yogogym.service.GuildService;
 import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
+import org.springframework.samples.yogogym.service.exceptions.GuildNotCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -42,6 +45,10 @@ public class GuildController {
 	
 	@GetMapping("/client/{clientUsername}/guilds")
 	public String ClienGuildList(@PathVariable("clientUsername") String clientUsername, Model model) {
+		
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		Collection<Guild> allGuilds = this.guildService.findAllGuild();
 		
@@ -53,6 +60,10 @@ public class GuildController {
 	@GetMapping("/client/{clientUsername}/guilds/{guildId}")
 	public String ClientGuildDetails(@PathVariable("clientUsername") String clientUsername,
 			 @PathVariable("guildId") int guildId, Model model) {
+		
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 		Guild guild = this.guildService.findGuildById(guildId);
 		Collection<Client> clients = this.guildService.findAllClientesByGuild(guild);
 		Client client = this.clientService.findClientByUsername(clientUsername);
@@ -80,6 +91,9 @@ public class GuildController {
 	public String initGuildCreateForm(@PathVariable("clientUsername") String clientUsername,
 			final ModelMap model) {
 		
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 		Guild guild = new Guild();
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		guild.setCreator(clientUsername);
@@ -94,6 +108,9 @@ public class GuildController {
 	public String processGuildCreationForm(@Valid Guild guild,BindingResult result,
 			@PathVariable("clientUsername") String clientUsername, final ModelMap model) {
 
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 	
 		if (result.hasErrors()) {
@@ -106,7 +123,7 @@ public class GuildController {
 			
 			try {
 			client.setGuild(guild);
-			this.guildService.saveGuild(guild);
+			this.guildService.saveGuild(guild,client);
 			}catch(Exception ex){
 				if(ex instanceof GuildSameNameException) {
 					result.rejectValue("name", "required: ", "There is already a guild with that name");
@@ -114,6 +131,8 @@ public class GuildController {
 					result.rejectValue("creator", "required: ", "There is already a guild created by this creator");
 				}else if(ex instanceof GuildLogoException) {
 					result.rejectValue("logo", "required: ", "The link must start with https://");
+				}else if(ex instanceof GuildNotCreatorException) {
+					result.rejectValue("creator", "required: ", "The creator has to be the same as the user logged");
 				}
 				return "client/guilds/guildsCreateOrUpdate";
 			}
@@ -126,6 +145,9 @@ public class GuildController {
 	@GetMapping("client/{clientUsername}/guilds/{guildId}/edit")
 	public String initGuildEditForm(@PathVariable("clientUsername") String clientUsername,@PathVariable("guildId") int guildId,
 			final ModelMap model) {
+		
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
 	
 		Guild guild = this.guildService.findGuildById(guildId);
 		if(!guild.getCreator().equals(clientUsername)) 
@@ -143,10 +165,13 @@ public class GuildController {
 	public String processGuildEditForm(@PathVariable("clientUsername") String clientUsername,
 			@PathVariable("guildId") int guildId, @Valid Guild guild,  BindingResult result,ModelMap model) {
 		
-			
+			if(!isLoggedPrincipal(clientUsername))
+				return "exception";
+		
+			Client client = this.clientService.findClientByUsername(clientUsername);
 			if(result.hasErrors()) {
 				model.put("guild", guild);
-				Client client = this.clientService.findClientByUsername(clientUsername);
+				
 				model.addAttribute("client", client);
 				
 				return "client/guilds/guildsCreateOrUpdate";
@@ -154,13 +179,15 @@ public class GuildController {
 				try {
 					
 				guild.setId(guildId);
-				this.guildService.saveGuild(guild);
+				this.guildService.saveGuild(guild,client);
 				
 				}catch(Exception ex){
 					if(ex instanceof GuildSameNameException) {
 						result.rejectValue("name", "required: ", "There is already a guild with that name");	
 					}else if(ex instanceof GuildLogoException) {
 						result.rejectValue("logo", "required: ", "The link must start with https://");
+					}else if(ex instanceof GuildNotCreatorException) {
+						result.rejectValue("creator", "required: ", "You can't change the creator");
 					}
 					return "client/guilds/guildsCreateOrUpdate";
 				}
@@ -170,6 +197,9 @@ public class GuildController {
 	
 	@GetMapping("client/{clientUsername}/guilds/{guildId}/delete")
 	public String deleteGuild(@PathVariable("clientUsername") String clientUsername,@PathVariable("guildId") int guildId, RedirectAttributes redirectAttrs, Model model) {
+		
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
 		
 		Guild guild = this.guildService.findGuildById(guildId);
 		redirectAttrs.addFlashAttribute("deleteMessage", "The Guild was deleted successfully");
@@ -183,6 +213,9 @@ public class GuildController {
 	@GetMapping("client/{clientUsername}/guilds/{guildId}/join")
 	public String joinGuild(@PathVariable("clientUsername") String clientUsername, @PathVariable("guildId")int guildId, Model model){
 		
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 		Guild guild = this.guildService.findGuildById(guildId);
 		
 		this.guildService.joinGuild(clientUsername, guild);
@@ -193,6 +226,9 @@ public class GuildController {
 	@GetMapping("client/{clientUsername}/guilds/{guildId}/leave")
 	public String leaveGuild(@PathVariable("clientUsername") String clientUsername, @PathVariable("guildId")int guildId, Model model){
 	
+		if(!isLoggedPrincipal(clientUsername))
+			return "exception";
+		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		Guild guild = this.guildService.findGuildById(guildId);
 		if(!client.getGuild().equals(guild))
@@ -202,8 +238,7 @@ public class GuildController {
 		return "redirect:/client/{clientUsername}/guilds";
 	}
 	
-	Boolean checkGuildNotSameName(final Guild guild, Collection<Guild> guilds)
-	{
+	Boolean checkGuildNotSameName(final Guild guild, Collection<Guild> guilds){
 		Boolean res = true;		
 			
 		//Para Sprint 2 cambiar a un método de service y realziar respectivas pruebas
@@ -221,5 +256,18 @@ public class GuildController {
 		}
 
 		return res;
+	}
+	
+private boolean isLoggedPrincipal(String Username) {
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String principalUsername;
+		if (principal instanceof UserDetails) {
+			principalUsername = ((UserDetails) principal).getUsername();
+		} else {
+			principalUsername = principal.toString();
+		}
+		
+		return principalUsername.trim().toLowerCase().equals(Username.trim().toLowerCase());
 	}
 }

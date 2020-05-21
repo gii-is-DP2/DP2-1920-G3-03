@@ -16,6 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Forum;
 import org.springframework.samples.yogogym.model.Guild;
+import org.springframework.samples.yogogym.model.User;
 import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
@@ -64,9 +65,9 @@ public class GuildServiceTest {
 		int foundForums = forums.size();
 		
 		Guild guild = createGuildTesting();
-		
+		Client c = createClientTesting(guild.getCreator());
 		try {
-			this.guildService.saveGuild(guild);
+			this.guildService.saveGuild(guild,c);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -87,17 +88,17 @@ public class GuildServiceTest {
 		
 		Guild g1 = createGuildTesting();
 		Guild g2 = createGuildTesting();
-		
+		Client c = createClientTesting(g1.getCreator());
 		g1.setName("Name");
 		g2.setName("Name");
 		
 		try{
-		this.guildService.saveGuild(g1);
+		this.guildService.saveGuild(g1,c);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		Assertions.assertThrows(GuildSameNameException.class, () ->{
-			this.guildService.saveGuild(g2);
+			this.guildService.saveGuild(g2,c);
 		});	
 	}
 	
@@ -107,18 +108,18 @@ public class GuildServiceTest {
 		
 		Guild g1 = createGuildTesting();
 		Guild g2 = createGuildTesting();
-		
+		Client c = createClientTesting(g1.getCreator());
 		g1.setCreator("CarlosD");
 		g2.setCreator("CarlosD");
 		g2.setName("GymPrueba");
 		
 		try{
-			this.guildService.saveGuild(g1);
+			this.guildService.saveGuild(g1,c);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 			Assertions.assertThrows(GuildSameCreatorException.class, () ->{
-				this.guildService.saveGuild(g2);
+				this.guildService.saveGuild(g2,c);
 			});	
 	}
 	
@@ -127,10 +128,11 @@ public class GuildServiceTest {
 		
 	
 		Guild g1 = createGuildTesting();
+		Client c1 = createClientTesting(g1.getCreator());
 		g1.setLogo("EstaUrlEstaMal.com");
 				
 		Assertions.assertThrows(GuildLogoException.class, () ->{
-			this.guildService.saveGuild(g1);
+			this.guildService.saveGuild(g1,c1);
 		});
 	}
 	
@@ -218,6 +220,18 @@ public class GuildServiceTest {
 		guild.setLogo("https://i.blogs.es/fd396a/hook/450_1000.jpg");
 		
 		return guild;
+	}
+	
+	private Client createClientTesting(String clientUsername) {
+		
+		Client client = new Client();
+		
+		User user = new User();
+		user.setUsername(clientUsername);
+		user.setEnabled(true);
+		client.setUser(user);
+		
+		return client;
 	}
 	
 	

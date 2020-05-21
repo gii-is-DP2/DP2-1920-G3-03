@@ -129,7 +129,7 @@ public class GuildControllerE2ETest {
 	}
 	
 	
-	@WithMockUser(username = "client1", authorities = { "client" })
+	@WithMockUser(username = "client2", authorities = { "client" })
 	@Test
 	void testProcessUpdateGuildForm() throws Exception {
 		
