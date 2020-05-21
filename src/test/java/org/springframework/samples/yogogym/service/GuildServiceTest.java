@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.yogogym.model.Client;
+import org.springframework.samples.yogogym.model.Forum;
 import org.springframework.samples.yogogym.model.Guild;
 import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
@@ -32,6 +33,8 @@ public class GuildServiceTest {
 	protected GuildService guildService;
 	@Autowired
 	protected ClientService clientService;
+	@Autowired
+	protected ForumService forumService;
 	
 	
 	@Test
@@ -57,6 +60,9 @@ public class GuildServiceTest {
 	@Test
 	void shouldSaveGuild() {
 		
+		Collection<Forum> forums = this.forumService.findAllForums();
+		int foundForums = forums.size();
+		
 		Guild guild = createGuildTesting();
 		
 		try {
@@ -70,6 +76,9 @@ public class GuildServiceTest {
 		assertThat(guild.getName().equals("Programming 4ever"));
 		assertThat(guild.getDescription().equals("Best Programming Guild"));
 		assertThat(guild.getLogo().equals("https://i.blogs.es/fd396a/hook/450_1000.jpg"));
+		
+		Collection<Forum> allForums = this.forumService.findAllForums();
+		assertThat(allForums.size()).isEqualTo(foundForums+1);
 	}
 	
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
@@ -129,6 +138,8 @@ public class GuildServiceTest {
 	@Test
 	void shouldDeleteGuild() {
 		
+		Collection<Forum> forums = this.forumService.findAllForums();
+		int foundForums = forums.size();
 		
 		Collection<Guild> guilds = this.guildService.findAllGuild();
 		int foundBefore = guilds.size();
@@ -143,6 +154,9 @@ public class GuildServiceTest {
 		int foundAfter = guilds.size();
 		
 		assertThat(foundBefore).isGreaterThan(foundAfter);
+		
+		Collection<Forum> allForums = this.forumService.findAllForums();
+		assertThat(allForums.size()).isEqualTo(foundForums-1);
 	}
 	
 	@Test 
