@@ -324,6 +324,19 @@ INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,10);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,11);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (7,8);
 
+INSERT INTO forums(id,guild_id) VALUES (1,1);
+INSERT INTO forums(id,guild_id) VALUES (2,2);
+INSERT INTO forums(id,guild_id) VALUES (3,3);
+
+/*Primeros mensajes*/
+INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (1,1,null,'client1','Mensaje de prueba','2020-05-15 14:23:25',false,true);
+INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (2,1,null,'client1','Mensaje de prueba 2','2020-05-16 14:23:25',false,true);
+INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (3,1,null,'client1','Mensaje de prueba 3','2020-05-17 14:23:25',false,true);
+
+/*Respuestas*/
+INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (4,1,1,'client5','Respuesta de prueba','2020-05-15 15:23:25',false,false);
+INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (5,1,1,'client5','Respuesta de prueba 2','2020-05-15 16:23:25',false,false);
+INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (6,1,2,'client5','Respuesta de prueba 3','2020-05-16 15:23:25',false,false);
 
 /* DIET */
 
