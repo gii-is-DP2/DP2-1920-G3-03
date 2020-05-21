@@ -35,11 +35,15 @@ public class WelcomeController {
 			ResponseEntity<Quote> response = restTemplate.exchange("https://api.kanye.rest/", HttpMethod.GET, entity, Quote.class);
 			quote.setQuote(response.getBody().getQuote());			
 			model.addAttribute("quote", quote);
+			model.addAttribute("apiFunctional", true);
+
 			
 		} catch (Exception e) {
 			
 			quote.setQuote("Just because our API fails doesnt mean you can fail too");
 			model.addAttribute("quote", quote);
+			model.addAttribute("apiFunctional", false);
+
 		}
 
 		return "welcome";
