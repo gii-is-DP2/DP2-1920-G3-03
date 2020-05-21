@@ -11,6 +11,13 @@
     <h1 style="text-align: center">${guild.name} Forum</h1>
 	
 	<div style="margin:0 auto; width:70%; margin-bottom: 15px;">
+		<c:if test="${wrongMessage != null}">
+			<div class="text-center alert alert-danger" role="alert">
+				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		  		<span class="sr-only">Error:</span>
+	   			${wrongMessage}
+	   		</div>
+		</c:if>
 		<button style="display:block; margin:0 auto" onclick="createMessage(this)">Create Message!</button>
 	</div>
 	
