@@ -9,7 +9,7 @@ import io.gatling.jdbc.Predef._
 class HU01_CreateChallenge extends Simulation {
 
 	val httpProtocol = http
-		.baseUrl("http://www.dp2.com")
+		.baseUrl("http://www.yogogym.com")
 		.inferHtmlResources(BlackList(""".*.css""", """.*.js""", """.*.ico""", """.*.png""", """.*.jpg""", """.*.jpeg""", """.*.woff"""), WhiteList())
 		.acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
 		.acceptEncodingHeader("gzip, deflate")
@@ -106,13 +106,13 @@ class HU01_CreateChallenge extends Simulation {
 		.pause(40)
 	}
 
-	val createChallengeSuccessfulScn = scenario("CreateChallengeSuccessful").exec(
+	val createChallengeSuccessfulScn = scenario("Create Challenge Successful").exec(
 																Home.home,
 																Login.login,
 																ListChallenges.listChallenges,
 																NewChallengeSuccessful.newChallengeSuccessful)
 																
-	val createChallengeErrorScn = scenario("CreateChallengeError").exec(
+	val createChallengeErrorScn = scenario("Create Challenge Error").exec(
 																Home.home,
 																Login.login,
 																ListChallenges.listChallenges,
@@ -120,8 +120,8 @@ class HU01_CreateChallenge extends Simulation {
 	
 
 	setUp(
-		createChallengeSuccessfulScn.inject(rampUsers(100000) during (10 seconds)),
-		createChallengeErrorScn.inject(rampUsers(100000) during (10 seconds))
+		createChallengeSuccessfulScn.inject(rampUsers(3500) during (100 seconds)), // 7000, 100
+		createChallengeErrorScn.inject(rampUsers(3500) during (100 seconds))       // 7000, 100
 		).protocols(httpProtocol)
 		 .assertions(
 					global.responseTime.max.lt(5000),    
