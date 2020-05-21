@@ -164,7 +164,7 @@ public class GuildControllerTests {
 		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}/leave",testClientUsername2,testGuildId1);
 	}
 	//HU5 - CRUD DE GREMIOS
-	@WithMockUser(value = "CarlosD", authorities = {"client"})
+	@WithMockUser(value = "client1", authorities = {"client"})
 	@Test
 	void testListGuildsClient() throws Exception {
 		mockMvc.perform(get("/client/{clientUsername}/guilds", testClientUsername1)).andExpect(status().isOk()).andExpect(model().attributeExists("allGuilds"))
@@ -182,7 +182,7 @@ public class GuildControllerTests {
 				.andExpect(view().name("client/guilds/guildsDetails"));
 	}
 	//GOOD
-	@WithMockUser(username = "client1", authorities = {"client"})
+	@WithMockUser(username = "client2", authorities = {"client"})
 	@Test
 	void testInitCreateGuildForm() throws Exception{
 		
@@ -192,7 +192,7 @@ public class GuildControllerTests {
 		.andExpect(model().attributeExists("guild"));
 	}
 	//CREATE
-	@WithMockUser(username = "client1", authorities = {"client"})
+	@WithMockUser(username = "client2", authorities = {"client"})
 	@Test
 	void testProcessCreateGuildForm() throws Exception{
 		mockMvc.perform(post("/client/{clientUsername}/guilds/create", testClientUsername2)
@@ -223,9 +223,9 @@ public class GuildControllerTests {
 			.andExpect(view().name("client/guilds/guildsCreateOrUpdate"));
 	}
 	
-	 private void processCreateError(String errorField, String name, String description, String creator, String logo) throws Exception {
+	 private void processCreateError(String errorField, String name, String description, String creator, String logo, String clientUsername) throws Exception {
 			
-	   		mockMvc.perform(post("/client/{clientUsername}/guilds/create", testClientUsername4)
+	   		mockMvc.perform(post("/client/{clientUsername}/guilds/create", clientUsername)
 					.with(csrf())
 					.param("name", name)
 					.param("description", description)
@@ -241,7 +241,7 @@ public class GuildControllerTests {
 	@Test
 	void testProcessCreateGuildHasErrorSameCreator() throws Exception {
 		doThrow(new GuildSameCreatorException()).when(this.guildService).saveGuild(Mockito.any(Guild.class),Mockito.any(Client.class));
-		processCreateError("creator", "Bad Creator Create", "This is a bad url create", "client1", "https.//goofdUrl.jpg");
+		processCreateError("creator", "Bad Creator Create", "This is a bad url create", "client1", "https.//goofdUrl.jpg","client1");
 	
 	}
 	
@@ -249,15 +249,15 @@ public class GuildControllerTests {
 	@Test
 	void testProcessCreateGuildHasErrorSameName() throws Exception {
 		doThrow(new GuildSameNameException()).when(this.guildService).saveGuild(Mockito.any(Guild.class),Mockito.any(Client.class));
-		processCreateError("name", "Connecting", "This is a bad name create", "client4", "https.//goofdUrl.jpg");
+		processCreateError("name", "Connecting", "This is a bad name create", "client4", "https.//goofdUrl.jpg","client4");
 	
 	}
 	
-	@WithMockUser(username = "client1", authorities = {"client"})
+	@WithMockUser(username = "client4", authorities = {"client"})
 	@Test
 	void testProcessCreateGuildHasErrorBadURL() throws Exception {
 		doThrow(new GuildLogoException()).when(this.guildService).saveGuild(Mockito.any(Guild.class), Mockito.any(Client.class));
-		processCreateError("logo", "Bad Url Create", "This is a bad url create", "client4", "badUrl.jpg");
+		processCreateError("logo", "Bad Url Create", "This is a bad url create", "client4", "badUrl.jpg","client4");
 		
 	}
 	//DELETE
