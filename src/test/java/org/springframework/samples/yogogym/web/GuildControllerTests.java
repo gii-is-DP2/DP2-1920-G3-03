@@ -23,6 +23,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
 import org.springframework.samples.yogogym.model.Client;
+import org.springframework.samples.yogogym.model.Forum;
 import org.springframework.samples.yogogym.model.Guild;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.User;
@@ -53,6 +54,7 @@ public class GuildControllerTests {
 	private static final String testClientUsername2 = "client3";
 	private static final String testTrainerUsername= "trainer1";
 	private static final int testTrainerId = 1;
+	private static final int forumId = 1;
 	
 	
 	@MockBean
@@ -113,6 +115,11 @@ public class GuildControllerTests {
 		clients.add(client1);
 		clients.add(client2);
 		
+		Forum forum = new Forum();
+		forum.setId(forumId);
+		forum.setMessages(new ArrayList<>());
+		forum.setGuild(guild1);
+		
 		Trainer trainer = new Trainer();
 		User user_trainer = new User();
 		user_trainer.setUsername(testTrainerUsername);
@@ -128,6 +135,7 @@ public class GuildControllerTests {
 		given(this.clientService.findClientById(testClientId2)).willReturn(client2);
 		given(this.clientService.findClientByUsername(testClientUsername2)).willReturn(client2);
 		given(this.trainerService.findTrainer(testTrainerUsername)).willReturn(trainer);
+		given(this.forumService.findForumIdByGuildId(testGuildId1)).willReturn(forumId);
 	}
 	
 	void testWrongAuth(int mode,String path,Object... uriVars) throws Exception {
@@ -161,11 +169,12 @@ public class GuildControllerTests {
 	@WithMockUser(value = "client1", authorities = {"client"})
 	@Test
 	void testShowGuildByIdClient() throws Exception {
-		mockMvc.perform(get("/client/{clientUsername}/guilds/{guildId}",testClientUsername1, testClientId1)).andExpect(status().isOk())
+		mockMvc.perform(get("/client/{clientUsername}/guilds/{guildId}",testClientUsername1, testGuildId1)).andExpect(status().isOk())
 				.andExpect(model().attribute("guild", hasProperty("name", is("Connecting"))))
 				.andExpect(model().attribute("guild", hasProperty("description", is("We are connecting the world"))))
 				.andExpect(model().attribute("guild", hasProperty("creator", is("client1"))))
 				.andExpect(model().attribute("guild", hasProperty("logo", is("https://omega2001.es/wp-content/uploads/2016/02/red-informatica-1080x675.jpg"))))
+				.andExpect(model().attribute("forumId", is(forumId)))
 				.andExpect(view().name("client/guilds/guildsDetails"));
 	}
 	//GOOD
