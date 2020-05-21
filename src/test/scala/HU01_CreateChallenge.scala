@@ -120,8 +120,8 @@ class HU01_CreateChallenge extends Simulation {
 	
 
 	setUp(
-		createChallengeSuccessfulScn.inject(rampUsers(1000) during (10 seconds)),
-		createChallengeErrorScn.inject(rampUsers(1000) during (10 seconds))
+		createChallengeSuccessfulScn.inject(rampUsers(100000) during (10 seconds)),
+		createChallengeErrorScn.inject(rampUsers(100000) during (10 seconds))
 		).protocols(httpProtocol)
 		 .assertions(
 					global.responseTime.max.lt(5000),    
