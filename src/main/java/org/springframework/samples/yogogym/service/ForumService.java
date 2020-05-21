@@ -15,6 +15,8 @@
  */
 package org.springframework.samples.yogogym.service;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Forum;
@@ -36,6 +38,13 @@ public class ForumService {
 	@Autowired
 	public ForumService(ForumRepository forumRepository) {
 		this.forumRepository = forumRepository;
+	}
+	
+	@Transactional
+	public Collection<Forum> findAllForums() throws DataAccessException {
+		Collection<Forum> res = this.forumRepository.findAllForums();
+		
+		return res;
 	}
 	
 	@Transactional
@@ -63,4 +72,5 @@ public class ForumService {
 		
 		return res;
 	}
+
 }

@@ -20,12 +20,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class MessageController {
@@ -49,14 +51,18 @@ public class MessageController {
 	}
 	
 	@GetMapping("/client/forums/messagesCreateForm")
-	public String getMessageForm()
-	{		
+	public String initCreateMessage(ModelMap model)
+	{	
+		Message message = new Message();
+		model.addAttribute("message", message);
 		return "client/forums/messagesCreateForm";
 	}
 
 	@GetMapping("/client/forums/messagesAnswerForm")
-	public String getAnswerForm()
-	{		
+	public String initCreateAnswer(ModelMap model)
+	{	
+		Message answer = new Message();
+		model.addAttribute("answer", answer);
 		return "client/forums/messagesAnswerForm";
 	}
 	
@@ -81,9 +87,8 @@ public class MessageController {
 	}
 	
 	@PostMapping("/client/{clientUsername}/guilds/{guildId}/forums/{forumId}/messages/create")
-	public String processCreateMessage(@PathVariable("clientUsername") String clientUsername,
-		@PathVariable("guildId") int guildId, @PathVariable("forumId") int forumId, 
-		@Valid Message message, Model model, BindingResult result) {
+	public String processCreateMessage(@Valid Message message, BindingResult result, @PathVariable("clientUsername") String clientUsername,
+		@PathVariable("guildId") int guildId, @PathVariable("forumId") int forumId, ModelMap model, RedirectAttributes redirectAttrs) {
 		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		Forum forum = this.forumService.findForumByGuildId(guildId);
@@ -94,8 +99,7 @@ public class MessageController {
 		
 		if(result.hasErrors())
 		{
-			model.addAttribute("Error");
-			
+			redirectAttrs.addFlashAttribute("wrongMessage", "The message wasn't valid");
 			return "redirect:/client/"+clientUsername + "/guilds/" + guildId + "/forums/" + forumId;
 		}
 		else
@@ -116,9 +120,9 @@ public class MessageController {
 	}
 	
 	@PostMapping("/client/{clientUsername}/guilds/{guildId}/forums/{forumId}/messages/{messageId}")
-	public String processCreateAnswer(@PathVariable("clientUsername") String clientUsername,
+	public String processCreateAnswer(@Valid Message answer, BindingResult result, @PathVariable("clientUsername") String clientUsername,
 		@PathVariable("guildId") int guildId, @PathVariable("forumId") int forumId, 
-		@PathVariable("messageId") String msgId, @Valid Message answer, Model model, BindingResult result) {
+		@PathVariable("messageId") String msgId, ModelMap model, RedirectAttributes redirectAttrs) {
 		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		Forum forum = this.forumService.findForumByGuildId(guildId);
@@ -130,8 +134,7 @@ public class MessageController {
 		
 		if(result.hasErrors())
 		{
-			model.addAttribute("Error");
-			
+			redirectAttrs.addFlashAttribute("wrongMessage", "The message wasn't valid");
 			return "redirect:/client/"+clientUsername + "/guilds/" + guildId + "/forums/" + forumId;
 		}
 		else
@@ -143,7 +146,11 @@ public class MessageController {
 			answer.setUser(client.getUser());
 			
 			message.getAnswers().add(answer);
-					
+			
+			forum.getMessages().add(answer);
+			
+			this.forumService.saveForum(forum);
+			
 			this.messageService.saveMessage(message);
 			
 			return "redirect:/client/"+clientUsername + "/guilds/" + guildId + "/forums/" + forumId;
