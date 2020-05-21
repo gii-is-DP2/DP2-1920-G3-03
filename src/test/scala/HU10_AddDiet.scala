@@ -6,7 +6,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.jdbc.Predef._
 
-class HU10AddDiet extends Simulation {
+class HU10_AddDiet extends Simulation {
 
 	val httpProtocol = http
 		.baseUrl("http://www.yogogym.com")

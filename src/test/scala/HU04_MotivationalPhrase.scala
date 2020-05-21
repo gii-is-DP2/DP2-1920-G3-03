@@ -27,12 +27,12 @@ class HU04_MotivationalPhrase extends Simulation {
 	}
 
 
-	object LoginC1{
-		val loginC1 = exec(http("Login C1")
+	object Login{
+		val login = exec(http("Login")
 			.get("/login")
 			.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(10)
-		.exec(http("Logged C1")
+		.exec(http("Logged")
 			.post("/login")
 			.headers(headers_2)
 			.formParam("username", "client1")
@@ -41,33 +41,14 @@ class HU04_MotivationalPhrase extends Simulation {
 		).pause(15)
 	}
 
-	object LoginC2{
-		val loginC2 = exec(http("Login C2")
-			.get("/login")
-			.check(css("input[name=_csrf]", "value").saveAs("stoken"))
-		).pause(10)
-		.exec(http("Logged C2")
-			.post("/login")
-			.headers(headers_2)
-			.formParam("username", "client2")
-			.formParam("password", "client1999")
-			.formParam("_csrf", "${stoken}")
-		).pause(15)
-	}
-
 	
-	val motivationalPhraseOkClient1Scn = scenario("Motivational Phrase Ok Client1").exec(
-																Home.home,
-																LoginC1.loginC1)
-																
-	val motivationalPhraseOkClient2Scn = scenario("Motivational Phrase Ok Client2").exec(
-																Home.home,
-																LoginC2.loginC2)
+	val motivationalPhraseOkScn = scenario("Motivational Phrase Ok Client1").exec(
+																			Home.home,
+																			Login.login)
 
 
 	setUp(
-		motivationalPhraseOkClient1Scn.inject(rampUsers(7) during (1 seconds)), // 7000, 100
-		motivationalPhraseOkClient2Scn.inject(rampUsers(7) during (1 seconds))       // 7000, 100
+		motivationalPhraseOkScn.inject(rampUsers(7) during (1 seconds)) // 7000, 100
 		).protocols(httpProtocol)
 		 .assertions(
 					global.responseTime.max.lt(5000),    

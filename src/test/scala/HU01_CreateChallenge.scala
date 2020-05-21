@@ -19,17 +19,9 @@ class HU01_CreateChallenge extends Simulation {
 	val headers_0 = Map("Upgrade-Insecure-Requests" -> "1")
 
 	val headers_2 = Map(
-		"Origin" -> "http://www.dp2.com",
+		"Origin" -> "http://www.yogoym.com",
 		"Upgrade-Insecure-Requests" -> "1")
-
-	val headers_5 = Map(
-		"Accept" -> "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-		"Accept-Encoding" -> "gzip",
-		"Accept-Language" -> "en-US,en;q=0.5",
-		"Connection" -> "close",
-		"User-Agent" -> "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36 AceStream/3.1.16.3")
-
-    val uri2 = "http://ts.acestream.net/init"
+		
 
 	object Home {
 		val home = exec(http("Home")

@@ -46,19 +46,13 @@ class HU06_DashboardGeneral extends Simulation {
 		.pause(13)
 	}
 
-	val dashboardGeneral1Scn = scenario("Dashboard General 1").exec(
-																Home.home,
-																Login.login,
-																ShowDashboardGeneral.showDashboardGeneral)
-																
-	val dashboardGeneral2Scn = scenario("Dashboard General 2").exec(
+	val showDashboardGeneralScn = scenario("Show Dashboard General").exec(
 																Home.home,
 																Login.login,
 																ShowDashboardGeneral.showDashboardGeneral)
 
 	setUp(
-		dashboardGeneral1Scn.inject(rampUsers(7) during (1 seconds)),    // 7000, 100
-		dashboardGeneral2Scn.inject(rampUsers(7) during (1 seconds))    // 7000, 100
+		showDashboardGeneralScn.inject(rampUsers(7) during (1 seconds))    // 7000, 100
 		).protocols(httpProtocol)
 		 .assertions(
 					global.responseTime.max.lt(5000),    
