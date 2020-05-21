@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({"id", "name", "preview_url", "uri" })
-public class Example {
+public class Track {
 
 	@JsonProperty("id")
 	private String id;

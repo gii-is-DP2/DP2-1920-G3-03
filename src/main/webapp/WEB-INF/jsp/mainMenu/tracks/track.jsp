@@ -8,5 +8,7 @@
 <yogogym:layout pageName="tracks">
     <h2>Tracks</h2>
     <c:out value="${track.name}"/>
+    <c:out value="${track.uri}"/>
+    <c:out value="${track.id}"/>
 
 </yogogym:layout>
