@@ -1,6 +1,7 @@
 package org.springframework.samples.yogogym.web;
 
 import java.util.Collection;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.samples.yogogym.model.Guild;
 import org.springframework.samples.yogogym.model.Inscription;
 import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.service.ClientService;
+import org.springframework.samples.yogogym.service.ForumService;
 import org.springframework.samples.yogogym.service.GuildService;
 import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
@@ -28,11 +30,13 @@ public class GuildController {
 
 	private final ClientService clientService;
 	private final GuildService guildService;
+	private final ForumService forumService;
 	
 	@Autowired
-	public GuildController(final ClientService clientService, final GuildService guildService) {
+	public GuildController(final ClientService clientService, final GuildService guildService,final ForumService forumService) {
 		this.clientService = clientService;
 		this.guildService = guildService;
+		this.forumService = forumService;
 	}
 	
 	
@@ -61,11 +65,13 @@ public class GuildController {
 				}
 			}
 		}
+		int forumId = this.forumService.findForumIdByGuildId(guildId);
 		
 		model.addAttribute("client",client);
 		model.addAttribute("clients",clients.size());
 		model.addAttribute("points",points);
 		model.addAttribute("guild", guild);
+		model.addAttribute("forumId",forumId);
 
 		return "client/guilds/guildsDetails";
 	}
