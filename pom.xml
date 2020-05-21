@@ -31,6 +31,7 @@
         <spring-format.version>0.0.19</spring-format.version>
         <selenium.version>3.141.59</selenium.version>
 
+        <rest-assured.version>4.2.0</rest-assured.version>
     </properties>
 
     <dependencies>
@@ -156,6 +157,18 @@
             <artifactId>selenium-support</artifactId>
             <version>${selenium.version}</version><!--$NO-MVN-MAN-VER$-->
         </dependency>
+        	<dependency>
+    		<groupId>io.rest-assured</groupId>
+    		<artifactId>rest-assured</artifactId>
+    		<version>${rest-assured.version}</version>
+    		<scope>test</scope>
+		</dependency>		
+		<dependency>
+    		<groupId>io.rest-assured</groupId>
+    		<artifactId>json-path</artifactId>
+    		<version>${rest-assured.version}</version>
+    		<scope>test</scope>
+		</dependency>
         <!-- Development tools -->
         <dependency>
             <groupId>org.projectlombok</groupId>
