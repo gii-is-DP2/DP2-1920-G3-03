@@ -1,6 +1,5 @@
 package org.springframework.samples.yogogym.ui.training;
 
-import java.util.regex.Pattern;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
@@ -8,10 +7,8 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -24,8 +21,6 @@ public class UpdateTrainingLongerThan90DaysUITest {
   private int port;
   
   private WebDriver driver;
-  private String baseUrl;
-  private boolean acceptNextAlert = true;
   private StringBuffer verificationErrors = new StringBuffer();
   private Calendar calEnd = Calendar.getInstance();
   private SimpleDateFormat formatterInput = new SimpleDateFormat("yyyy/MM/dd");
@@ -33,7 +28,6 @@ public class UpdateTrainingLongerThan90DaysUITest {
   @BeforeEach
   public void setUp() throws Exception {
     driver = new FirefoxDriver();
-    baseUrl = "https://www.google.com/";
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
   }
 
@@ -54,39 +48,6 @@ public class UpdateTrainingLongerThan90DaysUITest {
     }
   }
 
-  private boolean isElementPresent(By by) {
-    try {
-      driver.findElement(by);
-      return true;
-    } catch (NoSuchElementException e) {
-      return false;
-    }
-  }
-
-  private boolean isAlertPresent() {
-    try {
-      driver.switchTo().alert();
-      return true;
-    } catch (NoAlertPresentException e) {
-      return false;
-    }
-  }
-
-  private String closeAlertAndGetItsText() {
-    try {
-      Alert alert = driver.switchTo().alert();
-      String alertText = alert.getText();
-      if (acceptNextAlert) {
-        alert.accept();
-      } else {
-        alert.dismiss();
-      }
-      return alertText;
-    } finally {
-      acceptNextAlert = true;
-    }
-  }
-  
   private void as(String username) {
 	  driver.get("http://localhost:" + port);
 	  driver.findElement(By.linkText("Login")).click();
