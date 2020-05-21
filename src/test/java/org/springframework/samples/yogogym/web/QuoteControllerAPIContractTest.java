@@ -1,12 +1,7 @@
 package org.springframework.samples.yogogym.web;
 
 import static io.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.lessThan;
-import static org.mockito.ArgumentMatchers.notNull;
-
-import java.util.concurrent.TimeUnit;
+import static org.hamcrest.Matchers.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +20,7 @@ public class QuoteControllerAPIContractTest {
 			.statusCode(200)
 		.and()
 		  	.assertThat()
-	      		.body("quote", notNull());
+	      		.body("quote", notNullValue());
 		
 	}	
 }
