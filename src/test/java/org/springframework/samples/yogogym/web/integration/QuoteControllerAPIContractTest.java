@@ -1,4 +1,4 @@
-package org.springframework.samples.yogogym.web;
+package org.springframework.samples.yogogym.web.integration;
 
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.*;
