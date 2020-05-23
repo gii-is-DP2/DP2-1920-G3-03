@@ -36,6 +36,11 @@
 	<span>My Training</span>
 </yogogym:menuItem>
 
+<yogogym:menuItem active="${name eq 'myTrainings'}" url="/client/${clientUsername}/diets" title="My Diets">
+	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+	<span>My Diets</span>
+</yogogym:menuItem>
+
 <yogogym:menuItem active="${name eq 'newChallenges'}" url="/client/${clientUsername}/challenges" title="New Challenges">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>New Challenges</span>

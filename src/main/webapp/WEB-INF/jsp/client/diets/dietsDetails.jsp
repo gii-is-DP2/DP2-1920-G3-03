@@ -7,11 +7,7 @@
 
 <yogogym:layout pageName="diets">
 
-	<spring:url value="/trainer/${trainerUsername}/clients/{clientId}" var="clientUrl">
-		<spring:param name="clientId" value="${client.id}"/>
-	</spring:url>
-	<h2>Trainer: Diet Details of <a href="${fn:escapeXml(clientUrl)}"><c:out value="${client.firstName} ${client.lastName}"/></a></h2>
-	<br>	
+
 	<h3>Client params: </h3>
 	<table class="table table-striped">
 			<thead>
