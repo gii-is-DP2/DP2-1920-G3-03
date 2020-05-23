@@ -85,7 +85,7 @@
 		
 		function checkCharacters(textarea,max)
 		{	
-			var newLines = textarea.value.match(/(\r\n|\n|\r)/g).length;
+			var newLines = textarea.value.match(/(\r\n|\n|\r)/g) == null ? 0 : textarea.value.match(/(\r\n|\n|\r)/g).length;
 			
 			if(textarea.value.length + newLines > max)
 				textarea.value = textarea.value.substring(0, max - newLines);	
@@ -171,7 +171,7 @@
 				
 			$(node).load("/client/forums/messagesAnswerForm", function(){
 				
-				var formCont = node.querySelector('#message');
+				var formCont = node.querySelector('#answer');
 				prepareState(formCont);
 				
 			});
