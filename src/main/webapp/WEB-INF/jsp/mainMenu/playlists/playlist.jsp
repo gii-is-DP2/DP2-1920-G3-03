@@ -6,9 +6,15 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="tracks">
-    <h2>Tracks</h2>
-    <h3> <c:out value="${track.name}"/> </h3>
-    <p><c:out value="${track.uri}"/></p>
-    <p><c:out value="${track.previewUrl}"/></p>
-   
+    <h2>Playlist</h2>
+    <h3> <c:out value="${playlist.name}"/> </h3>
+    <p><c:out value="${playlist.uri}"/></p>
+    <%-- <p><c:out value="${playlist.previewUrl}"/></p> --%>
+    <c:forEach var="item" items="${playlist.tracks.items}">
+        <h2>Track</h2>
+        <h3><c:out value="${item.track.name}"/> </h3>
+        <p><c:out value="${item.track.uri}"/></p>
+        <p><c:out value="${item.track.previewUrl}"/></p>
+    </c:forEach>
+
 </yogogym:layout>

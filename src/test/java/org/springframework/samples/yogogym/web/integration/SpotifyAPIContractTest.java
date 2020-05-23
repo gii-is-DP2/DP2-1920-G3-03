@@ -15,11 +15,11 @@ import org.junit.jupiter.api.Test;
 import lombok.extern.java.Log;
 
 @Log
-public class SpotifyAPITest {
+public class SpotifyAPIContractTest {
 	private String idTrack = "1MMhI6ISQt0UOVtU6DoAtE";
-	private String token = "BQDCwOvL443WoLzCK-CMxfE14ZuTIWVBUJUhnsq7y3yUhIqeMjbW5L_8ItpG7G--dzXNel2mPPEhpbRgTPEDVihvS3ogKoB_POtEu1GmuHBf-NK6xgK5ljvQU8gLR9yIsyqyIz49vjEFkHRXyUMu";
+	private String token = "BQBAYSOagTA5zrFwrZekUASYJBuzjTdES1BrJoG-NUYkUYmHE42zlrma3mt2xOAKAVnopP4CORCY5Lxs7PDavQZheP-VEyIDXM5vs5HpRXNfal_0eqPrJxPw5AHWqImGOmMlPukh9YY9PVpMzoso";
     @Test
-    public void ReturnTrack() {
+    public void returnTrack() {
     	given().auth().oauth2(token).
         when()
             .get("https://api.spotify.com/v1/tracks/"+idTrack)
