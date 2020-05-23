@@ -6,7 +6,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.jdbc.Predef._
 
-class HU06_DashboardGeneral extends Simulation {
+class HU04_MotivationalPhrase extends Simulation {
 
 	val httpProtocol = http
 		.baseUrl("http://www.yogogym.com")
@@ -26,6 +26,7 @@ class HU06_DashboardGeneral extends Simulation {
 		.pause(8)
 	}
 
+
 	object Login{
 		val login = exec(http("Login")
 			.get("/login")
@@ -34,25 +35,20 @@ class HU06_DashboardGeneral extends Simulation {
 		.exec(http("Logged")
 			.post("/login")
 			.headers(headers_2)
-			.formParam("username", "admin1")
-			.formParam("password", "admin1999")
+			.formParam("username", "client1")
+			.formParam("password", "client1999")
 			.formParam("_csrf", "${stoken}")
 		).pause(15)
 	}
 
-	object ShowDashboardGeneral{
-		val showDashboardGeneral = exec(http("Show Dashboard General")
-			.get("/admin/dashboardGeneral"))
-		.pause(13)
-	}
+	
+	val motivationalPhraseOkScn = scenario("Motivational Phrase Ok Client1").exec(
+																			Home.home,
+																			Login.login)
 
-	val showDashboardGeneralScn = scenario("Show Dashboard General").exec(
-																Home.home,
-																Login.login,
-																ShowDashboardGeneral.showDashboardGeneral)
 
 	setUp(
-		showDashboardGeneralScn.inject(rampUsers(7) during (1 seconds))    // 7000, 100
+		motivationalPhraseOkScn.inject(rampUsers(10000) during (60 seconds)) // 1100, 40
 		).protocols(httpProtocol)
 		 .assertions(
 					global.responseTime.max.lt(5000),    

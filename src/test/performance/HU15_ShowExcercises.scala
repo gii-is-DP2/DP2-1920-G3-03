@@ -6,7 +6,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.jdbc.Predef._
 
-class HU22_ChallengeClasification extends Simulation {
+class HU15_ShowExcercises extends Simulation {
 
 	val httpProtocol = http
 		.baseUrl("http://www.yogogym.com")
@@ -22,70 +22,79 @@ class HU22_ChallengeClasification extends Simulation {
 		"Origin" -> "http://www.yogogym.com",
 		"Upgrade-Insecure-Requests" -> "1")
 
+	val headers_5 = Map("Accept" -> "image/webp,*/*")
 
 
 	object Home {
 		val home = exec(http("Home")
 			.get("/")
 			.headers(headers_0))
-		.pause(8)
+		.pause(9)
 	}
-	
+
 	object Login{
 		val loginClient1 = exec(http("Login Client 1")
 			.get("/login")
 			.headers(headers_0)
 			.check(css("input[name=_csrf]", "value").saveAs("stoken"))
-		).pause(3)
+		).pause(4)
 		.exec(http("Logged Client 1")
 			.post("/login")
 			.headers(headers_2)
 			.formParam("username", "client1")
 			.formParam("password", "client1999")
 			.formParam("_csrf", "${stoken}")
-		).pause(10)
+		).pause(11)
 
-		val loginClient3 = exec(http("Login Client 3")
+		val loginClient2 = exec(http("Login Client 2")
 			.get("/login")
 			.headers(headers_0)
 			.check(css("input[name=_csrf]", "value").saveAs("stoken"))
-		).pause(3)
-		.exec(http("Logged Client 3")
+		).pause(4)
+		.exec(http("Logged Client 2")
 			.post("/login")
 			.headers(headers_2)
-			.formParam("username", "client3")
+			.formParam("username", "client2")
 			.formParam("password", "client1999")
 			.formParam("_csrf", "${stoken}")
-		).pause(10)
+		).pause(11)
 	}
-
-	object ShowDashboardClassification{
-		val showDashboardClassificationNoCompleted = exec(http("Show Dashboard Classification No Completed")
-			.get("/client/client1/clasification")
+	
+	object ListExercises{
+		val listExercises = exec(http("List Exercises")
+			.get("/mainMenu/exercises")
 			.headers(headers_0))
-		.pause(17)
+		.pause(23)
+	}	
 
-		val showDashboardClassificationCompleted = exec(http("Show Dashboard Classification Completed")
-			.get("/client/client3/clasification")
+	object ShowExercise{
+		val showExercise = exec(http("Show Exercise")
+			.get("/mainMenu/exercises/6")
 			.headers(headers_0))
-		.pause(17)
+		.pause(15)
+
+		val showExerciseNotExisting = exec(http("Show Exercise Not Existing")
+			.get("/mainMenu/exercises/1000")
+			.headers(headers_0))
+		.pause(15)
 	}
-
-
-	val challengeClasificationNoCompletedScn = scenario("Challenge Clasification No Completed").exec(
-																								Home.home,
-																								Login.loginClient1,
-																								ShowDashboardClassification.showDashboardClassificationNoCompleted)
+		
+	val showExercisesScn = scenario("Show Exercises").exec(
+																Home.home,
+																Login.loginClient1,
+																ListExercises.listExercises,
+																ShowExercise.showExercise)
 																
-	val challengeClasificationCompletedScn = scenario("Challenge Clasification Completed").exec(
-																							Home.home,
-																							Login.loginClient3,
-																							ShowDashboardClassification.showDashboardClassificationCompleted)
+	val showExerciseNotExistingScn = scenario("Show Exercise Not Existing").exec(
+																Home.home,
+																Login.loginClient2,
+																ListExercises.listExercises,
+																ShowExercise.showExerciseNotExisting)
 	
 
 	setUp(
-		challengeClasificationNoCompletedScn.inject(rampUsers(35) during (1 seconds)), // 7000, 100
-		challengeClasificationCompletedScn.inject(rampUsers(35) during (1 seconds))    // 7000, 100
+		showExercisesScn.inject(rampUsers(8000) during (100 seconds)),         // 12000, 100
+		showExerciseNotExistingScn.inject(rampUsers(300) during (20 seconds))   // 500, 20
 		).protocols(httpProtocol)
 		 .assertions(
 					global.responseTime.max.lt(5000),    

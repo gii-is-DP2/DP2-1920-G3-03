@@ -112,14 +112,14 @@ class HU11_DietManagement extends Simulation {
 																
 	val manageDietT2NotHisClientScn = scenario("Manage Diet T2 Not His Client").exec(
 																				Home.home,
-																				Login.loginTrainer1,
+																				Login.loginTrainer2,
 																				ListDietManagement.listDietManagementT2,
 																				ShowDiet.showDietT2Error)
 	
 
 	setUp(
-		manageDietT1Scn.inject(rampUsers(35) during (1 seconds)),               // 7000, 100
-		manageDietT2NotHisClientScn.inject(rampUsers(10) during (1 seconds))    // 7000, 100
+		manageDietT1Scn.inject(rampUsers(3500) during (100 seconds)),               // 9000, 100
+		manageDietT2NotHisClientScn.inject(rampUsers(200) during (50 seconds))    // 500, 50
 		).protocols(httpProtocol)
 		 .assertions(
 					global.responseTime.max.lt(5000),    

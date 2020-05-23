@@ -144,8 +144,8 @@ class HU21_ParticipateChallenge extends Simulation {
 	
 
 	setUp(
-		inscribeAndSubmitChallengeClientScn.inject(rampUsers(35) during (1 seconds)), // 7000, 100
-		evaluateChallengeAdminScn.inject(rampUsers(35) during (1 seconds))            // 7000, 100
+		inscribeAndSubmitChallengeClientScn.inject(rampUsers(1) during (1 seconds)), // 4000, 100
+		evaluateChallengeAdminScn.inject(rampUsers(1000) during (50 seconds))            // 4000, 100
 		).protocols(httpProtocol)
 		 .assertions(
 					global.responseTime.max.lt(5000),    

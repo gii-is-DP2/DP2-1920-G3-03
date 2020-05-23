@@ -40,39 +40,31 @@ class HU02_DashboardChallenges extends Simulation {
 		).pause(15)
 	}
 
-	object ShowDashboardChallenges{
-		val showDashboardChallenges = exec(http("Show Dashboard Challenges")
-			.get("/admin/dashboardChallenges/0"))
-		.pause(13)
-	}
-
 	object ShowDashboardCompletedChallenges{
 		val showDashboardCompletedChallenges = exec(http("Show Dashboard Completed Challenges")
 			.get("/admin/dashboardChallenges/1?month=1"))
 		.pause(15)
 	}
 	
-	object ShowDashboardNoCompletedChallenges{
-		val showDashboardNoCompletedChallenges = exec(http("Show Dashboard No Completed Challenges")
-			.get("/admin/dashboardChallenges/10?month=10"))
+	object ShowDashboardNoChallenges{
+		val showDashboardNoChallenges = exec(http("Show Dashboard No Completed Challenges")
+			.get("/admin/dashboardChallenges/7?month=7"))
 		.pause(7)
 	}
 
 	val dashboardCompletedChallengesScn = scenario("Dashboard Completed Challenges").exec(
 																Home.home,
 																Login.login,
-																ShowDashboardChallenges.showDashboardChallenges,
 																ShowDashboardCompletedChallenges.showDashboardCompletedChallenges)
 																
 	val dashboardNoCompletedChallengesScn = scenario("Dashboard No Completed Challenges").exec(
 																Home.home,
 																Login.login,
-																ShowDashboardChallenges.showDashboardChallenges,
-																ShowDashboardNoCompletedChallenges.showDashboardNoCompletedChallenges)
+																ShowDashboardNoChallenges.showDashboardNoChallenges)
 
 	setUp(
-		dashboardCompletedChallengesScn.inject(rampUsers(7000) during (100 seconds)),    // 7000, 100
-		dashboardNoCompletedChallengesScn.inject(rampUsers(7000) during (100 seconds))   // 7000, 100
+		dashboardCompletedChallengesScn.inject(rampUsers(6000) during (100 seconds)),    // 12000, 80
+		dashboardNoCompletedChallengesScn.inject(rampUsers(700) during (50 seconds))   // 1000, 50
 		).protocols(httpProtocol)
 		 .assertions(
 					global.responseTime.max.lt(5000),    
