@@ -20,10 +20,7 @@ import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.User;
-import org.springframework.samples.yogogym.model.Enums.BodyParts;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
-import org.springframework.samples.yogogym.model.Enums.Intensity;
-import org.springframework.samples.yogogym.model.Enums.RepetitionType;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
@@ -439,7 +436,8 @@ class TrainingControllerTests {
 					hasProperty("id", equalTo(CLIENT1_TRAINING1_ID)),hasProperty("name", is("Training 1")),
 					hasProperty("initialDate", equalTo(initialDate)),hasProperty("endDate", equalTo(endDate)),
 					hasProperty("editingPermission", equalTo(EditingPermission.TRAINER)),hasProperty("author", is(TRAINER1_USERNAME)),
-					hasProperty("diet", nullValue()),hasProperty("routines", is(new ArrayList<>()))))))))));
+					hasProperty("diet", nullValue()),hasProperty("routines", is(new ArrayList<>()))))))))))
+				.andExpect(view().name("trainer/trainings/trainingsList"));
 	}			
 	
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
@@ -907,7 +905,8 @@ class TrainingControllerTests {
 				.andExpect(model().attribute("trainings", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_TRAINING1_ID)),
 					hasProperty("name", is("Training 1")),hasProperty("initialDate", equalTo(initialDate)),hasProperty("endDate", equalTo(endDate)),
 					hasProperty("editingPermission", equalTo(EditingPermission.TRAINER)),hasProperty("author", is(TRAINER1_USERNAME)),
-					hasProperty("diet", nullValue()),hasProperty("routines", is(new ArrayList<>()))))));
+					hasProperty("diet", nullValue()),hasProperty("routines", is(new ArrayList<>()))))))
+				.andExpect(view().name("client/trainings/trainingsList"));
 	}	
 	
 	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})

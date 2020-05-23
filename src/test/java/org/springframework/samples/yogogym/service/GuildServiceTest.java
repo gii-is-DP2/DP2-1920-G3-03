@@ -14,7 +14,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.yogogym.model.Client;
+import org.springframework.samples.yogogym.model.Forum;
 import org.springframework.samples.yogogym.model.Guild;
+import org.springframework.samples.yogogym.model.User;
 import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
@@ -32,6 +34,8 @@ public class GuildServiceTest {
 	protected GuildService guildService;
 	@Autowired
 	protected ClientService clientService;
+	@Autowired
+	protected ForumService forumService;
 	
 	
 	@Test
@@ -57,10 +61,13 @@ public class GuildServiceTest {
 	@Test
 	void shouldSaveGuild() {
 		
-		Guild guild = createGuildTesting();
+		Collection<Forum> forums = this.forumService.findAllForums();
+		int foundForums = forums.size();
 		
+		Guild guild = createGuildTesting();
+		Client c = createClientTesting(guild.getCreator());
 		try {
-			this.guildService.saveGuild(guild);
+			this.guildService.saveGuild(guild,c);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -70,6 +77,9 @@ public class GuildServiceTest {
 		assertThat(guild.getName().equals("Programming 4ever"));
 		assertThat(guild.getDescription().equals("Best Programming Guild"));
 		assertThat(guild.getLogo().equals("https://i.blogs.es/fd396a/hook/450_1000.jpg"));
+		
+		Collection<Forum> allForums = this.forumService.findAllForums();
+		assertThat(allForums.size()).isEqualTo(foundForums+1);
 	}
 	
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
@@ -78,17 +88,17 @@ public class GuildServiceTest {
 		
 		Guild g1 = createGuildTesting();
 		Guild g2 = createGuildTesting();
-		
+		Client c = createClientTesting(g1.getCreator());
 		g1.setName("Name");
 		g2.setName("Name");
 		
 		try{
-		this.guildService.saveGuild(g1);
+		this.guildService.saveGuild(g1,c);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		Assertions.assertThrows(GuildSameNameException.class, () ->{
-			this.guildService.saveGuild(g2);
+			this.guildService.saveGuild(g2,c);
 		});	
 	}
 	
@@ -98,18 +108,18 @@ public class GuildServiceTest {
 		
 		Guild g1 = createGuildTesting();
 		Guild g2 = createGuildTesting();
-		
+		Client c = createClientTesting(g1.getCreator());
 		g1.setCreator("CarlosD");
 		g2.setCreator("CarlosD");
 		g2.setName("GymPrueba");
 		
 		try{
-			this.guildService.saveGuild(g1);
+			this.guildService.saveGuild(g1,c);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 			Assertions.assertThrows(GuildSameCreatorException.class, () ->{
-				this.guildService.saveGuild(g2);
+				this.guildService.saveGuild(g2,c);
 			});	
 	}
 	
@@ -118,10 +128,11 @@ public class GuildServiceTest {
 		
 	
 		Guild g1 = createGuildTesting();
+		Client c1 = createClientTesting(g1.getCreator());
 		g1.setLogo("EstaUrlEstaMal.com");
 				
 		Assertions.assertThrows(GuildLogoException.class, () ->{
-			this.guildService.saveGuild(g1);
+			this.guildService.saveGuild(g1,c1);
 		});
 	}
 	
@@ -129,6 +140,8 @@ public class GuildServiceTest {
 	@Test
 	void shouldDeleteGuild() {
 		
+		Collection<Forum> forums = this.forumService.findAllForums();
+		int foundForums = forums.size();
 		
 		Collection<Guild> guilds = this.guildService.findAllGuild();
 		int foundBefore = guilds.size();
@@ -143,6 +156,9 @@ public class GuildServiceTest {
 		int foundAfter = guilds.size();
 		
 		assertThat(foundBefore).isGreaterThan(foundAfter);
+		
+		Collection<Forum> allForums = this.forumService.findAllForums();
+		assertThat(allForums.size()).isEqualTo(foundForums-1);
 	}
 	
 	@Test 
@@ -204,6 +220,18 @@ public class GuildServiceTest {
 		guild.setLogo("https://i.blogs.es/fd396a/hook/450_1000.jpg");
 		
 		return guild;
+	}
+	
+	private Client createClientTesting(String clientUsername) {
+		
+		Client client = new Client();
+		
+		User user = new User();
+		user.setUsername(clientUsername);
+		user.setEnabled(true);
+		client.setUser(user);
+		
+		return client;
 	}
 	
 	

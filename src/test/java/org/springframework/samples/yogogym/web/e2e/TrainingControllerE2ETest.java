@@ -26,9 +26,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
-import org.springframework.samples.yogogym.service.RoutineService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
@@ -295,17 +293,13 @@ public class TrainingControllerE2ETest {
 					hasProperty("initialDate", hasToString("2020-01-01 00:00:00.0")),hasProperty("endDate", hasToString("2020-01-14 00:00:00.0")),
 					hasProperty("editingPermission", equalTo(EditingPermission.TRAINER)),hasProperty("author", is(TRAINER1_USERNAME)),
 					hasProperty("diet", hasProperty("name",is("Dieta 1"))),
-					hasProperty("routines", allOf(hasItem(hasProperty("name",is("Cardio"))),hasItem(hasProperty("name",is("Brazos")))))))))))));
+					hasProperty("routines", allOf(hasItem(hasProperty("name",is("Cardio"))),hasItem(hasProperty("name",is("Brazos")))))))))))))
+				.andExpect(view().name("trainer/trainings/trainingsList"));
 	}	
 
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
 	@Test
 	void testTrainerTrainingDetails() throws Exception {
-		
-		Training training = this.trainingService.findTrainingById(CLIENT1_TRAINING1_ID);
-		
-		
-		
 		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID))
 		 		.andExpect(status().isOk())
 		 		.andExpect(model().attributeExists("client"))
@@ -811,7 +805,8 @@ public class TrainingControllerE2ETest {
 					hasProperty("endDate", hasToString("2020-01-14 00:00:00.0")),
 					hasProperty("editingPermission", equalTo(EditingPermission.TRAINER)),hasProperty("author", is(TRAINER1_USERNAME)),
 					hasProperty("diet", hasProperty("name",is("Dieta 1"))),
-					hasProperty("routines", allOf(hasItem(hasProperty("name",is("Cardio"))),hasItem(hasProperty("name",is("Brazos")))))))));
+					hasProperty("routines", allOf(hasItem(hasProperty("name",is("Cardio"))),hasItem(hasProperty("name",is("Brazos")))))))))
+				.andExpect(view().name("client/trainings/trainingsList"));
 	}	
 	
 	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
