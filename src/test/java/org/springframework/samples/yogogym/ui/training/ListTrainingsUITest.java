@@ -31,7 +31,96 @@ public class ListTrainingsUITest {
   public void testListTrainingsUI() throws Exception {
     as("trainer1");
     accessListTrainings();
-    listTrainingsRequiredInfoShown();
+	try {
+		assertEquals("All Trainings", driver.findElement(By.xpath("//h2")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Client Martin Antonio Lera ( marantle@yogogym.com )", driver.findElement(By.xpath("//h3")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Entrenamiento1", driver.findElement(By.linkText("Entrenamiento1")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Entrenamiento1 (COMPLETED)", driver.findElement(By.xpath("//div/div/div/ul/li")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Entrenamiento2", driver.findElement(By.linkText("Entrenamiento2")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Entrenamiento2 (COMPLETED)", driver.findElement(By.xpath("//div/div/div/ul/li[2]")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Test", driver.findElement(By.linkText("Test")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Test (ON GOING)", driver.findElement(By.xpath("//div/ul/li[3]")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Client Federico Javier Saco ( fejasa@yogogym.com )", driver.findElement(By.xpath("//div[2]/h3")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Entrenamiento3", driver.findElement(By.linkText("Entrenamiento3")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Entrenamiento3 (COMPLETED)", driver.findElement(By.xpath("//div/div/div[2]/ul/li")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Client Carmelina Esteso Rodríguez ( caresro@yogogym.com )", driver.findElement(By.xpath("//div[3]/h3")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Entrenamiento2", driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento2')])[2]")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Entrenamiento2 (COMPLETED)", driver.findElement(By.xpath("//div[3]/ul/li")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Client Sofia Victoria Obeso ( soviob@yogogym.com )", driver.findElement(By.xpath("//div[4]/h3")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Entrenamiento3", driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento3')])[2]")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Entrenamiento3 (COMPLETED)", driver.findElement(By.xpath("//div[4]/ul/li")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
+	try {
+		assertEquals("Entrenamiento1 (ON GOING)", driver.findElement(By.xpath("//div[4]/ul/li[2]")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
   }
 
   @AfterEach
@@ -64,96 +153,4 @@ public class ListTrainingsUITest {
 	  driver.findElement(By.linkText("Training Management")).click();
   }
   
-  private void listTrainingsRequiredInfoShown() {
-	  try {
-	      assertEquals("All Trainings", driver.findElement(By.xpath("//h2")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Client Martin Antonio Lera ( marantle@yogogym.com )", driver.findElement(By.xpath("//h3")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Entrenamiento1", driver.findElement(By.linkText("Entrenamiento1")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Entrenamiento1 (COMPLETED)", driver.findElement(By.xpath("//div/div/div/ul/li")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Entrenamiento2", driver.findElement(By.linkText("Entrenamiento2")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Entrenamiento2 (COMPLETED)", driver.findElement(By.xpath("//div/div/div/ul/li[2]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Test", driver.findElement(By.linkText("Test")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Test (ON GOING)", driver.findElement(By.xpath("//div/ul/li[3]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Client Federico Javier Saco ( fejasa@yogogym.com )", driver.findElement(By.xpath("//div[2]/h3")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Entrenamiento3", driver.findElement(By.linkText("Entrenamiento3")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Entrenamiento3 (COMPLETED)", driver.findElement(By.xpath("//div/div/div[2]/ul/li")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Client Carmelina Esteso Rodríguez ( caresro@yogogym.com )", driver.findElement(By.xpath("//div[3]/h3")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Entrenamiento2", driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento2')])[2]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Entrenamiento2 (COMPLETED)", driver.findElement(By.xpath("//div[3]/ul/li")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Client Sofia Victoria Obeso ( soviob@yogogym.com )", driver.findElement(By.xpath("//div[4]/h3")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Entrenamiento3", driver.findElement(By.xpath("(//a[contains(text(),'Entrenamiento3')])[2]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Entrenamiento3 (COMPLETED)", driver.findElement(By.xpath("//div[4]/ul/li")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Entrenamiento1 (ON GOING)", driver.findElement(By.xpath("//div[4]/ul/li[2]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-  }
 }

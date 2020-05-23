@@ -36,7 +36,11 @@ public class CreateTrainingEndBeforeInitUITest {
   public void testCreateTrainingEndBefireInitUI() throws Exception {
     as("trainer1");
     createTrainingEndBeforeInit();
-    errorsShown();
+    try {
+    	assertEquals("The end date must be after the initial date", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
+    } catch (Error e) {
+        verificationErrors.append(e.toString());
+    }
   }
 
   @AfterEach
@@ -77,12 +81,5 @@ public class CreateTrainingEndBeforeInitUITest {
 	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calEnd.getTime()));
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
-  
-  private void errorsShown() {
-	    try {
-	        assertEquals("The end date must be after the initial date", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
-	      } catch (Error e) {
-	        verificationErrors.append(e.toString());
-	      }
-  }
+
 }

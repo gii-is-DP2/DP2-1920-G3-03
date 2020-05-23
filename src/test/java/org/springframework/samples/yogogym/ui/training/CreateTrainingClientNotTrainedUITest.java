@@ -31,7 +31,11 @@ public class CreateTrainingClientNotTrainedUITest {
   public void testCreateTrainingClientNotTrainedUI() throws Exception {
     as("trainer1");
     accessCreateTrainingClientNotTrained();
-    exceptionViewShown();
+    try {
+    	assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
+	} catch (Error e) {
+		verificationErrors.append(e.toString());
+	}
   }
 
   @AfterEach
@@ -62,12 +66,5 @@ public class CreateTrainingClientNotTrainedUITest {
   private void accessCreateTrainingClientNotTrained() {
 	  driver.get("http://localhost:" + port + "/trainer/trainer1/clients/3/trainings/create");
   }
-  
-  private void exceptionViewShown() {
-	  try {
-	      assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
-	  } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	  }
-  }
+
 }

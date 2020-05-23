@@ -31,7 +31,11 @@ public class DeleteTrainingNotBeingAuthorUITest {
   public void testDeleteTrainingNotBeingAuthorUI() throws Exception {
     as("trainer1");
     accessDeleteTrainingNotBeingAuthor();
-    exceptionViewShown();
+    try {
+    	assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
   }
 
   @AfterEach
@@ -63,11 +67,4 @@ public class DeleteTrainingNotBeingAuthorUITest {
 	  driver.get("http://localhost:" + port + "/trainer/trainer1/clients/6/trainings/11/delete");
   }
   
-  private void exceptionViewShown() {
-	  try {
-	      assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
-	  } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	  }
-  }
 }

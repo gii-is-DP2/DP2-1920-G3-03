@@ -42,7 +42,13 @@ public class UpdateTrainingIncludingOtherTrainingUITest {
     as("trainer1");
     accessUpdateView();
     updateTrainingIncludingFutureTraining();
-    errorsShown();
+    calInit.add(Calendar.DAY_OF_MONTH, 14);
+	calEnd.add(Calendar.DAY_OF_MONTH, 21);
+	try {
+		assertEquals("The training cannot be in a period which includes another training (The other training is from " + formatterDetails.format(calInit.getTime()) + " to " + formatterDetails.format(calEnd.getTime()) + ")", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
   }
 
   @AfterEach
@@ -86,13 +92,4 @@ public class UpdateTrainingIncludingOtherTrainingUITest {
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
-  private void errorsShown() {
-	  calInit.add(Calendar.DAY_OF_MONTH, 14);
-	  calEnd.add(Calendar.DAY_OF_MONTH, 21);
-	  try {
-	      assertEquals("The training cannot be in a period which includes another training (The other training is from " + formatterDetails.format(calInit.getTime()) + " to " + formatterDetails.format(calEnd.getTime()) + ")", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-  }
 }

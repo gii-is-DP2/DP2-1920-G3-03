@@ -39,7 +39,11 @@ public class CreateTrainingInitInTrainingUITest {
   public void testCreateTrainingInitInTrainingUI() throws Exception {
     as("trainer1");
     createTrainingInitInTraining();
-    errorsShown();
+    try {
+    	assertEquals("The training cannot start in a period with other training (The other training is from 2020-05-16 to 2020-05-30)", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[2]/div/span[2]")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
   }
 
   @AfterEach
@@ -79,14 +83,6 @@ public class CreateTrainingInitInTrainingUITest {
 	  driver.findElement(By.id("endDate")).clear();
 	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calEnd.getTime()));
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
-  }
-  
-  private void errorsShown() {
-	  try {
-	      assertEquals("The training cannot start in a period with other training (The other training is from 2020-05-16 to 2020-05-30)", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[2]/div/span[2]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
   }
  
 }

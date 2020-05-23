@@ -36,7 +36,11 @@ public class UpdateTrainingLongerThan90DaysUITest {
     as("trainer1");
     accessUpdateView();
     updateTrainingLongerThan90Days();
-    errorsShown();
+    try {
+    	assertEquals("The training cannot be longer than 90 days", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
   }
 
   @AfterEach
@@ -81,11 +85,4 @@ public class UpdateTrainingLongerThan90DaysUITest {
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
-  private void errorsShown() {
-	  try {
-	      assertEquals("The training cannot be longer than 90 days", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-  }
 }

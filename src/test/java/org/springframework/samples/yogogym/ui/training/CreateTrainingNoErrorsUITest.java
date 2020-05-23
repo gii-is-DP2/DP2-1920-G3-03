@@ -40,7 +40,61 @@ public class CreateTrainingNoErrorsUITest {
   public void testCreateTrainingNoErrorsUI() throws Exception {
     as("trainer1");
     createTrainingWithoutErrors();
-    trainingCreatedSuccessfully();
+    try {
+    	assertEquals("Name: Entrenamiento nuevo", driver.findElement(By.xpath("//h3")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
+	try {
+	    assertEquals("Starts: " + formatterDetails.format(calInit.getTime()) + " 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
+	try {
+	    assertEquals("Ends: " + formatterDetails.format(calEnd.getTime()) + " 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
+	try {
+	    assertEquals("Editing Permission: TRAINER", driver.findElement(By.xpath("//p[3]")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
+	try {
+	    assertEquals("Edit Training", driver.findElement(By.linkText("Edit Training")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
+	try {
+	    assertEquals("Delete Training", driver.findElement(By.linkText("Delete Training")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
+	try {
+	    assertEquals("Copy Training", driver.findElement(By.linkText("Copy Training")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
+	try {
+	    assertEquals("Routines", driver.findElement(By.xpath("//h3[2]")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
+	try {
+	    assertEquals("Add Routine", driver.findElement(By.linkText("Add Routine")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
+	try {
+	    assertEquals("Diet", driver.findElement(By.xpath("//h3[4]")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
+	try {
+	    assertEquals("Add Diet", driver.findElement(By.linkText("Add Diet")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	};
   }
 
   @AfterEach
@@ -81,62 +135,5 @@ public class CreateTrainingNoErrorsUITest {
 	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calEnd.getTime()));
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
-  
-  private void trainingCreatedSuccessfully() {
-	  try {
-	      assertEquals("Name: Entrenamiento nuevo", driver.findElement(By.xpath("//h3")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Starts: " + formatterDetails.format(calInit.getTime()) + " 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Ends: " + formatterDetails.format(calEnd.getTime()) + " 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	        assertEquals("Editing Permission: TRAINER", driver.findElement(By.xpath("//p[3]")).getText());
-	      } catch (Error e) {
-	        verificationErrors.append(e.toString());
-	      }
-	    try {
-	      assertEquals("Edit Training", driver.findElement(By.linkText("Edit Training")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Delete Training", driver.findElement(By.linkText("Delete Training")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Copy Training", driver.findElement(By.linkText("Copy Training")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Routines", driver.findElement(By.xpath("//h3[2]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Add Routine", driver.findElement(By.linkText("Add Routine")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Diet", driver.findElement(By.xpath("//h3[4]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Add Diet", driver.findElement(By.linkText("Add Diet")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-  }
+ 
 }

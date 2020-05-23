@@ -39,7 +39,11 @@ public class CreateTrainingEndInTrainingUITest {
   public void testCreateTrainingEndInTrainingUI() throws Exception {
 	  as("trainer1");
 	  createTrainingEndInTraining();
-	  errorsShown();
+	  try {
+		  assertEquals("The training cannot end in a period with other training (The other training is from 2020-06-06 to 2020-06-13)", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
+	  } catch (Error e) {
+	      verificationErrors.append(e.toString());
+	  }
   }
 
   @AfterEach
@@ -82,11 +86,4 @@ public class CreateTrainingEndInTrainingUITest {
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
-  private void errorsShown() {
-	  try {
-	      assertEquals("The training cannot end in a period with other training (The other training is from 2020-06-06 to 2020-06-13)", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-  }
 }

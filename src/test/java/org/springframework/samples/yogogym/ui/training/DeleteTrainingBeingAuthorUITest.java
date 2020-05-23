@@ -34,7 +34,12 @@ public class DeleteTrainingBeingAuthorUITest {
   public void testDeleteTrainingBeingAuthorUI() throws Exception {
     as("trainer1");
     accessShowDetailsTrainingClientTrained();
-    trainingDeletedSuccessfully();
+    driver.findElement(By.linkText("Delete Training")).click();
+    try {
+    	assertEquals("The training was deleted successfully", driver.findElement(By.xpath("//body/div/div/div/p")).getText());
+    } catch (Error e) {
+    	verificationErrors.append(e.toString());
+    }
   }
 
   @AfterEach
@@ -68,12 +73,4 @@ public class DeleteTrainingBeingAuthorUITest {
 	  driver.findElement(By.linkText("Entrenamiento1")).click();
   }
   
-  private void trainingDeletedSuccessfully() {
-	  driver.findElement(By.linkText("Delete Training")).click();
-	    try {
-	      assertEquals("The training was deleted successfully", driver.findElement(By.xpath("//body/div/div/div/p")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-  }
 }
