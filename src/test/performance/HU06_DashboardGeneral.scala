@@ -6,7 +6,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.jdbc.Predef._
 
-class HU02_DashboardChallenges extends Simulation {
+class HU06_DashboardGeneral extends Simulation {
 
 	val httpProtocol = http
 		.baseUrl("http://www.yogogym.com")
@@ -40,44 +40,23 @@ class HU02_DashboardChallenges extends Simulation {
 		).pause(15)
 	}
 
-	object ShowDashboardChallenges{
-		val showDashboardChallenges = exec(http("Show Dashboard Challenges")
-			.get("/admin/dashboardChallenges/0"))
+	object ShowDashboardGeneral{
+		val showDashboardGeneral = exec(http("Show Dashboard General")
+			.get("/admin/dashboardGeneral"))
 		.pause(13)
 	}
 
-	object ShowDashboardCompletedChallenges{
-		val showDashboardCompletedChallenges = exec(http("Show Dashboard Completed Challenges")
-			.get("/admin/dashboardChallenges/1?month=1"))
-		.pause(15)
-	}
-	
-	object ShowDashboardNoCompletedChallenges{
-		val showDashboardNoCompletedChallenges = exec(http("Show Dashboard No Completed Challenges")
-			.get("/admin/dashboardChallenges/10?month=10"))
-		.pause(7)
-	}
-
-	val dashboardCompletedChallengesScn = scenario("Dashboard Completed Challenges").exec(
+	val showDashboardGeneralScn = scenario("Show Dashboard General").exec(
 																Home.home,
 																Login.login,
-																ShowDashboardChallenges.showDashboardChallenges,
-																ShowDashboardCompletedChallenges.showDashboardCompletedChallenges)
-																
-	val dashboardNoCompletedChallengesScn = scenario("Dashboard No Completed Challenges").exec(
-																Home.home,
-																Login.login,
-																ShowDashboardChallenges.showDashboardChallenges,
-																ShowDashboardNoCompletedChallenges.showDashboardNoCompletedChallenges)
+																ShowDashboardGeneral.showDashboardGeneral)
 
 	setUp(
-		dashboardCompletedChallengesScn.inject(rampUsers(7000) during (100 seconds)),    // 7000, 100
-		dashboardNoCompletedChallengesScn.inject(rampUsers(7000) during (100 seconds))   // 7000, 100
+		showDashboardGeneralScn.inject(rampUsers(8000) during (90 seconds))    // 7000, 100
 		).protocols(httpProtocol)
 		 .assertions(
 					global.responseTime.max.lt(5000),    
 					global.responseTime.mean.lt(1000),
 					global.successfulRequests.percent.gt(95)
 					)
-
 }

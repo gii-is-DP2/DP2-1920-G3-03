@@ -6,7 +6,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.jdbc.Predef._
 
-class HU10AddDiet extends Simulation {
+class HU10_AddDiet extends Simulation {
 
 	val httpProtocol = http
 		.baseUrl("http://www.yogogym.com")
@@ -64,7 +64,7 @@ class HU10AddDiet extends Simulation {
 			.get("/trainer/trainer1/clients/1/trainings/9/diets/create")
 			.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(17)
-		.exec(http("Save Diet Successfull")
+		.exec(http("Save Diet Successful")
 			.post("/trainer/trainer1/clients/1/trainings/9/diets/create")
 			.headers(headers_1)
 			.formParam("name", "Dieta 1")
@@ -116,8 +116,8 @@ class HU10AddDiet extends Simulation {
 	
 
 	setUp(
-		createDietSuccessfulScn.inject(rampUsers(1) during (1 seconds)), // 7000, 100
-		createDietErrorScn.inject(rampUsers(1) during (1 seconds))       // 7000, 100
+		createDietSuccessfulScn.inject(rampUsers(2500) during (100 seconds)), // 7000, 100
+		createDietErrorScn.inject(rampUsers(1500) during (100 seconds))       // 4000, 80
 		).protocols(httpProtocol)
 		 .assertions(
 					global.responseTime.max.lt(5000),    
