@@ -42,6 +42,14 @@ public class MessageService {
 	public MessageService(MessageRepository messageRepository) {
 		this.messageRepository = messageRepository;
 	}
+	
+	@Transactional
+	public Collection<Message> findAllMessages() throws DataAccessException
+	{
+		Collection<Message> allMessages = (Collection<Message>) this.messageRepository.findAll();
+		
+		return allMessages;
+	}
 
 	@Transactional
 	public Collection<Message> findAllForumParentMessages(int forumId) throws DataAccessException {

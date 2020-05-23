@@ -149,9 +149,16 @@ public class MessageController {
 			
 			forum.getMessages().add(answer);
 			
-			this.forumService.saveForum(forum);
-			
-			this.messageService.saveMessage(message);
+			try
+			{
+				this.messageService.saveMessage(message);				
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				redirectAttrs.addFlashAttribute("wrongMessage", "The message wasn't valid");
+				return "redirect:/client/"+clientUsername + "/guilds/" + guildId + "/forums/" + forumId;
+			}
 			
 			return "redirect:/client/"+clientUsername + "/guilds/" + guildId + "/forums/" + forumId;
 		}
