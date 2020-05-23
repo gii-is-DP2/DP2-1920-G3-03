@@ -37,7 +37,10 @@ public class TrackController {
 
 			HttpEntity<String> entity = setUpHeaders();
 			ResponseEntity<Track> response = restTemplate.exchange("https://api.spotify.com/v1/tracks/"+idTrack, HttpMethod.GET, entity, Track.class);
-			track.setName(response.getBody().getName());	
+			track.setName(response.getBody().getName());
+			track.setPreviewUrl(response.getBody().getPreviewUrl());	
+			track.setUri(response.getBody().getUri());	
+	
 			model.addAttribute("track", track);
 			model.addAttribute("apiFunctional", true);
 
@@ -55,7 +58,7 @@ public class TrackController {
 	 }
 
 	 private HttpEntity<String> setUpHeaders(){
-    	String token = "BQDCwOvL443WoLzCK-CMxfE14ZuTIWVBUJUhnsq7y3yUhIqeMjbW5L_8ItpG7G--dzXNel2mPPEhpbRgTPEDVihvS3ogKoB_POtEu1GmuHBf-NK6xgK5ljvQU8gLR9yIsyqyIz49vjEFkHRXyUMu";
+    	String token = "BQBAYSOagTA5zrFwrZekUASYJBuzjTdES1BrJoG-NUYkUYmHE42zlrma3mt2xOAKAVnopP4CORCY5Lxs7PDavQZheP-VEyIDXM5vs5HpRXNfal_0eqPrJxPw5AHWqImGOmMlPukh9YY9PVpMzoso";
 		
     	HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
