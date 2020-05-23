@@ -46,10 +46,10 @@ public class DietController {
 
 	}
 
-	// TRAINER
+	// TRAINER-PART
 	
 	@GetMapping("/trainer/{trainerUsername}/diets")
-	public String ClienDietList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
+	public String getTrainersClientDietList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
 
 		if(!isLoggedTrainer(trainerUsername))
 			return "exception";
@@ -69,7 +69,7 @@ public class DietController {
 
 	// GET
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}")
-	public String ClientDietDetails(@PathVariable("trainerUsername") String trainerUsername,
+	public String getTrainersClientDietDetails(@PathVariable("trainerUsername") String trainerUsername,
 			@PathVariable("clientId") int clientId, @PathVariable("dietId") int dietId, @PathVariable("trainingId") int trainingId, Model model) {
 		
 		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
@@ -88,7 +88,7 @@ public class DietController {
 
 	// POST
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create")
-	public String initDietCreateForm(@PathVariable("trainerUsername") String trainerUsername, @PathVariable("clientId") int clientId,
+	public String initDietCreateFormAsTrainer(@PathVariable("trainerUsername") String trainerUsername, @PathVariable("clientId") int clientId,
 			@PathVariable("trainingId") int trainingId, Model model) {
 
 		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
@@ -199,59 +199,39 @@ public class DietController {
 		}
 	}
 	
-	//CLIENT
-	@GetMapping("/clients/{clientId}/trainings/{trainingId}/diets/create")
-	public String initDietCreateForm(@PathVariable("clientId") int clientId,
-			@PathVariable("trainingId") int trainingId, Model model) {
+	//CLIENT-PART
+	// GET
+	@GetMapping("/client/{clientUsername}/diets")
+	public String getClientDietList(@PathVariable("clientUsername") String clientUsername, Model model) {
 		
-		Diet diet = new Diet();
-		Client client = this.clientService.findClientById(clientId);
-		Training training = this.trainingService.findTrainingById(trainingId);
-		List<DietType> dietTypes = Arrays.asList(DietType.values());
-
-		model.addAttribute("diet", diet);
-		model.addAttribute("client", client);
-		model.addAttribute("dietTypes", dietTypes);
-		model.addAttribute("training", training);
-
-		return "client/diets/dietsCreateOrUpdate";
-	}
+		Calendar now = Calendar.getInstance();
+		Date date = now.getTime();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");		
+		String actualDate = dateFormat.format(date);
+		
+		Client client = this.clientService.findClientByUsername(clientUsername);
 	
-	@PostMapping("/clients/{clientId}/trainings/{trainingId}/diets/create")
-	public String processDietCreateForm(@Valid Diet diet, BindingResult result, @PathVariable("clientId") int clientId,
-			@PathVariable("trainingId") int trainingId, Model model) {
+		model.addAttribute("actualDate", actualDate);
+		model.addAttribute("client", client);
+		
+		return "client/diets/dietsList";
+	 }
+	// // GET
+	// @GetMapping("/client/{clientUsername}/diets/{dietId}")
+	// public String getClientDietDetails(@PathVariable("clientUsername") String clientUsername,
+	// 		@PathVariable("dietId") int dietId, Model model) {
+		
+	// 	Client client = this.clientService.findClientByUsername(clientUsername);
+	// 	Diet diet = this.dietService.findDietById(dietId);
+		
+	// 	model.addAttribute("client", client);
+	// 	model.addAttribute("diet", diet);
 
-		if(isTrainingFinished(trainingId))
-			return "exception";
+	// 	return "client/diets/dietsDetails";
+	// }
+	// // http://localhost:8080/client/client1/trainings/9/diets/create
 
-		if (result.hasErrors()) {
-			List<DietType> dietTypes = Arrays.asList(DietType.values());
-			model.addAttribute("dietTypes", dietTypes);
-			return "client/diets/dietsCreateOrUpdate";
-			
-		} else {
-			
-			Training training = this.trainingService.findTrainingById(trainingId);
-			
-			if(diet.getType() == DietType.AUTO_ASSIGN){
-				DietType dietType = this.dietService.selectDietType(trainingId);
-				diet.setType(dietType);
-			}	
-
-			diet = generateDiet(diet, clientId);	
-			training.setDiet(diet);
-
-			try {
-				this.trainingService.saveTraining(training);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			return "redirect:/clients/" + clientId + "/trainings/"+ training.getId();
-			
-		}
-	}
-
+	// SECURITY-PART
 
 	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		
 		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
@@ -285,7 +265,7 @@ public class DietController {
 		
 		return training.getEndDate().before(actualDate);
 	}
-
+	// UTILS
 	private Diet generateDiet(Diet diet, Integer clientId){
 		Client client = this.clientService.findClientById(clientId);
 		

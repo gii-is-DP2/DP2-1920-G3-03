@@ -24,7 +24,7 @@
 	
 	                <yogogym:inputField label="${name}" name="name"/>
 	                <yogogym:inputField label="${description}" name="description"/>
-	                <yogogym:inputField label="${dietType}" name="type" readonly = "true"/>
+	                <yogogym:selectField label="${type}" name="type" names="${dietTypes}" size="1"/>
 		
 					<input type="hidden" name="carb" value="0"/>
 					<input type="hidden" name="fat" value="0"/>
@@ -72,6 +72,8 @@
 
 	    </c:otherwise>
 	</c:choose>
+
+
 
     </jsp:body>
 </yogogym:layout>
