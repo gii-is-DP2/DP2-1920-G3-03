@@ -3,6 +3,8 @@ package org.springframework.samples.yogogym.util;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DataGenerator {
 	
@@ -20,12 +22,18 @@ public class DataGenerator {
 	
 	public static void DataMessageGenerator(String path, int guildNumber, int answerNumber, int lastClientId, int lastMessageId) throws IOException {
 
-        int clientId = lastClientId + 1;
+		FileWriter fileWriter = new FileWriter(path);
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+		
+		int clientId = lastClientId + 1;
         int messageId = lastMessageId + 1;
         int forumId = 1;
 
-        FileWriter fileWriter = new FileWriter(path);
-        PrintWriter printWriter = new PrintWriter(fileWriter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime messageDate = LocalDateTime.now();
+        String messageDateStr;
+        LocalDateTime answerDate;
+        String answerDateStr;
 
         for(int i = 0; i < guildNumber*10; i++){
 
@@ -34,22 +42,31 @@ public class DataGenerator {
             }
 
             if(forumId!=0){
+            	messageDateStr = messageDate.format(formatter);
+            	
             	printWriter.print("//MESSAGE " + messageId + "\n");
-            	printWriter.print("INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (" + messageId + "," + forumId + ",null,'client" + clientId + "','Mensaje de prueba del cliente " + clientId + "','2020-05-24 21:00:00',false,true);\n\n");
-
+            	printWriter.print("INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (" + messageId + "," + forumId + ",null,'client" + clientId + "','Mensaje de prueba del cliente " + clientId + "','" + messageDateStr + "',false,true);\n\n");
+            	
+            	answerDate = messageDate;
+            	answerDate = answerDate.plusMinutes(10);
+            	
                 int parentMessage = messageId;
                 int clientIdAnswer = clientId+4;
 
                 messageId++;
 
                 for(int j = 0; j < answerNumber; j++){
-                	printWriter.print("INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (" + messageId + "," + forumId + "," + parentMessage + ",'client" + clientIdAnswer + "','Respuesta de prueba del cliente " + clientIdAnswer + "','2020-05-25 21:00:00',false,false);\n");
+                	answerDateStr = answerDate.format(formatter);
+                	
+                	printWriter.print("INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (" + messageId + "," + forumId + "," + parentMessage + ",'client" + clientIdAnswer + "','Respuesta de prueba del cliente " + clientIdAnswer + "','" + answerDateStr + "',false,false);\n");
 
                     messageId++;
                     clientIdAnswer = clientIdAnswer+4;
+                    answerDate = answerDate.plusMinutes(10);
                 }
 
                 printWriter.printf("\n");
+                messageDate = messageDate.plusHours(1);
             }
             else{
                 i--;
