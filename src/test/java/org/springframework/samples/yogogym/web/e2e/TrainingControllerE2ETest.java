@@ -59,7 +59,7 @@ public class TrainingControllerE2ETest {
 	private static final int CLIENT6_TRAINING1_ID = 7;
 	private static final int CLIENT6_TRAINING2_ID = 10;
 	private static final int CLIENT6_TRAINING3_ID = 11;
-	private static final int NEW_TRAINING_ID = 14;
+	private static final int NEW_TRAINING_ID = 16;
 	
 	private SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy/MM/dd");
 	private SimpleDateFormat detailsFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -286,7 +286,7 @@ public class TrainingControllerE2ETest {
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("trainer"))
 				.andExpect(model().attributeExists("actualDate"))
-				.andExpect(model().attribute("trainer", hasProperty("clients", hasSize(4))))
+				.andExpect(model().attribute("trainer", hasProperty("clients", hasSize(5))))
 				.andExpect(model().attribute("trainer", hasProperty("clients", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_ID)),hasProperty("trainings", hasSize(3)))))))
 				.andExpect(model().attribute("trainer", hasProperty("clients", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_ID)),hasProperty("trainings", hasItem(allOf(
 					hasProperty("id", equalTo(CLIENT1_TRAINING1_ID)),hasProperty("name", is("Entrenamiento1")),
