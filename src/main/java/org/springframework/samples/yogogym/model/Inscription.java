@@ -3,6 +3,7 @@ package org.springframework.samples.yogogym.model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -15,7 +16,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper=false)
-@Table(name = "inscriptions")
+@Table(name = "inscriptions", indexes = { @Index(columnList = "status")})
 public class Inscription extends BaseEntity{
 
 	@Column(name = "status")
