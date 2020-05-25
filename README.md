@@ -22,6 +22,9 @@ La aplicación web a desarrollar tiene como nombre YogoGym. El objetivo fundamen
 * Inscripción
 * Gremio
 * Frase
+* Foro
+* Mensaje
+
 #### Entidades de soporte:
 * Autoridades
 * Entidad Base
@@ -94,17 +97,6 @@ Como administrador quiero poder gestionar los datos del gimnasio, así como el n
 
 * **Suficientes datos que mostrar:** Si el sistema posee clientes y profesores se le mostraran los distintos datos que se solicitan, como el número de clientes, el número de clientes por clase, y el número de entrenadores.
 * **Sin datos para mostrar:** Si el sistema no posee clientes inscritos o profesores, los valores serán nulos o con valor 0.
-
----
-
-#### HU7 - Gestión Entrenadores
-
-Como administrador quiero ser capaz de gestionar mis empleados, los cuales son los monitores y los entrenadores, para llevar un control del personal contratado.
-
-#### Escenarios
-
-* **Suficientes datos que mostrar:** Si el sistema posee entrenadores y monitores se le mostraran los distintos datos que posea cada uno, como por ejemplo el nombre, apellidos, dni, correo electrónico, número de teléfono, así como la información de sus contratos.
-* **Sin datos para mostrar:** Si el sistema no posee monitores o entrenadores inscritos, los valores serán nulos o con valor 0.
 
 ---
 
@@ -432,7 +424,7 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | ------------------- | ------ | --------------- | ------------ |
 | HU1                 | 1      | P3              | Finalizada   |
 | HU3                 | 1      | P3              | Finalizada   |
-| HU4                 | 1      | P2              | Sin Comenzar |
+| HU4                 | 1      | P2              | Finalizada   |
 | HU5                 | 1      | P2              | Finalizada   |
 | HU8                 | 1      | P1              | Finalizada   |
 | HU9                 | 1      | P1              | Finalizada   |
@@ -447,11 +439,10 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | HU22                | 1      | P3              | Finalizada   |
 | HU24                | 1      | P1              | Finalizada   |
 | HU25                | 1      | P1              | Finalizada   |
-| HU2                 | 2      | P3              | Sin Comenzar |
-| HU6                 | 2      | P2              | Sin Comenzar |
-| HU16                | 2      | P3              | Sin Comenzar |
-| HU17                | 2      | P2              | Sin Comenzar |
-| HU19                | 2      | P1              | Sin Comenzar |
-| HU7                 | 3      | P3              | Sin Comenzar |
-| HU20                | 3      | P2              | Sin Comenzar |
-| HU23                | 3      | P1              | Sin Comenzar |
+| HU2                 | 2      | P3              | Finalizada   |
+| HU6                 | 2      | P2              | Finalizada   |
+| HU16                | 2      | P2              | Finalizada   |
+| HU17                | 2      | P3              | Finalizada   |
+| HU19                | 2      | P1              | Finalizada   |
+| HU20                | 3      | P1              | Finalizada   |
+| HU23                | 3      | P2              | Finalizada   |
