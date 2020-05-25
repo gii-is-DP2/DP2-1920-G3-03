@@ -18,6 +18,7 @@ package org.springframework.samples.yogogym.service;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -73,17 +74,26 @@ public class InscriptionService {
 
 	public Inscription findInscriptionByClientAndChallenge(Client client, Challenge challenge) {
 		
+		Inscription inscription = null;
+		
 		Collection<Inscription> inscriptions = this.findInscriptionsByChallengeId(challenge.getId());
-		Inscription inscription = inscriptions.stream().filter(i -> client.getInscriptions().contains(i)).findFirst().get();
-	   	
+		if(inscriptions.isEmpty()) {
+			return null;
+		}
+		
+		Optional optional = inscriptions.stream().filter(i -> client.getInscriptions().contains(i)).findFirst();
+		if(optional.isPresent()) {
+			inscription = (Inscription) optional.get();
+		}
+		
 		//If the endDate have passed, its fails
-	   	Calendar now = Calendar.getInstance();
+	   	/*Calendar now = Calendar.getInstance();
 	   	if(challenge.getEndDate().before(now.getTime())) {
 	   		if(inscription.getStatus().equals(Status.PARTICIPATING) || inscription.getStatus().equals(Status.SUBMITTED)) {
 	   			inscription.setStatus(Status.FAILED);
 	   			this.saveInscription(inscription);
 	   		}
-	   	}
+	   	}*/
 		return inscription;
 	}
 	

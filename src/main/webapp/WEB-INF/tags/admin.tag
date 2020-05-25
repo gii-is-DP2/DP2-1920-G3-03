@@ -19,7 +19,7 @@
 	<span>Equipment Dashboard</span>
 </yogogym:menuItem>	
 
-<yogogym:menuItem active="${name eq 'challengesDashboard'}" url="/admin/dashboardChallenges/0" title="Challenges Dashboard">
+<yogogym:menuItem active="${name eq 'challengesDashboard'}" url="/admin/dashboardChallenges/" title="Challenges Dashboard">
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>Challenges Dashboard</span>
 </yogogym:menuItem>	

@@ -256,11 +256,12 @@ public class DashboardsAdminControllerTest {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(now);
 			int month = cal.get(Calendar.MONTH) + 1;
+			int year = cal.get(Calendar.YEAR);
 			
 			
 			List<Challenge> listChallenges = new ArrayList<Challenge>();
 			listChallenges.add(challenge1);
-			given(this.dashboardsAdminService.getChallengesOfMonth(month)).willReturn(listChallenges);
+			given(this.dashboardsAdminService.getChallengesOfMonthAndYear(month,year)).willReturn(listChallenges);
 			
 			List<Inscription> completedInscriptionsThisMonth = new ArrayList<Inscription>();
 			completedInscriptionsThisMonth.add(inscription1);
@@ -287,7 +288,7 @@ public class DashboardsAdminControllerTest {
 		@WithMockUser(username = "admin1", authorities = { "admin" })
 		@Test
 		void testInitAllDashboardChallenges() throws Exception {
-			mockMvc.perform(get("/admin/dashboardChallenges/0")).andExpect(status().isOk())
+			mockMvc.perform(get("/admin/dashboardChallenges/")).andExpect(status().isOk())
 					.andExpect(view().name("admin/dashboards/dashboardChallenges"))
 					.andExpect(model().attribute("ChallengesExists", true))
 					.andExpect(model().attributeExists("client"))
@@ -328,16 +329,17 @@ public class DashboardsAdminControllerTest {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(now);
 			int month = cal.get(Calendar.MONTH) + 1;
+			int year = cal.get(Calendar.YEAR);
 			
 			List<Challenge> listChallenges = new ArrayList<Challenge>();
-			given(this.dashboardsAdminService.getChallengesOfMonth(month)).willReturn(listChallenges);
+			given(this.dashboardsAdminService.getChallengesOfMonthAndYear(month,year)).willReturn(listChallenges);
 			
 		}
 
 		@WithMockUser(username = "admin1", authorities = { "admin" })
 		@Test
 		void testInitAllDashboardChallenges() throws Exception {
-			mockMvc.perform(get("/admin/dashboardChallenges/0")).andExpect(status().isOk())
+			mockMvc.perform(get("/admin/dashboardChallenges/")).andExpect(status().isOk())
 					.andExpect(view().name("admin/dashboards/dashboardChallenges"))
 					.andExpect(model().attribute("ChallengesExists", false));
 		}	
@@ -395,7 +397,7 @@ public class DashboardsAdminControllerTest {
 			
 			List<Challenge> listChallenges = new ArrayList<Challenge>();
 			listChallenges.add(challenge1);
-			given(this.dashboardsAdminService.getChallengesOfMonth(1)).willReturn(listChallenges);
+			given(this.dashboardsAdminService.getChallengesOfMonthAndYear(1,2020)).willReturn(listChallenges);
 			
 			List<Inscription> completedInscriptionsThisMonth = new ArrayList<Inscription>();
 			given(this.dashboardsAdminService.findCompletedInscriptionsThisMonth(1)).willReturn(completedInscriptionsThisMonth);
@@ -405,7 +407,7 @@ public class DashboardsAdminControllerTest {
 		@WithMockUser(username = "admin1", authorities = { "admin" })
 		@Test
 		void testInitAllDashboardChallenges() throws Exception {
-			mockMvc.perform(get("/admin/dashboardChallenges/1")).andExpect(status().isOk())
+			mockMvc.perform(get("/admin/dashboardChallenges/?monthAndYear=2020-01")).andExpect(status().isOk())
 					.andExpect(view().name("admin/dashboards/dashboardChallenges"))
 					.andExpect(model().attribute("ChallengesExists", true))
 					.andExpect(model().attribute("NoCompletedChallenges", true));
