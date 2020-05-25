@@ -56,7 +56,14 @@
 		</c:otherwise>
 	</c:choose>
 
-    <br>  
+    <br> 
+    	<form action="https://accounts.spotify.com/authorize">
+    		<input type="hidden" name ="redirect_uri" value = "http://localhost:8080/callback/"/>
+    		<input type="hidden" name ="client_id" value = "956b8ae3e4b246b6a82c4a2c5ce6e4ac"/>
+    		<input type = "hidden" name = "response_type" value ="code"/>
+    		<input type = "hidden" name = "training_id" value="${training.id}"/>
+    		<button>pito de leche</button>
+    	</form>
 		<spring:url value="/client/${client.user.username}/trainings/${training.id}/playlist" var="checkPlaylist"/>
 		<h2> <a href="${fn:escapeXml(checkPlaylist)}">Check playlist for this training</a> </h2>
 		<br>
@@ -67,6 +74,7 @@
     <a href="${fn:escapeXml(addRoutineUrl)}">Add Routine</a>
     <br>
     <br>
+  
     <c:forEach var="routine" items="${training.routines}">
     	
     	<h3>Routine: <c:out value="${routine.name}"/></h3>

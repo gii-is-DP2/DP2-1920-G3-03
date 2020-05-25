@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,9 @@ public class TrainingController {
 		this.trainerService = trainerService;
 		this.trainingService = trainingService;
 	}
+	
+	@Autowired
+	private HttpSession httpSession;
 	
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
@@ -399,6 +403,9 @@ public class TrainingController {
 		
 	@GetMapping("/client/{clientUsername}/trainings")
 	public String getTrainingList(@PathVariable("clientUsername") String clientUsername, Model model) {
+		model.getAttribute("training_id");
+		
+		
 		
 		if(!isLoggedUser(clientUsername,false)) {
 			return "exception";
@@ -414,6 +421,8 @@ public class TrainingController {
 	
 	@GetMapping("/client/{clientUsername}/trainings/{trainingId}")
 	public String getTrainingDetails(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") int trainingId, Model model) {
+		
+		httpSession.setAttribute("train", trainingId);
 		
 		if(!isLoggedUser(clientUsername,false)) {
 			return "exception";

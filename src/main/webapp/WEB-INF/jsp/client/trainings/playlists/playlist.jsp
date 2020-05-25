@@ -6,15 +6,17 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="tracks">
-    <h2>Playlist</h2>
-    <h3> <c:out value="${playlist.name}"/> </h3>
-    <p><c:out value="${playlist.uri}"/></p>
-    <%-- <p><c:out value="${playlist.previewUrl}"/></p> --%>
+    <h1><c:out value="${playlist.name}"/></h1>
+    <a href ="${playlist.uri}" target="_blank"> link a la playlist</a>
+    
     <c:forEach var="item" items="${playlist.tracks.items}">
         <h2>Track</h2>
-        <h3><c:out value="${item.track.name}"/> </h3>
-        <p><c:out value="${item.track.uri}"/></p>
-        <p><c:out value="${item.track.previewUrl}"/></p>
+        <h3>Name: <c:out value="${item.track.name}"/> </h3>
+        <audio controls>
+  		<source src="${item.track.previewUrl}" type="audio/mp3">
+		</audio>
+        <a href="${item.track.uri}" target="_blank"> reproduce this song on the playlist</a>
+        <p>Duration: <c:out value="${item.track.durationMs}"/></p>
     </c:forEach>
 
 </yogogym:layout>
