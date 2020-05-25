@@ -204,6 +204,7 @@ Como entrenador quiero realizar dietas a los clientes para mejorar su evolución
 * **Añadir una dieta a un usuario el cual no entrenas:** Dado un entrenador que intenta añadir una dieta a un usuario, cuando no entrenas a este usuario. La operación de añadir dieta no se realiza. La vista muestra una excepción al entrenador.
 * **Añadir una dieta a un entrenamiento que no existe:** Dado un entrenador que intenta añadir una dieta a un entrenamiento que no existe, la operación de añadir dieta no se realiza. La vista muestra una excepción al entrenador.
 
+
 ---
 
 #### HU11 - Gestionar la dieta alimenticia de los entrenamientos en función de kilocalorías, nutrientes esenciales, peso y porcentaje de grasa
@@ -324,8 +325,13 @@ Como cliente quiero poder tener dietas personalizadas según mi tipo de entrenam
 
 #### Escenarios:
 
-* **Cliente con entrenamiento asignado:** Dado un cliente con un entrenamiento asignado se le asignará la dieta que mejor complemente su entrenamiento.
-* **Cliente sin entrenamiento asignado:** Dado un cliente sin un entrenamiento asignado no se le permitirá acceder a esta función y se le pedirá que consiga un entrenamiento antes de acceder.
+* **Añadir una dieta a un cliente con un entrenamiento con ejercicios:** Dado un cliente que se dispone a añadir una dieta con nombre "Dieta 1", descripción "Descripción dieta 1" y tipo "AUTO_ASSIGN" se autogenera la dieta en función de los datos del cliente y seleccionando el tipo de dieta que mejor funcione con la intensidad del entrenamiento asignado, se le añade al entrenamiento y se redirige a la vista de dietas.
+
+* **Añadir una dieta a un cliente con un entrenamiento con ejercicios:** Dado un cliente que se dispone a añadir una dieta con nombre "Dieta 1", descripción "Descripción dieta 1" y tipo "AUTO_ASSIGN" a un entrenamiento "Entrenamiento 1" que no tiene ejercicios, se autogenera la dieta en función de los datos del cliente y seleccionando el tipo de dieta "MAINTENANCE", se le añade al entrenamiento y se redirige a la vista de dietas.
+
+* **Cliente con entrenamiento finalizado:** Dado un cliente con entrenamiento de nombre "Entrenamiento 1" y con fecha de finalización anterior a la actual no se le mostrará el enlace de añadir dieta a dicho entrenamiento.
+
+* **Cliente con entrenamiento asignado:** Dado un cliente con entrenamiento de nombre "Entrenamiento 1" y con fecha de finalización posterior a la actual se le mostrará el enlace de añadir dieta a dicho entrenamiento.
 
 ---
 
