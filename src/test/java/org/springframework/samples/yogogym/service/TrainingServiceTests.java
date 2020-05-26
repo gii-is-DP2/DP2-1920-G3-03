@@ -68,7 +68,7 @@ public class TrainingServiceTests {
 	public void shouldFindAllTrainings() {
 		Collection<Training> trainings = this.trainingService.findAllTrainings();
 		assertThat(trainings).isNotNull();
-		assertThat(trainings.size()).isEqualTo(13);
+		assertThat(trainings.size()).isEqualTo(15);
 		Training training = EntityUtils.getById(trainings, Training.class, TRAINING_ID);
 		assertThat(training.getName()).isEqualTo("Entrenamiento1");
 		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
@@ -502,7 +502,7 @@ public class TrainingServiceTests {
 	@Transactional
 	public void shouldFindTrainingWithPublicClient() {
 		Collection<Training> trainingsPublic = this.trainingService.findTrainingWithPublicClient();
-		assertThat(trainingsPublic.size()).isEqualTo(14);
+		assertThat(trainingsPublic.size()).isEqualTo(15);
 	}
 	
 	@ParameterizedTest
