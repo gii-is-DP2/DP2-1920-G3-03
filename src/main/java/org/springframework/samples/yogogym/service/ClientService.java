@@ -100,7 +100,7 @@ public class ClientService {
 		d1 = now2.getTime();
 		now2.add(Calendar.DAY_OF_MONTH, -7);
 		d2 = now2.getTime();
-		return this.clientRepository.classificationNameDate(d1, d2);
+		return this.clientRepository.classificationNameDate(d2, d1);
 	}
 
 	public List<Integer> classificationPointDate() {
@@ -110,7 +110,7 @@ public class ClientService {
 		d1 = now2.getTime();
 		now2.add(Calendar.DAY_OF_MONTH, -7);
 		d2 = now2.getTime();
-		return this.clientRepository.classificationPointDate(d1, d2);
+		return this.clientRepository.classificationPointDate(d2, d1);
 	}
 
 	public List<String> classificationNameAll() {
