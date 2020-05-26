@@ -18,6 +18,7 @@ package org.springframework.samples.yogogym.service;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -82,7 +83,6 @@ public class TrainingService {
 		return res;		
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Transactional(rollbackFor = {PastInitException.class, PastEndException.class, EndBeforeEqualsInitException.class, 
 		InitInTrainingException.class, EndInTrainingException.class, PeriodIncludingTrainingException.class, LongerThan90DaysException.class})
 	
@@ -97,15 +97,18 @@ public class TrainingService {
 		long diffInMillies = Math.abs(endDate.getTime()-initialDate.getTime());
 		long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 		
-		Date now = new Date();
-		now = new Date(now.getYear(), now.getMonth(), now.getDate());
+		Date now = Calendar.getInstance().getTime();
 		
 		Boolean anyException = true;
 
 		// No training ending in the past
 		if(!training.isNew()) {
 			Training oldTraining = this.trainingRepository.findTrainingById(training.getId());
-			if(endDate.before(now) && !endDate.equals(oldTraining.getEndDate())){
+			
+			String endDateFormat = dateFormat.format(endDate);
+			String oldEndDateFormat = dateFormat.format(oldTraining.getEndDate());
+			
+			if(endDate.before(now) && !endDateFormat.equals(oldEndDateFormat)){
 				anyException = false;
 				throw new PastEndException();
 			}	

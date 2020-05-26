@@ -185,7 +185,6 @@ public class TrainingController {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit")
 	public String initTrainingUpdateForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, Model model) {
 		
@@ -197,8 +196,7 @@ public class TrainingController {
 		
 		Client client = this.clientService.findClientById(clientId);
 		
-		Date now = new Date();
-		now = new Date(now.getYear(), now.getMonth(), now.getDate());
+		Date now = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String actualDate = dateFormat.format(now);
 		
@@ -209,7 +207,6 @@ public class TrainingController {
 		return "trainer/trainings/trainingCreateOrUpdate";
 	}
 	
-	@SuppressWarnings("deprecation")
 	@PostMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/edit")
 	public String processTrainingUpdateForm(@Valid Training training, BindingResult result, 
 		@PathVariable("trainingId") int trainingId, @PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, ModelMap model) {
@@ -221,8 +218,7 @@ public class TrainingController {
 		}
 
 		Client client = this.clientService.findClientById(clientId);
-		Date now = new Date();
-		now = new Date(now.getYear(), now.getMonth(), now.getDate());
+		Date now = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String actualDate = dateFormat.format(now);
 		
@@ -238,7 +234,10 @@ public class TrainingController {
 		} 
 		else {
 			
-			if(oldTraining.getEndDate().before(now)&&!training.getEndDate().equals(oldTraining.getEndDate())
+			String oldTrainingEndDate = dateFormat.format(oldTraining.getEndDate());
+			String newTrainingEndDate = dateFormat.format(training.getEndDate());
+			
+			if(oldTraining.getEndDate().before(now)&&!newTrainingEndDate.equals(oldTrainingEndDate)
 				||training.getEditingPermission().equals(EditingPermission.CLIENT)
 				||(!oldTraining.getAuthor().equals(trainerUsername)&&!training.getEditingPermission().equals(oldTraining.getEditingPermission()))) {
 				return "exception";
@@ -502,7 +501,6 @@ public class TrainingController {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/edit")
 	public String initTrainingUpdateForm(@PathVariable("trainingId") int trainingId, @PathVariable("clientUsername") String clientUsername, Model model) {
 		
@@ -514,8 +512,7 @@ public class TrainingController {
 		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		
-		Date now = new Date();
-		now = new Date(now.getYear(), now.getMonth(), now.getDate());
+		Date now = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String actualDate = dateFormat.format(now);
 		
@@ -526,7 +523,6 @@ public class TrainingController {
 		return "client/trainings/trainingCreateOrUpdate";
 	}
 	
-	@SuppressWarnings("deprecation")
 	@PostMapping("/client/{clientUsername}/trainings/{trainingId}/edit")
 	public String processTrainingUpdateForm(@Valid Training training, BindingResult result, 
 		@PathVariable("trainingId") int trainingId, @PathVariable("clientUsername") String clientUsername, ModelMap model) {
@@ -538,8 +534,7 @@ public class TrainingController {
 		}
 
 		Client client = this.clientService.findClientByUsername(clientUsername);
-		Date now = new Date();
-		now = new Date(now.getYear(), now.getMonth(), now.getDate());
+		Date now = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String actualDate = dateFormat.format(now);
 		
@@ -554,8 +549,11 @@ public class TrainingController {
 			return "client/trainings/trainingCreateOrUpdate";
 		} 
 		else {
+						
+			String oldTrainingEndDate = dateFormat.format(oldTraining.getEndDate());
+			String newTrainingEndDate = dateFormat.format(training.getEndDate());
 			
-			if(oldTraining.getEndDate().before(now)&&!training.getEndDate().equals(oldTraining.getEndDate())
+			if(oldTraining.getEndDate().before(now)&&!newTrainingEndDate.equals(oldTrainingEndDate)
 				||training.getEditingPermission().equals(EditingPermission.TRAINER)
 				||(!oldTraining.getAuthor().equals(clientUsername)&&!training.getEditingPermission().equals(oldTraining.getEditingPermission()))) {
 				return "exception";
