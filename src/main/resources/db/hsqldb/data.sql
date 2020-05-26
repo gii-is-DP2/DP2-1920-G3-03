@@ -293,10 +293,6 @@ INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (3,5);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (4,6);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,7);
 
-/* PHRASES */
-
-INSERT INTO phrases(id,author,text) VALUES (1,'Enrique Reina','A veces cuando cierro los ojos no veo.');
-
 /* TRAINER_CLIENT */
 
 /* trainer 1 */
