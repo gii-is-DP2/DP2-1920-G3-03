@@ -13,8 +13,7 @@
     	        </div> 
 				<div class="row">
 			<h2 class="text-center"> Kanye West: <c:out value="${quote.quote}"/> </h2>
-				</div> 
-
+				</div>
         </div>
        
         <div class="container">
