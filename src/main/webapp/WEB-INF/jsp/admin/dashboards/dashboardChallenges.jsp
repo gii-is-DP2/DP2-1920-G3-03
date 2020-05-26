@@ -9,40 +9,21 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 
-<script type="text/javascript">
-function createUrl(){
-    var action_src = "/admin/dashboardChallenges/" + document.getElementsByName("month")[0].value;
-    var form = document.getElementById('form1');
-    form.action = action_src ;
-}
-</script>
-
 
 <petclinic:layout pageName="dashboards">
 <script src="https://code.jquery.com/jquery-3.4.1.slim.js" integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
 
-<form id="form1" onsubmit="createUrl()">
+
+<form id="form1" onsubmit="/admin/dashboardChallenges/">
 		
-	<select id="month" name="month">
-	  <option selected disabled hidden>Month</option>
-	  <option value="1">January</option>
-	  <option value="2">February</option>
-	  <option value="3">March</option>
-	  <option value="4">April</option>
-	  <option value="5">May</option>
-	  <option value="6">June</option>
-	  <option value="7">July</option>
-	  <option value="8">August</option>
-	  <option value="9">September</option>
-	  <option value="10">October</option>
-	  <option value="11">November</option>
-	  <option value="12">December</option>
-	</select>
-	<input type="submit" value="Change"></input>
+	<input type="month" name="monthAndYear"/>
+	<input type="submit" value="Enviar"/>
 
 </form>
+<br>
+<h3>Month: <c:out value="${month}"/> - <c:out value="${year}"/></h3>
 
 <c:choose>
 

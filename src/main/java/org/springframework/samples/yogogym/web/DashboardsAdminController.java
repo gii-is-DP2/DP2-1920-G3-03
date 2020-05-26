@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
@@ -64,15 +66,17 @@ public class DashboardsAdminController {
 
 	}
 
-	@GetMapping("/admin/dashboardChallenges/{month}")
-	public String getDashboardChallenges(@PathVariable("month") int month, ModelMap model) {
+	@GetMapping("/admin/dashboardChallenges/")
+	public String getDashboardChallenges(@PathParam("monthAndYear") String monthAndYear, ModelMap model) {
 
-		Date now = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(now);
-		if (month == 0)
-			month = cal.get(Calendar.MONTH) + 1;
-		List<Challenge> challenges = (List<Challenge>) this.dashboardsAdminService.getChallengesOfMonth(month);
+		int date [] = getMonthAndYear(monthAndYear);
+		int year = date[0];
+		int month = date[1];
+		model.addAttribute("year",year);
+		model.addAttribute("month",month);
+		
+		
+		List<Challenge> challenges = (List<Challenge>) this.dashboardsAdminService.getChallengesOfMonthAndYear(month, year);
 
 		if (!challenges.isEmpty()) {
 			model.addAttribute("ChallengesExists", true);
@@ -204,5 +208,24 @@ public class DashboardsAdminController {
 		}
 
 		return "admin/dashboards/dashboardGeneral";
+	}
+	
+	private int[] getMonthAndYear(String monthAndYear) {
+		int date [] = {0,0};
+		
+		if(monthAndYear == null) {
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(now);
+			
+			date[0] = cal.get(Calendar.YEAR);
+			date[1] = cal.get(Calendar.MONTH) + 1;
+		}
+		else {
+			String[] str =  monthAndYear.split("-");
+			date[0] = Integer.valueOf(str[0]);
+			date[1] = Integer.valueOf(str[1]);
+		}
+		return date;
 	}
 }

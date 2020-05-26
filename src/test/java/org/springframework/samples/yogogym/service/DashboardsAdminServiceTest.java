@@ -37,15 +37,15 @@ public class DashboardsAdminServiceTest {
 	}
 	
 	@Test
-	void shouldGetChallengesOfMonth(){
-		Collection<Challenge> challenges = this.dashboardService.getChallengesOfMonth(10);
+	void shouldGetChallengesOfMonthAndYear(){
+		Collection<Challenge> challenges = this.dashboardService.getChallengesOfMonthAndYear(10,2020);
 		assertThat(challenges.size()).isEqualTo(3);
 	}
 
 	@ParameterizedTest
 	@ValueSource(ints = {2,4,5,6})
 	void shouldNotFindChallengesOfMonth(int month){
-		Collection<Challenge> challenges = this.dashboardService.getChallengesOfMonth(month);
+		Collection<Challenge> challenges = this.dashboardService.getChallengesOfMonthAndYear(month,2020);
 		assertThat(challenges.size()).isEqualTo(0);
 	}
 	
