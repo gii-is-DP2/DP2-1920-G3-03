@@ -31,9 +31,3 @@
 	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 	<span>Diets Management</span>
 </yogogym:menuItem>
-
-<yogogym:menuItem active="${name eq 'vets'}" url="/vets"
-	title="Dashboard">
-	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-	<span>Dashboard</span>
-</yogogym:menuItem>
