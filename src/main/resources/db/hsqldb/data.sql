@@ -113,6 +113,9 @@ INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,di
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (12, DATEADD(day, -7, CURRENT_DATE), DATEADD(day, 7, CURRENT_DATE), 'Entrenamiento1', 1, 'client5', null);
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (13, DATEADD(day, 14, CURRENT_DATE), DATEADD(day, 21, CURRENT_DATE), 'Entrenamiento2', 2, 'trainer1', null);
 
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (14, DATEADD(day, 200, CURRENT_DATE), DATEADD(day, 208, CURRENT_DATE), 'Entrenamiento10_1', 0, 'trainer1', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (15,  DATEADD(day, 210, CURRENT_DATE), DATEADD(day, 215, CURRENT_DATE), 'Entrenamiento10_2', 1, 'client10', null);
+
 /* ROUTINE */
 
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (1,'Cardio', 'Augment resistance',3,1);
@@ -290,10 +293,6 @@ INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (3,5);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (4,6);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,7);
 
-/* PHRASES */
-
-INSERT INTO phrases(id,author,text) VALUES (1,'Enrique Reina','A veces cuando cierro los ojos no veo.');
-
 /* TRAINER_CLIENT */
 
 /* trainer 1 */
@@ -301,6 +300,7 @@ INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (1,1);
 INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (1,2);
 INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (1,5);
 INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (1,6);
+INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (1,10);
 
 /* trainer 2 */
 INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (2,3);
@@ -323,6 +323,8 @@ INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,7);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,10);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,11);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (7,8);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (10,14);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (10,15);
 
 INSERT INTO forums(id,guild_id) VALUES (1,1);
 INSERT INTO forums(id,guild_id) VALUES (2,2);
