@@ -113,6 +113,9 @@ INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,di
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (12, DATEADD(day, -7, CURRENT_DATE), DATEADD(day, 7, CURRENT_DATE), 'Entrenamiento1', 1, 'client5', null);
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (13, DATEADD(day, 14, CURRENT_DATE), DATEADD(day, 21, CURRENT_DATE), 'Entrenamiento2', 2, 'trainer1', null);
 
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (14, DATEADD(day, 200, CURRENT_DATE), DATEADD(day, 208, CURRENT_DATE), 'Entrenamiento10_1', 0, 'trainer1', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (15,  DATEADD(day, 210, CURRENT_DATE), DATEADD(day, 215, CURRENT_DATE), 'Entrenamiento10_2', 1, 'client10', null);
+
 /* ROUTINE */
 
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (1,'Cardio', 'Augment resistance',3,1);
@@ -159,6 +162,7 @@ INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,
 INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (5,'Lunges','Take a step behind with one leg, then shift your weight down to kneel. Alter legs',100,3,1,2,2);
 
 /* Equipment 2 */
+
 INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (6,'Squat','Crouch and stand up', 100, 2, 2,4,2);
 INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (7,'Pistol Squat','Crouch and stand up with one leg. Alter legs', 100, 2, 2,4,2);
 INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (8,'Calf Raises','Stand on your tiptoes. Support weight with both legs', 100, 2, 2,4,2);
@@ -216,9 +220,9 @@ INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,
 INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (50,'Elliptical Min Speed','Use the Ellipitical at a pace sutiable for you and fairly slow',100,0,7,4,0);
 
 /* Equipment 8 */
-INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (51,'Sprint','Bike at the maximum speed you can handle',100,2,8,4,0);
-INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (52,'Standing','Bike standing up and keep it up.',100,2,8,4,0);
-INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (53,'Normal','Bike at a pace you could keep "forever"',100,2,8,4,0);
+INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (51,'Sprint','Bike at the maximum speed you can handle',100,3,8,4,0);
+INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (52,'Standing','Bike standing up and keep it up.',100,3,8,4,0);
+INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (53,'Normal','Bike at a pace you could keep "forever"',100,3,8,4,0);
 
 /* Equipment 9 */
 INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (54,'Normal Steps','Step on step at a time',100,3,9,4,0);
@@ -227,6 +231,7 @@ INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,
 INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (57,'Speed Steps','Step the fastest you can without skipping steps',100,3,9,4,0);
 
 /* Equipment 10 */
+
 INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (58,'Rowing Max Intesity','Row at the fastest pace you can keeping a controlled movement. In this exercise technique is key, more than speed',100,1,10,4,0);
 INSERT INTO exercises(id,name,description,kcal,intensity,equipment_id,body_part,repetition_type) VALUES (59,'Rowing Med Intesity','Row at a pace you can keep "forever" without sacrificing technique',100,1,10,4,0);
 
@@ -290,10 +295,6 @@ INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (3,5);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (4,6);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,7);
 
-/* PHRASES */
-
-INSERT INTO phrases(id,author,text) VALUES (1,'Enrique Reina','A veces cuando cierro los ojos no veo.');
-
 /* TRAINER_CLIENT */
 
 /* trainer 1 */
@@ -301,6 +302,7 @@ INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (1,1);
 INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (1,2);
 INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (1,5);
 INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (1,6);
+INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (1,10);
 
 /* trainer 2 */
 INSERT INTO trainers_clients(trainer_id,clients_id) VALUES (2,3);
@@ -323,6 +325,8 @@ INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,7);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,10);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,11);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (7,8);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (10,14);
+INSERT INTO clients_trainings(client_id,trainings_id) VALUES (10,15);
 
 INSERT INTO forums(id,guild_id) VALUES (1,1);
 INSERT INTO forums(id,guild_id) VALUES (2,2);
@@ -332,6 +336,8 @@ INSERT INTO forums(id,guild_id) VALUES (3,3);
 INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (1,1,null,'client1','Mensaje de prueba','2020-05-15 14:23:25',false,true);
 INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (2,1,null,'client1','Mensaje de prueba 2','2020-05-16 14:23:25',false,true);
 INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (3,1,null,'client1','Mensaje de prueba 3','2020-05-17 14:23:25',false,true);
+
+INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (7,2,null,'client2','Mensaje de prueba','2020-05-17 14:23:25',false,true);
 
 /*Respuestas*/
 INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (4,1,1,'client5','Respuesta de prueba','2020-05-15 15:23:25',false,false);

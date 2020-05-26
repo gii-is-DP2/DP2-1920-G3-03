@@ -20,11 +20,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Diet;
+import org.springframework.samples.yogogym.model.Routine;
+import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Training;
+import org.springframework.samples.yogogym.model.Enums.DietType;
+import org.springframework.samples.yogogym.model.Enums.Intensity;
 import org.springframework.samples.yogogym.repository.DietRepository;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.stereotype.Service;
@@ -72,6 +77,42 @@ public class DietService {
 		
 		return res;		
 	}
+	@Transactional
+	public DietType selectDietType(Integer trainingId) {
+		
+		DietType res = null;
+		Training t = this.trainingService.findTrainingById(trainingId);
+		Collection<Routine> routines = t.getRoutines();
+		Integer low = 0;
+		Integer moderated = 0;
+		Integer intense = 0;
+		Integer veryIntense = 0;
+		for(Routine r : routines) {
+			Collection<RoutineLine> routineLine = r.getRoutineLine();
+			for(RoutineLine rl : routineLine) {
+				if(rl.getExercise().getIntensity().equals(Intensity.LOW))
+					low++;
+				if(rl.getExercise().getIntensity().equals(Intensity.MODERATED))
+					moderated++;
+				if(rl.getExercise().getIntensity().equals(Intensity.INTENSE))
+					intense++;
+				if(rl.getExercise().getIntensity().equals(Intensity.VERY_INTENSE))
+					veryIntense++;
+			}
+		}
+		if((low>moderated)&&(low>moderated)&&(low>moderated))
+			res = DietType.VOLUME;
+		if((moderated>=low)&&(moderated>=intense)&&(moderated>=veryIntense))
+			res = DietType.MAINTENANCE;
+		if((intense>low)&&(intense>moderated)&&(intense>veryIntense))
+			res = DietType.DEFINITION;
+		if((veryIntense>low)&&(veryIntense>intense)&&(veryIntense>moderated))
+			res = DietType.EXTREME_DEFINITION;
+		
+		return res;
+	}
+
+	
 	@Transactional
 	public Diet findDietById(Integer dietId) throws DataAccessException {
 		

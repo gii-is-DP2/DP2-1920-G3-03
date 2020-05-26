@@ -32,7 +32,16 @@ public class UpdateTrainingEmptyUITest {
     as("trainer1");
     accessUpdateView();
     updateTrainingEmpty();
-    errorsShown();
+    try {
+    	assertEquals("no puede estar vacío", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div/div/span[2]")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
+	try {
+	    assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
   }
 
   @AfterEach
@@ -75,16 +84,4 @@ public class UpdateTrainingEmptyUITest {
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
-  private void errorsShown() {
-	  try {
-	      assertEquals("no puede estar vacío", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div/div/span[2]")).getText());
-	  } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	  }
-	  try {
-	      assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
-	  } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	  }
-  }
 }

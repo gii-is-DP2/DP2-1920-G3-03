@@ -26,9 +26,10 @@ public class CreateTrainingIncludingOtherTrainingUITest {
   private StringBuffer verificationErrors = new StringBuffer();
   private Calendar calInit = Calendar.getInstance();
   private Calendar calEnd = Calendar.getInstance();
-  private Calendar calAux = Calendar.getInstance();
-  private SimpleDateFormat formatterDetails = new SimpleDateFormat("yyyy-MM-dd");
+  private Calendar calAuxInit = Calendar.getInstance();
+  private Calendar calAuxEnd = Calendar.getInstance();
   private SimpleDateFormat formatterInput = new SimpleDateFormat("yyyy/MM/dd");
+  private SimpleDateFormat formatterDetails = new SimpleDateFormat("yyyy-MM-dd");
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -40,9 +41,14 @@ public class CreateTrainingIncludingOtherTrainingUITest {
   @Test
   public void testCreateTrainingIncludingOtherTrainingUI() throws Exception {
 	  as("trainer1");
-	  createTrainingWithoutErrors();
 	  createTrainingIncludingTraining();
-	  errorsShown();
+	  calAuxInit.add(Calendar.DAY_OF_MONTH, 14);
+	  calAuxEnd.add(Calendar.DAY_OF_MONTH, 21);
+	  try {
+	      assertEquals("The training cannot be in a period which includes another training (The other training is from " + formatterDetails.format(calAuxInit.getTime()) + " to " + formatterDetails.format(calAuxEnd.getTime()) + ")", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
+	  } catch (Error e) {
+		  verificationErrors.append(e.toString());
+	  }
   }
 
   @AfterEach
@@ -70,40 +76,19 @@ public class CreateTrainingIncludingOtherTrainingUITest {
 	  }
   }
   
-  private void createTrainingWithoutErrors() {
+  private void createTrainingIncludingTraining() {
 	  driver.findElement(By.linkText("Trainer")).click();
 	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.linkText("Add Training")).click();
+	  driver.findElement(By.xpath("(//a[contains(text(),'Add Training')])[3]")).click();
 	  driver.findElement(By.id("name")).clear();
-	  driver.findElement(By.id("name")).sendKeys("Entrenamiento viejo");
-	  calInit.add(Calendar.DAY_OF_MONTH, 1);
+	  driver.findElement(By.id("name")).sendKeys("Entrenamiento Nuevo");
+	  calInit.add(Calendar.DAY_OF_MONTH, 8);
 	  driver.findElement(By.id("initialDate")).clear();
 	  driver.findElement(By.id("initialDate")).sendKeys(formatterInput.format(calInit.getTime()));
-	  calEnd.add(Calendar.DAY_OF_MONTH, 7);
+	  calEnd.add(Calendar.DAY_OF_MONTH, 22);
 	  driver.findElement(By.id("endDate")).clear();
 	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calEnd.getTime()));
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
-  private void createTrainingIncludingTraining() {
-	  driver.findElement(By.linkText("Trainer")).click();
-	  driver.findElement(By.linkText("Training Management")).click();
-	  driver.findElement(By.linkText("Add Training")).click();
-	  driver.findElement(By.id("name")).clear();
-	  driver.findElement(By.id("name")).sendKeys("Entrenamiento Nuevo");
-	  driver.findElement(By.id("initialDate")).clear();
-	  driver.findElement(By.id("initialDate")).sendKeys(formatterInput.format(calAux.getTime()));
-	  calAux.add(Calendar.DAY_OF_MONTH, 8);
-	  driver.findElement(By.id("endDate")).clear();
-	  driver.findElement(By.id("endDate")).sendKeys(formatterInput.format(calAux.getTime()));
-	  driver.findElement(By.xpath("//button[@type='submit']")).click();
-  }
-  
-  private void errorsShown() {
-	  try {
-	      assertEquals("The training cannot be in a period which includes another training (The other training is from " + formatterDetails.format(calInit.getTime()) + " to " + formatterDetails.format(calEnd.getTime()) + ")", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-  }
 }

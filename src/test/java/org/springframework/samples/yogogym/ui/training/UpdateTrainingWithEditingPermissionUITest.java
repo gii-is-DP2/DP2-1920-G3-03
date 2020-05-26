@@ -38,7 +38,22 @@ public class UpdateTrainingWithEditingPermissionUITest {
     as("trainer1");
     accessUpdateView();
     updateTrainingWithEditingPermission();
-    trainingUpdatedSuccessfully();
+    calInit.add(Calendar.DAY_OF_MONTH, -7);
+	try {
+		assertEquals("Name: Entrenamiento1 Actualizado", driver.findElement(By.xpath("//h3")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
+	try {
+	    assertEquals("Starts: " + formatterDetails.format(calInit.getTime()) + " 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
+	try {
+	    assertEquals("Ends: " + formatterDetails.format(calEnd.getTime()) + " 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
   }
 
   @AfterEach
@@ -82,22 +97,4 @@ public class UpdateTrainingWithEditingPermissionUITest {
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
-  private void trainingUpdatedSuccessfully() {
-	  calInit.add(Calendar.DAY_OF_MONTH, -7);
-	  try {
-	      assertEquals("Name: Entrenamiento1 Actualizado", driver.findElement(By.xpath("//h3")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Starts: " + formatterDetails.format(calInit.getTime()) + " 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-	    try {
-	      assertEquals("Ends: " + formatterDetails.format(calEnd.getTime()) + " 00:00:00.0", driver.findElement(By.xpath("//body/div/div/p[2]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-  }
 }

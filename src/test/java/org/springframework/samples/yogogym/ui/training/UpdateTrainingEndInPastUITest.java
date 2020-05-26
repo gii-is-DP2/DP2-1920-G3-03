@@ -36,7 +36,11 @@ public class UpdateTrainingEndInPastUITest {
     as("trainer1");
     accessUpdateView();
     updateTrainingEndInPast();
-    errorsShown();
+    try {
+    	assertEquals("The end date cannot be in the past", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
   }
 
   @AfterEach
@@ -80,11 +84,4 @@ public class UpdateTrainingEndInPastUITest {
 	  driver.findElement(By.xpath("//button[@type='submit']")).click();
   }
   
-  private void errorsShown() {
-	  try {
-	      assertEquals("The end date cannot be in the past", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
-	    } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	    }
-  }
 }

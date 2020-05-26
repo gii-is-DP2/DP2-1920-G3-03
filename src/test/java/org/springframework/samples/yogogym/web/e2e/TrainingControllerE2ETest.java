@@ -59,7 +59,7 @@ public class TrainingControllerE2ETest {
 	private static final int CLIENT6_TRAINING1_ID = 7;
 	private static final int CLIENT6_TRAINING2_ID = 10;
 	private static final int CLIENT6_TRAINING3_ID = 11;
-	private static final int NEW_TRAINING_ID = 14;
+	private static final int NEW_TRAINING_ID = 16;
 	
 	private SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy/MM/dd");
 	private SimpleDateFormat detailsFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -286,14 +286,15 @@ public class TrainingControllerE2ETest {
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("trainer"))
 				.andExpect(model().attributeExists("actualDate"))
-				.andExpect(model().attribute("trainer", hasProperty("clients", hasSize(4))))
+				.andExpect(model().attribute("trainer", hasProperty("clients", hasSize(5))))
 				.andExpect(model().attribute("trainer", hasProperty("clients", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_ID)),hasProperty("trainings", hasSize(3)))))))
 				.andExpect(model().attribute("trainer", hasProperty("clients", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_ID)),hasProperty("trainings", hasItem(allOf(
 					hasProperty("id", equalTo(CLIENT1_TRAINING1_ID)),hasProperty("name", is("Entrenamiento1")),
 					hasProperty("initialDate", hasToString("2020-01-01 00:00:00.0")),hasProperty("endDate", hasToString("2020-01-14 00:00:00.0")),
 					hasProperty("editingPermission", equalTo(EditingPermission.TRAINER)),hasProperty("author", is(TRAINER1_USERNAME)),
 					hasProperty("diet", hasProperty("name",is("Dieta 1"))),
-					hasProperty("routines", allOf(hasItem(hasProperty("name",is("Cardio"))),hasItem(hasProperty("name",is("Brazos")))))))))))));
+					hasProperty("routines", allOf(hasItem(hasProperty("name",is("Cardio"))),hasItem(hasProperty("name",is("Brazos")))))))))))))
+				.andExpect(view().name("trainer/trainings/trainingsList"));
 	}	
 
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
@@ -804,7 +805,8 @@ public class TrainingControllerE2ETest {
 					hasProperty("endDate", hasToString("2020-01-14 00:00:00.0")),
 					hasProperty("editingPermission", equalTo(EditingPermission.TRAINER)),hasProperty("author", is(TRAINER1_USERNAME)),
 					hasProperty("diet", hasProperty("name",is("Dieta 1"))),
-					hasProperty("routines", allOf(hasItem(hasProperty("name",is("Cardio"))),hasItem(hasProperty("name",is("Brazos")))))))));
+					hasProperty("routines", allOf(hasItem(hasProperty("name",is("Cardio"))),hasItem(hasProperty("name",is("Brazos")))))))))
+				.andExpect(view().name("client/trainings/trainingsList"));
 	}	
 	
 	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})

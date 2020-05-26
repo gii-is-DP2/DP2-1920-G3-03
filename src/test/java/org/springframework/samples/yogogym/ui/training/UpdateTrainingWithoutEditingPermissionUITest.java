@@ -31,7 +31,11 @@ public class UpdateTrainingWithoutEditingPermissionUITest {
   public void testUpdateTrainingWithoutEditingPermissionUI() throws Exception {
     as("trainer1");
     accessUpdateTrainingWithoutEditingPermission();
-    exceptionViewShown();
+    try {
+    	assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
+	} catch (Error e) {
+	    verificationErrors.append(e.toString());
+	}
   }
 
   @AfterEach
@@ -63,11 +67,4 @@ public class UpdateTrainingWithoutEditingPermissionUITest {
 	  driver.get("http://localhost:" + port + "/trainer/trainer1/clients/5/trainings/6/edit");
   }
   
-  private void exceptionViewShown() {
-	  try {
-	      assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
-	  } catch (Error e) {
-	      verificationErrors.append(e.toString());
-	  }
-  }
 }

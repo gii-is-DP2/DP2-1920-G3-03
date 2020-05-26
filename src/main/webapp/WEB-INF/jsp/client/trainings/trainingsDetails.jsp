@@ -6,7 +6,7 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="clients">
-	
+		
 	<c:if test="${error != null}">
 		<div class="text-center alert alert-danger" role="alert">
 			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>

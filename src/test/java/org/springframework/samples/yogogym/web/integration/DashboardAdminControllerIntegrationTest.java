@@ -28,9 +28,9 @@ public class DashboardAdminControllerIntegrationTest {
 	@Transactional
 	@Test
 	void initChallengeDashboard() throws Exception {
-		int month = 1;
+		String monthAndYear = "2020-01";
 		ModelMap model = new ModelMap();
-		String view = this.dashboardsAdminController.getDashboardChallenges(month, model);
+		String view = this.dashboardsAdminController.getDashboardChallenges(monthAndYear, model);
 		assertEquals(view, "admin/dashboards/dashboardChallenges");
 	}
 

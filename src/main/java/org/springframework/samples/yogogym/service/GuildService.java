@@ -14,6 +14,7 @@ import org.springframework.samples.yogogym.repository.ClientRepository;
 import org.springframework.samples.yogogym.repository.ForumRepository;
 import org.springframework.samples.yogogym.repository.GuildRepository;
 import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
+import org.springframework.samples.yogogym.service.exceptions.GuildNotCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Service;
@@ -61,8 +62,8 @@ public class GuildService {
 		return res;		
 	}
 	
-	@Transactional(rollbackFor = {GuildSameNameException.class,GuildSameCreatorException.class,GuildLogoException.class})
-	public void saveGuild(Guild guild) throws DataAccessException, GuildSameNameException, GuildSameCreatorException, GuildLogoException {
+	@Transactional(rollbackFor = {GuildSameNameException.class,GuildSameCreatorException.class,GuildLogoException.class,GuildNotCreatorException.class})
+	public void saveGuild(Guild guild, Client client) throws DataAccessException, GuildSameNameException, GuildSameCreatorException, GuildLogoException, GuildNotCreatorException {
 		
 		Collection<Guild> guilds = this.guildRepository.findAllGuilds();
 		
@@ -73,6 +74,9 @@ public class GuildService {
 		
 		if(guilds.stream().anyMatch(c->c.getName().toLowerCase().equals(guild.getName().toLowerCase()))){
 			throw new GuildSameNameException();
+		}
+		else if(!guild.getCreator().equals(client.getUser().getUsername())) {
+			throw new GuildNotCreatorException();
 		}
 		else if(guilds.stream().anyMatch(c->c.getCreator().equals(guild.getCreator()))) {
 			throw new GuildSameCreatorException();
