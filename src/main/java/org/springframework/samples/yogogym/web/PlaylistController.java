@@ -55,7 +55,7 @@ import okhttp3.RequestBody;
 public class PlaylistController {
 
 	private final TrainingService trainingService;
-	private final String SPOTIFY_BASE64CODE = "OTU2YjhhZTNlNGIyNDZiNmE4MmM0YTJjNWNlNmU0YWM6ZDkyMGEyOGFjOTU4NDU5ZWIzNTRmODIyMjZkYmFmMTY=";
+	private final static String SPOTIFY_BASE64CODE = "OTU2YjhhZTNlNGIyNDZiNmE4MmM0YTJjNWNlNmU0YWM6ZDkyMGEyOGFjOTU4NDU5ZWIzNTRmODIyMjZkYmFmMTY=";
 	private static final String URL_SPOTIFY_TOKEN = "https://accounts.spotify.com/api/token";
 
 	@Autowired
@@ -190,7 +190,7 @@ public class PlaylistController {
 
 	}
 
-	private TokenMapper getToken() {
+	public static TokenMapper getToken() {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		httpHeaders.add("Authorization", "Basic " + SPOTIFY_BASE64CODE);

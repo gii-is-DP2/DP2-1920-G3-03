@@ -11,7 +11,6 @@ import lombok.extern.java.Log;
 @Log
 public class QuoteControllerAPIContractTest {
 
-
 	@Test
 	public void testDefaultEvent() {		
 		when()

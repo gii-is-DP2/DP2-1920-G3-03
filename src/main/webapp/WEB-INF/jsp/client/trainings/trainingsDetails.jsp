@@ -62,11 +62,8 @@
     		<input type="hidden" name ="client_id" value = "956b8ae3e4b246b6a82c4a2c5ce6e4ac"/>
     		<input type = "hidden" name = "response_type" value ="code"/>
     		<input type = "hidden" name = "training_id" value="${training.id}"/>
-    		<button>pito de leche</button>
+    		<button class="btn btn-default">Check playlist for this training</button>
     	</form>
-		<spring:url value="/client/${client.user.username}/trainings/${training.id}/playlist" var="checkPlaylist"/>
-		<h2> <a href="${fn:escapeXml(checkPlaylist)}">Check playlist for this training</a> </h2>
-		<br>
 	<br>    
   
 
