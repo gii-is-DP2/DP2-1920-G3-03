@@ -42,13 +42,13 @@
 			<c:otherwise>
 				<div>
 					<h3 style="color:green">Client with more points this month: </h3> 
-					<h5><b><c:out value="${client.firstName} ${client.lastName}"/></b>  (<c:out value="${client.email}"/>)</h5>
+					<h5><b><c:out value="${client}"/></b>  (<c:out value="${email}"/>)</h5>
 					<b>Points:</b><c:out value="${cPoints}"></c:out>
 					
 					<br><br>
 								
 					<h3 style="color:green">Guild with more points this month: </h3> 
-					<h5><b><c:out value="${guild.name}"></c:out></b></h5>
+					<h5><b><c:out value="${guild}"></c:out></b></h5>
 					<b>Points:</b><c:out value="${gPoints}"></c:out>
 				</div>
 				

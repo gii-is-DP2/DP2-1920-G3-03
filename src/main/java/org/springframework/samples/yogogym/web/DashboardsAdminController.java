@@ -12,6 +12,8 @@ import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Guild;
 import org.springframework.samples.yogogym.model.Inscription;
 import org.springframework.samples.yogogym.model.Enums.Status;
+import org.springframework.samples.yogogym.projections.DashboardAdminChallengesTopClient;
+import org.springframework.samples.yogogym.projections.DashboardAdminChallengesTopGuild;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DashboardsAdminService;
 import org.springframework.samples.yogogym.service.GuildService;
@@ -80,7 +82,7 @@ public class DashboardsAdminController {
 
 		if (!challenges.isEmpty()) {
 			model.addAttribute("ChallengesExists", true);
-			dashboardChallenges(challenges, month, model);
+			dashboardChallenges(challenges, month, year, model);
 		} else {
 			model.addAttribute("ChallengesExists", false);
 		}
@@ -88,97 +90,56 @@ public class DashboardsAdminController {
 		return "admin/dashboards/dashboardChallenges";
 	}
 
-	private void dashboardChallenges(List<Challenge> challenges, int month, ModelMap model) {
+	private void dashboardChallenges(List<Challenge> challenges, int month, int year, ModelMap model) {
 
-		// client with more points
-		Client client = null;
-		Integer cPoints = null;
-
-		List<Inscription> completedInscriptionsThisMonth = this.dashboardsAdminService.findCompletedInscriptionsThisMonth(month);
-		if (completedInscriptionsThisMonth.isEmpty()) {
+		int countCompletedInscriptions = this.dashboardsAdminService.countCompletedInscriptionsOfMonthAndYear(month, year);
+		
+		if(countCompletedInscriptions == 0) {
 			model.addAttribute("NoCompletedChallenges", true);
 			return;
 		}
-
-		List<Client> clients = (List<Client>) this.clientService.findAllClient();
-		for (Client c : clients) {
-			Integer auxPoints = 0;
-			for (Inscription i : c.getInscriptions()) {
-				if (completedInscriptionsThisMonth.contains(i)) {
-					auxPoints += i.getChallenge().getPoints();
-				}
-			}
-			if (cPoints == null || auxPoints > cPoints) {
-				client = c;
-				cPoints = auxPoints;
-			}
-		}
+		
+		// client with more points
+		String client = null;
+		String email = null;
+		Integer cPoints = null;
+		
+		DashboardAdminChallengesTopClient d1 = this.dashboardsAdminService.getTopClient(month, year);
+		client = d1.getUsername();
+		email = d1.getEmail();
+		cPoints = d1.getPoints();
 
 		model.addAttribute("client", client);
 		model.addAttribute("cPoints", cPoints);
+		model.addAttribute("email", email);
 
 		// Guild with more points
-		Guild guild = null;
+		String guild = null;
 		Integer gPoints = null;
 
-		List<Guild> Allguilds = (List<Guild>) this.guildService.findAllGuild();
-		for (Guild g : Allguilds) {
-
-			clients = (List<Client>) this.guildService.findAllClientesByGuild(g);
-			Integer auxcPoints = 0;
-			for (Client c : clients) {
-				for (Inscription i : c.getInscriptions()) {
-					if (completedInscriptionsThisMonth.contains(i)) {
-						auxcPoints += i.getChallenge().getPoints();
-					}
-				}
-			}
-
-			if (gPoints == null || auxcPoints > gPoints) {
-				guild = g;
-				gPoints = auxcPoints;
-			}
-		}
+		DashboardAdminChallengesTopGuild d2 = this.dashboardsAdminService.getTopGuild(month, year);
+		guild = d2.getGuild();
+		gPoints = d2.getPoints();
 
 		model.addAttribute("guild", guild);
 		model.addAttribute("gPoints", gPoints);
 
+		
 		// Graphs
-		String[] challengesNames = new String[challenges.size()];
-		for (int i = 0; i < challenges.size(); i++) {
-			challengesNames[i] = challenges.get(i).getName();
-		}
+		String[] challengesNames = this.dashboardsAdminService.getChallengesNames(month, year);
 		model.addAttribute("challengesNames", challengesNames);
 
-		// Percentage of clients who completed each challenge
-		Integer numberOfClients = this.clientService.findAllClient().size();
-		Double[] percentageClients = new Double[challenges.size()];
-
-		for (int i = 0; i < challenges.size(); i++) {
-			Double clientsWhoCompleted = (double) this.inscriptionService
-					.findInscriptionsByChallengeId(challenges.get(i).getId()).stream()
-					.filter(ins -> ins.getStatus().equals(Status.COMPLETED)).count();
-			percentageClients[i] = (clientsWhoCompleted / numberOfClients) * 100;
-		}
+		// Percentage of clients who completed each challenge¡
+		Double[] percentageClients = this.dashboardsAdminService.getPercentageClients(month, year);
 
 		model.addAttribute("percentageClients", percentageClients);
 
 		// Percentage of Guilds who completed each challenge
 		List<Guild> guilds = (List<Guild>) this.guildService.findAllGuild();
 		Integer numberOfGuilds = guilds.size();
-		Double[] percentageGuilds = new Double[challenges.size()];
-
-		for (int i = 0; i < challenges.size(); i++) {
-			Double guildsWhoCompleted = 0.;
-			Challenge cll = challenges.get(i);
-			for (Guild g : guilds) {
-				if (this.guildService.findAllClientesByGuild(g).stream().anyMatch(c -> c.getInscriptions().stream()
-						.anyMatch(ins -> ins.getChallenge().equals(cll) && ins.getStatus().equals(Status.COMPLETED))))
-					guildsWhoCompleted += 1.;
-			}
-			percentageGuilds[i] = (guildsWhoCompleted / numberOfGuilds) * 100;
-		}
-
+		
+		Double[] percentageGuilds = this.dashboardsAdminService.getPercentageGuilds(month, year);
+		
 		model.addAttribute("percentageGuilds", percentageGuilds);
 
 	}
@@ -228,4 +189,68 @@ public class DashboardsAdminController {
 		}
 		return date;
 	}
+	
+	/*
+	List<Inscription> completedInscriptionsThisMonth = this.dashboardsAdminService.findCompletedInscriptionsThisMonth(month);
+	if (completedInscriptionsThisMonth.isEmpty()) {
+		model.addAttribute("NoCompletedChallenges", true);
+		return;
+	}
+
+	List<Client> clients = (List<Client>) this.clientService.findAllClient();
+	for (Client c : clients) {
+		Integer auxPoints = 0;
+		for (Inscription i : c.getInscriptions()) {
+			if (completedInscriptionsThisMonth.contains(i)) {
+				auxPoints += i.getChallenge().getPoints();
+			}
+		}
+		if (cPoints == null || auxPoints > cPoints) {
+			client = c;
+			cPoints = auxPoints;
+		}
+	}*/
+	
+	/*List<Guild> Allguilds = (List<Guild>) this.guildService.findAllGuild();
+	for (Guild g : Allguilds) {
+
+		clients = (List<Client>) this.guildService.findAllClientesByGuild(g);
+		Integer auxcPoints = 0;
+		for (Client c : clients) {
+			for (Inscription i : c.getInscriptions()) {
+				if (completedInscriptionsThisMonth.contains(i)) {
+					auxcPoints += i.getChallenge().getPoints();
+				}
+			}
+		}
+
+		if (gPoints == null || auxcPoints > gPoints) {
+			guild = g;
+			gPoints = auxcPoints;
+		}
+	}*/
+	
+	/*Double[] percentageClients = new Double[challenges.size()];
+
+	for (int i = 0; i < challenges.size(); i++) {
+		Double clientsWhoCompleted = (double) this.inscriptionService
+				.findInscriptionsByChallengeId(challenges.get(i).getId()).stream()
+				.filter(ins -> ins.getStatus().equals(Status.COMPLETED)).count();
+		percentageClients[i] = (clientsWhoCompleted / numberOfClients) * 100;
+	}*/
+	
+	/*Double[] percentageGuilds = new Double[challenges.size()];
+
+	for (int i = 0; i < challenges.size(); i++) {
+		Double guildsWhoCompleted = 0.;
+		Challenge cll = challenges.get(i);
+		for (Guild g : guilds) {
+			if (this.guildService.findAllClientesByGuild(g).stream().anyMatch(c -> c.getInscriptions().stream()
+					.anyMatch(ins -> ins.getChallenge().equals(cll) && ins.getStatus().equals(Status.COMPLETED))))
+				guildsWhoCompleted += 1.;
+		}
+		percentageGuilds[i] = (guildsWhoCompleted / numberOfGuilds) * 100;
+	}
+
+	model.addAttribute("percentageGuilds", percentageGuilds);*/
 }

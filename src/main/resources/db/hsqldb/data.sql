@@ -356,3 +356,53 @@ INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is
 -- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,3);
 -- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,4);
 
+
+INSERT INTO users(username,password,enabled) VALUES ('client100','client1999',TRUE);
+INSERT INTO authorities VALUES (100,'client','client100');
+INSERT INTO clients VALUES (100, 'test1@yogogym.com','test', '1', '12345678B',18,20.0,183.0,true,80.0,1,'client100');
+
+INSERT INTO users(username,password,enabled) VALUES ('client101','client1999',TRUE);
+INSERT INTO authorities VALUES (101,'client','client101');
+INSERT INTO clients VALUES (101, 'test2@yogogym.com','test', '2', '12345678C',18,20.0,190.0,false,95.3,2,'client101');
+
+INSERT INTO users(username,password,enabled) VALUES ('client102','client1999',TRUE);
+INSERT INTO authorities VALUES (102,'client','client102');
+INSERT INTO clients VALUES (102, 'test3@yogogym.com','test', '3', '12345678D',18,20.0,177.0,true,110.7,3,'client102');
+
+INSERT INTO users(username,password,enabled) VALUES ('client103','client1999',TRUE);
+INSERT INTO authorities VALUES (103,'client','client103');
+INSERT INTO clients VALUES (103, 'test4@yogogym.com','test', '4', '12345678D',18,20.0,177.0,true,110.7,1,'client103');
+
+INSERT INTO users(username,password,enabled) VALUES ('client104','client1999',TRUE);
+INSERT INTO authorities VALUES (104,'client','client104');
+INSERT INTO clients VALUES (104, 'test5@yogogym.com','test', '5', '12345678D',18,20.0,177.0,true,110.7,1,'client104');
+
+INSERT INTO users(username,password,enabled) VALUES ('client105','client1999',TRUE);
+INSERT INTO authorities VALUES (105,'client','client105');
+INSERT INTO clients VALUES (105, 'test5@yogogym.com','test', '6', '12345678D',18,20.0,177.0,true,110.7,null,'client105');
+
+
+/* CHALLENGE */
+
+INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (10,'Test 1','Desc challenge 1','2020-05-27','2020-05-30','Reward1',10,10,10,1);
+INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (11,'Test 2','Desc challenge 2','2020-05-27','2020-05-30','Reward2',100,5,20,2);
+INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (12,'Test 3','Desc challenge 3','2020-05-27','2020-05-30','Reward3',500,4,40,10);
+
+/* INSCRIPTION */
+
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (10,2,'https://test.com',10);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (11,2,'https://test.com',11);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (12,2,'https://test.com',12);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (13,2,'https://test.com',12);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (14,2,'https://test.com',10);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (15,2,'https://test.com',11);
+
+/* CLIENT_INSCRIPTION */
+
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (100,10);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (101,11);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (102,12);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (103,13);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (104,14);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (105,15);
+
