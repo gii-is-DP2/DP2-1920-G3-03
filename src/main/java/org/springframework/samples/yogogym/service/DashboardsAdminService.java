@@ -35,13 +35,8 @@ public class DashboardsAdminService {
 		return this.dashboardRepository.nameEquipment(d2);
 	}
 
-	public Collection<Challenge> getChallengesOfMonth(Integer month) {
+	public Collection<Challenge> getChallengesOfMonthAndYear(int month, int year) {
 
-		Date now = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(now);
-		Integer year = cal.get(Calendar.YEAR);
-		
 		return this.dashboardRepository.findChallengesByMonthAndYear(month,year);
 	}
 
