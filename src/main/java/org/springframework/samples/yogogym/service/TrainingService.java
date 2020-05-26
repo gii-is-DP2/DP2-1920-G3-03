@@ -97,7 +97,13 @@ public class TrainingService {
 		long diffInMillies = Math.abs(endDate.getTime()-initialDate.getTime());
 		long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 		
-		Date now = Calendar.getInstance().getTime();
+		Calendar nowCal = Calendar.getInstance();
+		nowCal.set(Calendar.HOUR_OF_DAY, 0);
+		nowCal.set(Calendar.MINUTE, 0);
+		nowCal.set(Calendar.SECOND, 0);
+		nowCal.set(Calendar.MILLISECOND,0);
+		
+		Date now = nowCal.getTime();
 		
 		Boolean anyException = true;
 
