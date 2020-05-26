@@ -71,7 +71,7 @@ public class InscriptionServiceTest {
 	void shouldFindAllInscriptions(){
 		
 		Collection<Inscription> inscriptions = this.inscriptionService.findAll();
-		assertThat(inscriptions.size()).isEqualTo(7);	
+		assertThat(inscriptions.size()).isEqualTo(6);	
 	}
 	
 	@Test

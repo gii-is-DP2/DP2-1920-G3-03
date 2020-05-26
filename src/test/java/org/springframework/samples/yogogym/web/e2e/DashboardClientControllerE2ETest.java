@@ -25,25 +25,15 @@ public class DashboardClientControllerE2ETest {
 
 	private static final String TEST_USERNAME2 = "client2";
 
-	private static final Integer[] COUNT_BODY_PART = { 1, 4 };
-
-	private static final String[] NAME_BODY_PART = { "UPPER_TRUNK", "ARMS" };
-	
-	private static final Integer[] COUNT_BODY_PART_ALL = { 2, 8, 6 };
+	private static final Integer[] COUNT_BODY_PART_ALL = { 1, 4, 6 };
 
 	private static final String[] NAME_BODY_PART_ALL = { "UPPER_TRUNK", "ARMS", "ALL" };
 
-	private static final Integer[] COUNT_REPETITION_TYPE = { 5 };
-
-	private static final String[] NAME_REPETITION_TYPE = { "TIME_AND_REPS" };
-	
-	private static final Integer[] COUNT_REPETITION_TYPE_ALL = { 6, 10 };
+	private static final Integer[] COUNT_REPETITION_TYPE_ALL = { 6, 5 };
 
 	private static final String[] NAME_REPETITION_TYPE_ALL = { "TIME", "TIME_AND_REPS" };
-
-	private static final Integer SUM_KCAL = 500;
 	
-	private static final Integer SUM_KCAL_ALL = 1600;
+	private static final Integer SUM_KCAL_ALL = 1100;
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -53,20 +43,15 @@ public class DashboardClientControllerE2ETest {
 	void testInitAllDashboardClientSuccessful() throws Exception {
 		mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
 				.andExpect(view().name("client/dashboards/dashboard"))
-				.andExpect(model().attribute("hasBodyPartsMonth", true))
+				.andExpect(model().attribute("hasBodyPartsMonth", false))
 				.andExpect(model().attribute("hasBodyPartsAll", true))
-				.andExpect(model().attribute("hasRepetitionTypeMonth", true))
+				.andExpect(model().attribute("hasRepetitionTypeMonth", false))
 				.andExpect(model().attribute("hasRepetitionTypeAll", true))
-				.andExpect(model().attribute("hasKcalMonth", true)).andExpect(model().attribute("hasKcalAll", true))
-				.andExpect(model().attribute("orderBodyPartsMonth", NAME_BODY_PART))
-				.andExpect(model().attribute("countBodyPartsMonth", COUNT_BODY_PART))
+				.andExpect(model().attribute("hasKcalMonth", false)).andExpect(model().attribute("hasKcalAll", true))
 				.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART_ALL))
 				.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART_ALL))
-				.andExpect(model().attribute("orderRepetitionTypeMonth", NAME_REPETITION_TYPE))
-				.andExpect(model().attribute("countRepetitionTypeMonth", COUNT_REPETITION_TYPE))
 				.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE_ALL))
 				.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE_ALL))
-				.andExpect(model().attribute("kcalMonth", SUM_KCAL))
 				.andExpect(model().attribute("kcalAll", SUM_KCAL_ALL));
 	}
 	
