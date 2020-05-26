@@ -367,7 +367,7 @@ public class DataGenerator {
 		
 		for (int i = 0; i < size; i++)
 		{
-			print.print("INSERT INTO diets(id,name,description,kcal,protein,fat,carb) VALUES ("+ dietId +", 'Dieta " + dietId + "','Desc " + dietId + "'," + (rd.nextInt(500-200)+200) + "," + (rd.nextInt(5-1)+1) + "," + (rd.nextInt(5-1)+1) + "," + (rd.nextInt(5-1)+1) + ");\n");
+			print.print("INSERT INTO diets(id,name,description,kcal,protein,fat,carb,type) VALUES ("+ dietId +", 'Dieta " + dietId + "','Desc " + dietId + "'," + (rd.nextInt(500-200)+200) + "," + (rd.nextInt(5-1)+1) + "," + (rd.nextInt(5-1)+1) + "," + (rd.nextInt(5-1)+1) + ","+ rd.nextInt(5) +");\n");
 			
 			if(j > 3)
 				j = 1;

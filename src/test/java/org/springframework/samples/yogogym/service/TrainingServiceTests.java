@@ -502,7 +502,7 @@ public class TrainingServiceTests {
 	@Transactional
 	public void shouldFindTrainingWithPublicClient() {
 		Collection<Training> trainingsPublic = this.trainingService.findTrainingWithPublicClient();
-		assertThat(trainingsPublic.size()).isEqualTo(15);
+		assertThat(trainingsPublic.size()).isEqualTo(14);
 	}
 	
 	@ParameterizedTest
