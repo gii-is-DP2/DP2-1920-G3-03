@@ -68,7 +68,7 @@ public class DataGenerator {
 		//porcentajeQueHayaFoodEnDieta,porcentajeDeExistaUnaFoodEnEsaDieta
 		GenerateDietsFoods(print,0.5f,0.1f);
 		
-		startDate = LocalDate.now().plusYears(1);
+		startDate = LocalDate.of(LocalDate.now().getYear(), Month.JANUARY, 1);
 		//pTrainerCreatesTraining,pHasDiet
 		Map<String,List<Integer>> creatorTrainings = GenerateTrainings(print,startDate,0.7f,0.1f,5,500);
 		
@@ -457,7 +457,7 @@ public class DataGenerator {
 	    			  {
 	    				  print.print("INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES " + "(" + trainingId + ", '" + sDate +"','"+ eDate +"','Training" + trainingId + "', " + permisos + ", 'trainer" + tId + "', null);\n");
 	    			  }
-	    			  startDate_aux = endDate.plusDays(1);
+	    			  startDate_aux = endDate.plusDays(2);
 	    			  endDate = startDate_aux.plusDays(interval);
 	    			  
 	    			  trainingIds.add(trainingId);
