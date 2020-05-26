@@ -379,11 +379,13 @@ Como cliente quiero poder participar en los distintos retos propuestos por el gi
 
 #### Escenarios
 
-* **Listar los retos en los que no me he inscrito** Dado un cliente[client1], pinchará en la sección "new challenges", verá un listado con los diferentes retos propuestos, en este caso el "Challenge4", ya que aún no participa en el.
-* **Listar los retos en los que me he inscrito** Dado un cliente[client1], pinchará en la sección "my challenges", verá un listado con los diferentes retos en los que está inscrito, por ejemplo el "Challenge1", con estado "FAILED".
-* **Inscribirme en un reto** Dado un cliente[client2], pinchará en la sección "new challenges", verá un listado con los diferentes retos en los que está inscrito, por ejemplo el "Challenge4", clickará sobre él, verá los requisitos que se piden, y podrá inscribirse en el. Una vez hecho esto, ese reto aparecerá en "my challenges" con estado "PARTICIPATING".
-* **Completar un reto** Dado un cliente[client1], pinchará en "my challenges", después en el reto[Challenge5] con estado "PARTICIPATING", y pondrá una url donde demuestre que lo ha completado, y clickará submit, pasando al estado "submitted". El admin[admin1] irá a "submitted challenges", clickará sobre ese reto, y pondrá el estado "COMPLETED". Entonces en "my challenges" de [client1] el [Challenge5] aparecerá como completado.
-* **Completar un reto poniendo una url no valida** Dado un cliente[client1], pinchará en "my challenges", después en el reto[Challenge2] con estado "PARTICIPATING", y pondrá una url no válida, por lo que el sistema no debe dejarle enviarlo.
+* **Como cliente, listar los retos en los que no me he inscrito** Dado un cliente[client1], pinchará en la sección "new challenges", verá un listado con los diferentes retos propuestos, en este caso el "Challenge4", ya que aún no participa en el.
+* **Como cliente, listar los retos en los que me he inscrito** Dado un cliente[client1], pinchará en la sección "my challenges", verá un listado con los diferentes retos en los que está inscrito, por ejemplo el "Challenge1", con estado "FAILED".
+* **Como cliente, inscribirme en un reto** Dado un cliente[client2], pinchará en la sección "new challenges", verá un listado con los diferentes retos en los que está inscrito, por ejemplo el "Challenge4", clickará sobre él, verá los requisitos que se piden, y podrá inscribirse en el. Una vez hecho esto, ese reto aparecerá en "my challenges" con estado "PARTICIPATING".
+* **Como cliente, completar y enviar un reto** Dado un cliente[client1], pinchará en "my challenges", después en el reto[Challenge5] con estado "PARTICIPATING", y pondrá una url donde demuestre que lo ha completado, y clickará submit, pasando al estado "submitted".
+* **Como cliente, completar un reto poniendo una url no valida** Dado un cliente[client1], pinchará en "my challenges", después en el reto[Challenge2] con estado "PARTICIPATING", y pondrá una url no válida, por lo que el sistema no debe dejarle enviarlo.
+* **Como administrador, listar los retos enviados para su evaluación**  Dado un admin[admin1] irá a "submitted challenges", se le mostrará un listado con todos los clientes y retos que han para su evaluación.
+* **Como administrador, evaluar un challenge**  Dado un admin[admin1]clickará sobre el reto a evaluar, y se mostrará el reto y la url que el cliente envió. Pondrá el estado "COMPLETED". Entonces en "my challenges" de [client1] el [Challenge5] aparecerá como completado
 ---
 
 #### HU22 - Clasificación de los Retos
