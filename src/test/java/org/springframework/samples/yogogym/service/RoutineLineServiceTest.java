@@ -244,8 +244,12 @@ public class RoutineLineServiceTest {
 	protected Training setUpTraining(final int trainingId, final int DaysFromNowToFinishTraining)
 	{
 		Training res = this.trainingService.findTrainingById(trainingId);
+		int offset = 500;
 		
 		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, offset);
+		res.setInitialDate(cal.getTime());
+		
 		cal.add(Calendar.DAY_OF_MONTH, DaysFromNowToFinishTraining);
 		Date newEndDate = cal.getTime();
 		

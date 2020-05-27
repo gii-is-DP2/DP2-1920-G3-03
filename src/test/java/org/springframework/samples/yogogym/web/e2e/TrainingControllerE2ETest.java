@@ -286,7 +286,7 @@ public class TrainingControllerE2ETest {
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("trainer"))
 				.andExpect(model().attributeExists("actualDate"))
-				.andExpect(model().attribute("trainer", hasProperty("clients", hasSize(5))))
+				.andExpect(model().attribute("trainer", hasProperty("clients", hasSize(4))))
 				.andExpect(model().attribute("trainer", hasProperty("clients", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_ID)),hasProperty("trainings", hasSize(3)))))))
 				.andExpect(model().attribute("trainer", hasProperty("clients", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_ID)),hasProperty("trainings", hasItem(allOf(
 					hasProperty("id", equalTo(CLIENT1_TRAINING1_ID)),hasProperty("name", is("Entrenamiento1")),
