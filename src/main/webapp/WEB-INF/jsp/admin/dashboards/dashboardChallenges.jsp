@@ -18,7 +18,7 @@
 
 <form id="form1" onsubmit="/admin/dashboardChallenges/">
 		
-	<input type="month" name="monthAndYear"/>
+	<input type="month" name="monthAndYear" required />
 	<input type="submit" value="Enviar"/>
 
 </form>

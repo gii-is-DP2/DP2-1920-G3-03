@@ -1,6 +1,5 @@
 package org.springframework.samples.yogogym.repository;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -8,9 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.DashboardAdmin;
-import org.springframework.samples.yogogym.model.Inscription;
+import org.springframework.samples.yogogym.projections.DashboardAdminChallengesPercentageClients;
+import org.springframework.samples.yogogym.projections.DashboardAdminChallengesPercentageGuilds;
 import org.springframework.samples.yogogym.projections.DashboardAdminChallengesTopClient;
 import org.springframework.samples.yogogym.projections.DashboardAdminChallengesTopGuild;
 
@@ -25,16 +24,17 @@ public interface DashboardsAdminRepository extends CrudRepository<DashboardAdmin
 	List<String> nameEquipment(@Param("init") Date init);
 	
 
-	@Query("SELECT c FROM Challenge c WHERE YEAR(c.endDate)=:year AND MONTH(c.endDate)=:month")
-	Collection<Challenge> findChallengesByMonthAndYear(Integer month, Integer year);
 	
-	@Query("SELECT i FROM Inscription i WHERE YEAR(i.challenge.endDate)=:year AND MONTH(i.challenge.endDate)=:month AND i.status=2")
-	List<Inscription> findCompletedInscriptionsByMonthAndYear(int month, int year);
+	// Dashboard Challenges
 	
-	// LO NUEVO
+	@Query("SELECT COUNT(c) FROM Challenge c WHERE YEAR(c.endDate)=:year AND MONTH(c.endDate)=:month")
+	int countChallengesOfMonthAndYear(int month, int year);
 	
 	@Query("SELECT count(i) FROM Inscription i WHERE YEAR(i.challenge.endDate)=:year AND MONTH(i.challenge.endDate)=:month AND i.status=2")
 	int countCompletedInscriptionsOfMonthAndYear(int month, int year);
+	
+	@Query("SELECT c.name FROM Challenge c WHERE YEAR(c.endDate)=:year AND MONTH(c.endDate)=:month ORDER BY c.name ASC")
+	String[] getChallengesNamesOfMonthAndYear(int month, int year);
 	
 	@Query("SELECT CONCAT(c.firstName,' ', c.lastName) AS username, c.email AS email, SUM(ch.points) AS points FROM Client c "
 			+ "INNER JOIN c.inscriptions i INNER JOIN i.challenge ch WHERE (YEAR(ch.endDate)=:year AND MONTH(ch.endDate)=:month AND i.status=2) "
@@ -46,23 +46,21 @@ public interface DashboardsAdminRepository extends CrudRepository<DashboardAdmin
 			+ " GROUP BY g ORDER BY points DESC")
 	List<DashboardAdminChallengesTopGuild> findTopGuild(Integer month, Integer year, Pageable pageable);
 	
-	
-	@Query("SELECT c.name FROM Challenge c WHERE YEAR(c.endDate)=:year AND MONTH(c.endDate)=:month ORDER BY c.name ASC")
-	String[] getChallengesNames(int month, int year);
-	
-	@Query("SELECT COUNT(i)/(SELECT (count(c)*1.0) FROM Client c) FROM Inscription i "
+	@Query("SELECT COUNT(i)/(SELECT (count(c)*1.0) FROM Client c) AS percentageClients, ch.name AS challengeName"
+			+ " FROM Inscription i "
 			+ "INNER JOIN i.challenge ch WHERE (YEAR(ch.endDate)=:year AND MONTH(ch.endDate)=:month AND i.status=2) "
 			+ "GROUP BY ch ORDER BY ch.name ASC")
-	Double[] getPercentageClients(int month, int year);
+	List<DashboardAdminChallengesPercentageClients> getPercentageClients(int month, int year);
 	
-	@Query("SELECT COUNT(DISTINCT c.guild)/(SELECT (count(g)*1.0) FROM Guild g) FROM Client c INNER JOIN c.inscriptions i "
+	@Query("SELECT COUNT(DISTINCT c.guild)/(SELECT (count(g)*1.0) FROM Guild g) AS percentageGuilds, ch.name AS challengeName"
+			+ " FROM Client c INNER JOIN c.inscriptions i "
 			+ "INNER JOIN i.challenge ch WHERE (YEAR(ch.endDate)=:year AND MONTH(ch.endDate)=:month AND i.status=2) "
 			+ "GROUP BY ch ORDER BY ch.name ASC")
-	Double[] getPercentageGuilds(int month, int year);
+	List<DashboardAdminChallengesPercentageGuilds> getPercentageGuilds(int month, int year);
 	
-	// YA NO NUEVO
-
-	// General info about the gym
+	
+	// Dashboard General
+	
 	@Query("SELECT count(c) FROM Client c")
 	Integer countClients();
 
@@ -71,6 +69,5 @@ public interface DashboardsAdminRepository extends CrudRepository<DashboardAdmin
 
 	@Query("SELECT count(c) FROM Client c GROUP BY c.guild ")
 	List<Integer> countClientsPerGuild();
-
 
 }
