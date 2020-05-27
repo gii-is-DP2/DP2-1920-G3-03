@@ -37,7 +37,7 @@ public class DashboardsAdminController {
 	}
 	
 	
-	@GetMapping("/admin/dashboardChallenges/")
+	@GetMapping("/admin/dashboardChallenges")
 	public String getDashboardChallenges(@PathParam("monthAndYear") String monthAndYear, ModelMap model) {
 
 		int date [] = getMonthAndYear(monthAndYear);
