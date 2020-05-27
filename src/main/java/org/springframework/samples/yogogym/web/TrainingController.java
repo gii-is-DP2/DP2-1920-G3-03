@@ -192,7 +192,7 @@ public class TrainingController {
 				return EXCEPTION;
 			}
 			
-			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result,false);
+			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result);
 			
 			if(Boolean.FALSE.equals(saveTrainingSuccessful)) {
 				return TRAINER_TRAINING_CREATE_UPDATE;
@@ -270,7 +270,7 @@ public class TrainingController {
 			training.setRoutines(oldTraining.getRoutines());
 			training.setId(trainingId);
 			
-			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result,false);
+			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result);
 			
 			return Boolean.FALSE.equals(saveTrainingSuccessful)?TRAINER_TRAINING_CREATE_UPDATE:TRAINER_TRAINING_CREATE_UPDATE_REDIRECT_ID;
 			
@@ -330,8 +330,11 @@ public class TrainingController {
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
 		Boolean isClientOfLogged = isClientOfLoggedTrainer(clientId,trainerUsername);
+		Boolean isTrainingOfClient = isTrainingOfClient(trainingId,clientId);
+		Boolean isTrainingEmpty = isTrainingEmpty(trainingId);
+		Boolean isPublic = this.clientService.isPublicByTrainingId(idTrainingToCopy);
 		
-		if(Boolean.FALSE.equals(isClientOfLogged)||training.getEditingPermission().equals(EditingPermission.CLIENT)||!isTrainingOfClient(trainingId,clientId)||!isTrainingEmpty(trainingId)||!this.clientService.isPublicByTrainingId(idTrainingToCopy)) {
+		if(Boolean.FALSE.equals(isClientOfLogged)||training.getEditingPermission().equals(EditingPermission.CLIENT)||Boolean.FALSE.equals(isTrainingOfClient)||Boolean.FALSE.equals(isTrainingEmpty)||Boolean.FALSE.equals(isPublic)) {
 			return EXCEPTION;
 		}
 		Training trainingToCopy = this.trainingService.findTrainingById(idTrainingToCopy);
@@ -423,7 +426,7 @@ public class TrainingController {
 				return EXCEPTION;
 			}
 			
-			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result,false);
+			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result);
 			
 			if(Boolean.FALSE.equals(saveTrainingSuccessful)) {
 				return CLIENT_TRAINING_CREATE_UPDATE;
@@ -501,7 +504,7 @@ public class TrainingController {
 			training.setRoutines(oldTraining.getRoutines());
 			training.setId(trainingId);
 			
-			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result,false);
+			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result);
 			
 			return Boolean.FALSE.equals(saveTrainingSuccessful)?CLIENT_TRAINING_CREATE_UPDATE:CLIENT_TRAINING_CREATE_UPDATE_REDIRECT_ID;
 		}
@@ -564,9 +567,7 @@ public class TrainingController {
 	private String getActualDate() {
 		Date now = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		String actualDate = dateFormat.format(now);
-		
-		return actualDate;
+		return dateFormat.format(now);
 	}
 	
 	//Copy Training
@@ -620,76 +621,34 @@ public class TrainingController {
 		return nuevo;
 	}
 	
-	private Boolean trySaveTraining(Training training, Client client, BindingResult result, Boolean isTrainerUser) {
+	private Boolean trySaveTraining(Training training, Client client, BindingResult result) {
 		
 		Boolean isSuccessful = true;
 		
-		if(Boolean.TRUE.equals(isTrainerUser)) {
-			try {			
-				this.trainingService.saveTraining(training,client);
-			} 
-			catch (PastInitException e) {
-				result.rejectValue(INITIAL_DATE, null, INITIAL_DATE_IN_PAST);
-				isSuccessful = false;
-			}
-			catch (PastEndException e) {
-				result.rejectValue(END_DATE, null, END_DATE_IN_PAST);
-				isSuccessful = false;
-			}
-			catch (EndBeforeEqualsInitException e) {
-				result.rejectValue(END_DATE, null, END_BEFORE_INIT);
-				isSuccessful = false;
-			}
-			catch (LongerThan90DaysException e) {
-				result.rejectValue(END_DATE, null, LONGER_THAN_90);
-				isSuccessful = false;
-			}
-			catch (InitInTrainingException e) {
-				this.rejectTrainingDateError(e, result);
-				isSuccessful = false;
-			}
-			catch (EndInTrainingException e) {
-				this.rejectTrainingDateError(e, result);
-				isSuccessful = false;
-			}
-			catch (PeriodIncludingTrainingException e) {
-				this.rejectTrainingDateError(e, result);
-				isSuccessful = false;
-			}
+		try {			
+			this.trainingService.saveTraining(training,client);
+		} 
+		catch (PastInitException e) {
+			result.rejectValue(INITIAL_DATE, null, INITIAL_DATE_IN_PAST);
+			isSuccessful = false;
 		}
-		else {
-			try {			
-				this.trainingService.saveTraining(training,client);
-			} 
-			catch (PastInitException e) {
-				result.rejectValue(INITIAL_DATE, null, INITIAL_DATE_IN_PAST);
-				isSuccessful = false;
-			}
-			catch (PastEndException e) {
-				result.rejectValue(END_DATE, null, END_DATE_IN_PAST);
-				isSuccessful = false;
-			}
-			catch (EndBeforeEqualsInitException e) {
-				result.rejectValue(END_DATE, null, END_BEFORE_INIT);
-				isSuccessful = false;
-			}
-			catch (LongerThan90DaysException e) {
-				result.rejectValue(END_DATE, null, LONGER_THAN_90);
-				isSuccessful = false;
-			}
-			catch (InitInTrainingException e) {
-				this.rejectTrainingDateError(e, result);
-				isSuccessful = false;
-			}
-			catch (EndInTrainingException e) {
-				this.rejectTrainingDateError(e, result);
-				isSuccessful = false;
-			}
-			catch (PeriodIncludingTrainingException e) {
-				this.rejectTrainingDateError(e, result);
-				isSuccessful = false;
-			}
+		catch (PastEndException e) {
+			result.rejectValue(END_DATE, null, END_DATE_IN_PAST);
+			isSuccessful = false;
 		}
+		catch (EndBeforeEqualsInitException e) {
+			result.rejectValue(END_DATE, null, END_BEFORE_INIT);
+			isSuccessful = false;
+		}
+		catch (LongerThan90DaysException e) {
+			result.rejectValue(END_DATE, null, LONGER_THAN_90);
+			isSuccessful = false;
+		}
+		catch (Exception e) {
+			this.rejectTrainingDateError(e, result);
+			isSuccessful = false;
+		}
+		
 		return isSuccessful;
 	}
 	
