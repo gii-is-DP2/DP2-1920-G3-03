@@ -93,6 +93,6 @@ public class Training extends BaseEntity{
 	}
 	
 	public Boolean isEmpty() {
-		return this.getDiet()==null && this.getRoutines().isEmpty();
+		return this.getDiet()==null && (this.getRoutines().isEmpty()||this.getRoutines()==null);
 	}
 }
