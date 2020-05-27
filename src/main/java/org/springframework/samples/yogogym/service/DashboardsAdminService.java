@@ -66,14 +66,14 @@ public class DashboardsAdminService {
 	@Transactional(readOnly = true)
 	public DashboardAdminChallengesTopClient getTopClient(int month, int year) {
 
-		return this.dashboardRepository.findTopClient(month, year, PageRequest.of(0,1)).get(0);
+		return this.dashboardRepository.getTopClient(month, year, PageRequest.of(0,1)).get(0);
 	}
 	
 	@Cacheable("topPointGuild")
 	@Transactional(readOnly = true)
 	public DashboardAdminChallengesTopGuild getTopGuild(int month, int year) {
 
-		return this.dashboardRepository.findTopGuild(month, year, PageRequest.of(0,1)).get(0);
+		return this.dashboardRepository.getTopGuild(month, year, PageRequest.of(0,1)).get(0);
 	}
 	
 	@Cacheable("percentageClients")
