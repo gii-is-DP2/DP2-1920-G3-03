@@ -113,8 +113,8 @@ INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,di
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (12, DATE_ADD(CURDATE(), INTERVAL -7 DAY), DATE_ADD(CURDATE(), INTERVAL 7 DAY), 'Entrenamiento1', 1, 'client5', null);
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (13, DATE_ADD(CURDATE(), INTERVAL 14 DAY), DATE_ADD(CURDATE(), INTERVAL 21 DAY), 'Entrenamiento2', 2, 'trainer1', null);
 
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (14, DATE_ADD(CURDATE(), INTERVAL, 200), DATE_ADD(CURDATE(), INTERVAL, 208), 'Entrenamiento10_1', 0, 'trainer1', null);
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (15, DATE_ADD(CURDATE(), INTERVAL, 210), DATE_ADD(CURDATE(), INTERVAL, 215), 'Entrenamiento10_2', 1, 'client10', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (14, DATE_ADD(CURDATE(), INTERVAL 200 DAY), DATE_ADD(CURDATE(), INTERVAL 208 DAY), 'Entrenamiento10_1', 0, 'trainer1', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (15, DATE_ADD(CURDATE(), INTERVAL 210 DAY), DATE_ADD(CURDATE(), INTERVAL 215 DAY), 'Entrenamiento10_2', 1, 'client10', null);
 
 /* ROUTINE */
 
@@ -138,6 +138,7 @@ INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (14,'
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (15,'Routine 7', 'Desc',7,9);
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (16,'Routine 8', 'Desc',8,9);
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (17,'Routine 9', 'Desc',9,9);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (18,'Routine 10', 'Desc',9,11);
 
 /* EQUIPMENT */
 

@@ -138,6 +138,7 @@ INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (14,'
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (15,'Routine 7', 'Desc',7,9);
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (16,'Routine 8', 'Desc',8,9);
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (17,'Routine 9', 'Desc',9,9);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (18,'Routine 10', 'Desc',9,11);
 
 /* EQUIPMENT */
 
