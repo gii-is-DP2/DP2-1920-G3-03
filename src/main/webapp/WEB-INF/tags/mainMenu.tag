@@ -28,3 +28,8 @@
  	<span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
 	<span>Error</span>
 </yogogym:menuItem>
+
+<yogogym:menuItem active="${name eq 'tracks'}" url="/mainMenu/tracks" title="Tracks">
+	<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+	<span>Tracks</span>
+</yogogym:menuItem>
