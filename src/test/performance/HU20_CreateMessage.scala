@@ -6,7 +6,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.jdbc.Predef._
 
-class HU20_CreateMessage_GeneratedData extends Simulation {
+class HU20_CreateMessage extends Simulation {
 
 	var clientId: String = "1"
 	var guildId: String = "1"
@@ -80,7 +80,7 @@ class HU20_CreateMessage_GeneratedData extends Simulation {
 			.check(css("input[name=_csrf]", "value").saveAs("stoken")))
 		.pause(37)
 		.exec(http("NewMessagePost")
-			.post("/client/client" + clientId + "/guilds/" + guildId + "/forums/" + forumId + "messages/create")
+			.post("/client/client" + clientId + "/guilds/" + guildId + "/forums/" + forumId + "/messages/create")
 			.headers(headers_2)
 			.formParam("content", "Estoy haciendo un mensaje de prueba en el Calisthenics Forum.")
 			.formParam("_csrf", "${stoken}"))
@@ -94,7 +94,7 @@ class HU20_CreateMessage_GeneratedData extends Simulation {
 			.check(css("input[name=_csrf]", "value").saveAs("stoken")))
 		.pause(37)
 		.exec(http("NewEmptyMessagePost")
-			.post("/client/client" + clientId + "/guilds/" + guildId + "/forums/" + forumId + "messages/create")
+			.post("/client/client" + clientId + "/guilds/" + guildId + "/forums/" + forumId + "/messages/create")
 			.headers(headers_2)
 			.formParam("content", "")
 			.formParam("_csrf", "${stoken}"))
@@ -116,8 +116,8 @@ class HU20_CreateMessage_GeneratedData extends Simulation {
 																NewEmptyMessage.newEmptyMessage)															
 
 	setUp(
-		createNewMessageScn.inject(rampUsers(4000) during (100 seconds)),
-		createNewEmptyMessageScn.inject(rampUsers(4000) during (100 seconds))
+		createNewMessageScn.inject(rampUsers(100) during (100 seconds)),
+		createNewEmptyMessageScn.inject(rampUsers(100) during (100 seconds))
 	).protocols(httpProtocol)
 	.assertions(
 		global.responseTime.max.lt(5000),
