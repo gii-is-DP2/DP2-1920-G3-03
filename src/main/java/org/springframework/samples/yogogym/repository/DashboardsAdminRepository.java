@@ -39,12 +39,12 @@ public interface DashboardsAdminRepository extends CrudRepository<DashboardAdmin
 	@Query("SELECT CONCAT(c.firstName,' ', c.lastName) AS username, c.email AS email, SUM(ch.points) AS points FROM Client c "
 			+ "INNER JOIN c.inscriptions i INNER JOIN i.challenge ch WHERE (YEAR(ch.endDate)=:year AND MONTH(ch.endDate)=:month AND i.status=2) "
 			+ "GROUP BY c ORDER BY points DESC")
-	List<DashboardAdminChallengesTopClient> findTopClient(Integer month, Integer year, Pageable pageable);
+	List<DashboardAdminChallengesTopClient> getTopClient(Integer month, Integer year, Pageable pageable);
 	
 	@Query("SELECT g.name AS guild, SUM(ch.points) AS points FROM Client c INNER JOIN c.inscriptions i INNER JOIN i.challenge "
 			+ "ch INNER JOIN c.guild g WHERE (YEAR(ch.endDate)=:year AND MONTH(ch.endDate)=:month AND i.status=2)"
 			+ " GROUP BY g ORDER BY points DESC")
-	List<DashboardAdminChallengesTopGuild> findTopGuild(Integer month, Integer year, Pageable pageable);
+	List<DashboardAdminChallengesTopGuild> getTopGuild(Integer month, Integer year, Pageable pageable);
 	
 	@Query("SELECT COUNT(i)/(SELECT (count(c)*1.0) FROM Client c) AS percentageClients, ch.name AS challengeName"
 			+ " FROM Inscription i "
