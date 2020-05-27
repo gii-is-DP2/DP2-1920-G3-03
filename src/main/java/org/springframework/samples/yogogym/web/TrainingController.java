@@ -15,8 +15,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.model.Routine;
-import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.User;
@@ -303,8 +301,10 @@ public class TrainingController {
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
 		Boolean isClientOfLogged = isClientOfLoggedTrainer(clientId,trainerUsername);
+		Boolean isTrainingOfClient = isTrainingOfClient(trainingId,clientId);
+		Boolean isTrainingEmpty = training.isEmpty();
 		
-		if(Boolean.FALSE.equals(isClientOfLogged)||training.getEditingPermission().equals(EditingPermission.CLIENT)||!isTrainingOfClient(trainingId,clientId)||!isTrainingEmpty(trainingId)) {
+		if(Boolean.FALSE.equals(isClientOfLogged)||training.getEditingPermission().equals(EditingPermission.CLIENT)||Boolean.FALSE.equals(isTrainingOfClient)||Boolean.FALSE.equals(isTrainingEmpty)) {
 			return EXCEPTION;
 		}
 		
@@ -331,7 +331,7 @@ public class TrainingController {
 		
 		Boolean isClientOfLogged = isClientOfLoggedTrainer(clientId,trainerUsername);
 		Boolean isTrainingOfClient = isTrainingOfClient(trainingId,clientId);
-		Boolean isTrainingEmpty = isTrainingEmpty(trainingId);
+		Boolean isTrainingEmpty = training.isEmpty();
 		Boolean isPublic = this.clientService.isPublicByTrainingId(idTrainingToCopy);
 		
 		if(Boolean.FALSE.equals(isClientOfLogged)||training.getEditingPermission().equals(EditingPermission.CLIENT)||Boolean.FALSE.equals(isTrainingOfClient)||Boolean.FALSE.equals(isTrainingEmpty)||Boolean.FALSE.equals(isPublic)) {
@@ -339,10 +339,10 @@ public class TrainingController {
 		}
 		Training trainingToCopy = this.trainingService.findTrainingById(idTrainingToCopy);
 		
-		Training nuevo = copyTrainingInfo(trainingToCopy,training);
+		training.copyTrainingInfo(trainingToCopy);
 		
 		try {
-			this.trainingService.saveTraining(nuevo,client);
+			this.trainingService.saveTraining(training,client);
 		}catch(Exception e) {
 			return EXCEPTION;
 		}
@@ -436,7 +436,6 @@ public class TrainingController {
 				Training newTraining = allTrainingsClient.get(allTrainingsClient.size()-1);
 				return CLIENT_TRAINING_LIST_REDIRECT_URL+newTraining.getId();
 			}
-		
 		}
 	}
 	
@@ -571,54 +570,10 @@ public class TrainingController {
 	}
 	
 	//Copy Training
-	
-	private boolean isTrainingEmpty(int trainingId) {
-		Training training = this.trainingService.findTrainingById(trainingId);
-		return training.getDiet()==null && training.getRoutines().isEmpty();
-	}
 
 	private boolean isTrainingOfClient(int trainingId, int clientId) {
 		Collection<Integer> list = this.trainingService.findTrainingIdFromClient(clientId);
 		return list.contains(trainingId);
-	}
-	
-	private Training copyTrainingInfo(Training trainingToCopy, Training emptyTraining) {
-		Training nuevo = new Training();
-		if(trainingToCopy.getDiet()!=null) {
-			nuevo.setDiet(trainingToCopy.getDiet());
-		}
-		if(trainingToCopy.getRoutines()!=null) {
-			Collection<Routine> routines = new ArrayList<>();
-			for(Routine r : trainingToCopy.getRoutines()) {
-				Routine nueva = new Routine();
-				if(r.getRoutineLine()!=null) {
-					Collection<RoutineLine> routinesLines = new ArrayList<>();
-					for(RoutineLine rl : r.getRoutineLine()) {
-						RoutineLine nuevaRl = new RoutineLine();
-						nuevaRl.setExercise(rl.getExercise());
-						nuevaRl.setReps(rl.getReps());
-						nuevaRl.setSeries(rl.getSeries());
-						nuevaRl.setTime(rl.getTime());
-						nuevaRl.setWeight(rl.getWeight());
-						routinesLines.add(nuevaRl);
-					}
-					nueva.setRoutineLine(routinesLines);
-				}
-				nueva.setDescription(r.getDescription());
-				nueva.setName(r.getName());
-				nueva.setRepsPerWeek(r.getRepsPerWeek());
-				routines.add(nueva);
-			}
-			nuevo.setRoutines(routines);
-		}
-		nuevo.setAuthor(emptyTraining.getAuthor());
-		nuevo.setEditingPermission(emptyTraining.getEditingPermission());
-		nuevo.setEndDate(emptyTraining.getEndDate());
-		nuevo.setId(emptyTraining.getId());
-		nuevo.setInitialDate(emptyTraining.getInitialDate());
-		nuevo.setName(emptyTraining.getName());
-		
-		return nuevo;
 	}
 	
 	private Boolean trySaveTraining(Training training, Client client, BindingResult result) {
