@@ -78,36 +78,25 @@ public class InscriptionControllerTest {
 		
 		// Challenge 1:
 		Challenge challenge1 = createChallenge(testChallengeId1, "Challenge1 Name Test", initialDate, endDate);
-		
 		given(this.challengeService.findChallengeById(testChallengeId1)).willReturn(challenge1);
 		
 		// Challenge 2:
 		Challenge challenge2 = createChallenge(testChallengeId2, "Challenge2 Name Test", initialDate, endDate);
-
 		given(this.challengeService.findChallengeById(testChallengeId2)).willReturn(challenge2);
 		
 		// Inscription 1 (Submitted):
 		
-		Inscription inscription1 = new Inscription();
-		inscription1.setChallenge(challenge1);
-		inscription1.setId(testInscriptionId1);
-		inscription1.setStatus(Status.SUBMITTED);
-		
+		Inscription inscription1 = createInscription(testInscriptionId1, Status.SUBMITTED, challenge1);
 		given(this.inscriptionService.findInscriptionByInscriptionId(testInscriptionId1)).willReturn(inscription1);
 		
 		// Inscription 2 (Submitted):
 
-		Inscription inscription2 = new Inscription();
-		inscription2.setChallenge(challenge1);
-		inscription2.setId(testInscriptionId2);
-		inscription2.setStatus(Status.PARTICIPATING);
-
+		Inscription inscription2 = createInscription(testInscriptionId2, Status.PARTICIPATING, challenge1);
 		given(this.inscriptionService.findInscriptionByInscriptionId(testInscriptionId2)).willReturn(inscription2);
 		
 		// Client 1:
 		Client client1 = createClient(testClientId1,testClientUsername1);
 		client1.addInscription(inscription1);
-		
 		given(this.clientService.findClientByInscriptionId(testInscriptionId1)).willReturn(client1);
 		given(this.clientService.findClientByUsername(testClientUsername1)).willReturn(client1);
 		
@@ -224,6 +213,16 @@ public class InscriptionControllerTest {
 		c.setExercise(exercise1);
 
 		return c;
+	}
+	
+	private Inscription createInscription(int inscriptionId, Status status, Challenge challenge) {
+
+		Inscription inscription = new Inscription();
+		inscription.setChallenge(challenge);
+		inscription.setId(inscriptionId);
+		inscription.setStatus(status);
+		
+		return inscription;
 	}
 	
 	private Client createClient(int id, String username) {

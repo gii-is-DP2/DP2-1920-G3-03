@@ -35,6 +35,12 @@ public class ChallengeControllerE2ETest {
 	private static final int CHALLENGE_ID_6 = 6;
 	
 	private static final String CLIENT_USERNAME_1 = "client1";
+	private static final String EMPTY_STRING = "";
+	private static final String SAME_DATE_INITIAL_1 = "2070/01/01";
+	private static final String SAME_DATE_END_1 = "2070/01/02";
+	private static final String SAME_DATE_INITIAL_2 = "2075/01/01";
+	private static final String SAME_DATE_END_2 = "2075/01/02";
+	private static final String EXCEPTION = "exception";
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -105,12 +111,12 @@ public class ChallengeControllerE2ETest {
 	void testProcessCreateChallengeHasErrorEmptyParameters() throws Exception {
 		mockMvc.perform(post("/admin/challenges/new")
 				.with(csrf())
-				.param("name", "")
-				.param("description", "")
-				.param("initialDate", "")
-				.param("endDate", "")
-				.param("points", "")
-				.param("reward","")
+				.param("name", EMPTY_STRING)
+				.param("description", EMPTY_STRING)
+				.param("initialDate", EMPTY_STRING)
+				.param("endDate", EMPTY_STRING)
+				.param("points", EMPTY_STRING)
+				.param("reward",EMPTY_STRING)
 				.param("reps","10")
 				.param("weight","10.")
 				.param("exercise.id","1"))
@@ -184,22 +190,22 @@ public class ChallengeControllerE2ETest {
 	void testProcessCreateChallengeFormErrorMore3SameWeek() throws Exception {
 
 		mockMvc.perform(post("/admin/challenges/new").with(csrf()).param("name", "Test More 3 1").param("description", "Test")
-				.param("initialDate", "2070/01/01").param("endDate", "2070/01/02").param("points", "10")
+				.param("initialDate", SAME_DATE_INITIAL_1).param("endDate", SAME_DATE_END_1).param("points", "10")
 				.param("reward", "Reward").param("reps", "10").param("weight", "10.").param("exercise.id", "1"))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/admin/challenges"));
 		
 		mockMvc.perform(post("/admin/challenges/new").with(csrf()).param("name", "Test More 3 2").param("description", "Test")
-				.param("initialDate", "2070/01/01").param("endDate", "2070/01/02").param("points", "10")
+				.param("initialDate", SAME_DATE_INITIAL_1).param("endDate", SAME_DATE_END_1).param("points", "10")
 				.param("reward", "Reward").param("reps", "10").param("weight", "10.").param("exercise.id", "1"))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/admin/challenges"));
 		
 		mockMvc.perform(post("/admin/challenges/new").with(csrf()).param("name", "Test More 3 3").param("description", "Test")
-				.param("initialDate", "2070/01/01").param("endDate", "2070/01/02").param("points", "10")
+				.param("initialDate", SAME_DATE_INITIAL_1).param("endDate", SAME_DATE_END_1).param("points", "10")
 				.param("reward", "Reward").param("reps", "10").param("weight", "10.").param("exercise.id", "1"))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/admin/challenges"));
 		
 		mockMvc.perform(post("/admin/challenges/new").with(csrf()).param("name", "Test More 3 4").param("description", "Test")
-				.param("initialDate", "2070/01/01").param("endDate", "2070/01/02").param("points", "10")
+				.param("initialDate", SAME_DATE_INITIAL_1).param("endDate", SAME_DATE_END_1).param("points", "10")
 				.param("reward", "Reward").param("reps", "10").param("weight", "10.").param("exercise.id", "1"))
 				.andExpect(status().isOk()).andExpect(view().name("/admin/challenges/challengesCreateOrUpdate"));
 	}
@@ -272,17 +278,17 @@ public class ChallengeControllerE2ETest {
 	void testProcessUpdateChallengeFormHasErrorsMore3() throws Exception {
 		
 		mockMvc.perform(post("/admin/challenges/new").with(csrf()).param("name", "Test More 3 1").param("description", "Test")
-				.param("initialDate", "2075/01/01").param("endDate", "2075/01/02").param("points", "10")
+				.param("initialDate", SAME_DATE_INITIAL_2).param("endDate", SAME_DATE_END_2).param("points", "10")
 				.param("reward", "Reward").param("reps", "10").param("weight", "10.").param("exercise.id", "1"))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/admin/challenges"));
 		
 		mockMvc.perform(post("/admin/challenges/new").with(csrf()).param("name", "Test More 3 2").param("description", "Test")
-				.param("initialDate", "2075/01/01").param("endDate", "2075/01/02").param("points", "10")
+				.param("initialDate", SAME_DATE_INITIAL_2).param("endDate", SAME_DATE_END_2).param("points", "10")
 				.param("reward", "Reward").param("reps", "10").param("weight", "10.").param("exercise.id", "1"))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/admin/challenges"));
 		
 		mockMvc.perform(post("/admin/challenges/new").with(csrf()).param("name", "Test More 3 3").param("description", "Test")
-				.param("initialDate", "2075/01/01").param("endDate", "2075/01/02").param("points", "10")
+				.param("initialDate", SAME_DATE_INITIAL_2).param("endDate", SAME_DATE_END_2).param("points", "10")
 				.param("reward", "Reward").param("reps", "10").param("weight", "10.").param("exercise.id", "1"))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/admin/challenges"));
 		
@@ -290,8 +296,8 @@ public class ChallengeControllerE2ETest {
 				.with(csrf())
 				.param("name", "Test More 3 4")
 				.param("description", "Test")
-				.param("initialDate", "2075/01/01")
-				.param("endDate", "2075/01/02")
+				.param("initialDate", SAME_DATE_END_2)
+				.param("endDate", SAME_DATE_END_2)
 				.param("points", "10")
 				.param("reward","Reward")
 				.param("reps","10")
@@ -343,7 +349,7 @@ public class ChallengeControllerE2ETest {
 	{
 		mockMvc.perform(get("/admin/challenges/{challengeId}/delete",CHALLENGE_ID_1))
 		.andExpect(status().isOk())
-		.andExpect(view().name("exception"));
+		.andExpect(view().name(EXCEPTION));
 	}
 	
 	
@@ -376,7 +382,7 @@ public class ChallengeControllerE2ETest {
 		void testShowChallengeByIdClientAlreadyInscribed() throws Exception {
 
 			mockMvc.perform(get("/client/{clientUsername}/challenges/{challengeId}",CLIENT_USERNAME_1, CHALLENGE_ID_1)).andExpect(status().isOk())
-					.andExpect(view().name("exception"));
+					.andExpect(view().name(EXCEPTION));
 		}
 		
 		@WithMockUser(value = "client1", authorities = {"client"})
@@ -407,7 +413,7 @@ public class ChallengeControllerE2ETest {
 		void testShowAndEditNotHisChallengeByIdClient() throws Exception {
 
 			mockMvc.perform(get("/client/{clientUsername}/challenges/mine/{challengeId}",CLIENT_USERNAME_1, CHALLENGE_ID_4)).andExpect(status().isOk())
-			.andExpect(view().name("exception"));
+			.andExpect(view().name(EXCEPTION));
 		}
 		
 		@WithMockUser(value = "client2", authorities = {"client"})
@@ -418,11 +424,11 @@ public class ChallengeControllerE2ETest {
 			
 			if(path.contains("challengeId")) {
 				mockMvc.perform(get("/client/{clientUsername}/challenges/{challengeId}",CLIENT_USERNAME_1, CHALLENGE_ID_1)).andExpect(status().isOk())
-				.andExpect(view().name("exception"));
+				.andExpect(view().name(EXCEPTION));
 			}
 			else {
 				mockMvc.perform(get(path, CLIENT_USERNAME_1)).andExpect(status().isOk())
-				.andExpect(view().name("exception"));
+				.andExpect(view().name(EXCEPTION));
 			}
 		}
 
