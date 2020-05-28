@@ -26,7 +26,10 @@ public class CreateTrainingIncludingOtherTrainingUITest {
   private StringBuffer verificationErrors = new StringBuffer();
   private Calendar calInit = Calendar.getInstance();
   private Calendar calEnd = Calendar.getInstance();
+  private Calendar calAuxInit = Calendar.getInstance();
+  private Calendar calAuxEnd = Calendar.getInstance();
   private SimpleDateFormat formatterInput = new SimpleDateFormat("yyyy/MM/dd");
+  private SimpleDateFormat formatterDetails = new SimpleDateFormat("yyyy-MM-dd");
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -39,8 +42,10 @@ public class CreateTrainingIncludingOtherTrainingUITest {
   public void testCreateTrainingIncludingOtherTrainingUI() throws Exception {
 	  as("trainer1");
 	  createTrainingIncludingTraining();
+	  calAuxInit.add(Calendar.DAY_OF_MONTH, 14);
+	  calAuxEnd.add(Calendar.DAY_OF_MONTH, 21);
 	  try {
-	      assertEquals("The training cannot be in a period which includes another training (The other training is from 2020-06-06 to 2020-06-13)", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
+	      assertEquals("The training cannot be in a period which includes another training (The other training is from " + formatterDetails.format(calAuxInit.getTime()) + " to " + formatterDetails.format(calAuxEnd.getTime()) + ")", driver.findElement(By.xpath("//form[@id='trainingForm']/div/div[3]/div/span[2]")).getText());
 	  } catch (Error e) {
 		  verificationErrors.append(e.toString());
 	  }

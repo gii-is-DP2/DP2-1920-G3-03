@@ -22,6 +22,9 @@ La aplicación web a desarrollar tiene como nombre YogoGym. El objetivo fundamen
 * Inscripción
 * Gremio
 * Frase
+* Foro
+* Mensaje
+
 #### Entidades de soporte:
 * Autoridades
 * Entidad Base
@@ -29,8 +32,6 @@ La aplicación web a desarrollar tiene como nombre YogoGym. El objetivo fundamen
 * Tablero de control de Cliente
 
 ## Historias de Usuario
-
-### **Solo se encuentran actualizadas las historias de usuario finalizadas en el [Product Backlog](https://docs.google.com/spreadsheets/d/1-mP7vgruDpIj8CKCvBVDqFyz_7dwrxKCtpqvso2JObE/edit#gid=0). El resto requieren de modificación.**
 
 ### Administrador
 
@@ -97,17 +98,6 @@ Como administrador quiero poder gestionar los datos del gimnasio, así como el n
 
 ---
 
-#### HU7 - Gestión Entrenadores
-
-Como administrador quiero ser capaz de gestionar mis empleados, los cuales son los monitores y los entrenadores, para llevar un control del personal contratado.
-
-#### Escenarios
-
-* **Suficientes datos que mostrar:** Si el sistema posee entrenadores y monitores se le mostraran los distintos datos que posea cada uno, como por ejemplo el nombre, apellidos, dni, correo electrónico, número de teléfono, así como la información de sus contratos.
-* **Sin datos para mostrar:** Si el sistema no posee monitores o entrenadores inscritos, los valores serán nulos o con valor 0.
-
----
-
 ### Entrenador
 
 ---
@@ -150,49 +140,6 @@ Como entrenador quiero llevar el control de las rutinas para poder cambiar la ru
 
 ---
 
-#### HU24 - Añadir línea de rutinas a los entrenamientos
-
-Como entrenador quiero añadir líneas de rutinas a nuestros clientes para facilitar el seguimiento de la rutina
-
-#### Escenarios:
-
-* **Añadir una línea de rutina a un cliente, con atributos sin conflictos:** Dado un entrenador que quiere añadir una rutina a uno de los clientes que entrena, este introduce los datos, la operación se efectúa correctamente y redirige al entrenador a una vista de rutinas desde donde puede ver la que ha creado.
-* **Añadir una rutina a un cliente, sin atributos:** Dado un entrenador que quiere añadir una línea de rutina a uno de los clientes que entrena, cuando intenta añadir dicha rutina sin añadir los parámetros requeridos (tiempo o repetición, series, peso y ejercicio) la operación no se efectúa y redirige al entrenador a la misma vista de creación informándole de los errores, que en este caso es que los parámetros requeridos están vacíos.
-* **Añadir una rutina a un cliente, con conflictos:** Dado un entrenador que quiere añadir una línea de rutina a uno de los clientes que entrena, cuando intenta efectuar la operación con alguno de los siguientes conflictos:
-  - Tiempo y repeticiones tienen valores válidos. Solo puedes realizar el ejercicio que especifica la línea de rutina por repetición o tiempo, no ambos.
-  - Tiempo o repeticiones con valor 0 o negativo. Debe especificar alguno de estos con un valor válido (mayor o igual que 1).
-  - Series de la línea de rutina debe ser superior a 1.
-  - Peso debe ser 0 o un número positivo
-  - Ejercicio no nulo
-
-En cuanto alguno de estos conflictos se cumplan, se redirige al entrenador a la vista de añadir vista indicándole los errores y atributos en conflicto.
-
-* **Añadir una línea de rutina a un cliente, cuando el entrenamiento al que pertenece esa rutina ha finalizado:** Dado un entrenador que intenta añadir una rutina, cuando un entrenamiento ha finalizado, la vista no le deja hacer redirección a los controles de gestión de rutas (añadir, editar y borrar). En el caso que intente acceder desde la URL, se le redirige a la vista de error.
-* **Añadir una línea de rutina a un cliente que no entrena:** Dado un entrenador que quiere añadir una rutina a un cliente que no entrena, desde las opciones mostradas, este no puede acceder a otros clientes salvo los suyos. En el caso que intente a través de URL, se le redirecciona a la vista de error.
-
----
-
-#### HU25 - Gestionar las líneas de rutinas de los entrenamientos
-
-Como entrenador quiero llevar el control de las líneas de rutinas para poder cambiar la rutina adaptándola de la mejor forma al cliente y corregir errores.
-
-#### Escenarios:
-
-* **Gestionar la línea de rutina de un cliente con atributos sin conflictos:** Dado un entrenador que se dispone a gestionar la línea de rutina de un cliente cuando necesita realizar algún tipo de modificación. La vista de encargada la gestión de rutinas notificará al entrenador de que el cliente indicado que no posee ninguna rutina y le ofertará la opción de crearla. 
-* **Gestionar la línea de rutina de un cliente con atributos sin conflictos:** Dado un entrenador que se dispone a gestionar la rutina de un cliente, en el caso de editar, cuando efectúa la operación con los siguientes conflictos:
-  - Tiempo y repeticiones tienen valores válidos. Solo puedes realizar el ejercicio que especifica la línea de rutina por repetición o tiempo, no ambos.
-  - Tiempo o repeticiones con valor 0 o negativo. Debe especificar alguno de estos con un valor válido (mayor o igual que 1).
-  - Series de la línea de rutina debe ser superior a 1.
-  - Peso debe ser 0 o un número positivo
-  - Ejercicio no nulo
-
-En caso de que salte alguna de estas restricciones, la vista redirige al entrenador a la misma vista de actualizar indicándole el error y atributo que provoca el conflicto.
-
-* **Gestionar una línea de rutina a un cliente, cuando el entrenamiento al que pertenece esa línea de rutina ha finalizado:** Dado un entrenador que intenta gestionar una línea de rutina, cuando un entrenamiento ha finalizado, la vista no le deja hacer redirección a los controles de gestión de rutas (añadir, editar y borrar). En el caso que intente acceder desde la URL, se le redirige a la vista de error.
-* **Gestionar una línea de rutina a un cliente que no entrena:** Dado un entrenador que quiere añadir una línea de rutina a un cliente que no entrena, desde las opciones mostradas, este no puede acceder a otros clientes salvo los suyos. En el caso que intente a través de URL, se le redirecciona a la vista de error.
-
----
-
 #### HU10 - Añadir dietas alimenticias a los entrenamientos
 
 Como entrenador quiero realizar dietas a los clientes para mejorar su evolución física, haciéndola más eficiente.
@@ -203,6 +150,7 @@ Como entrenador quiero realizar dietas a los clientes para mejorar su evolución
 * **Añadir una dieta a un usuario, sin datos completos:** Dado un entrenador que añade una dieta a un usuario, cuando se intenta añadir sin rellenar todos los datos(Name: "Dieta 1", Description: null, Type: VOLUME). La operación de añadir dieta no se efectúa resultando en el sistema informando al entrenador que debe rellenar la información correspondiente a "Name", "Description", "Type".
 * **Añadir una dieta a un usuario el cual no entrenas:** Dado un entrenador que intenta añadir una dieta a un usuario, cuando no entrenas a este usuario. La operación de añadir dieta no se realiza. La vista muestra una excepción al entrenador.
 * **Añadir una dieta a un entrenamiento que no existe:** Dado un entrenador que intenta añadir una dieta a un entrenamiento que no existe, la operación de añadir dieta no se realiza. La vista muestra una excepción al entrenador.
+
 
 ---
 
@@ -253,8 +201,8 @@ Como entrenador quiero llevar el control de los entrenamientos de mis clientes c
 * **Actualizar entrenamiento en curso de uno de sus clientes, con permisos de edición:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a actualizar el entrenamiento con nombre "Entrenamiento1", fecha de inicio igual a la actual menos 7 días y fecha de fin igual a la actual más 7 días; de uno de sus clientes con nombre de usuario "client6" del que tiene permisos de edición, cuando intenta actualizar el nombre a “Entrenamiento 1 Actualizado” y la fecha de fin a la actual, entonces se actualizará el entrenamiento y se le redireccionará a la vista de detalles de este.
 * **Actualizar entrenamiento de uno de sus clientes, sin permisos de edición:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a actualizar el entrenamiento con nombre “Entrenamiento2” de uno de sus clientes con nombre de usuario "client5" del que no tiene permisos de edición, cuando intenta acceder a través de la URL, entonces se le redireccionará a la vista de error.
 * **Actualizar entrenamiento en curso, nombre y fecha de fin vacíos:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a actualizar el entrenamiento con nombre "Entrenamiento1", fecha de inicio igual a la actual menos 7 días y fecha de fin igual a la actual más 7 días; de uno de sus clientes con nombre de usuario "client6" del que tiene permisos de edición, cuando intenta actualizar el nombre y la fecha de fin a vacío, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que esos campos no pueden estar vacíos.
-* ** Actualizar entrenamiento en curso, fecha de fin en el pasado:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a actualizar el entrenamiento con nombre "Entrenamiento1", fecha de inicio igual a la actual menos 7 días y fecha de fin igual a la actual más 7 días; de uno de sus clientes con nombre de usuario "client6" del que tiene permisos de edición, cuando intenta actualizar la fecha de fin a la de ayer, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que la fecha de fin no puede actualizarse a una en el pasado.
-* ** Actualizar entrenamiento en curso, duración superior a 90 días:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a actualizar el entrenamiento con nombre "Entrenamiento1", fecha de inicio igual a la actual menos 7 días y fecha de fin igual a la actual más 7 días; de uno de sus clientes con nombre de usuario "client6" del que tiene permisos de edición, cuando intenta actualizar la fecha de fin a una dentro de 84 días, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que el entrenamiento no puede superar los 90 días de duración.
+* **Actualizar entrenamiento en curso, fecha de fin en el pasado:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a actualizar el entrenamiento con nombre "Entrenamiento1", fecha de inicio igual a la actual menos 7 días y fecha de fin igual a la actual más 7 días; de uno de sus clientes con nombre de usuario "client6" del que tiene permisos de edición, cuando intenta actualizar la fecha de fin a la de ayer, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que la fecha de fin no puede actualizarse a una en el pasado.
+* **Actualizar entrenamiento en curso, duración superior a 90 días:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a actualizar el entrenamiento con nombre "Entrenamiento1", fecha de inicio igual a la actual menos 7 días y fecha de fin igual a la actual más 7 días; de uno de sus clientes con nombre de usuario "client6" del que tiene permisos de edición, cuando intenta actualizar la fecha de fin a una dentro de 84 días, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que el entrenamiento no puede superar los 90 días de duración.
 * **Gestionar entrenamiento en curso, fecha fin coincide con otro entrenamiento:** Dado un cliente con nombre de usuario "client6", con un entrenamiento que se inicia dentro de 8 días desde la fecha actual y finaliza dentro de 15 días desde la fecha actual; y un entrenador con nombre de usuario "trainer1" que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual menos 7 días y fecha de fin igual a la actual más 7 días; de ese cliente, cuando intenta actualizar la fecha de fin a una dentro de 8 días desde la actual, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que la fecha de fin no puede coincidir con otro entrenamiento.
 * **Gestionar entrenamiento en curso, entrenamiento incluye otro:** Dado un cliente con nombre de usuario "client6", con un entrenamiento que se inicia dentro de 8 días desde la fecha actual y finaliza dentro de 15 días desde la fecha actual; y un entrenador con nombre de usuario "trainer1" que se dispone a actualizar el entrenamiento con nombre "Entrenamiento 1", fecha de inicio igual a la actual menos 7 días y fecha de fin igual a la actual más 7 días; de ese cliente, cuando intenta actualizar la fecha de fin a una dentro de 16 días desde la actual, entonces no se actualizará el entrenamiento y se le devolverá a la vista de actualización informándole de que el entrenamiento no puede incluir otro.
 * **Eliminar entrenamiento de uno de sus clientes, siendo autor:** Dado un entrenador con nombre de usuario "trainer1", que se dispone a eliminar el entrenamiento de uno de sus clientes con nombre de usuario "client1" del que es autor, cuando acceder al enlace de eliminación, entonces se eliminará el entrenamiento y se le redireccionará al listado informándole de que se realizó la operación con éxito.
@@ -270,6 +218,49 @@ Como entrenador quiero poder copiar los entrenamientos de otros clientes con per
 
 * **Mostrar entrenamientos a copiar a un entrenamiento vacío:** Dado un entrenador con usuario 'trainer1', y un cliente con id '1' que cuente con un entrenamiento que no contenga rutinas ni dietas, mostrarle un listado de entrenamientos de otros clientes con perfil público, y que tengan rutinas, dietas o ambas, para poder copiarla.
 * **Mostrar entrenamientos a copiar a un entrenamiento no vacío:** Dado un entrenador con usuario 'trainer1', y un cliente con id '1' que cuente con un entrenamiento que contenga rutinas, dietas o ambas, redirigir a la vista de error.
+
+---
+
+#### HU24 - Añadir línea de rutinas a los entrenamientos
+
+Como entrenador quiero añadir líneas de rutinas a nuestros clientes para facilitar el seguimiento de la rutina
+
+#### Escenarios:
+
+* **Añadir una línea de rutina a un cliente, con atributos sin conflictos:** Dado un entrenador que quiere añadir una rutina a uno de los clientes que entrena, este introduce los datos, la operación se efectúa correctamente y redirige al entrenador a una vista de rutinas desde donde puede ver la que ha creado.
+* **Añadir una rutina a un cliente, sin atributos:** Dado un entrenador que quiere añadir una línea de rutina a uno de los clientes que entrena, cuando intenta añadir dicha rutina sin añadir los parámetros requeridos (tiempo o repetición, series, peso y ejercicio) la operación no se efectúa y redirige al entrenador a la misma vista de creación informándole de los errores, que en este caso es que los parámetros requeridos están vacíos.
+* **Añadir una rutina a un cliente, con conflictos:** Dado un entrenador que quiere añadir una línea de rutina a uno de los clientes que entrena, cuando intenta efectuar la operación con alguno de los siguientes conflictos:
+  - Tiempo y repeticiones tienen valores válidos. Solo puedes realizar el ejercicio que especifica la línea de rutina por repetición o tiempo, no ambos.
+  - Tiempo o repeticiones con valor 0 o negativo. Debe especificar alguno de estos con un valor válido (mayor o igual que 1).
+  - Series de la línea de rutina debe ser superior a 1.
+  - Peso debe ser 0 o un número positivo
+  - Ejercicio no nulo
+
+En cuanto alguno de estos conflictos se cumplan, se redirige al entrenador a la vista de añadir vista indicándole los errores y atributos en conflicto.
+
+* **Añadir una línea de rutina a un cliente, cuando el entrenamiento al que pertenece esa rutina ha finalizado:** Dado un entrenador que intenta añadir una rutina, cuando un entrenamiento ha finalizado, la vista no le deja hacer redirección a los controles de gestión de rutas (añadir, editar y borrar). En el caso que intente acceder desde la URL, se le redirige a la vista de error.
+* **Añadir una línea de rutina a un cliente que no entrena:** Dado un entrenador que quiere añadir una rutina a un cliente que no entrena, desde las opciones mostradas, este no puede acceder a otros clientes salvo los suyos. En el caso que intente a través de URL, se le redirecciona a la vista de error.
+
+---
+
+#### HU25 - Gestionar las líneas de rutinas de los entrenamientos
+
+Como entrenador quiero llevar el control de las líneas de rutinas para poder cambiar la rutina adaptándola de la mejor forma al cliente y corregir errores.
+
+#### Escenarios:
+
+* **Gestionar la línea de rutina de un cliente con atributos sin conflictos:** Dado un entrenador que se dispone a gestionar la línea de rutina de un cliente cuando necesita realizar algún tipo de modificación. La vista de encargada la gestión de rutinas notificará al entrenador de que el cliente indicado que no posee ninguna rutina y le ofertará la opción de crearla. 
+* **Gestionar la línea de rutina de un cliente con atributos sin conflictos:** Dado un entrenador que se dispone a gestionar la rutina de un cliente, en el caso de editar, cuando efectúa la operación con los siguientes conflictos:
+  - Tiempo y repeticiones tienen valores válidos. Solo puedes realizar el ejercicio que especifica la línea de rutina por repetición o tiempo, no ambos.
+  - Tiempo o repeticiones con valor 0 o negativo. Debe especificar alguno de estos con un valor válido (mayor o igual que 1).
+  - Series de la línea de rutina debe ser superior a 1.
+  - Peso debe ser 0 o un número positivo
+  - Ejercicio no nulo
+
+En caso de que salte alguna de estas restricciones, la vista redirige al entrenador a la misma vista de actualizar indicándole el error y atributo que provoca el conflicto.
+
+* **Gestionar una línea de rutina a un cliente, cuando el entrenamiento al que pertenece esa línea de rutina ha finalizado:** Dado un entrenador que intenta gestionar una línea de rutina, cuando un entrenamiento ha finalizado, la vista no le deja hacer redirección a los controles de gestión de rutas (añadir, editar y borrar). En el caso que intente acceder desde la URL, se le redirige a la vista de error.
+* **Gestionar una línea de rutina a un cliente que no entrena:** Dado un entrenador que quiere añadir una línea de rutina a un cliente que no entrena, desde las opciones mostradas, este no puede acceder a otros clientes salvo los suyos. En el caso que intente a través de URL, se le redirecciona a la vista de error.
 
 ---
 
@@ -324,8 +315,13 @@ Como cliente quiero poder tener dietas personalizadas según mi tipo de entrenam
 
 #### Escenarios:
 
-* **Cliente con entrenamiento asignado:** Dado un cliente con un entrenamiento asignado se le asignará la dieta que mejor complemente su entrenamiento.
-* **Cliente sin entrenamiento asignado:** Dado un cliente sin un entrenamiento asignado no se le permitirá acceder a esta función y se le pedirá que consiga un entrenamiento antes de acceder.
+* **Añadir una dieta a un cliente con un entrenamiento con ejercicios:** Dado un cliente que se dispone a añadir una dieta con nombre "Dieta 1", descripción "Descripción dieta 1" y tipo "AUTO_ASSIGN" se autogenera la dieta en función de los datos del cliente y seleccionando el tipo de dieta que mejor funcione con la intensidad del entrenamiento asignado, se le añade al entrenamiento y se redirige a la vista de dietas.
+
+* **Añadir una dieta a un cliente con un entrenamiento con ejercicios:** Dado un cliente que se dispone a añadir una dieta con nombre "Dieta 1", descripción "Descripción dieta 1" y tipo "AUTO_ASSIGN" a un entrenamiento "Entrenamiento 1" que no tiene ejercicios, se autogenera la dieta en función de los datos del cliente y seleccionando el tipo de dieta "MAINTENANCE", se le añade al entrenamiento y se redirige a la vista de dietas.
+
+* **Cliente con entrenamiento finalizado:** Dado un cliente con entrenamiento de nombre "Entrenamiento 1" y con fecha de finalización anterior a la actual no se le mostrará el enlace de añadir dieta a dicho entrenamiento.
+
+* **Cliente con entrenamiento asignado:** Dado un cliente con entrenamiento de nombre "Entrenamiento 1" y con fecha de finalización posterior a la actual se le mostrará el enlace de añadir dieta a dicho entrenamiento.
 
 ---
 
@@ -364,30 +360,32 @@ Como cliente quiero poder personalizar mi entrenamiento para actualizarlo o pers
 
 ---
 
-#### HU20 - Compartir progreso
+#### HU20 - Comunicarme con mi gremio
 
-Como cliente quiero poder compartir mi progreso con otros clientes, para poder poder ver su avance y poder compararlos con mis resultados.
+Como cliente quiero poder comunicarme con los miembros de mi gremio a través de un foro, para poder compartir nuestros avances y opiniones sobre el gremio y el gimnasio.
 
 #### Escenarios:
 
-* **Compartir progreso sin foto pero con comentario:** Dado un cliente, escribe un mensaje declarando su progreso, le da a publicar y se publica en su perfil, publicándose también en el perfil de los clientes que tenga agregados como amigos.
-* **Compartir progreso con foto pero sin comentario:** Dado un cliente, adjunta una foto, le da a enviar y se publica en su perfil, publicándose también en el perfil de los clientes que tenga agregados como amigos.
-* **Compartir progreso con foto y con comentario:** Dado un cliente, escribe un mensaje declarando su progreso, adjunta una foto, le da a publicar y se publica en su perfil, publicándose también en el perfil de los clientes que tenga agregados como amigos.
-* **Compartir progreso sin foto ni comentario:** Dado un cliente, al darle a publicar, si no ha adjuntado foto ni ha escrito ningún comentario le saltará un aviso diciendo "si desea publicar debe adjuntar una foto o escribir un comentario".
+* **Publicar en el foro de su gremio un mensaje, con contenido:** Dado un cliente con nombre de usuario "client1", que quiere publicar un mensaje en el foro de su gremio con contenido "Mensaje de prueba", cuando se intenta publicar el mensaje, entonces se añade el mensaje a dicho foro y se redirige de nuevo a este.
+* **Publicar en el foro de su gremio un mensaje, sin contenido:** Dado un cliente con nombre de usuario "client1", que quiere publicar un mensaje en el foro de su gremio con contenido vacío, cuando se intenta publicar el mensaje, entonces este no se añade a dicho foro y se redirige de nuevo a este indicando que el mensaje no es válido.
+* **Responder a un mensaje del foro de su gremio, con contenido:** Dado un cliente con nombre de usuario "client5", que quiere responder a un mensaje del foro de su gremio que tiene como contenido "Mensaje de prueba" con una respuesta con contenido "Respuesta de prueba", cuando se intenta publicar la respuesta, entonces se añade la respuesta al mensaje y a dicho foro, y se redirige de nuevo a este.
+* **Responder a un mensaje del foro de su gremio, sin contenido:** Dado un cliente con nombre de usuario "client5", que quiere responder a un mensaje del foro de su gremio que tiene como contenido "Mensaje de prueba" con una respuesta vacía, cuando se intenta publicar la respuesta, entonces no se añade la respuesta al mensaje ni a dicho foro, y se redirige de nuevo a este indicando que el mensaje no es válido.
 
 ---
 
-#### HU21 - Participar en  los Retos
+#### HU21 - Participar en los Retos
 
 Como cliente quiero poder participar en los distintos retos propuestos por el gimnasio, para poder ganar puntos para mi gremio y para mi mismo y estar lo mas alto posible en la clasificación.
 
 #### Escenarios
 
-* **Listar los retos en los que no me he inscrito** Dado un cliente[client1], pinchará en la sección "new challenges", verá un listado con los diferentes retos propuestos, en este caso el "Challenge4", ya que aún no participa en el.
-* **Listar los retos en los que me he inscrito** Dado un cliente[client1], pinchará en la sección "my challenges", verá un listado con los diferentes retos en los que está inscrito, por ejemplo el "Challenge1", con estado "FAILED".
-* **Inscribirme en un reto** Dado un cliente[client2], pinchará en la sección "new challenges", verá un listado con los diferentes retos en los que está inscrito, por ejemplo el "Challenge4", clickará sobre él, verá los requisitos que se piden, y podrá inscribirse en el. Una vez hecho esto, ese reto aparecerá en "my challenges" con estado "PARTICIPATING".
-* **Completar un reto** Dado un cliente[client1], pinchará en "my challenges", después en el reto[Challenge5] con estado "PARTICIPATING", y pondrá una url donde demuestre que lo ha completado, y clickará submit, pasando al estado "submitted". El admin[admin1] irá a "submitted challenges", clickará sobre ese reto, y pondrá el estado "COMPLETED". Entonces en "my challenges" de [client1] el [Challenge5] aparecerá como completado.
-* **Completar un reto poniendo una url no valida** Dado un cliente[client1], pinchará en "my challenges", después en el reto[Challenge2] con estado "PARTICIPATING", y pondrá una url no válida, por lo que el sistema no debe dejarle enviarlo.
+* **Como cliente, listar los retos en los que no me he inscrito** Dado un cliente[client1], pinchará en la sección "new challenges", verá un listado con los diferentes retos propuestos, en este caso el "Challenge4", ya que aún no participa en el.
+* **Como cliente, listar los retos en los que me he inscrito** Dado un cliente[client1], pinchará en la sección "my challenges", verá un listado con los diferentes retos en los que está inscrito, por ejemplo el "Challenge1", con estado "FAILED".
+* **Como cliente, inscribirme en un reto** Dado un cliente[client2], pinchará en la sección "new challenges", verá un listado con los diferentes retos en los que está inscrito, por ejemplo el "Challenge4", clickará sobre él, verá los requisitos que se piden, y podrá inscribirse en el. Una vez hecho esto, ese reto aparecerá en "my challenges" con estado "PARTICIPATING".
+* **Como cliente, completar y enviar un reto** Dado un cliente[client1], pinchará en "my challenges", después en el reto[Challenge5] con estado "PARTICIPATING", y pondrá una url donde demuestre que lo ha completado, y clickará submit, pasando al estado "submitted".
+* **Como cliente, completar un reto poniendo una url no valida** Dado un cliente[client1], pinchará en "my challenges", después en el reto[Challenge2] con estado "PARTICIPATING", y pondrá una url no válida, por lo que el sistema no debe dejarle enviarlo.
+* **Como administrador, listar los retos enviados para su evaluación**  Dado un admin[admin1] irá a "submitted challenges", se le mostrará un listado con todos los clientes y retos que han para su evaluación.
+* **Como administrador, evaluar un challenge**  Dado un admin[admin1]clickará sobre el reto a evaluar, y se mostrará el reto y la url que el cliente envió. Pondrá el estado "COMPLETED". Entonces en "my challenges" de [client1] el [Challenge5] aparecerá como completado
 ---
 
 #### HU22 - Clasificación de los Retos
@@ -432,7 +430,7 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | ------------------- | ------ | --------------- | ------------ |
 | HU1                 | 1      | P3              | Finalizada   |
 | HU3                 | 1      | P3              | Finalizada   |
-| HU4                 | 1      | P2              | Sin Comenzar |
+| HU4                 | 1      | P2              | Finalizada   |
 | HU5                 | 1      | P2              | Finalizada   |
 | HU8                 | 1      | P1              | Finalizada   |
 | HU9                 | 1      | P1              | Finalizada   |
@@ -447,11 +445,10 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | HU22                | 1      | P3              | Finalizada   |
 | HU24                | 1      | P1              | Finalizada   |
 | HU25                | 1      | P1              | Finalizada   |
-| HU2                 | 2      | P3              | Sin Comenzar |
-| HU6                 | 2      | P2              | Sin Comenzar |
-| HU16                | 2      | P3              | Sin Comenzar |
-| HU17                | 2      | P2              | Sin Comenzar |
-| HU19                | 2      | P1              | Sin Comenzar |
-| HU7                 | 3      | P3              | Sin Comenzar |
-| HU20                | 3      | P2              | Sin Comenzar |
-| HU23                | 3      | P1              | Sin Comenzar |
+| HU2                 | 2      | P3              | Finalizada   |
+| HU6                 | 2      | P2              | Finalizada   |
+| HU16                | 2      | P2              | Finalizada   |
+| HU17                | 2      | P3              | Finalizada   |
+| HU19                | 2      | P1              | Finalizada   |
+| HU20                | 3      | P1              | Finalizada   |
+| HU23                | 3      | P2              | Finalizada   |

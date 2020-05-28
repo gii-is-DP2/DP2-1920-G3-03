@@ -52,7 +52,7 @@ public class DashboardChallengesAdminUITest {
 		
 		utils.init();
 		utils.as(ADMIN, ADMIN_PASSWORD);
-		utils.dashboardOfMonth(1);
+		utils.dashboardOfMonthAndYear("2020-01");
 		
 		// Check there is data of the User and Guild with more points
 		try {
@@ -72,7 +72,7 @@ public class DashboardChallengesAdminUITest {
 		
 		utils.init();
 		utils.as(ADMIN, ADMIN_PASSWORD);
-		utils.dashboardOfMonth(10);
+		utils.dashboardOfMonthAndYear("2020-10");
 		
 		// Check there is a message telling that there are not completed challenges
 		try {
@@ -87,7 +87,7 @@ public class DashboardChallengesAdminUITest {
 		
 		utils.init();
 		utils.as(ADMIN, ADMIN_PASSWORD);
-		utils.dashboardOfMonth(2);
+		utils.dashboardOfMonthAndYear("2020-02");
 		
 		// Check there is a message telling that there are no challenges and the option to create one
 		try {

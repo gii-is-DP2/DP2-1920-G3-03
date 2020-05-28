@@ -1,10 +1,10 @@
 /* ADMIN */
 
 INSERT INTO users(username,password,enabled) VALUES ('admin1','admin1999',TRUE);
-INSERT INTO authorities(id,authority,username) VALUES (1,'admin','admin1');
-INSERT INTO authorities(id,authority,username) VALUES (2,'client','admin1');
-INSERT INTO admins(id,email,first_name,last_name,nif,username) VALUES (1, 'proyectowip@vekto.com','Vekto', 'Rino', '12345678A','admin1');
-INSERT INTO clients(id,email,first_name,last_name,nif,age,fat_percentage,height,is_public,weight,guild_id,username) VALUES (11, 'admin@admin.com', 'Admin', 'Admin', '12345678A',20,20.0,183.0,true,80.0,null,'admin1');
+INSERT INTO authorities VALUES (1,'admin','admin1');
+INSERT INTO authorities VALUES (2,'client','admin1');
+INSERT INTO admins VALUES (1, 'proyectowip@vekto.com','Vekto', 'Rino', '12345678A','admin1');
+INSERT INTO clients VALUES (11, 'admin@admin.com', 'Admin', 'Admin', '12345678A',20,20.0,183.0,true,80.0,null,'admin1');
 
 /* GUILD */
 
@@ -113,6 +113,9 @@ INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,di
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (12, DATE_ADD(CURDATE(), INTERVAL -7 DAY), DATE_ADD(CURDATE(), INTERVAL 7 DAY), 'Entrenamiento1', 1, 'client5', null);
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (13, DATE_ADD(CURDATE(), INTERVAL 14 DAY), DATE_ADD(CURDATE(), INTERVAL 21 DAY), 'Entrenamiento2', 2, 'trainer1', null);
 
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (14, DATE_ADD(CURDATE(), INTERVAL 200 DAY), DATE_ADD(CURDATE(), INTERVAL 208 DAY), 'Entrenamiento10_1', 0, 'trainer1', null);
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (15, DATE_ADD(CURDATE(), INTERVAL 210 DAY), DATE_ADD(CURDATE(), INTERVAL 215 DAY), 'Entrenamiento10_2', 1, 'client10', null);
+
 /* ROUTINE */
 
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (1,'Cardio', 'Augment resistance',3,1);
@@ -135,6 +138,7 @@ INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (14,'
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (15,'Routine 7', 'Desc',7,9);
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (16,'Routine 8', 'Desc',8,9);
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (17,'Routine 9', 'Desc',9,9);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (18,'Routine 10', 'Desc',9,11);
 
 /* EQUIPMENT */
 
@@ -279,7 +283,6 @@ INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (3,0,null,3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (4,0,null,3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (5,2,'https://google.com',1);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (6,1,'https://google.com',3);
-INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (7,0,'https://google.com',5);
 
 /* CLIENT_INSCRIPTION */
 
@@ -289,11 +292,6 @@ INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,3);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (2,4);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (3,5);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (4,6);
-INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,7);
-
-/* PHRASES */
-
-INSERT INTO phrases(id,author,text) VALUES (1,'Enrique Reina','A veces cuando cierro los ojos no veo.');
 
 /* TRAINER_CLIENT */
 
@@ -334,23 +332,8 @@ INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is
 INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (2,1,null,'client1','Mensaje de prueba 2','2020-05-16 14:23:25',false,true);
 INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (3,1,null,'client1','Mensaje de prueba 3','2020-05-17 14:23:25',false,true);
 
-INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (7,2,null,'client2','Mensaje de prueba','2020-05-17 14:23:25',false,true);
 
 /*Respuestas*/
 INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (4,1,1,'client5','Respuesta de prueba','2020-05-15 15:23:25',false,false);
 INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (5,1,1,'client5','Respuesta de prueba 2','2020-05-15 16:23:25',false,false);
 INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (6,1,2,'client5','Respuesta de prueba 3','2020-05-16 15:23:25',false,false);
-/* DIET */
-
--- INSERT INTO diets(id,name,description,kcal) VALUES (1, 'Mantenimiento', 'Algo', 2000);
--- INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (2, '2020-02-01', '2020-02-20', 'Entrenamiento2', 2);
--- INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (3, '2020-03-01', '2020-03-10', 'Entrenamiento3', 3);
--- INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (4, '2020-04-01', '2020-04-20', 'Entrenamiento4', 4);
-
-/* CLIENT_DIET */
-
--- INSERT INTO clients_diets(client_id,diets_id) VALUES(2,1);
--- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,2);
--- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,3);
--- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,4);
-

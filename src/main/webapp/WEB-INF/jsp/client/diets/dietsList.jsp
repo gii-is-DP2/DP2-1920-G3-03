@@ -37,7 +37,15 @@
 		            <td></td>
 					<td></td>
 		            <td></td>
-					<td><a style="color:grey">Only trainer can edit</a></td>		
+					<c:choose>
+						<c:when test="${training.endDate < actualDate}">	
+							<td><a style="color:grey">Add Diet</a></td>		
+						</c:when>
+						<c:otherwise>
+						<spring:url value="/client/${clientUsername}/trainings/${training.id}/diets/create" var="dietAddUrl" />
+							<td> <a href="${fn:escapeXml(dietAddUrl)}">Add Diet</a>	</td>							
+						</c:otherwise>
+					</c:choose>	
 
 				</c:when>
 				<c:otherwise>
@@ -48,7 +56,15 @@
 		            <td><c:out value="${training.diet.protein}"/></td>
 					<td><c:out value="${training.diet.carb}"/></td>
 		            <td><c:out value="${training.diet.fat}"/></td>
-					<td><a style="color:grey">Only trainer can edit</a></td>		
+					<c:choose>
+						<c:when test="${training.endDate < actualDate}">	
+							<td><a style="color:grey">Add Diet</a></td>		
+						</c:when>
+						<c:otherwise>
+						<spring:url value="/client/${clientUsername}/trainings/${training.id}/diets/create" var="dietAddUrl" />
+							<td> <a href="${fn:escapeXml(dietAddUrl)}">Add Diet</a>	</td>							
+						</c:otherwise>
+					</c:choose>		
 
 				</c:otherwise>
 		        </c:choose>

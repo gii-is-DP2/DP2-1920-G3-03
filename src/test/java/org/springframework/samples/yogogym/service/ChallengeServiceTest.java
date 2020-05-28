@@ -207,7 +207,7 @@ public class ChallengeServiceTest {
 		
 		Client client = this.clientService.findClientById(CLIENT_ID_1);
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAllChallengesClients(client.getId(), client.getInscriptions());
-		assertThat(challenges.size()).isEqualTo(1);
+		assertThat(challenges.size()).isEqualTo(2);
 	}
 	
 	

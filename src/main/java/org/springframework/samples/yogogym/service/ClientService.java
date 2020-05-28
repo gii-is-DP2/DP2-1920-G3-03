@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Enums.Status;
@@ -47,6 +48,7 @@ public class ClientService {
 		this.clientRepository = clientRepository;
 	}
 
+	@CacheEvict(cacheNames = "percentageClients", allEntries = true)
 	@Transactional
 	public void saveClient(Client client) throws DataAccessException {
 		clientRepository.save(client);
@@ -100,7 +102,7 @@ public class ClientService {
 		d1 = now2.getTime();
 		now2.add(Calendar.DAY_OF_MONTH, -7);
 		d2 = now2.getTime();
-		return this.clientRepository.classificationNameDate(d1, d2);
+		return this.clientRepository.classificationNameDate(d2, d1);
 	}
 
 	public List<Integer> classificationPointDate() {
@@ -110,7 +112,7 @@ public class ClientService {
 		d1 = now2.getTime();
 		now2.add(Calendar.DAY_OF_MONTH, -7);
 		d2 = now2.getTime();
-		return this.clientRepository.classificationPointDate(d1, d2);
+		return this.clientRepository.classificationPointDate(d2, d1);
 	}
 
 	public List<String> classificationNameAll() {

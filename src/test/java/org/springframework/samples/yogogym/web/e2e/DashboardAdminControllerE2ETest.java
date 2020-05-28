@@ -41,7 +41,7 @@ public class DashboardAdminControllerE2ETest {
 	@WithMockUser(username = "admin1", authorities = { "admin" })
 	@Test
 	void testInitAllDashboardChallenges() throws Exception {
-		mockMvc.perform(get("/admin/dashboardChallenges/0")).andExpect(status().isOk())
+		mockMvc.perform(get("/admin/dashboardChallenges?monthAndYear=2020-01")).andExpect(status().isOk())
 				.andExpect(view().name("admin/dashboards/dashboardChallenges"))
 				.andExpect(model().attributeExists("ChallengesExists"));
 	}	

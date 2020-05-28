@@ -59,7 +59,7 @@ public class TrainingControllerE2ETest {
 	private static final int CLIENT6_TRAINING1_ID = 7;
 	private static final int CLIENT6_TRAINING2_ID = 10;
 	private static final int CLIENT6_TRAINING3_ID = 11;
-	private static final int NEW_TRAINING_ID = 14;
+	private static final int NEW_TRAINING_ID = 16;
 	
 	private SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy/MM/dd");
 	private SimpleDateFormat detailsFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");

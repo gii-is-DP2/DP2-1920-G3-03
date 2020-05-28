@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Inscription;
@@ -39,6 +40,7 @@ public class ChallengeService {
 		return challengeRepo.findById(challengeId).get();
 	}
 	
+	@CacheEvict(cacheNames = {"percentageClients", "percentageGuilds"}, allEntries = true)
 	@Transactional(rollbackFor = {ChallengeSameNameException.class, ChallengeMore3Exception.class})
 	public void saveChallenge(Challenge challenge) throws DataAccessException, ChallengeSameNameException, ChallengeMore3Exception, ChallengeWithInscriptionsException {
 		
@@ -70,7 +72,7 @@ public class ChallengeService {
 		
 	}
 	
-	
+	@CacheEvict(cacheNames = {"percentageClients", "percentageGuilds"}, allEntries = true)
 	@Transactional(rollbackFor = ChallengeWithInscriptionsException.class)
 	public void deleteChallenge(Challenge challenge) throws ChallengeWithInscriptionsException{
 		
@@ -84,11 +86,13 @@ public class ChallengeService {
 		
 	}
 
+	@Transactional(readOnly=true)
 	public Iterable<Challenge> findSubmittedChallenges() {
 		
 		return challengeRepo.findSubmittedChallenges();
 	}
 	
+	@Transactional(readOnly=true)
 	public List<Challenge> findAllChallengesClients(Integer clientId, List<Inscription> inscriptions) {
 		
 		List<Challenge> challenges = (List<Challenge>) this.findAll();
@@ -122,10 +126,12 @@ public class ChallengeService {
 	
 	
 	//Clasification
+	@Transactional(readOnly=true)
 	public List<Challenge> findChallengesByUsername(String username){
 		return this.challengeRepo.findChallengesByUsername(username);
 	}
 	
+	@Transactional(readOnly=true)
 	public Integer sumPointChallengesByUsername(String username) {
 		return this.challengeRepo.sumPointChallengesByUsername(username);
 	}

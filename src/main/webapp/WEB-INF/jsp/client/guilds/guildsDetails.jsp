@@ -6,7 +6,7 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="guildsDetails">
-	<h1><c:out value="${guild.name}"/></h1>
+	<h1 style="color:#F2502D;font-size:xx-large" align="left"><c:out value="${guild.name}"/></h1>
 	<p></p>
 	<p><img src="<c:url value="${guild.logo}"/>" width ="380" height="300"/></p>
 	

@@ -56,12 +56,8 @@
 							<td><a style="color:grey">Edit</a></td>		
 						</c:when>
 						<c:otherwise>
-							<spring:url value="/trainer/${trainerUsername}/clients/${client.id}/trainings/{trainingId}/diets/{dietId}/edit" var="dietUpdateurl" >
-							<spring:param name="trainingId" value="${training.id}"/>
-							<spring:param name="dietId" value="${diet.id}"/>
-							</spring:url>
-							<td><a href="${fn:escapeXml(dietUpdateurl)}">Edit</a></td>
-												
+							<spring:url value="/client/${clientUsername}/trainings/${training.id}/diets/create" var="dietAddUrl" />
+							<td> <a href="${fn:escapeXml(dietAddUrl)}">Edit</a>	</td>	
 						</c:otherwise>
 					</c:choose>
 			</tr>	

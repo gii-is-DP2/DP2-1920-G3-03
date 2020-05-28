@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Forum;
@@ -62,6 +63,7 @@ public class GuildService {
 		return res;		
 	}
 	
+	@CacheEvict(cacheNames = "percentageGuilds", allEntries = true)
 	@Transactional(rollbackFor = {GuildSameNameException.class,GuildSameCreatorException.class,GuildLogoException.class,GuildNotCreatorException.class})
 	public void saveGuild(Guild guild, Client client) throws DataAccessException, GuildSameNameException, GuildSameCreatorException, GuildLogoException, GuildNotCreatorException {
 		
@@ -99,6 +101,7 @@ public class GuildService {
 		}
 	}
 	
+	@CacheEvict(cacheNames = {"percentageGuilds", "topPointGuild"}, allEntries = true)
 	@Transactional
 	public void deleteGuild(Guild guild, String clientUsername) throws DataAccessException {
 		
@@ -115,6 +118,7 @@ public class GuildService {
 		}
 	}
 	
+	@CacheEvict(cacheNames = {"percentageGuilds", "topPointGuild"}, allEntries = true)
 	@Transactional
 	public void joinGuild(String clientUsername, Guild guild) throws DataAccessException{
 		
@@ -122,6 +126,7 @@ public class GuildService {
 		client.setGuild(guild);
 	}
 	
+	@CacheEvict(cacheNames = {"percentageGuilds", "topPointGuild"}, allEntries = true)
 	@Transactional
 	public void leaveGuild(Client client,Guild guild) throws DataAccessException{
 		if(client.getGuild().equals(guild))
