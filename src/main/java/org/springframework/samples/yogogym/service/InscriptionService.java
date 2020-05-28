@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
@@ -97,6 +98,7 @@ public class InscriptionService {
 		return inscription;
 	}
 	
+	@CacheEvict(cacheNames = {"percentageClients", "percentageGuilds", "topPointClient", "topPointGuild"}, allEntries = true)
 	@Transactional
 	public void saveInscription(Inscription inscription) throws DataAccessException{
 		inscriptionRepo.save(inscription);

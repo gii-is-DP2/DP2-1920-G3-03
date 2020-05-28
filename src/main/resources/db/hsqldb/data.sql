@@ -138,6 +138,7 @@ INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (14,'
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (15,'Routine 7', 'Desc',7,9);
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (16,'Routine 8', 'Desc',8,9);
 INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (17,'Routine 9', 'Desc',9,9);
+INSERT INTO routines(id,name,description,reps_per_week,training_id) VALUES (18,'Routine 10', 'Desc',9,11);
 
 /* EQUIPMENT */
 
@@ -334,17 +335,3 @@ INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is
 INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (4,1,1,'client5','Respuesta de prueba','2020-05-15 15:23:25',false,false);
 INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (5,1,1,'client5','Respuesta de prueba 2','2020-05-15 16:23:25',false,false);
 INSERT INTO messages(id,forum_id,message_id,user_id,content,created_at,edited,is_parent) VALUES (6,1,2,'client5','Respuesta de prueba 3','2020-05-16 15:23:25',false,false);
-
-/* DIET */
-
--- INSERT INTO diets(id,name,description,kcal) VALUES (1, 'Mantenimiento', 'Algo', 2000);
--- INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (2, '2020-02-01', '2020-02-20', 'Entrenamiento2', 2);
--- INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (3, '2020-03-01', '2020-03-10', 'Entrenamiento3', 3);
--- INSERT INTO trainings(id,initial_date,end_date,name,diet_id) VALUES (4, '2020-04-01', '2020-04-20', 'Entrenamiento4', 4);
-
-/* CLIENT_DIET */
-
--- INSERT INTO clients_diets(client_id,diets_id) VALUES(2,1);
--- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,2);
--- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,3);
--- INSERT INTO clients_trainings(client_id,trainings_id) VALUES(2,4);

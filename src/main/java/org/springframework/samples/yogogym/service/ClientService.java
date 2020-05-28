@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Enums.Status;
@@ -47,6 +48,7 @@ public class ClientService {
 		this.clientRepository = clientRepository;
 	}
 
+	@CacheEvict(cacheNames = "percentageClients", allEntries = true)
 	@Transactional
 	public void saveClient(Client client) throws DataAccessException {
 		clientRepository.save(client);
