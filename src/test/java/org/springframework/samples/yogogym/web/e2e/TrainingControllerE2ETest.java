@@ -84,7 +84,7 @@ public class TrainingControllerE2ETest {
 
 	//COPY TRAINING
 	
-	@WithMockUser(username = "trainer1", authorities = { "trainer" })
+	@WithMockUser(username = TRAINER1_USERNAME, authorities = { "trainer" })
 	@Test
 	void testListCopyTrainingSuccessful() throws Exception {
 		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining",
@@ -92,7 +92,7 @@ public class TrainingControllerE2ETest {
 				.andExpect(view().name("trainer/trainings/listCopyTraining"));
 	}
 
-	@WithMockUser(username = "trainer1", authorities = { "trainer" })
+	@WithMockUser(username = TRAINER1_USERNAME, authorities = { "trainer" })
 	@Test
 	void testListCopyTrainingFailedTrainingNotEmpty() throws Exception {
 		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining",
@@ -100,7 +100,7 @@ public class TrainingControllerE2ETest {
 				.andExpect(view().name("exception"));
 	}
 
-	@WithMockUser(username = "trainer1", authorities = { "trainer" })
+	@WithMockUser(username = TRAINER1_USERNAME, authorities = { "trainer" })
 	@Test
 	void testListCopyTrainingFailedTrainingOtherUser() throws Exception {
 		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining",
@@ -108,7 +108,7 @@ public class TrainingControllerE2ETest {
 				.andExpect(view().name("exception"));
 	}
 
-	@WithMockUser(username = "trainer1", authorities = { "trainer" })
+	@WithMockUser(username = TRAINER1_USERNAME, authorities = { "trainer" })
 	@Test
 	void testProcessCopyTrainingSuccess() throws Exception {
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining",
@@ -118,7 +118,7 @@ public class TrainingControllerE2ETest {
 				.andExpect(view().name("redirect:/trainer/{trainerUsername}/trainings"));
 	}
 
-	@WithMockUser(username = "trainer1", authorities = { "trainer" })
+	@WithMockUser(username = TRAINER1_USERNAME, authorities = { "trainer" })
 	@Test
 	void testProcessCopyTrainingFailedPrivate() throws Exception {
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining",
@@ -127,7 +127,7 @@ public class TrainingControllerE2ETest {
 				.andExpect(status().isOk()).andExpect(view().name("exception"));
 	}
 
-	@WithMockUser(username = "trainer1", authorities = { "trainer" })
+	@WithMockUser(username = TRAINER1_USERNAME, authorities = { "trainer" })
 	@Test
 	void testProcessCopyTrainingFailedTrainingNotEmpty() throws Exception {
 		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/copyTraining",
