@@ -40,10 +40,29 @@ public class DashboardAdminControllerE2ETest {
 	
 	@WithMockUser(username = "admin1", authorities = { "admin" })
 	@Test
-	void testInitAllDashboardChallenges() throws Exception {
+	void testInitDashboardChallengesExists() throws Exception {
 		mockMvc.perform(get("/admin/dashboardChallenges?monthAndYear=2020-01")).andExpect(status().isOk())
 				.andExpect(view().name("admin/dashboards/dashboardChallenges"))
-				.andExpect(model().attributeExists("ChallengesExists"));
-	}	
+				.andExpect(model().attribute("ChallengesExists", true))
+				.andExpect(model().attribute("client", "Sofia Victoria Obeso"))
+				.andExpect(model().attribute("guild", "Gym for Dummies"));
+	}
+	
+	@WithMockUser(username = "admin1", authorities = { "admin" })
+	@Test
+	void testInitDashboardChallengesDontExist() throws Exception {
+		mockMvc.perform(get("/admin/dashboardChallenges?monthAndYear=2020-02")).andExpect(status().isOk())
+				.andExpect(view().name("admin/dashboards/dashboardChallenges"))
+				.andExpect(model().attribute("ChallengesExists", false));
+	}
+	
+	@WithMockUser(username = "admin1", authorities = { "admin" })
+	@Test
+	void testInitDashboardChallengesInscriptionsDontExist() throws Exception {
+		mockMvc.perform(get("/admin/dashboardChallenges?monthAndYear=2020-10")).andExpect(status().isOk())
+				.andExpect(view().name("admin/dashboards/dashboardChallenges"))
+				.andExpect(model().attribute("ChallengesExists", true))
+				.andExpect(model().attribute("NoCompletedChallenges", true));
+	}
 
 }

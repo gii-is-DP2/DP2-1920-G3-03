@@ -53,7 +53,7 @@ public class DashboardsAdminServiceTest {
 	@Test
 	void shouldCountCompletedInscriptionsOfMonthAndYear(){
 		int inscriptions = this.dashboardService.countCompletedInscriptionsOfMonthAndYear(1,2020);
-		assertThat(inscriptions).isEqualTo(1);
+		assertThat(inscriptions).isEqualTo(3);
 	}
 	
 	@Test
@@ -71,16 +71,16 @@ public class DashboardsAdminServiceTest {
 	@Test
 	void shouldGetTopClientOfMonthAndYear(){
 		DashboardAdminChallengesTopClient topClient = this.dashboardService.getTopClient(1, 2020);
-		assertThat(topClient.getUsername()).isEqualTo("Julio Enrique Guerrero");
-		assertThat(topClient.getEmail()).isEqualTo("juengue@yogogym.com");
-		assertThat(topClient.getPoints()).isEqualTo(10);
+		assertThat(topClient.getUsername()).isEqualTo("Sofia Victoria Obeso");
+		assertThat(topClient.getEmail()).isEqualTo("soviob@yogogym.com");
+		assertThat(topClient.getPoints()).isEqualTo(20);
 	}
 	
 	@Test
 	void shouldGetTopGuildOfMonthAndYear(){
 		DashboardAdminChallengesTopGuild topGuild = this.dashboardService.getTopGuild(1, 2020);
 		assertThat(topGuild.getGuild()).isEqualTo("Gym for Dummies");
-		assertThat(topGuild.getPoints()).isEqualTo(10);
+		assertThat(topGuild.getPoints()).isEqualTo(30);
 	}
 	
 	@Test

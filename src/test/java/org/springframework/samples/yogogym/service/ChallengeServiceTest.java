@@ -54,7 +54,7 @@ public class ChallengeServiceTest {
 	void shouldFindAllChallenges(){
 		
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAll();
-		assertThat(challenges.size()).isEqualTo(5);
+		assertThat(challenges.size()).isEqualTo(6);
 	}
 	
 	@Test
