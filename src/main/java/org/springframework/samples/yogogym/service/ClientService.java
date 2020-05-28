@@ -48,13 +48,14 @@ public class ClientService {
 		this.clientRepository = clientRepository;
 	}
 
+	
 	@CacheEvict(cacheNames = "percentageClients", allEntries = true)
 	@Transactional
 	public void saveClient(Client client) throws DataAccessException {
 		clientRepository.save(client);
 	}
 
-	@Transactional
+	@Transactional(readOnly=true)
 	public Client findClientById(int clientId) throws DataAccessException {
 
 		Client res = this.clientRepository.findClientById(clientId);
@@ -62,17 +63,18 @@ public class ClientService {
 		return res;
 	}
 
-	@Transactional
+	@Transactional(readOnly=true)
 	public Client findClientByInscriptionId(int inscriptionId) {
 
 		return this.clientRepository.findClientByInscriptionId(inscriptionId);
 	}
 
-	@Transactional
+	@Transactional(readOnly=true)
 	public Client findClientByUsername(String username) {
 		return this.clientRepository.findClientByUsername(username);
 	}
 
+	@Transactional(readOnly=true)
 	public List<Client> findClientsWithOnlySubmittedInscriptions() {
 
 		List<Client> clients = this.clientRepository.findClientsWithSubmittedInscriptions();
@@ -83,18 +85,19 @@ public class ClientService {
 		return clients;
 	}
 
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Client> findAllClient() throws DataAccessException {
 		return this.clientRepository.findAll();
 
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public Boolean isPublicByTrainingId(int trainingId) throws DataAccessException{
 		return this.clientRepository.isPublic(trainingId);
 	}
 
 	// Classification
+	@Transactional(readOnly=true)
 	public List<String> classificationNameDate() {
 		Calendar now2 = (Calendar) now.clone();
 		Date d1 = new Date();
@@ -105,6 +108,7 @@ public class ClientService {
 		return this.clientRepository.classificationNameDate(d2, d1);
 	}
 
+	@Transactional(readOnly=true)
 	public List<Integer> classificationPointDate() {
 		Calendar now2 = (Calendar) now.clone();
 		Date d1 = new Date();
@@ -115,10 +119,12 @@ public class ClientService {
 		return this.clientRepository.classificationPointDate(d2, d1);
 	}
 
+	@Transactional(readOnly=true)
 	public List<String> classificationNameAll() {
 		return this.clientRepository.classificationNameAll();
 	}
 
+	@Transactional(readOnly=true)
 	public List<Integer> classificationPointAll() {
 		return this.clientRepository.classificationPointAll();
 	}

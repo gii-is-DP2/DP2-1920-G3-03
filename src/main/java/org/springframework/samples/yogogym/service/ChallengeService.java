@@ -29,7 +29,7 @@ public class ChallengeService {
 	private InscriptionService inscriptionService;	
 	
   
-	@Transactional
+	@Transactional(readOnly=true)
 	public Iterable<Challenge> findAll(){
 		
 		return challengeRepo.findAll();
@@ -55,7 +55,7 @@ public class ChallengeService {
 		int year = challengeCalendar.get(GregorianCalendar.YEAR);
 		List<Challenge> challengesSameWeek = challenges.stream().filter(ch -> sameWeekAndYear(ch,week,year)).collect(Collectors.toList());
 		
-		//Si estamos editando, quitar challenge que estamos editando
+		//If we are editing, delete the challenge that is being edited
 		if(challenge.getId() != null) {
 			challengesSameWeek = challengesSameWeek.stream().filter(c -> c.getId() != challenge.getId()).collect(Collectors.toList());
 		}
@@ -115,16 +115,6 @@ public class ChallengeService {
 	}
 	
 	
-	//Util
-	private boolean sameWeekAndYear(Challenge c, int week, int year) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(c.getInitialDate());
-		int week2 = cal.get(GregorianCalendar.WEEK_OF_YEAR);
-		int year2 = cal.get(GregorianCalendar.YEAR);
-		return week == week2 && year == year2;
-	}
-	
-	
 	//Clasification
 	@Transactional(readOnly=true)
 	public List<Challenge> findChallengesByUsername(String username){
@@ -134,6 +124,16 @@ public class ChallengeService {
 	@Transactional(readOnly=true)
 	public Integer sumPointChallengesByUsername(String username) {
 		return this.challengeRepo.sumPointChallengesByUsername(username);
+	}
+	
+	
+	//Util
+	private boolean sameWeekAndYear(Challenge c, int week, int year) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(c.getInitialDate());
+		int week2 = cal.get(GregorianCalendar.WEEK_OF_YEAR);
+		int year2 = cal.get(GregorianCalendar.YEAR);
+		return week == week2 && year == year2;
 	}
 
 

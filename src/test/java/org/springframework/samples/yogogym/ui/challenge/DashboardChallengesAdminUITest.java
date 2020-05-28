@@ -56,7 +56,7 @@ public class DashboardChallengesAdminUITest {
 		
 		// Check there is data of the User and Guild with more points
 		try {
-			assertEquals("Julio Enrique Guerrero", driver.findElement(By.xpath("//b")).getText());
+			assertEquals("Sofia Victoria Obeso", driver.findElement(By.xpath("//b")).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}

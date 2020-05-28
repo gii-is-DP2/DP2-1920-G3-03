@@ -23,7 +23,6 @@ public class ParticipateChallengesClientUITest {
 	private static final String CHALLENGE_1 = "Challenge1";
 	private static final String CHALLENGE_3 = "Challenge3";
 	private static final String CHALLENGE_4 = "Challenge4";
-	private static final String CHALLENGE_5 = "Challenge5";
 	private static final String CLIENT_1 = "client1";
 	private static final String CLIENT_2 = "client2";
 	private static final String CLIENT_PASSWORD = "client1999";

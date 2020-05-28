@@ -16,7 +16,6 @@
 package org.springframework.samples.yogogym.service;
 
 
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -26,7 +25,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Inscription;
-import org.springframework.samples.yogogym.model.Enums.Status;
 import org.springframework.samples.yogogym.repository.InscriptionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,30 +47,32 @@ public class InscriptionService {
 	}
 
 	
+	@Transactional(readOnly=true)
 	public Collection<Inscription> findInscriptionsByChallengeId(int challengeId) throws DataAccessException {
 		
 		return inscriptionRepo.findInscriptionsByChallengeId(challengeId);
 	}
 	
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Inscription> findSubmittedInscriptions() {
 		
 		return inscriptionRepo.findSubmittedInscriptions();
 	}
 
-	
+	@Transactional(readOnly=true)
 	public Inscription findInscriptionByInscriptionId(int inscriptionId) {
 		
 		return inscriptionRepo.findById(inscriptionId).get();
 	}
 	
-
+	@Transactional(readOnly=true)
 	public Collection<Inscription> findAll() {
 		
 		return (Collection<Inscription>) this.inscriptionRepo.findAll();
 	}
 
+	@Transactional(readOnly=true)
 	public Inscription findInscriptionByClientAndChallenge(Client client, Challenge challenge) {
 		
 		Inscription inscription = null;
@@ -82,19 +82,11 @@ public class InscriptionService {
 			return null;
 		}
 		
-		Optional optional = inscriptions.stream().filter(i -> client.getInscriptions().contains(i)).findFirst();
+		Optional<Inscription> optional = inscriptions.stream().filter(i -> client.getInscriptions().contains(i)).findFirst();
 		if(optional.isPresent()) {
 			inscription = (Inscription) optional.get();
 		}
 		
-		//If the endDate have passed, its fails
-	   	/*Calendar now = Calendar.getInstance();
-	   	if(challenge.getEndDate().before(now.getTime())) {
-	   		if(inscription.getStatus().equals(Status.PARTICIPATING) || inscription.getStatus().equals(Status.SUBMITTED)) {
-	   			inscription.setStatus(Status.FAILED);
-	   			this.saveInscription(inscription);
-	   		}
-	   	}*/
 		return inscription;
 	}
 	

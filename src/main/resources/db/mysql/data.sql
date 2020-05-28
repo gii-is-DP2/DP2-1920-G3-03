@@ -274,6 +274,7 @@ INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,r
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (3,'Challenge3','Desc challenge 3','2020-10-10','2020-10-15','Reward3',30,4,40,10);
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (4,'Challenge4','Desc challenge 4','2020-10-10','2020-10-15','Reward2',30,4,40,10);
 INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (5,'Challenge5','Desc challenge 5','2021-01-01','2021-01-05','Reward5',30,4,40,10);
+INSERT INTO challenges(id,name,description,initial_date,end_date,reward,points,reps,weight,exercise_id) VALUES (6,'Challenge6','Desc challenge 6','2020-01-01','2020-01-05','Reward6',20,4,40,10);
 
 /* INSCRIPTION */
 
@@ -283,6 +284,8 @@ INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (3,0,null,3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (4,0,null,3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (5,2,'https://google.com',1);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (6,1,'https://google.com',3);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (7,2,'https://google.com',6);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (8,2,'https://google.com',6);
 
 /* CLIENT_INSCRIPTION */
 
@@ -292,6 +295,8 @@ INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (1,3);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (2,4);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (3,5);
 INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (4,6);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (6,7);
+INSERT INTO clients_inscriptions(client_id,inscriptions_id) VALUES (7,8);
 
 /* TRAINER_CLIENT */
 
