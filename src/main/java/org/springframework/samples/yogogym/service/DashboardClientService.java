@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.repository.DashboardClientRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DashboardClientService {
@@ -16,22 +17,27 @@ public class DashboardClientService {
 
 	private final Calendar now = Calendar.getInstance();
 
+	@Transactional(readOnly=true)
 	public List<Integer> countBodyPart(Integer days, String username) {
 		return this.dashboardClientRepository.countBodyPart(dateByDays(days), username);
 	}
 
+	@Transactional(readOnly=true)
 	public List<String> nameBodyPart(Integer days, String username) {
 		return this.dashboardClientRepository.nameBodyPart(dateByDays(days), username);
 	}
 
+	@Transactional(readOnly=true)
 	public List<Integer> countRepetitionType(Integer days, String username) {
 		return this.dashboardClientRepository.countRepetitionType(dateByDays(days), username);
 	}
 
+	@Transactional(readOnly=true)
 	public List<String> nameRepetitionType(Integer days, String username) {
 		return this.dashboardClientRepository.nameRepetitionType(dateByDays(days), username);
 	}
 
+	@Transactional(readOnly=true)
 	public Integer sumKcal(Integer days, String username) {
 		return this.dashboardClientRepository.sumKcal(dateByDays(days), username);
 	}

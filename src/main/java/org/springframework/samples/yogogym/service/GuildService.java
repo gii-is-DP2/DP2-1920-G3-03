@@ -35,32 +35,24 @@ public class GuildService {
 		this.forumRepository = forumRepository;
 	}
 
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Guild> findAllGuild() throws DataAccessException {
-		Collection<Guild> res = this.guildRepository.findAllGuilds();
-		
-		return res;		
+		return this.guildRepository.findAllGuilds();
 	}
 	
-	@Transactional
-	public Guild findGuildById(Integer guildId) throws DataAccessException {
-		
-		Guild res = this.guildRepository.findGuildById(guildId);
-		return res;		
+	@Transactional(readOnly=true)
+	public Guild findGuildById(Integer guildId) throws DataAccessException {	
+		return this.guildRepository.findGuildById(guildId);	
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public Guild findGuildByName(String guildName) throws DataAccessException {
-		
-		Guild res = this.guildRepository.findGuildByName(guildName);
-		return res;		
+		return this.guildRepository.findGuildByName(guildName);
 	}
 	 
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Client> findAllClientesByGuild(Guild guild) throws DataAccessException {
-		
-		Collection<Client> res = this.guildRepository.findClientsByGuild(guild);
-		return res;		
+		return this.guildRepository.findClientsByGuild(guild);	
 	}
 	
 	@CacheEvict(cacheNames = "percentageGuilds", allEntries = true)
@@ -133,10 +125,9 @@ public class GuildService {
 		client.setGuild(null);
 	}
 
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<String> findAllGuildNames() throws DataAccessException {
-		Collection<String> res = this.guildRepository.findAllGuildNames();
-		return res;		
+		return this.guildRepository.findAllGuildNames();
 	}
 	
 }
