@@ -87,14 +87,14 @@ public class DashboardsAdminServiceTest {
 	void shouldGetPercentageClients() {
 		List<DashboardAdminChallengesPercentageClients> pClients = this.dashboardService.getPercentageClients(1, 2020);
 		assertThat(pClients.get(0).getChallengeName()).isEqualTo("Challenge1");
-		assertThat(pClients.get(0).getPercentageClients()).isEqualTo(0.09090909090909091);
+		assertThat(Math.round(pClients.get(0).getPercentageClients())).isEqualTo(Math.round(0.09090909090909091));
 	}
 	
 	@Test
 	void shouldGetPercentageGuilds() {
 		List<DashboardAdminChallengesPercentageGuilds> pGuilds = this.dashboardService.getPercentageGuilds(1, 2020);
 		assertThat(pGuilds.get(0).getChallengeName()).isEqualTo("Challenge1");
-		assertThat(pGuilds.get(0).getPercentageGuilds()).isEqualTo(0.3333333333333333);
+		assertThat(Math.round(pGuilds.get(0).getPercentageGuilds())).isEqualTo(Math.round(0.3333333333333333));
 	}
 	
 	
