@@ -15,11 +15,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.model.Routine;
-import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
-import org.springframework.samples.yogogym.model.User;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.TrainerService;
@@ -31,8 +28,7 @@ import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysEx
 import org.springframework.samples.yogogym.service.exceptions.PastEndException;
 import org.springframework.samples.yogogym.service.exceptions.PastInitException;
 import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.samples.yogogym.util.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -52,12 +48,14 @@ public class TrainingController {
 	private static final String EXCEPTION = "exception";
 	private static final String ACTUAL_DATE = "actualDate";
 	private static final String END_DATE_AUX = "endDateAux";
+	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	private static final String CLIENT = "client";
 	private static final String TRAINING = "training";
 	private static final String TRAININGS = "trainings";
 	private static final String DELETE_MESSAGE = "deleteMessage";
 	private static final String DELETED_SUCCESSFULLY = "The training was deleted successfully";
 	private static final String NOT_HAVE_PUBLIC = "notHaveTrainingsPublic";
+	private static final String HAS_NOT_ROUTINE = "hasNotRoutine";
 	
 	//TRAINER
 	private static final String TRAINER_TRAINING_LIST = "trainer/trainings/trainingsList";
@@ -108,7 +106,7 @@ public class TrainingController {
 	@GetMapping("/trainer/{trainerUsername}/trainings")
 	public String clientTrainingList(@PathVariable("trainerUsername") String trainerUsername, Model model) {
 		
-		Boolean isLogged = isLoggedUser(trainerUsername,true);
+		Boolean isLogged = SecurityUtils.isLoggedUser(trainerUsername,true,this.clientService,this.trainerService);
 		
 		if(Boolean.FALSE.equals(isLogged))
 			return EXCEPTION;
@@ -130,25 +128,23 @@ public class TrainingController {
 	public String clientTrainingDetails(@PathVariable("trainerUsername") String trainerUsername,
 			@PathVariable("clientId") int clientId, @PathVariable("trainingId") int trainingId, Model model) {
 		
-		Boolean isClientOfLogged = isClientOfLoggedTrainer(clientId,trainerUsername);
+		Boolean isClientOfLogged = SecurityUtils.isClientOfLoggedTrainer(clientId,trainerUsername,this.clientService,this.trainerService);
 		
 		if(Boolean.FALSE.equals(isClientOfLogged))
 			return EXCEPTION;
 		
 		Client client = this.clientService.findClientById(clientId);
 		Training training = this.trainingService.findTrainingById(trainingId);
-
-		Calendar now = Calendar.getInstance();
-		Date date = now.getTime();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");		
-		String actualDate = dateFormat.format(date);
 		
-		model.addAttribute(ACTUAL_DATE, actualDate);
+		model.addAttribute(ACTUAL_DATE, getActualDate());
 		
 		model.addAttribute(CLIENT, client);
 		model.addAttribute(TRAINING, training);
-		if((training.getRoutines().isEmpty() || training.getRoutines()==null) && training.getDiet()==null) {
-			model.addAttribute("hasNotRoutine",true);
+		
+		Boolean isEmpty = training.isEmpty();
+		
+		if(Boolean.TRUE.equals(isEmpty)) {
+			model.addAttribute(HAS_NOT_ROUTINE,true);
 		}
 
 		return TRAINER_TRAINING_DETAILS;
@@ -157,7 +153,7 @@ public class TrainingController {
 	@GetMapping("/trainer/{trainerUsername}/clients/{clientId}/trainings/create")
 	public String initTrainingCreateForm(@PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername, ModelMap model) {
 		
-		Boolean isClientOfLogged = isClientOfLoggedTrainer(clientId,trainerUsername);
+		Boolean isClientOfLogged = SecurityUtils.isClientOfLoggedTrainer(clientId,trainerUsername,this.clientService,this.trainerService);
 		
 		if(Boolean.FALSE.equals(isClientOfLogged))
 			return EXCEPTION;
@@ -176,7 +172,7 @@ public class TrainingController {
 			@PathVariable("clientId") int clientId, @PathVariable("trainerUsername") String trainerUsername,
 			ModelMap model) {
 		
-		Boolean isClientOfLogged = isClientOfLoggedTrainer(clientId,trainerUsername);
+		Boolean isClientOfLogged = SecurityUtils.isClientOfLoggedTrainer(clientId,trainerUsername,this.clientService,this.trainerService);
 		
 		if(Boolean.FALSE.equals(isClientOfLogged))
 			return EXCEPTION;
@@ -192,7 +188,7 @@ public class TrainingController {
 				return EXCEPTION;
 			}
 			
-			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result,false);
+			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result);
 			
 			if(Boolean.FALSE.equals(saveTrainingSuccessful)) {
 				return TRAINER_TRAINING_CREATE_UPDATE;
@@ -211,9 +207,10 @@ public class TrainingController {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
-		Boolean isClientOfLogged = isClientOfLoggedTrainer(clientId,trainerUsername);
+		Boolean isClientOfLogged = SecurityUtils.isClientOfLoggedTrainer(clientId,trainerUsername,this.clientService,this.trainerService);
+		Boolean isEditable = !training.getEditingPermission().equals(EditingPermission.CLIENT);
 		
-		if(Boolean.FALSE.equals(isClientOfLogged)||training.getEditingPermission().equals(EditingPermission.CLIENT)) {
+		if(Boolean.FALSE.equals(isClientOfLogged)||Boolean.FALSE.equals(isEditable)) {
 			return EXCEPTION;
 		}
 		
@@ -223,6 +220,7 @@ public class TrainingController {
 		model.addAttribute(ACTUAL_DATE, getActualDate());
 		model.addAttribute(TRAINING, training);
 		model.addAttribute(CLIENT, client);
+		
 		return TRAINER_TRAINING_CREATE_UPDATE;
 	}
 	
@@ -232,15 +230,16 @@ public class TrainingController {
 		
 		Training oldTraining = this.trainingService.findTrainingById(trainingId);
 		
-		Boolean isClientOfLogged = isClientOfLoggedTrainer(clientId,trainerUsername);
+		Boolean isClientOfLogged = SecurityUtils.isClientOfLoggedTrainer(clientId,trainerUsername,this.clientService,this.trainerService);
+		Boolean isEditable = !oldTraining.getEditingPermission().equals(EditingPermission.CLIENT);
 		
-		if(Boolean.FALSE.equals(isClientOfLogged)||oldTraining.getEditingPermission().equals(EditingPermission.CLIENT)) {
+		if(Boolean.FALSE.equals(isClientOfLogged)||Boolean.FALSE.equals(isEditable)) {
 			return EXCEPTION;
 		}
 
 		Client client = this.clientService.findClientById(clientId);
 		Date now = Calendar.getInstance().getTime();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 		String actualDate = dateFormat.format(now);
 		
 		model.addAttribute(END_DATE_AUX, oldTraining.getEndDate());
@@ -258,9 +257,11 @@ public class TrainingController {
 			String oldTrainingEndDate = dateFormat.format(oldTraining.getEndDate());
 			String newTrainingEndDate = dateFormat.format(training.getEndDate());
 			
-			if(oldTraining.getEndDate().before(now)&&!newTrainingEndDate.equals(oldTrainingEndDate)
-				||training.getEditingPermission().equals(EditingPermission.CLIENT)
-				||(!oldTraining.getAuthor().equals(trainerUsername)&&!training.getEditingPermission().equals(oldTraining.getEditingPermission()))) {
+			Boolean completedTrainingEndChanged = oldTraining.getEndDate().before(now)&&!newTrainingEndDate.equals(oldTrainingEndDate);
+			Boolean editingPermissionClient = training.getEditingPermission().equals(EditingPermission.CLIENT);
+			Boolean noAuthorChangedEditPermission = !oldTraining.getAuthor().equals(trainerUsername)&&!training.getEditingPermission().equals(oldTraining.getEditingPermission());
+			
+			if(Boolean.TRUE.equals(completedTrainingEndChanged)||Boolean.TRUE.equals(editingPermissionClient)||Boolean.TRUE.equals(noAuthorChangedEditPermission)) {
 				return EXCEPTION;
 			}
 			
@@ -270,7 +271,7 @@ public class TrainingController {
 			training.setRoutines(oldTraining.getRoutines());
 			training.setId(trainingId);
 			
-			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result,false);
+			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result);
 			
 			return Boolean.FALSE.equals(saveTrainingSuccessful)?TRAINER_TRAINING_CREATE_UPDATE:TRAINER_TRAINING_CREATE_UPDATE_REDIRECT_ID;
 			
@@ -284,9 +285,14 @@ public class TrainingController {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
-		Boolean isClientOfLogged = isClientOfLoggedTrainer(clientId,trainerUsername);
+		Boolean isClientOfLogged = SecurityUtils.isClientOfLoggedTrainer(clientId,trainerUsername,this.clientService,this.trainerService);
+		Boolean isAuthor = true;
 		
-		if(training==null||Boolean.FALSE.equals(isClientOfLogged)||!training.getAuthor().equals(trainerUsername)) {
+		if(training!=null) {
+			isAuthor = training.getAuthor().equals(trainerUsername);
+		}
+		
+		if(Boolean.FALSE.equals(isClientOfLogged)||training==null||Boolean.FALSE.equals(isAuthor)) {
 			return EXCEPTION;
 		}
 		else {
@@ -302,9 +308,13 @@ public class TrainingController {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
-		Boolean isClientOfLogged = isClientOfLoggedTrainer(clientId,trainerUsername);
+		Boolean isClientOfLogged = SecurityUtils.isClientOfLoggedTrainer(clientId,trainerUsername,this.clientService,this.trainerService);
+		Boolean isEditable = !training.getEditingPermission().equals(EditingPermission.CLIENT);
 		
-		if(Boolean.FALSE.equals(isClientOfLogged)||training.getEditingPermission().equals(EditingPermission.CLIENT)||!isTrainingOfClient(trainingId,clientId)||!isTrainingEmpty(trainingId)) {
+		Boolean isTrainingOfClient = isTrainingOfClient(trainingId,clientId);
+		Boolean isTrainingEmpty = training.isEmpty();
+		
+		if(Boolean.FALSE.equals(isClientOfLogged)||Boolean.FALSE.equals(isEditable)||Boolean.FALSE.equals(isTrainingOfClient)||Boolean.FALSE.equals(isTrainingEmpty)) {
 			return EXCEPTION;
 		}
 		
@@ -329,17 +339,22 @@ public class TrainingController {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
-		Boolean isClientOfLogged = isClientOfLoggedTrainer(clientId,trainerUsername);
+		Boolean isClientOfLogged = SecurityUtils.isClientOfLoggedTrainer(clientId,trainerUsername,this.clientService,this.trainerService);
+		Boolean isEditable = !training.getEditingPermission().equals(EditingPermission.CLIENT);
+	
+		Boolean isTrainingOfClient = isTrainingOfClient(trainingId,clientId);
+		Boolean isTrainingEmpty = training.isEmpty();
+		Boolean isPublicTrainingToCopy = this.clientService.isPublicByTrainingId(idTrainingToCopy);
 		
-		if(Boolean.FALSE.equals(isClientOfLogged)||training.getEditingPermission().equals(EditingPermission.CLIENT)||!isTrainingOfClient(trainingId,clientId)||!isTrainingEmpty(trainingId)||!this.clientService.isPublicByTrainingId(idTrainingToCopy)) {
+		if(Boolean.FALSE.equals(isClientOfLogged)||Boolean.FALSE.equals(isEditable)||Boolean.FALSE.equals(isTrainingOfClient)||Boolean.FALSE.equals(isTrainingEmpty)||Boolean.FALSE.equals(isPublicTrainingToCopy)) {
 			return EXCEPTION;
 		}
 		Training trainingToCopy = this.trainingService.findTrainingById(idTrainingToCopy);
 		
-		Training nuevo = copyTrainingInfo(trainingToCopy,training);
+		training.copyTrainingInfo(trainingToCopy);
 		
 		try {
-			this.trainingService.saveTraining(nuevo,client);
+			this.trainingService.saveTraining(training,client);
 		}catch(Exception e) {
 			return EXCEPTION;
 		}
@@ -353,7 +368,7 @@ public class TrainingController {
 	public String getTrainingList(@PathVariable("clientUsername") String clientUsername, Model model) {
 		model.getAttribute("training_id");
 		
-		Boolean isLogged = isLoggedUser(clientUsername,false);
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername,false,this.clientService,this.trainerService);
 		
 		if(Boolean.FALSE.equals(isLogged))
 			return EXCEPTION;
@@ -372,7 +387,7 @@ public class TrainingController {
 		//Sirve para guardar sesión id para utilizar Spotify
 		httpSession.setAttribute("train", trainingId);
 		
-		Boolean isLogged = isLoggedUser(clientUsername,false);
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername,false,this.clientService,this.trainerService);
 		
 		if(Boolean.FALSE.equals(isLogged))
 			return EXCEPTION;
@@ -389,7 +404,7 @@ public class TrainingController {
 	@GetMapping("/client/{clientUsername}/trainings/create")
 	public String initTrainingCreateForm(@PathVariable("clientUsername") String clientUsername, ModelMap model) {
 		
-		Boolean isLogged = isLoggedUser(clientUsername,false);
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername,false,this.clientService,this.trainerService);
 
 		if(Boolean.FALSE.equals(isLogged))
 			return EXCEPTION;
@@ -407,7 +422,7 @@ public class TrainingController {
 	public String processTrainingCreateForm(@Valid Training training, BindingResult result,
 			@PathVariable("clientUsername") String clientUsername, ModelMap model) {
 		
-		Boolean isLogged = isLoggedUser(clientUsername,false);
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername,false,this.clientService,this.trainerService);
 
 		if(Boolean.FALSE.equals(isLogged))
 			return EXCEPTION;
@@ -423,7 +438,7 @@ public class TrainingController {
 				return EXCEPTION;
 			}
 			
-			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result,false);
+			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result);
 			
 			if(Boolean.FALSE.equals(saveTrainingSuccessful)) {
 				return CLIENT_TRAINING_CREATE_UPDATE;
@@ -433,7 +448,6 @@ public class TrainingController {
 				Training newTraining = allTrainingsClient.get(allTrainingsClient.size()-1);
 				return CLIENT_TRAINING_LIST_REDIRECT_URL+newTraining.getId();
 			}
-		
 		}
 	}
 	
@@ -442,9 +456,10 @@ public class TrainingController {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
-		Boolean isLogged = isLoggedUser(clientUsername,false);
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername,false,this.clientService,this.trainerService);
+		Boolean isEditable = !training.getEditingPermission().equals(EditingPermission.TRAINER);
 		
-		if(Boolean.FALSE.equals(isLogged)||training.getEditingPermission().equals(EditingPermission.TRAINER)) {
+		if(Boolean.FALSE.equals(isLogged)||Boolean.FALSE.equals(isEditable)) {
 			return EXCEPTION;
 		}
 		
@@ -463,15 +478,16 @@ public class TrainingController {
 		
 		Training oldTraining = this.trainingService.findTrainingById(trainingId);
 		
-		Boolean isLogged = isLoggedUser(clientUsername,false);
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername,false,this.clientService,this.trainerService);
+		Boolean isEditable = !oldTraining.getEditingPermission().equals(EditingPermission.TRAINER);
 		
-		if(Boolean.FALSE.equals(isLogged)||oldTraining.getEditingPermission().equals(EditingPermission.TRAINER)) {
+		if(Boolean.FALSE.equals(isLogged)||Boolean.FALSE.equals(isEditable)) {
 			return EXCEPTION;
 		}
 
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		Date now = Calendar.getInstance().getTime();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 		String actualDate = dateFormat.format(now);
 		
 		model.addAttribute(END_DATE_AUX, oldTraining.getEndDate());
@@ -489,9 +505,11 @@ public class TrainingController {
 			String oldTrainingEndDate = dateFormat.format(oldTraining.getEndDate());
 			String newTrainingEndDate = dateFormat.format(training.getEndDate());
 			
-			if(oldTraining.getEndDate().before(now)&&!newTrainingEndDate.equals(oldTrainingEndDate)
-				||training.getEditingPermission().equals(EditingPermission.TRAINER)
-				||(!oldTraining.getAuthor().equals(clientUsername)&&!training.getEditingPermission().equals(oldTraining.getEditingPermission()))) {
+			Boolean completedTrainingEndChanged = oldTraining.getEndDate().before(now)&&!newTrainingEndDate.equals(oldTrainingEndDate);
+			Boolean editingPermissionTrainer = training.getEditingPermission().equals(EditingPermission.TRAINER);
+			Boolean noAuthorChangedEditPermission = !oldTraining.getAuthor().equals(clientUsername)&&!training.getEditingPermission().equals(oldTraining.getEditingPermission());
+			
+			if(Boolean.TRUE.equals(completedTrainingEndChanged)||Boolean.TRUE.equals(editingPermissionTrainer)||Boolean.TRUE.equals(noAuthorChangedEditPermission)) {
 				return EXCEPTION;
 			}
 			
@@ -501,7 +519,7 @@ public class TrainingController {
 			training.setRoutines(oldTraining.getRoutines());
 			training.setId(trainingId);
 			
-			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result,false);
+			Boolean saveTrainingSuccessful = trySaveTraining(training,client,result);
 			
 			return Boolean.FALSE.equals(saveTrainingSuccessful)?CLIENT_TRAINING_CREATE_UPDATE:CLIENT_TRAINING_CREATE_UPDATE_REDIRECT_ID;
 		}
@@ -514,9 +532,14 @@ public class TrainingController {
 		
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
-		Boolean isLogged = isLoggedUser(clientUsername,false);
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername,false,this.clientService,this.trainerService);
+		Boolean isAuthor = true;
+		
+		if(training!=null) {
+			isAuthor = training.getAuthor().equals(clientUsername);
+		}
 				
-		if(training==null||Boolean.FALSE.equals(isLogged)||!training.getAuthor().equals(clientUsername)) {
+		if(Boolean.FALSE.equals(isLogged)||training==null||Boolean.FALSE.equals(isAuthor)) {
 			return EXCEPTION;
 		}
 		else {
@@ -526,174 +549,55 @@ public class TrainingController {
 		}
 	}
 	
-	//Derivative
-	
-	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		
-		Trainer trainer = this.trainerService.findTrainer(trainerUsername);
-		Client client = this.clientService.findClientById(clientId);
-		
-		return isLoggedUser(trainerUsername,true) && trainer.getClients().contains(client);
-	}
-	
-	private Boolean isLoggedUser(final String usernameURL, boolean isTrainer) {
-		
-		User user;
-		
-		if(isTrainer) {
-			Trainer trainer = this.trainerService.findTrainer(usernameURL);
-			user = trainer.getUser();
-		}
-		else {
-			Client client = this.clientService.findClientByUsername(usernameURL);
-			user = client.getUser();
-		}
-		
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String username = "";
-		
-		if(principal instanceof UserDetails) {
-			username = ((UserDetails)principal).getUsername();
-		}
-		else {
-			username = principal.toString();
-		}
-		
-		return user.getUsername().equals(username);
-	}
+	//General
 	
 	private String getActualDate() {
 		Date now = Calendar.getInstance().getTime();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		String actualDate = dateFormat.format(now);
-		
-		return actualDate;
+		DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+		return dateFormat.format(now);
 	}
 	
 	//Copy Training
-	
-	private boolean isTrainingEmpty(int trainingId) {
-		Training training = this.trainingService.findTrainingById(trainingId);
-		return training.getDiet()==null && training.getRoutines().isEmpty();
-	}
 
 	private boolean isTrainingOfClient(int trainingId, int clientId) {
 		Collection<Integer> list = this.trainingService.findTrainingIdFromClient(clientId);
 		return list.contains(trainingId);
 	}
 	
-	private Training copyTrainingInfo(Training trainingToCopy, Training emptyTraining) {
-		Training nuevo = new Training();
-		if(trainingToCopy.getDiet()!=null) {
-			nuevo.setDiet(trainingToCopy.getDiet());
-		}
-		if(trainingToCopy.getRoutines()!=null) {
-			Collection<Routine> routines = new ArrayList<>();
-			for(Routine r : trainingToCopy.getRoutines()) {
-				Routine nueva = new Routine();
-				if(r.getRoutineLine()!=null) {
-					Collection<RoutineLine> routinesLines = new ArrayList<>();
-					for(RoutineLine rl : r.getRoutineLine()) {
-						RoutineLine nuevaRl = new RoutineLine();
-						nuevaRl.setExercise(rl.getExercise());
-						nuevaRl.setReps(rl.getReps());
-						nuevaRl.setSeries(rl.getSeries());
-						nuevaRl.setTime(rl.getTime());
-						nuevaRl.setWeight(rl.getWeight());
-						routinesLines.add(nuevaRl);
-					}
-					nueva.setRoutineLine(routinesLines);
-				}
-				nueva.setDescription(r.getDescription());
-				nueva.setName(r.getName());
-				nueva.setRepsPerWeek(r.getRepsPerWeek());
-				routines.add(nueva);
-			}
-			nuevo.setRoutines(routines);
-		}
-		nuevo.setAuthor(emptyTraining.getAuthor());
-		nuevo.setEditingPermission(emptyTraining.getEditingPermission());
-		nuevo.setEndDate(emptyTraining.getEndDate());
-		nuevo.setId(emptyTraining.getId());
-		nuevo.setInitialDate(emptyTraining.getInitialDate());
-		nuevo.setName(emptyTraining.getName());
-		
-		return nuevo;
-	}
+	//Save Training Exceptions
 	
-	private Boolean trySaveTraining(Training training, Client client, BindingResult result, Boolean isTrainerUser) {
+	private Boolean trySaveTraining(Training training, Client client, BindingResult result) {
 		
 		Boolean isSuccessful = true;
 		
-		if(Boolean.TRUE.equals(isTrainerUser)) {
-			try {			
-				this.trainingService.saveTraining(training,client);
-			} 
-			catch (PastInitException e) {
-				result.rejectValue(INITIAL_DATE, null, INITIAL_DATE_IN_PAST);
-				isSuccessful = false;
-			}
-			catch (PastEndException e) {
-				result.rejectValue(END_DATE, null, END_DATE_IN_PAST);
-				isSuccessful = false;
-			}
-			catch (EndBeforeEqualsInitException e) {
-				result.rejectValue(END_DATE, null, END_BEFORE_INIT);
-				isSuccessful = false;
-			}
-			catch (LongerThan90DaysException e) {
-				result.rejectValue(END_DATE, null, LONGER_THAN_90);
-				isSuccessful = false;
-			}
-			catch (InitInTrainingException e) {
-				this.rejectTrainingDateError(e, result);
-				isSuccessful = false;
-			}
-			catch (EndInTrainingException e) {
-				this.rejectTrainingDateError(e, result);
-				isSuccessful = false;
-			}
-			catch (PeriodIncludingTrainingException e) {
-				this.rejectTrainingDateError(e, result);
-				isSuccessful = false;
-			}
+		try {			
+			this.trainingService.saveTraining(training,client);
+		} 
+		catch (PastInitException e) {
+			result.rejectValue(INITIAL_DATE, null, INITIAL_DATE_IN_PAST);
+			isSuccessful = false;
 		}
-		else {
-			try {			
-				this.trainingService.saveTraining(training,client);
-			} 
-			catch (PastInitException e) {
-				result.rejectValue(INITIAL_DATE, null, INITIAL_DATE_IN_PAST);
-				isSuccessful = false;
-			}
-			catch (PastEndException e) {
-				result.rejectValue(END_DATE, null, END_DATE_IN_PAST);
-				isSuccessful = false;
-			}
-			catch (EndBeforeEqualsInitException e) {
-				result.rejectValue(END_DATE, null, END_BEFORE_INIT);
-				isSuccessful = false;
-			}
-			catch (LongerThan90DaysException e) {
-				result.rejectValue(END_DATE, null, LONGER_THAN_90);
-				isSuccessful = false;
-			}
-			catch (InitInTrainingException e) {
-				this.rejectTrainingDateError(e, result);
-				isSuccessful = false;
-			}
-			catch (EndInTrainingException e) {
-				this.rejectTrainingDateError(e, result);
-				isSuccessful = false;
-			}
-			catch (PeriodIncludingTrainingException e) {
-				this.rejectTrainingDateError(e, result);
-				isSuccessful = false;
-			}
+		catch (PastEndException e) {
+			result.rejectValue(END_DATE, null, END_DATE_IN_PAST);
+			isSuccessful = false;
 		}
+		catch (EndBeforeEqualsInitException e) {
+			result.rejectValue(END_DATE, null, END_BEFORE_INIT);
+			isSuccessful = false;
+		}
+		catch (LongerThan90DaysException e) {
+			result.rejectValue(END_DATE, null, LONGER_THAN_90);
+			isSuccessful = false;
+		}
+		catch (InitInTrainingException|EndInTrainingException|PeriodIncludingTrainingException e) {
+			this.rejectConcurrentTraining(e, result);
+			isSuccessful = false;
+		}
+		
 		return isSuccessful;
 	}
 	
-	private void rejectTrainingDateError(Exception e, BindingResult result) {
+	private void rejectConcurrentTraining(Exception e, BindingResult result) {
 		if(e instanceof InitInTrainingException) {
 			InitInTrainingException ex = (InitInTrainingException) e;
 			result.rejectValue(INITIAL_DATE, null, "The training cannot start in a period "
@@ -710,5 +614,4 @@ public class TrainingController {
 				+ "which includes another training (The other training is from " + ex.getInitAssoc() + " to " + ex.getEndAssoc() + ")");
 		}
 	}
-	
 }
