@@ -69,16 +69,11 @@ public class DashboardsAdminControllerTest {
 
 		@BeforeEach
 		void setup() {
-			List<Integer> listOne = new ArrayList<Integer>();
-			listOne.add(1);
-			List<String> listName = new ArrayList<>();
-			listName.add("prueba");
+			Integer[] listOne = {1};
+			String[] listName = {"prueba"};
 
-			given(this.dashboardsAdminService.countEquipment(7)).willReturn(listOne);
-			given(this.dashboardsAdminService.nameEquipment(7)).willReturn(listName);
-			
-			given(this.dashboardsAdminService.countEquipment(28)).willReturn(listOne);
-			given(this.dashboardsAdminService.nameEquipment(28)).willReturn(listName);
+			given(this.dashboardsAdminService.countEquipment(5, 2020)).willReturn(listOne);
+			given(this.dashboardsAdminService.nameEquipment(5, 2020)).willReturn(listName);
 			
 		}
 
@@ -87,12 +82,9 @@ public class DashboardsAdminControllerTest {
 		void testInitAllDashboard() throws Exception {
 			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
 					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
-					.andExpect(model().attribute("hasEquipmentMonth", true))
-					.andExpect(model().attribute("hasEquipmentWeek", true))
-					.andExpect(model().attribute("countMonth", COUNT))
-					.andExpect(model().attribute("orderNameMonth", NAME))
-					.andExpect(model().attribute("countWeek", COUNT))
-					.andExpect(model().attribute("orderNameWeek", NAME));
+					.andExpect(model().attribute("hasEquipment", true))
+					.andExpect(model().attribute("count", COUNT))
+					.andExpect(model().attribute("orderName", NAME));
 		}
 	}
 
@@ -118,16 +110,11 @@ public class DashboardsAdminControllerTest {
 
 		@BeforeEach
 		void setup() {
-			List<Integer> listOne = new ArrayList<Integer>();
-			listOne.add(1);
-			List<String> listName = new ArrayList<>();
-			listName.add("prueba");
+			Integer[] listOne = {};
+			String[] listName = {};
 
-			given(this.dashboardService.countEquipment(7)).willReturn(new ArrayList<>());
-			given(this.dashboardService.nameEquipment(7)).willReturn(new ArrayList<>());
-			
-			given(this.dashboardService.countEquipment(28)).willReturn(listOne);
-			given(this.dashboardService.nameEquipment(28)).willReturn(listName);
+			given(this.dashboardService.countEquipment(5, 2020)).willReturn(listOne);
+			given(this.dashboardService.nameEquipment(5, 2020)).willReturn(listName);
 		}
 
 		@WithMockUser(username = "admin1", authorities = { "admin" })
@@ -135,49 +122,7 @@ public class DashboardsAdminControllerTest {
 		void testInitDashboardWithoutWeek() throws Exception {
 			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
 					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
-					.andExpect(model().attribute("hasEquipmentMonth", true))
-					.andExpect(model().attribute("hasEquipmentWeek", false))
-					.andExpect(model().attribute("countMonth", COUNT))
-					.andExpect(model().attribute("orderNameMonth", NAME));
-		}
-	}
-
-	@Nested
-	@DisplayName("Admin test without trainings")
-	@WebMvcTest(value = DashboardsAdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-	public class AdminTestWithoutTrainings {
-
-		@MockBean
-		private DashboardsAdminService dashboardService;
-		
-		@MockBean
-		private ClientService clientService;
-		
-		@MockBean
-		private InscriptionService inscriptionService;
-		
-		@MockBean
-		private GuildService guildService;
-
-		@Autowired
-		private MockMvc mockMvc;
-
-		@BeforeEach
-		void setup() {
-			given(this.dashboardService.countEquipment(7)).willReturn(new ArrayList<>());
-			given(this.dashboardService.nameEquipment(7)).willReturn(new ArrayList<>());
-			
-			given(this.dashboardService.countEquipment(28)).willReturn(new ArrayList<>());
-			given(this.dashboardService.nameEquipment(28)).willReturn(new ArrayList<>());
-		}
-
-		@WithMockUser(username = "admin1", authorities = { "admin" })
-		@Test
-		void testInitDashboardWithoutWeek() throws Exception {
-			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
-					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
-					.andExpect(model().attribute("hasEquipmentMonth", false))
-					.andExpect(model().attribute("hasEquipmentWeek", false));
+					.andExpect(model().attribute("hasEquipment", false));
 		}
 	}
 	

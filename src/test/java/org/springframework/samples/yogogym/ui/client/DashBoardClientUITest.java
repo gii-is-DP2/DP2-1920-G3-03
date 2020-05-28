@@ -18,24 +18,22 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DashBoardClientOtherUserUITest {
+public class DashBoardClientUITest {
+
+	private static final String CLIENT = "client1";
+	private static final String CLIENT_PASSWORD = "client1999";
+
 	@LocalServerPort
 	private int port;
-
 	private WebDriver driver;
 	private StringBuffer verificationErrors = new StringBuffer();
+	UtilsClientsUI utils;
 
 	@BeforeEach
 	public void setUp() throws Exception {
 		driver = new FirefoxDriver();
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-	}
-
-	@Test
-	public void testDashBoardClientUI() throws Exception {
-		as("client1");
-		initDashboard();
-		exceptionViewShown();
+		utils = new UtilsClientsUI(port, driver);
 	}
 
 	@AfterEach
@@ -47,31 +45,50 @@ public class DashBoardClientOtherUserUITest {
 		}
 	}
 
-	private void as(String username) {
-		driver.get("http://localhost:" + port);
-		driver.findElement(By.linkText("Login")).click();
-		driver.findElement(By.id("password")).clear();
-		driver.findElement(By.id("password")).sendKeys("client1999");
-		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys(username);
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
+	@Test
+	public void testDashboardCompleted() throws Exception {
+		utils.init();
+		utils.as(CLIENT, CLIENT_PASSWORD);
+		utils.dashboardOfMonthAndYear("2020-01");
+		driver.findElement(By.xpath("//td")).click();
 		try {
-			assertEquals(username, driver
-					.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul[2]/li/a/strong")).getText());
+			assertEquals("1100", driver.findElement(By.xpath("//b")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
+		driver.findElement(By.xpath("//body/div")).click();
+		try {
+			assertEquals("Month: 1 - 2020", driver.findElement(By.xpath("//h3")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
+		driver.findElement(By.id("canvasBodyParts")).click();
+		driver.findElement(By.id("canvasRepititionType")).click();
+	}
+
+	@Test
+	public void testDashboardEmpty() throws Exception {
+		utils.init();
+		utils.as(CLIENT, CLIENT_PASSWORD);
+		utils.dashboardOfMonthAndYear("2020-05");
+		driver.findElement(By.xpath("//body/div")).click();
+		try {
+			assertEquals("Month: 5 - 2020", driver.findElement(By.xpath("//h3")).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
 	}
 
-	private void initDashboard() {
-		driver.get("http://localhost:" + port + "/client/client2/dashboard");
-	}
-	
-	private void exceptionViewShown() {
+	@Test
+	public void testDashboardOtherUser() throws Exception {
+		utils.init();
+		utils.as(CLIENT, CLIENT_PASSWORD);
+		driver.get("http://localhost:" + port + "/client/client3/dashboard");
 		try {
 			assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
 	}
+
 }
