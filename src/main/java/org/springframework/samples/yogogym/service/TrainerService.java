@@ -17,7 +17,7 @@ public class TrainerService {
 		this.trainerRepository = trainerRepository;
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public Trainer findTrainer(String trainerUsername) throws DataAccessException {
 		return this.trainerRepository.findTrainer(trainerUsername);	
 	}
