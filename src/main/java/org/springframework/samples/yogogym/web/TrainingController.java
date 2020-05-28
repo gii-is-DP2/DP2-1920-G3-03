@@ -48,6 +48,7 @@ public class TrainingController {
 	private static final String EXCEPTION = "exception";
 	private static final String ACTUAL_DATE = "actualDate";
 	private static final String END_DATE_AUX = "endDateAux";
+	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	private static final String CLIENT = "client";
 	private static final String TRAINING = "training";
 	private static final String TRAININGS = "trainings";
@@ -238,7 +239,7 @@ public class TrainingController {
 
 		Client client = this.clientService.findClientById(clientId);
 		Date now = Calendar.getInstance().getTime();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 		String actualDate = dateFormat.format(now);
 		
 		model.addAttribute(END_DATE_AUX, oldTraining.getEndDate());
@@ -285,9 +286,13 @@ public class TrainingController {
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
 		Boolean isClientOfLogged = SecurityUtils.isClientOfLoggedTrainer(clientId,trainerUsername,this.clientService,this.trainerService);
-		Boolean isAuthor = training.getAuthor().equals(trainerUsername);
+		Boolean isAuthor = true;
 		
-		if(training==null||Boolean.FALSE.equals(isClientOfLogged)||Boolean.FALSE.equals(isAuthor)) {
+		if(training!=null) {
+			isAuthor = training.getAuthor().equals(trainerUsername);
+		}
+		
+		if(Boolean.FALSE.equals(isClientOfLogged)||training==null||Boolean.FALSE.equals(isAuthor)) {
 			return EXCEPTION;
 		}
 		else {
@@ -482,7 +487,7 @@ public class TrainingController {
 
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		Date now = Calendar.getInstance().getTime();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 		String actualDate = dateFormat.format(now);
 		
 		model.addAttribute(END_DATE_AUX, oldTraining.getEndDate());
@@ -528,9 +533,13 @@ public class TrainingController {
 		Training training = this.trainingService.findTrainingById(trainingId);
 		
 		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername,false,this.clientService,this.trainerService);
-		Boolean isAuthor = training.getAuthor().equals(clientUsername);
+		Boolean isAuthor = true;
+		
+		if(training!=null) {
+			isAuthor = training.getAuthor().equals(clientUsername);
+		}
 				
-		if(training==null||Boolean.FALSE.equals(isLogged)||Boolean.FALSE.equals(isAuthor)) {
+		if(Boolean.FALSE.equals(isLogged)||training==null||Boolean.FALSE.equals(isAuthor)) {
 			return EXCEPTION;
 		}
 		else {
@@ -544,7 +553,7 @@ public class TrainingController {
 	
 	private String getActualDate() {
 		Date now = Calendar.getInstance().getTime();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 		return dateFormat.format(now);
 	}
 	

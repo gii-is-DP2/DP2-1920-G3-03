@@ -10,6 +10,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class SecurityUtils {
 	
+	private SecurityUtils() {
+	    throw new IllegalStateException("Utility class");
+	}
+	
 	public static Boolean isLoggedUser(final String usernameURL, boolean isTrainer, ClientService clientService, TrainerService trainerService) {
 			
 		User user;

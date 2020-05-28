@@ -66,7 +66,6 @@ public class Training extends BaseEntity{
 			this.setDiet(trainingToCopy.getDiet());
 		}
 		if(trainingToCopy.getRoutines()!=null) {
-			Collection<Routine> routines = new ArrayList<>();
 			for(Routine r : trainingToCopy.getRoutines()) {
 				Routine nueva = new Routine();
 				if(r.getRoutineLine()!=null) {
@@ -85,11 +84,9 @@ public class Training extends BaseEntity{
 				nueva.setDescription(r.getDescription());
 				nueva.setName(r.getName());
 				nueva.setRepsPerWeek(r.getRepsPerWeek());
-				routines.add(nueva);
+				this.routines.add(nueva);
 			}
-			this.setRoutines(routines);
 		}
-
 	}
 	
 	public Boolean isEmpty() {
