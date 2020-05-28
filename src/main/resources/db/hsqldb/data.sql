@@ -60,7 +60,7 @@ INSERT INTO clients VALUES (10, 'trinimon@yogogym.com','Trinidad', 'Maria Montos
 
 INSERT INTO users(username,password,enabled) VALUES ('trainer1','trainer1999',TRUE);
 INSERT INTO authorities VALUES (13,'trainer','trainer1');
-INSERT INTO trainers VALUES (1,  'josemadaci@yogogym.com', 'José Manuel', 'David Cifuentes', '12345678L','trainer1');
+INSERT INTO trainers VALUES (1,  'josemadaci@yogogym.com', 'Jose Manuel', 'David Cifuentes', '12345678L','trainer1');
 
 INSERT INTO users(username,password,enabled) VALUES ('trainer2','trainer1999',TRUE);
 INSERT INTO authorities VALUES (14,'trainer','trainer2');

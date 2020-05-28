@@ -34,6 +34,7 @@
 		<!-- Sonar Qube -->
 		
 		<sonar.junit.reportPath>${buildDir}/target/jacoco.exec</sonar.junit.reportPath>
+		<sonar.exclusions>${buildDir}src/main/java/org.springframework.samples.yogogym.util/DataGenerator.java</sonar.exclusions>
 		
         <rest-assured.version>4.2.0</rest-assured.version>
     </properties>
