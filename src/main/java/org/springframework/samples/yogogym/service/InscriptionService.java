@@ -63,7 +63,11 @@ public class InscriptionService {
 	@Transactional(readOnly=true)
 	public Inscription findInscriptionByInscriptionId(int inscriptionId) {
 		
-		return inscriptionRepo.findById(inscriptionId).get();
+		Optional<Inscription> i = inscriptionRepo.findById(inscriptionId);
+		if(i.isPresent())
+			return i.get();
+		else
+			return null;
 	}
 	
 	@Transactional(readOnly=true)
