@@ -26,7 +26,7 @@ public class TrainerServiceTests {
 	public void shouldFindCorrectTrainer() {
 		Trainer trainer = this.trainingService.findTrainer(TRAINER1_USERNAME);
 		assertThat(trainer.getId()).isEqualTo(1);
-		assertThat(trainer.getFirstName()).isEqualTo("José Manuel");
+		assertThat(trainer.getFirstName()).isEqualTo("Jose Manuel");
 		assertThat(trainer.getLastName()).isEqualTo("David Cifuentes");
 		assertThat(trainer.getNif()).isEqualTo("12345678L");
 		assertThat(trainer.getEmail()).isEqualTo("josemadaci@yogogym.com");
