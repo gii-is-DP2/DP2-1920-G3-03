@@ -62,13 +62,10 @@ public class ChallengeControllerTest {
 	
 	@MockBean
 	private ChallengeService challengeService;
-	
 	@MockBean
 	private ExerciseService exerciseService;
-	
 	@MockBean
 	private InscriptionService inscriptionService;
-	
 	@MockBean
 	private ClientService clientService;
 	
@@ -90,19 +87,8 @@ public class ChallengeControllerTest {
 		
 		// Challenge 2 (With Inscription):
 		Challenge challenge2 = createChallenge(testChallengeId2, "Challenge2 Name Test", initialDate, endDate);
-		
-		Inscription inscription1 = new Inscription();
-		inscription1.setChallenge(challenge2);
-		inscription1.setId(testInscriptionId1);
-		inscription1.setStatus(Status.PARTICIPATING);
-		
-		Client client1 = new Client();
-		User userClient1 = new User();
-		userClient1.setUsername(testClientUsername1);
-		userClient1.setEnabled(true);
-		client1.setUser(userClient1);
-		client1.setId(testClientId1);
-		client1.addInscription(inscription1);
+		Inscription inscription1 = createInscription(testInscriptionId1, Status.PARTICIPATING, challenge2);
+		Client client1 = createClient(testClientId1, testClientUsername1,inscription1);
 		
 		List<Inscription> inscriptions = new ArrayList<Inscription>();
 		inscriptions.add(inscription1);
@@ -114,7 +100,9 @@ public class ChallengeControllerTest {
 		given(this.clientService.findClientById(testClientId1)).willReturn(client1);
 		given(this.clientService.findClientByUsername(testClientUsername1)).willReturn(client1);
 	}
-	
+
+
+
 	// ADMIN:
 	
 	
@@ -521,6 +509,29 @@ public class ChallengeControllerTest {
 		c.setExercise(exercise1);
 		
 		return c;
+	}
+	
+	private Inscription createInscription(int inscriptionId, Status status, Challenge challenge) {
+
+		Inscription inscription = new Inscription();
+		inscription.setChallenge(challenge);
+		inscription.setId(inscriptionId);
+		inscription.setStatus(status);
+		
+		return inscription;
+	}
+	
+	private Client createClient(int clientId, String username, Inscription inscription) {
+
+		Client client = new Client();
+		User userClient = new User();
+		userClient.setUsername(username);
+		userClient.setEnabled(true);
+		client.setUser(userClient);
+		client.setId(clientId);
+		client.addInscription(inscription);
+		
+		return client;
 	}
 	
 }

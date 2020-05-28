@@ -37,6 +37,8 @@ public class ChallengeServiceTest {
 	private static final int CHALLENGE_ID_1 = 1;
 	private static final int CHALLENGE_ID_2 = 2;
 	private static final int CHALLENGE_ID_4 = 4;
+	private static final int CHALLENGE_ID_1500 = 1500;
+	private static final int TOTAL_NUMBER_OF_CHALLENGES = 6;
 	private static final int CLIENT_ID_1 = 1;
 	private static final String CLIENT_USERNAME_3 = "client3";
 	
@@ -54,7 +56,7 @@ public class ChallengeServiceTest {
 	void shouldFindAllChallenges(){
 		
 		Collection<Challenge> challenges = (Collection<Challenge>) this.challengeService.findAll();
-		assertThat(challenges.size()).isEqualTo(6);
+		assertThat(challenges.size()).isEqualTo(TOTAL_NUMBER_OF_CHALLENGES);
 	}
 	
 	@Test
@@ -62,6 +64,14 @@ public class ChallengeServiceTest {
 		
 		Challenge challenge = this.challengeService.findChallengeById(CHALLENGE_ID_2);
 		assertThat(challenge.getName()).isEqualTo("Challenge2");	
+	}
+	
+	@Test
+	void shouldNotFindChallengeById(){
+		
+		Assertions.assertThrows(Exception.class, () ->{
+			this.challengeService.findChallengeById(CHALLENGE_ID_1500);
+		});	
 	}
 	
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
@@ -133,14 +143,15 @@ public class ChallengeServiceTest {
 	void shouldNotSaveChallengeWhenSameNameSameWeek() {
 		
 		Date initialDate = getDateOf(2030, 1, 1);
+		String name = "Same Name";
 		
 		Challenge c1 = createTestingChallenge();
 		Challenge c2 = createTestingChallenge();
 		
 		c1.setInitialDate(initialDate);
 		c2.setInitialDate(initialDate);
-		c1.setName("Same Name");
-		c2.setName("Same Name");
+		c1.setName(name);
+		c2.setName(name);
 		
 		try {
 			this.challengeService.saveChallenge(c1);
@@ -157,8 +168,10 @@ public class ChallengeServiceTest {
 	@Test
 	void shouldUpdateChallenge() {
 		
+		String description = "UpdateTest";
+		
 		Challenge challenge = this.challengeService.findChallengeById(CHALLENGE_ID_1);
-		challenge.setDescription("UpdateTest");;
+		challenge.setDescription(description);
 		try {
 			this.challengeService.saveChallenge(challenge);
 		} catch (DataAccessException | ChallengeSameNameException | ChallengeMore3Exception | ChallengeWithInscriptionsException e) {
@@ -166,7 +179,7 @@ public class ChallengeServiceTest {
 		}
 		
 		challenge = this.challengeService.findChallengeById(CHALLENGE_ID_1);
-		assertThat(challenge.getDescription()).isEqualTo("UpdateTest");
+		assertThat(challenge.getDescription()).isEqualTo(description);
 	}
 	
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
