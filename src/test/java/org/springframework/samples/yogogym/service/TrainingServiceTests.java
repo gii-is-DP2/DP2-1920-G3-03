@@ -52,9 +52,9 @@ public class TrainingServiceTests {
 	private ClientService clientService;
 	
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	private final int CLIENT_ID=1;
-	private final int TRAINING_ID=1;
-	private final static Calendar now = Calendar.getInstance();
+	private static final int CLIENT_ID=1;
+	private static final int TRAINING_ID=1;
+	private static final Calendar now = Calendar.getInstance();
 	
 	@BeforeAll
 	public static void setup() {
