@@ -117,7 +117,7 @@ public class DietControllerE2ETest {
 			.param("protein",diet.getProtein().toString())
 			.param("fat",diet.getFat().toString()))
 		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/trainer/"+ testTrainerUsername + "/clients/" + testClientId + "/trainings/"+testTrainingIdActive));
+		.andExpect(view().name("redirect:/trainer/"+testTrainerUsername+"/diets"));
 
 	}
 	

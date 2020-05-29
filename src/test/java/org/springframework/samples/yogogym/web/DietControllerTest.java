@@ -250,7 +250,7 @@ public class DietControllerTest {
 			.param("kcal", diet.getKcal().toString())
 			.param("fat", diet.getFat().toString()))
 		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/trainer/"+ testTrainerUsername + "/clients/" + testClientId + "/trainings/"+testTrainingId+ "/diets/"+diet.getId()));
+		.andExpect(view().name("redirect:/trainer/"+testTrainerUsername+"/diets"));
 	
 	}
 
