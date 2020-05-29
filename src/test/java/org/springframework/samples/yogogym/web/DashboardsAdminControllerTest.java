@@ -21,14 +21,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
-import org.springframework.samples.yogogym.model.Challenge;
 import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.model.Trainer;
-import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.model.Guild;
-import org.springframework.samples.yogogym.model.Inscription;
+import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.User;
-import org.springframework.samples.yogogym.model.Enums.Status;
+import org.springframework.samples.yogogym.projections.DashboardAdminChallengesPercentageClients;
+import org.springframework.samples.yogogym.projections.DashboardAdminChallengesPercentageGuilds;
+import org.springframework.samples.yogogym.projections.DashboardAdminChallengesTopClient;
+import org.springframework.samples.yogogym.projections.DashboardAdminChallengesTopGuild;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DashboardsAdminService;
 import org.springframework.samples.yogogym.service.GuildService;
@@ -43,12 +43,9 @@ public class DashboardsAdminControllerTest {
 
 	private static final String[] NAME = { "prueba" }; 
 	
-	private static final Calendar testInitialChallengeDate = Calendar.getInstance();
-	private static final Calendar testEndChallengeDate = Calendar.getInstance();
-	
 	private static final String[] challengesNames = { "Challenge1 Name Test" };
-	private static final Double[] percentageClients = { 100. };
-	private static final Double[] percentageGuilds = { 100. };
+	private static final long[] percentageClients = { 100 };
+	private static final long[] percentageGuilds = { 100 };
 
 	@Nested
 	@DisplayName("Admin test with exercises")
@@ -72,16 +69,11 @@ public class DashboardsAdminControllerTest {
 
 		@BeforeEach
 		void setup() {
-			List<Integer> listOne = new ArrayList<Integer>();
-			listOne.add(1);
-			List<String> listName = new ArrayList<>();
-			listName.add("prueba");
+			Integer[] listOne = {1};
+			String[] listName = {"prueba"};
 
-			given(this.dashboardsAdminService.countEquipment(7)).willReturn(listOne);
-			given(this.dashboardsAdminService.nameEquipment(7)).willReturn(listName);
-			
-			given(this.dashboardsAdminService.countEquipment(28)).willReturn(listOne);
-			given(this.dashboardsAdminService.nameEquipment(28)).willReturn(listName);
+			given(this.dashboardsAdminService.countEquipment(5, 2020)).willReturn(listOne);
+			given(this.dashboardsAdminService.nameEquipment(5, 2020)).willReturn(listName);
 			
 		}
 
@@ -90,12 +82,9 @@ public class DashboardsAdminControllerTest {
 		void testInitAllDashboard() throws Exception {
 			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
 					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
-					.andExpect(model().attribute("hasEquipmentMonth", true))
-					.andExpect(model().attribute("hasEquipmentWeek", true))
-					.andExpect(model().attribute("countMonth", COUNT))
-					.andExpect(model().attribute("orderNameMonth", NAME))
-					.andExpect(model().attribute("countWeek", COUNT))
-					.andExpect(model().attribute("orderNameWeek", NAME));
+					.andExpect(model().attribute("hasEquipment", true))
+					.andExpect(model().attribute("count", COUNT))
+					.andExpect(model().attribute("orderName", NAME));
 		}
 	}
 
@@ -121,16 +110,11 @@ public class DashboardsAdminControllerTest {
 
 		@BeforeEach
 		void setup() {
-			List<Integer> listOne = new ArrayList<Integer>();
-			listOne.add(1);
-			List<String> listName = new ArrayList<>();
-			listName.add("prueba");
+			Integer[] listOne = {};
+			String[] listName = {};
 
-			given(this.dashboardService.countEquipment(7)).willReturn(new ArrayList<>());
-			given(this.dashboardService.nameEquipment(7)).willReturn(new ArrayList<>());
-			
-			given(this.dashboardService.countEquipment(28)).willReturn(listOne);
-			given(this.dashboardService.nameEquipment(28)).willReturn(listName);
+			given(this.dashboardService.countEquipment(5, 2020)).willReturn(listOne);
+			given(this.dashboardService.nameEquipment(5, 2020)).willReturn(listName);
 		}
 
 		@WithMockUser(username = "admin1", authorities = { "admin" })
@@ -138,49 +122,7 @@ public class DashboardsAdminControllerTest {
 		void testInitDashboardWithoutWeek() throws Exception {
 			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
 					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
-					.andExpect(model().attribute("hasEquipmentMonth", true))
-					.andExpect(model().attribute("hasEquipmentWeek", false))
-					.andExpect(model().attribute("countMonth", COUNT))
-					.andExpect(model().attribute("orderNameMonth", NAME));
-		}
-	}
-
-	@Nested
-	@DisplayName("Admin test without trainings")
-	@WebMvcTest(value = DashboardsAdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-	public class AdminTestWithoutTrainings {
-
-		@MockBean
-		private DashboardsAdminService dashboardService;
-		
-		@MockBean
-		private ClientService clientService;
-		
-		@MockBean
-		private InscriptionService inscriptionService;
-		
-		@MockBean
-		private GuildService guildService;
-
-		@Autowired
-		private MockMvc mockMvc;
-
-		@BeforeEach
-		void setup() {
-			given(this.dashboardService.countEquipment(7)).willReturn(new ArrayList<>());
-			given(this.dashboardService.nameEquipment(7)).willReturn(new ArrayList<>());
-			
-			given(this.dashboardService.countEquipment(28)).willReturn(new ArrayList<>());
-			given(this.dashboardService.nameEquipment(28)).willReturn(new ArrayList<>());
-		}
-
-		@WithMockUser(username = "admin1", authorities = { "admin" })
-		@Test
-		void testInitDashboardWithoutWeek() throws Exception {
-			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
-					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
-					.andExpect(model().attribute("hasEquipmentMonth", false))
-					.andExpect(model().attribute("hasEquipmentWeek", false));
+					.andExpect(model().attribute("hasEquipment", false));
 		}
 	}
 	
@@ -208,91 +150,94 @@ public class DashboardsAdminControllerTest {
 		@BeforeEach
 		void setup() {
 			
-			//Challenge 1:
-			testEndChallengeDate.add(Calendar.DAY_OF_MONTH, 1);
-			Date initialDate = testInitialChallengeDate.getTime();
-			Date endDate = testInitialChallengeDate.getTime();
-			Exercise exercise1 = new Exercise();
-			exercise1.setName("Exercise Test");
-			
-			Challenge challenge1 = new Challenge();
-			challenge1.setId(1);
-			challenge1.setName("Challenge1 Name Test");
-			challenge1.setDescription("Challenge Description Test");
-			challenge1.setInitialDate(initialDate);
-			challenge1.setEndDate(endDate);
-			challenge1.setPoints(100);
-			challenge1.setReward("Reward Test");
-			challenge1.setReps(100);
-			challenge1.setWeight(100.);
-			challenge1.setExercise(exercise1);
-			
-			//Inscription 1:
-			Inscription inscription1 = new Inscription();
-			inscription1.setChallenge(challenge1);
-			inscription1.setId(1);
-			inscription1.setStatus(Status.COMPLETED);
-			
-			Client client1 = new Client();
-			User userClient1 = new User();
-			userClient1.setUsername("username");
-			userClient1.setEnabled(true);
-			client1.setUser(userClient1);
-			client1.setId(1);
-			client1.addInscription(inscription1);
-			
-			//Guild 1:
-			Guild guild1 = new Guild();
-			guild1.setId(1);
-			guild1.setCreator("username");
-			guild1.setDescription("We are connecting the world");
-			guild1.setName("Connecting");
-			guild1.setLogo("https://omega2001.es/wp-content/uploads/2016/02/red-informatica-1080x675.jpg");
-			client1.setGuild(guild1);
-			
-			
+			String[] challengesNames = {"Challenge1 Name Test"};
 			
 			Date now = new Date();
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(now);
 			int month = cal.get(Calendar.MONTH) + 1;
+			int year = cal.get(Calendar.YEAR);
 			
+			given(this.dashboardsAdminService.countChallengesOfMonthAndYear(month,year)).willReturn(1);
 			
-			List<Challenge> listChallenges = new ArrayList<Challenge>();
-			listChallenges.add(challenge1);
-			given(this.dashboardsAdminService.getChallengesOfMonth(month)).willReturn(listChallenges);
+			given(this.dashboardsAdminService.countCompletedInscriptionsOfMonthAndYear(month,year)).willReturn(1);
 			
-			List<Inscription> completedInscriptionsThisMonth = new ArrayList<Inscription>();
-			completedInscriptionsThisMonth.add(inscription1);
-			given(this.dashboardsAdminService.findCompletedInscriptionsThisMonth(month)).willReturn(completedInscriptionsThisMonth);
+			given(this.dashboardsAdminService.getChallengesNamesOfMonthAndYear(month,year)).willReturn(challengesNames);
 			
-			List<Inscription> inscriptionsByChallenge1 = new ArrayList<Inscription>();
-			inscriptionsByChallenge1.add(inscription1);
-			given(this.inscriptionService.findInscriptionsByChallengeId(1)).willReturn(inscriptionsByChallenge1);
+			DashboardAdminChallengesTopClient topClient = new DashboardAdminChallengesTopClient() {
+				
+				public String getUsername() {
+					return "username";
+				}
+				
+				public Integer getPoints() {
+					return 100;
+				}
+				
+				public String getEmail() {
+					return "username@yogogym.com";
+				}
+			};
+			given(this.dashboardsAdminService.getTopClient(month,year)).willReturn(topClient);
 			
-			List<Client> listClients = new ArrayList<Client>();
-			listClients.add(client1);
-			given(this.clientService.findAllClient()).willReturn(listClients);
+			DashboardAdminChallengesTopGuild topGuild = new DashboardAdminChallengesTopGuild() {
+				
+				public Integer getPoints() {
+					return 100;
+				}
+				
+				public String getGuild() {
+					return "Connecting";
+				}
+			};
 			
-			List<Guild> guilds = new ArrayList<>();
-			guilds.add(guild1);
-			given(this.guildService.findAllGuild()).willReturn(guilds);
+			given(this.dashboardsAdminService.getTopGuild(month,year)).willReturn(topGuild);
 			
-			List<Client> clientsguild1 = new ArrayList<>();
-			clientsguild1.add(client1);
-			given(this.guildService.findAllClientesByGuild(guild1)).willReturn(clientsguild1);
+			DashboardAdminChallengesPercentageClients percentageClient = new DashboardAdminChallengesPercentageClients() {
+				
+				public Double getPercentageClients() {
+					return 1.;
+				}
+				
+				public String getChallengeName() {
+					return challengesNames[0];
+				}
+			};
+			
+			List<DashboardAdminChallengesPercentageClients> percentagesClients = new ArrayList<>();
+			percentagesClients.add(percentageClient);
+			
+			given(this.dashboardsAdminService.getPercentageClients(month,year)).willReturn(percentagesClients);
+			
+			DashboardAdminChallengesPercentageGuilds percentageGuild = new DashboardAdminChallengesPercentageGuilds() {
+				
+				public String getChallengeName() {
+					return challengesNames[0];
+				}
+
+				public Double getPercentageGuilds() {
+					return 1.;
+				}
+			};
+			
+			List<DashboardAdminChallengesPercentageGuilds> percentagesGuilds = new ArrayList<>();
+			percentagesGuilds.add(percentageGuild);
+			
+			given(this.dashboardsAdminService.getPercentageGuilds(month,year)).willReturn(percentagesGuilds);
+			
 			
 		}
 
 		@WithMockUser(username = "admin1", authorities = { "admin" })
 		@Test
 		void testInitAllDashboardChallenges() throws Exception {
-			mockMvc.perform(get("/admin/dashboardChallenges/0")).andExpect(status().isOk())
+			mockMvc.perform(get("/admin/dashboardChallenges")).andExpect(status().isOk())
 					.andExpect(view().name("admin/dashboards/dashboardChallenges"))
 					.andExpect(model().attribute("ChallengesExists", true))
-					.andExpect(model().attributeExists("client"))
+					.andExpect(model().attribute("client", "username"))
+					.andExpect(model().attribute("email", "username@yogogym.com"))
 					.andExpect(model().attribute("cPoints", 100))
-					.andExpect(model().attributeExists("guild"))
+					.andExpect(model().attribute("guild", "Connecting"))
 					.andExpect(model().attribute("gPoints", 100))
 					.andExpect(model().attribute("challengesNames", challengesNames))
 					.andExpect(model().attribute("percentageClients", percentageClients))
@@ -328,16 +273,16 @@ public class DashboardsAdminControllerTest {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(now);
 			int month = cal.get(Calendar.MONTH) + 1;
+			int year = cal.get(Calendar.YEAR);
 			
-			List<Challenge> listChallenges = new ArrayList<Challenge>();
-			given(this.dashboardsAdminService.getChallengesOfMonth(month)).willReturn(listChallenges);
+			given(this.dashboardsAdminService.countChallengesOfMonthAndYear(month,year)).willReturn(0);
 			
 		}
 
 		@WithMockUser(username = "admin1", authorities = { "admin" })
 		@Test
 		void testInitAllDashboardChallenges() throws Exception {
-			mockMvc.perform(get("/admin/dashboardChallenges/0")).andExpect(status().isOk())
+			mockMvc.perform(get("/admin/dashboardChallenges")).andExpect(status().isOk())
 					.andExpect(view().name("admin/dashboards/dashboardChallenges"))
 					.andExpect(model().attribute("ChallengesExists", false));
 		}	
@@ -367,45 +312,22 @@ public class DashboardsAdminControllerTest {
 		@BeforeEach
 		void setup() {
 			
-			//Challenge 1:
-			testEndChallengeDate.add(Calendar.DAY_OF_MONTH, 1);
-			Date initialDate = testInitialChallengeDate.getTime();
-			Date endDate = testInitialChallengeDate.getTime();
-			Exercise exercise1 = new Exercise();
-			exercise1.setName("Exercise Test");
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(now);
+			int month = cal.get(Calendar.MONTH) + 1;
+			int year = cal.get(Calendar.YEAR);
 			
-			Challenge challenge1 = new Challenge();
-			challenge1.setId(1);
-			challenge1.setName("Challenge1 Name Test");
-			challenge1.setDescription("Challenge Description Test");
-			challenge1.setInitialDate(initialDate);
-			challenge1.setEndDate(endDate);
-			challenge1.setPoints(100);
-			challenge1.setReward("Reward Test");
-			challenge1.setReps(100);
-			challenge1.setWeight(100.);
-			challenge1.setExercise(exercise1);
+			given(this.dashboardsAdminService.countChallengesOfMonthAndYear(month,year)).willReturn(1);
 			
-			//Inscription 1:
-			Inscription inscription1 = new Inscription();
-			inscription1.setChallenge(challenge1);
-			inscription1.setId(1);
-			inscription1.setStatus(Status.SUBMITTED);
-			
-			
-			List<Challenge> listChallenges = new ArrayList<Challenge>();
-			listChallenges.add(challenge1);
-			given(this.dashboardsAdminService.getChallengesOfMonth(1)).willReturn(listChallenges);
-			
-			List<Inscription> completedInscriptionsThisMonth = new ArrayList<Inscription>();
-			given(this.dashboardsAdminService.findCompletedInscriptionsThisMonth(1)).willReturn(completedInscriptionsThisMonth);
+			given(this.dashboardsAdminService.countCompletedInscriptionsOfMonthAndYear(month,year)).willReturn(0);
 			
 		}
 
 		@WithMockUser(username = "admin1", authorities = { "admin" })
 		@Test
 		void testInitAllDashboardChallenges() throws Exception {
-			mockMvc.perform(get("/admin/dashboardChallenges/1")).andExpect(status().isOk())
+			mockMvc.perform(get("/admin/dashboardChallenges")).andExpect(status().isOk())
 					.andExpect(view().name("admin/dashboards/dashboardChallenges"))
 					.andExpect(model().attribute("ChallengesExists", true))
 					.andExpect(model().attribute("NoCompletedChallenges", true));

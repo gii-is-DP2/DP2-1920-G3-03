@@ -88,13 +88,14 @@ public class UtilsChallengesUI {
 	    driver.findElement(By.linkText("Delete")).click();
 	}
 	
-	public void dashboardOfMonth(int month) {
+	public void dashboardOfMonthAndYear(String monthAndYear) {
 		
 		driver.findElement(By.linkText("Admin")).click();
 		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[4]/a/span[2]")).click();
-		driver.findElement(By.id("month")).click();
-		driver.findElement(By.xpath("//option[@value='" + month + "']")).click();
-		driver.findElement(By.xpath("//input[@value='Change']")).click();
+		driver.findElement(By.name("monthAndYear")).click();
+	    driver.findElement(By.name("monthAndYear")).clear();
+	    driver.findElement(By.name("monthAndYear")).sendKeys(monthAndYear);
+	    driver.findElement(By.xpath("//input[@value='Enviar']")).click();
 	}
 	
 	public void listNewChallenges() {

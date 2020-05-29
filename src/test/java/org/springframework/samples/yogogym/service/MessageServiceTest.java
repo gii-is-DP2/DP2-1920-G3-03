@@ -41,7 +41,7 @@ public class MessageServiceTest {
 		Boolean notNull = allMessages != null;
 		
 		//Check size
-		Boolean checkSize = allMessages.size() == 7;
+		Boolean checkSize = allMessages.size() == 6;
 		
 		assertTrue(notNull && checkSize);
 	}

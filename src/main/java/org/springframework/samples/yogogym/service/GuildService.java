@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Forum;
@@ -34,34 +35,27 @@ public class GuildService {
 		this.forumRepository = forumRepository;
 	}
 
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Guild> findAllGuild() throws DataAccessException {
-		Collection<Guild> res = this.guildRepository.findAllGuilds();
-		
-		return res;		
+		return this.guildRepository.findAllGuilds();
 	}
 	
-	@Transactional
-	public Guild findGuildById(Integer guildId) throws DataAccessException {
-		
-		Guild res = this.guildRepository.findGuildById(guildId);
-		return res;		
+	@Transactional(readOnly=true)
+	public Guild findGuildById(Integer guildId) throws DataAccessException {	
+		return this.guildRepository.findGuildById(guildId);	
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public Guild findGuildByName(String guildName) throws DataAccessException {
-		
-		Guild res = this.guildRepository.findGuildByName(guildName);
-		return res;		
+		return this.guildRepository.findGuildByName(guildName);
 	}
 	 
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Client> findAllClientesByGuild(Guild guild) throws DataAccessException {
-		
-		Collection<Client> res = this.guildRepository.findClientsByGuild(guild);
-		return res;		
+		return this.guildRepository.findClientsByGuild(guild);	
 	}
 	
+	@CacheEvict(cacheNames = "percentageGuilds", allEntries = true)
 	@Transactional(rollbackFor = {GuildSameNameException.class,GuildSameCreatorException.class,GuildLogoException.class,GuildNotCreatorException.class})
 	public void saveGuild(Guild guild, Client client) throws DataAccessException, GuildSameNameException, GuildSameCreatorException, GuildLogoException, GuildNotCreatorException {
 		
@@ -99,6 +93,7 @@ public class GuildService {
 		}
 	}
 	
+	@CacheEvict(cacheNames = {"percentageGuilds", "topPointGuild"}, allEntries = true)
 	@Transactional
 	public void deleteGuild(Guild guild, String clientUsername) throws DataAccessException {
 		
@@ -115,6 +110,7 @@ public class GuildService {
 		}
 	}
 	
+	@CacheEvict(cacheNames = {"percentageGuilds", "topPointGuild"}, allEntries = true)
 	@Transactional
 	public void joinGuild(String clientUsername, Guild guild) throws DataAccessException{
 		
@@ -122,16 +118,16 @@ public class GuildService {
 		client.setGuild(guild);
 	}
 	
+	@CacheEvict(cacheNames = {"percentageGuilds", "topPointGuild"}, allEntries = true)
 	@Transactional
 	public void leaveGuild(Client client,Guild guild) throws DataAccessException{
 		if(client.getGuild().equals(guild))
 		client.setGuild(null);
 	}
 
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<String> findAllGuildNames() throws DataAccessException {
-		Collection<String> res = this.guildRepository.findAllGuildNames();
-		return res;		
+		return this.guildRepository.findAllGuildNames();
 	}
 	
 }

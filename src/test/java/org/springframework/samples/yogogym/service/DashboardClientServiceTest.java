@@ -2,8 +2,6 @@ package org.springframework.samples.yogogym.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -15,38 +13,48 @@ import org.springframework.stereotype.Service;
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 public class DashboardClientServiceTest {
+	
+	private static final String[] nameBodyPartTest = {"UPPER_TRUNK", "ARMS", "ALL"};
+	
+	private static final Integer[] countBodyPartTest = {1, 4, 6};
+	
+	private static final String[] nameRepetitionTypeTest = {"TIME", "TIME_AND_REPS"};
+	
+	private static final Integer[] countRepetitionTypeTest = {6, 5};
+	
+	private static final Integer sumKcalTest = 1100;
 
 	@Autowired
 	protected DashboardClientService dashboardClientService;
 
 	@Test
 	void shouldCountBodyPart() {
-		List<Integer> countBodyPart = this.dashboardClientService.countBodyPart(null, "client1");
-		assertThat(countBodyPart.size()).isEqualTo(3);
+		Integer[] countBodyPart = this.dashboardClientService.countBodyPart(1, 2020, "client1");
+		assertThat(countBodyPart).isEqualTo(countBodyPartTest);
 	}
 
 	@Test
 	void shouldNameBodyPart() {
-		List<String> nameBodyPart = this.dashboardClientService.nameBodyPart(null, "client1");
-		assertThat(nameBodyPart.size()).isEqualTo(3);
+		String[] nameBodyPart = this.dashboardClientService.nameBodyPart(1, 2020, "client1");
+		assertThat(nameBodyPart).isEqualTo(nameBodyPartTest);
 	}
 
 	@Test
 	void shouldCountRepetition() {
-		List<Integer> countRepetitionType = this.dashboardClientService.countRepetitionType(null, "client1");
-		assertThat(countRepetitionType.size()).isEqualTo(2);
+		Integer[] countRepetitionType = this.dashboardClientService.countRepetitionType(1, 2020, "client1");
+		assertThat(countRepetitionType).isEqualTo(countRepetitionTypeTest);
 	}
 
 	@Test
 	void shouldNameRepetition() {
-		List<String> nameRepetitionType = this.dashboardClientService.nameRepetitionType(null, "client1");
-		assertThat(nameRepetitionType.size()).isEqualTo(2);
+		String[] nameRepetitionType = this.dashboardClientService.nameRepetitionType(1, 2020, "client1");
+		assertThat(nameRepetitionType).isEqualTo(nameRepetitionTypeTest);
 	}
 
 	@Test
 	void shouldSumKcal() {
-		Integer sumKcal = this.dashboardClientService.sumKcal(null, "client1");
-		assertThat(sumKcal).isEqualTo(1600);
+		Integer sumKcal = this.dashboardClientService.sumKcal(1, 2020, "client1");
+		assertThat(sumKcal).isEqualTo(sumKcalTest);
 	}
 
 }

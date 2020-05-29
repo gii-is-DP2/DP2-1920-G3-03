@@ -1,6 +1,9 @@
 package org.springframework.samples.yogogym.web;
 
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.service.DashboardClientService;
@@ -23,53 +26,46 @@ public class DashboardClientController {
 	}
 
 	@GetMapping("/client/{usernameClient}/dashboard")
-	public String getDashboard(@PathVariable("usernameClient") String usernameClient, ModelMap model) {
+	public String getDashboard(@PathParam("monthAndYear") String monthAndYear, @PathVariable("usernameClient") String usernameClient, ModelMap model) {
 		if (isTheRealUser(usernameClient)) {
-			dashboard(usernameClient, 28, "Month", model);
-			dashboard(usernameClient, null, "All", model);
+			int date [] = getMonthAndYear(monthAndYear);
+			int year = date[0];
+			int month = date[1];
+			model.addAttribute("year",year);
+			model.addAttribute("month",month);
+			model.addAttribute("usernameClient", usernameClient);
+			dashboard(usernameClient, month, year, model);
 			return "client/dashboards/dashboard";
 		} else {
 			return "exception";
 		}
 	}
 
-	private void dashboard(String username, Integer days, String string, ModelMap model) {
-		List<Integer> countBodyPart = this.dashboardClientService.countBodyPart(days, username);
-		List<String> nameBodyPart = this.dashboardClientService.nameBodyPart(days, username);
-		List<Integer> countRepetitionType = this.dashboardClientService.countRepetitionType(days, username);
-		List<String> nameRepetitionType = this.dashboardClientService.nameRepetitionType(days, username);
-		Integer kcal = this.dashboardClientService.sumKcal(days, username);
-		if (!countBodyPart.isEmpty() && !nameBodyPart.isEmpty()) {
-			String[] sBodyParts = new String[nameBodyPart.size()];
-			Integer[] cBodyParts = new Integer[countBodyPart.size()];
-			for (int i = 0; i < nameBodyPart.size(); i++) {
-				sBodyParts[i] = nameBodyPart.get(i);
-				cBodyParts[i] = countBodyPart.get(i);
-			}
-			model.addAttribute("orderBodyParts" + string, sBodyParts);
-			model.addAttribute("countBodyParts" + string, cBodyParts);
-			model.addAttribute("hasBodyParts" + string, true);
+	private void dashboard(String username, int month, int year, ModelMap model) {
+		Integer[] countBodyPart = this.dashboardClientService.countBodyPart(month, year, username);
+		String[] nameBodyPart = this.dashboardClientService.nameBodyPart(month, year, username);
+		Integer[] countRepetitionType = this.dashboardClientService.countRepetitionType(month, year, username);
+		String[] nameRepetitionType = this.dashboardClientService.nameRepetitionType(month, year, username);
+		Integer kcal = this.dashboardClientService.sumKcal(month, year, username);
+		if (countBodyPart.length>0 && nameBodyPart.length>0) {
+			model.addAttribute("orderBodyParts", nameBodyPart);
+			model.addAttribute("countBodyParts", countBodyPart);
+			model.addAttribute("hasBodyParts", true);
 		} else {
-			model.addAttribute("hasBodyParts" + string, false);
+			model.addAttribute("hasBodyParts", false);
 		}
-		if (!countRepetitionType.isEmpty() && !nameRepetitionType.isEmpty()) {
-			String[] sRepetitionType = new String[nameRepetitionType.size()];
-			Integer[] cRepetitionType = new Integer[countRepetitionType.size()];
-			for (int i = 0; i < nameRepetitionType.size(); i++) {
-				sRepetitionType[i] = nameRepetitionType.get(i);
-				cRepetitionType[i] = countRepetitionType.get(i);
-			}
-			model.addAttribute("orderRepetitionType" + string, sRepetitionType);
-			model.addAttribute("countRepetitionType" + string, cRepetitionType);
-			model.addAttribute("hasRepetitionType" + string, true);
+		if (countRepetitionType.length>0 && nameRepetitionType.length>0) {
+			model.addAttribute("orderRepetitionType", nameRepetitionType);
+			model.addAttribute("countRepetitionType", countRepetitionType);
+			model.addAttribute("hasRepetitionType", true);
 		} else {
-			model.addAttribute("hasRepetitionType" + string, false);
+			model.addAttribute("hasRepetitionType", false);
 		}
 		if (kcal != null) {
-			model.addAttribute("kcal" + string, kcal);
-			model.addAttribute("hasKcal" + string, true);
+			model.addAttribute("kcal", kcal);
+			model.addAttribute("hasKcal", true);
 		} else {
-			model.addAttribute("hasKcal" + string, false);
+			model.addAttribute("hasKcal", false);
 		}
 	}
 
@@ -82,6 +78,30 @@ public class DashboardClientController {
 			username = principal.toString();
 		}
 		return username.equals(usernameClient);
+	}
+	
+	/**
+	 * <p>Separate the Month and Year from a String</p>
+	 * @param monthAndYear: A string of this type YYYY-mm
+	 * @return int[]: An array of: [0]: the Year  [1]: The Month
+	 */
+	private int[] getMonthAndYear(String monthAndYear) {
+		int date [] = {0,0};
+		
+		if(monthAndYear == null) {
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(now);
+			
+			date[0] = cal.get(Calendar.YEAR);
+			date[1] = cal.get(Calendar.MONTH) + 1;
+		}
+		else {
+			String[] str =  monthAndYear.split("-");
+			date[0] = Integer.valueOf(str[0]);
+			date[1] = Integer.valueOf(str[1]);
+		}
+		return date;
 	}
 
 }

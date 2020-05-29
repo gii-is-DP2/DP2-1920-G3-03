@@ -10,10 +10,6 @@ import javax.validation.Validator;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * @author Michael Isvy Simple test to make sure that Bean Validation is working (useful
- * when upgrading to a new version of Hibernate Validator/ Bean Validation)
- */
 class ChallengeValidatorTests extends ValidatorTests{
   
 	@Test
