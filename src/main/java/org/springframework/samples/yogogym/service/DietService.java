@@ -14,6 +14,8 @@ import org.springframework.samples.yogogym.model.Enums.DietType;
 import org.springframework.samples.yogogym.model.Enums.Intensity;
 import org.springframework.samples.yogogym.repository.DietRepository;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,10 +39,11 @@ public class DietService {
 		Calendar cal = Calendar.getInstance();
 		Date actualDate = cal.getTime();
 		
-		if(training.getEndDate().before(actualDate))
+		if(training.getEndDate().before(actualDate)) 
 			throw new TrainingFinished();
-		else		
+		else 
 			dietRepository.save(diet);
+		
 	}
 	
 	@Transactional
@@ -86,6 +89,14 @@ public class DietService {
 			res = DietType.EXTREME_DEFINITION;
 		
 		return res;
+	}
+	
+	public String getLoggedUsername()
+	{
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String clientUsername = ((UserDetails)principal).getUsername();
+		
+		return clientUsername;
 	}
 
 	
