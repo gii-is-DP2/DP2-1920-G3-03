@@ -35,26 +35,26 @@ class HU10_AddDiet extends Simulation {
 		.exec(http("Logged")
 			.post("/login")
 			.headers(headers_1)
-			.formParam("username", "trainer1")
-			.formParam("password", "trainer1999")
+			.formParam("username", "client1")
+			.formParam("password", "client1999")
 			.formParam("_csrf", "${stoken}")
 		).pause(12)
 	}
 
 	object ListDiets{
 		val listDiets = exec(http("request_4")
-			.get("/trainer/trainer1/diets")
+			.get("/client/client1/diets")
 			.headers(headers_0))
 		.pause(2)
 	}
 	
 	object NewDietSuccessful{
 		val newDietSuccessful = exec(http("New Diet Successful")
-			.get("/trainer/trainer1/clients/1/trainings/9/diets/create")
+			.get("/client/client1/trainings/9/diets/create")
 			.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(17)
 		.exec(http("Save Diet Successful")
-		.post("/trainer/trainer1/clients/1/trainings/9/diets/create")
+		.post("/client/client1/trainings/9/diets/create")
 			.headers(headers_1)
 			.formParam("name", "algo")
 			.formParam("description", "asd")
@@ -70,14 +70,14 @@ class HU10_AddDiet extends Simulation {
 
 	object NewDietError{
 		val newDietError = exec(http("New Diet Error")
-			.get("/trainer/trainer1/clients/1/trainings/9/diets/create")
+			.get("/client/client1/trainings/9/diets/create")
 			.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(9)
 		.exec(http("Save Diet Error")
-			.post("/trainer/trainer1/clients/5/trainings/6/diets/create")
+			.post("/client/client1/trainings/9/diets/create")
 			.headers(headers_1)
 			.formParam("name", "Dieta 1")
-			.formParam("description", "algo")
+			.formParam("description", "")
 			.formParam("type", "VOLUME")
 			.formParam("carb", "0")
 			.formParam("fat", "0")

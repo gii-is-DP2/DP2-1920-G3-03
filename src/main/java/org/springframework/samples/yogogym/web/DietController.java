@@ -245,7 +245,7 @@ public class DietController {
 			List<DietType> dietTypes = Arrays.asList(DietType.values());
 			model.addAttribute("dietTypes", dietTypes);
 
-			return "clients/diets/dietsCreateOrUpdate";
+			return "client/diets/dietsCreateOrUpdate";
 		} else {
 			Training training = this.trainingService.findTrainingById(trainingId);
 
