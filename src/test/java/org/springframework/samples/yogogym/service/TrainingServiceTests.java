@@ -52,9 +52,9 @@ public class TrainingServiceTests {
 	private ClientService clientService;
 	
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	private final int CLIENT_ID=1;
-	private final int TRAINING_ID=1;
-	private final static Calendar now = Calendar.getInstance();
+	private static final int CLIENT_ID=1;
+	private static final int TRAINING_ID=1;
+	private static final Calendar now = Calendar.getInstance();
 	
 	@BeforeAll
 	public static void setup() {
@@ -92,6 +92,9 @@ public class TrainingServiceTests {
 		assertThat(training.getName()).isEqualTo("Entrenamiento1");
 		assertThat(dateFormat.format(training.getInitialDate())).isEqualTo("2020-01-01");
 		assertThat(dateFormat.format(training.getEndDate())).isEqualTo("2020-01-14");
+		assertThat(training.getEditingPermission()).isEqualTo(EditingPermission.TRAINER);
+		assertThat(training.getAuthor()).isEqualTo("trainer1");
+		assertThat(training.getDiet().getId()).isEqualTo(1);
 	}
 	
 	@Test

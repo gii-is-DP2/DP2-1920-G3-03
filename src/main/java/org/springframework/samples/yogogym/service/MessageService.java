@@ -1,18 +1,3 @@
-/*
- * Copyright 2002-2013 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.springframework.samples.yogogym.service;
 
 import java.util.ArrayList;
@@ -27,12 +12,8 @@ import org.springframework.samples.yogogym.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Mostly used as a facade for all Petclinic controllers Also a placeholder
- * for @Transactional and @Cacheable annotations
- *
- * @author Michael Isvy
- */
+import com.google.common.collect.Lists;
+
 @Service
 public class MessageService {
 
@@ -43,15 +24,12 @@ public class MessageService {
 		this.messageRepository = messageRepository;
 	}
 	
-	@Transactional
-	public Collection<Message> findAllMessages() throws DataAccessException
-	{
-		Collection<Message> allMessages = (Collection<Message>) this.messageRepository.findAll();
-		
-		return allMessages;
+	@Transactional(readOnly=true)
+	public Collection<Message> findAllMessages() throws DataAccessException {
+		return Lists.newArrayList(this.messageRepository.findAll());
 	}
 
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Message> findAllForumParentMessages(int forumId) throws DataAccessException {
 
 		Collection<Message> messages = (Collection<Message>) this.messageRepository.findMessagesFromForumId(forumId);
@@ -71,12 +49,9 @@ public class MessageService {
 		return res;
 	}
 
-	@Transactional
+	@Transactional(readOnly=true)
 	public Message findMessageFromId(int messageId) throws DataAccessException {
-
-		Message res = this.messageRepository.findMessageById(messageId);
-
-		return res;
+		return this.messageRepository.findMessageById(messageId);
 	}
 
 	@Transactional

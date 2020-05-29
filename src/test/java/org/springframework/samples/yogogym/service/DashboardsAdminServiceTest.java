@@ -21,20 +21,25 @@ import org.springframework.stereotype.Service;
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 public class DashboardsAdminServiceTest {
+	
+	private static final String[] nameEquipmentTest = {"Bars 30-50 mm", "Dumbbells", "Elliptical", "Kettlebells", "Treadmill",
+														"Weight-Disc 30-50 mm"};
+	
+	private static final Integer[] countEquipmentTest = {1, 1, 1, 2, 5, 1};
 
 	@Autowired
 	protected DashboardsAdminService dashboardService;
 
 	@Test
 	void shouldCountEquipment() {
-		List<Integer> count = this.dashboardService.countEquipment(3000);
-		assertThat(count.size()).isEqualTo(6);
+		Integer[] count = this.dashboardService.countEquipment(1, 2020);
+		assertThat(count).isEqualTo(countEquipmentTest);
 	}
 
 	@Test
 	void shouldNameEquipment() {
-		List<String> count = this.dashboardService.nameEquipment(3000);
-		assertThat(count.size()).isEqualTo(6);
+		String[] count = this.dashboardService.nameEquipment(1, 2020);
+		assertThat(count).isEqualTo(nameEquipmentTest);
 	}
 	
 	@Test

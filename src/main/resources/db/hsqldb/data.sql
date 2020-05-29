@@ -60,7 +60,7 @@ INSERT INTO clients VALUES (10, 'trinimon@yogogym.com','Trinidad', 'Maria Montos
 
 INSERT INTO users(username,password,enabled) VALUES ('trainer1','trainer1999',TRUE);
 INSERT INTO authorities VALUES (13,'trainer','trainer1');
-INSERT INTO trainers VALUES (1,  'josemadaci@yogogym.com', 'José Manuel', 'David Cifuentes', '12345678L','trainer1');
+INSERT INTO trainers VALUES (1,  'josemadaci@yogogym.com', 'Jose Manuel', 'David Cifuentes', '12345678L','trainer1');
 
 INSERT INTO users(username,password,enabled) VALUES ('trainer2','trainer1999',TRUE);
 INSERT INTO authorities VALUES (14,'trainer','trainer2');
@@ -326,6 +326,8 @@ INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,7);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,10);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (6,11);
 INSERT INTO clients_trainings(client_id,trainings_id) VALUES (7,8);
+
+/*Forums*/
 
 INSERT INTO forums(id,guild_id) VALUES (1,1);
 INSERT INTO forums(id,guild_id) VALUES (2,2);
