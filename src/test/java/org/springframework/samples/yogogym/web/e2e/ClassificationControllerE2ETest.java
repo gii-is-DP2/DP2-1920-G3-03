@@ -25,9 +25,9 @@ public class ClassificationControllerE2ETest {
 	
 	private static final String TEST_USERNAME_CLIENT3 = "client3";
 	
-	private static final Integer[] POINT = {20, 20, 10 };
+	private static final Integer[] POINT = {20, 10};
 
-	private static final String[] CLIENT = {"client6","client7","client3"};
+	private static final String[] CLIENT = {"client6","client3"};
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -41,7 +41,7 @@ public class ClassificationControllerE2ETest {
 				.andExpect(model().attribute("hasPositionAll", true))
 				.andExpect(model().attribute("hasChallengeClasificationAll", true))
 				.andExpect(model().attribute("totalPoint", 10))
-				.andExpect(model().attribute("positionAll", 3))
+				.andExpect(model().attribute("positionAll", 2))
 				.andExpect(model().attribute("orderPointAll", POINT))
 				.andExpect(model().attribute("orderUserAll", CLIENT));
 	}
