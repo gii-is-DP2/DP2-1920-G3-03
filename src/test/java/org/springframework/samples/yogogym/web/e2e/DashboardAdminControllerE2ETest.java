@@ -52,7 +52,7 @@ public class DashboardAdminControllerE2ETest {
 				.andExpect(view().name("admin/dashboards/dashboardChallenges"))
 				.andExpect(model().attribute("ChallengesExists", true))
 				.andExpect(model().attribute("client", "Sofia Victoria Obeso"))
-				.andExpect(model().attribute("guild", "Gym for Dummies"));
+				.andExpect(model().attribute("guild", "Weightlifting"));
 	}
 	
 	@WithMockUser(username = "admin1", authorities = { "admin" })

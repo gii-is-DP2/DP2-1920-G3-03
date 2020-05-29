@@ -285,7 +285,7 @@ INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (4,0,null,3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (5,2,'https://google.com',1);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (6,1,'https://google.com',3);
 INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (7,2,'https://google.com',6);
-INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (8,2,'https://google.com',6);
+INSERT INTO inscriptions(id,status,url,challenge_id) VALUES (8,3,'https://google.com',1);
 
 /* CLIENT_INSCRIPTION */
 
