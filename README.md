@@ -316,7 +316,7 @@ Como cliente quiero poder tener dietas personalizadas según mi tipo de entrenam
 
 * **Añadir una dieta a un cliente con un entrenamiento con ejercicios:** Dado un cliente que se dispone a añadir una dieta con nombre "Dieta 1", descripción "Descripción dieta 1" y tipo "AUTO_ASSIGN" se autogenera la dieta en función de los datos del cliente y seleccionando el tipo de dieta que mejor funcione con la intensidad del entrenamiento asignado, se le añade al entrenamiento y se redirige a la vista de dietas.
 
-* **Añadir una dieta a un cliente con un entrenamiento con ejercicios:** Dado un cliente que se dispone a añadir una dieta con nombre "Dieta 1", descripción "Descripción dieta 1" y tipo "AUTO_ASSIGN" a un entrenamiento "Entrenamiento 1" que no tiene ejercicios, se autogenera la dieta en función de los datos del cliente y seleccionando el tipo de dieta "MAINTENANCE", se le añade al entrenamiento y se redirige a la vista de dietas.
+* **Añadir una dieta a un cliente con un entrenamiento sin ejercicios:** Dado un cliente que se dispone a añadir una dieta con nombre "Dieta 1", descripción "Descripción dieta 1" y tipo "AUTO_ASSIGN" a un entrenamiento "Entrenamiento 1" que no tiene ejercicios, se autogenera la dieta en función de los datos del cliente y seleccionando el tipo de dieta "MAINTENANCE", se le añade al entrenamiento y se redirige a la vista de dietas.
 
 * **Cliente con entrenamiento finalizado:** Dado un cliente con entrenamiento de nombre "Entrenamiento 1" y con fecha de finalización anterior a la actual no se le mostrará el enlace de añadir dieta a dicho entrenamiento.
 
