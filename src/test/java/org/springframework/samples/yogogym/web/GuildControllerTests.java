@@ -48,6 +48,8 @@ public class GuildControllerTests {
 	
 	private static final int testGuildId1 = 1;
 	private static final int testGuildId2 = 2;
+	private static final int testGuildId4 = 4;
+	
 	private static final int testClientId1 = 1;
 	private static final String testClientUsername1 = "client1";
 	private static final int testClientId2 = 2;
@@ -166,10 +168,15 @@ public class GuildControllerTests {
 	@WithMockUser(username="client1", authorities= {"client"})
 	@Test
 	void testWrongAuthority() throws Exception {
+		testWrongAuth(0,"/client/{clientUsername}/guilds",testClientUsername2);
+		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}",testClientUsername2,testGuildId1);
+		testWrongAuth(1,"/client/{clientUsername}/guilds/{guildId}/create",testClientUsername2,testGuildId4);
 		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}/edit",testClientUsername2,testGuildId1);
 		testWrongAuth(1,"/client/{clientUsername}/guilds/{guildId}/edit",testClientUsername2,testGuildId1);
 		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}/delete",testClientUsername2,testGuildId1);
 		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}/leave",testClientUsername2,testGuildId1);
+		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}/join",testClientUsername2,testGuildId1);
+		
 	}
 	//HU5 - CRUD DE GREMIOS
 	@WithMockUser(value = "client1", authorities = {"client"})

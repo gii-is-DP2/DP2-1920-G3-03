@@ -6,35 +6,42 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.jdbc.Predef._
 
-class HU10_AddDiet extends Simulation {
+
+class HU16_AddDietBasedOnTraining extends Simulation {
 
 	val httpProtocol = http
-		.baseUrl("http://www.yogogym.com")
-		.inferHtmlResources(BlackList(""".*.css""", """.*.js""", """.*.ico""", """.*.png""", """.*.jpg""", """.*.jpeg""", """.*.woff""", """.+.woff2"""), WhiteList())
+		.baseUrl("http://www.dp2.com")
+		.inferHtmlResources(BlackList(""".*.css""", """.*.js""", """.*.ico""", """.*.png""", """.*.jpg""", """.*.jpeg""", """.*.woff"""), WhiteList())
 		.acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
 		.acceptEncodingHeader("gzip, deflate")
 		.acceptLanguageHeader("es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3")
-		.upgradeInsecureRequestsHeader("1")
 		.userAgentHeader("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0")
 
-	val headers_1 = Map("Origin" -> "http://www.yogogym.com")
+	val headers_0 = Map("Upgrade-Insecure-Requests" -> "1")
 
+	val headers_2 = Map(
+		"Origin" -> "http://www.dp2.com",
+		"Upgrade-Insecure-Requests" -> "1")
 
+	val headers_6 = Map(
+		"Accept" -> "text/html, */*; q=0.01",
+		"X-Requested-With" -> "XMLHttpRequest")
 
 	object Home {
 		val home = exec(http("Home")
-			.get("/"))
-		.pause(10)
+			.get("/")
+			.headers(headers_0))
+		.pause(7)
 	}
-	
 	object Login{
 		val login = exec(http("Login")
 			.get("/login")
+			.headers(headers_0)
 			.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(24)
 		.exec(http("Logged")
 			.post("/login")
-			.headers(headers_1)
+			.headers(headers_2)
 			.formParam("username", "client1")
 			.formParam("password", "client1999")
 			.formParam("_csrf", "${stoken}")
@@ -42,7 +49,7 @@ class HU10_AddDiet extends Simulation {
 	}
 
 	object ListDiets{
-		val listDiets = exec(http("request_4")
+		val listDiets = exec(http("List Diets")
 			.get("/client/client1/diets")
 			.headers(headers_0))
 		.pause(2)
@@ -51,14 +58,15 @@ class HU10_AddDiet extends Simulation {
 	object NewDietSuccessful{
 		val newDietSuccessful = exec(http("New Diet Successful")
 			.get("/client/client1/trainings/9/diets/create")
+			.headers(headers_0)
 			.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(17)
 		.exec(http("Save Diet Successful")
 		.post("/client/client1/trainings/9/diets/create")
-			.headers(headers_1)
+			.headers(headers_2)
 			.formParam("name", "algo")
 			.formParam("description", "asd")
-			.formParam("type", "AUTO_ASSIGN")
+			.formParam("type", "DEFINITION")
 			.formParam("carb", "0")
 			.formParam("fat", "0")
 			.formParam("kcal", "0")
@@ -71,14 +79,15 @@ class HU10_AddDiet extends Simulation {
 	object NewDietError{
 		val newDietError = exec(http("New Diet Error")
 			.get("/client/client1/trainings/9/diets/create")
+			.headers(headers_0)
 			.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(9)
 		.exec(http("Save Diet Error")
 			.post("/client/client1/trainings/9/diets/create")
-			.headers(headers_1)
+			.headers(headers_2)
 			.formParam("name", "Dieta 1")
 			.formParam("description", "")
-			.formParam("type", "VOLUME")
+			.formParam("type", "DEFINITION")
 			.formParam("carb", "0")
 			.formParam("fat", "0")
 			.formParam("kcal", "0")
@@ -87,14 +96,16 @@ class HU10_AddDiet extends Simulation {
 		.pause(9)
 	}
 
+	val createDietSuccessfulScn = scenario("Create Diet Successful").exec(
 
-	val createDietSuccessfulScn = scenario("Create Challenge Successful").exec(
 																Home.home,
 																Login.login,
 																ListDiets.listDiets,
 																NewDietSuccessful.newDietSuccessful)
 																
-	val createDietErrorScn = scenario("Create Challenge Error").exec(
+
+	val createDietErrorScn = scenario("Create Diet Error").exec(
+
 																Home.home,
 																Login.login,
 																ListDiets.listDiets,
@@ -102,8 +113,10 @@ class HU10_AddDiet extends Simulation {
 	
 
 	setUp(
-		createDietSuccessfulScn.inject(rampUsers(2500) during (100 seconds)), // 7000, 100
-		createDietErrorScn.inject(rampUsers(1500) during (100 seconds))       // 4000, 80
+
+		createDietSuccessfulScn.inject(rampUsers(4800) during (100 seconds)), 
+		createDietErrorScn.inject(rampUsers(4800) during (100 seconds))       
+
 		).protocols(httpProtocol)
 		 .assertions(
 					global.responseTime.max.lt(5000),    

@@ -18,6 +18,7 @@ import org.springframework.samples.yogogym.model.Forum;
 import org.springframework.samples.yogogym.model.Guild;
 import org.springframework.samples.yogogym.model.User;
 import org.springframework.samples.yogogym.service.exceptions.GuildLogoException;
+import org.springframework.samples.yogogym.service.exceptions.GuildNotCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.GuildSameNameException;
 import org.springframework.stereotype.Service;
@@ -124,6 +125,15 @@ public class GuildServiceTest {
 	}
 	
 	@Test
+	void shouldNotSaveGuildWithoutBeingTheCreator(){
+		Guild g1 = createGuildTesting();
+		Client c1 = createClientTesting("not same client");
+		Assertions.assertThrows(GuildNotCreatorException.class, () ->{
+			this.guildService.saveGuild(g1, c1);
+		});
+	}
+	
+	@Test
 	void shouldNotSaveGuildWithBadURL() {
 		
 	
@@ -210,6 +220,7 @@ public class GuildServiceTest {
 		assertTrue(c.getGuild() != null);
 	}
 	
+	//METHOD TO CREATE A GUILD
 	private Guild createGuildTesting() {
 		
 		Guild guild = new Guild();
@@ -222,6 +233,7 @@ public class GuildServiceTest {
 		return guild;
 	}
 	
+	//METHOD TO CREATE A CLIENT
 	private Client createClientTesting(String clientUsername) {
 		
 		Client client = new Client();
