@@ -14,6 +14,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -71,9 +73,8 @@ public class DashBoardClientUITest {
 		utils.init();
 		utils.as(CLIENT, CLIENT_PASSWORD);
 		utils.dashboardOfMonthAndYear("2020-05");
-		driver.findElement(By.xpath("//body/div")).click();
 		try {
-			assertEquals("Month: 5 - 2020", driver.findElement(By.xpath("//h3")).getText());
+			 assertEquals("No data for this month", driver.findElement(By.xpath("//b")).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
