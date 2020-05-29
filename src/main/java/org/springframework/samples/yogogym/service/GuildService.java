@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Forum;
 import org.springframework.samples.yogogym.model.Guild;
@@ -36,45 +35,36 @@ public class GuildService {
 	}
 
 	@Transactional
-	public Collection<Guild> findAllGuild() throws DataAccessException {
-		Collection<Guild> res = this.guildRepository.findAllGuilds();
+	public Collection<Guild> findAllGuild(){
+		return this.guildRepository.findAllGuilds();
 		
-		return res;		
 	}
 	
 	@Transactional
-	public Guild findGuildById(Integer guildId) throws DataAccessException {
+	public Guild findGuildById(Integer guildId){
 		
-		Guild res = this.guildRepository.findGuildById(guildId);
-		return res;		
+		return this.guildRepository.findGuildById(guildId);	
 	}
-	
+		 
 	@Transactional
-	public Guild findGuildByName(String guildName) throws DataAccessException {
+	public Collection<Client> findAllClientesByGuild(Guild guild){
 		
-		Guild res = this.guildRepository.findGuildByName(guildName);
-		return res;		
-	}
-	 
-	@Transactional
-	public Collection<Client> findAllClientesByGuild(Guild guild) throws DataAccessException {
-		
-		Collection<Client> res = this.guildRepository.findClientsByGuild(guild);
-		return res;		
+		return this.guildRepository.findClientsByGuild(guild);
+
 	}
 	
 	@CacheEvict(cacheNames = "percentageGuilds", allEntries = true)
 	@Transactional(rollbackFor = {GuildSameNameException.class,GuildSameCreatorException.class,GuildLogoException.class,GuildNotCreatorException.class})
-	public void saveGuild(Guild guild, Client client) throws DataAccessException, GuildSameNameException, GuildSameCreatorException, GuildLogoException, GuildNotCreatorException {
+	public void saveGuild(Guild guild, Client client) throws GuildSameNameException, GuildSameCreatorException, GuildLogoException, GuildNotCreatorException {
 		
 		Collection<Guild> guilds = this.guildRepository.findAllGuilds();
 		
 		if(guild.getId() != null) 
 		{
-			guilds = guilds.stream().filter(c -> c.getId() != guild.getId()).collect(Collectors.toList());
+			guilds = guilds.stream().filter(c -> !c.getId().equals(guild.getId())).collect(Collectors.toList());
 		}
 		
-		if(guilds.stream().anyMatch(c->c.getName().toLowerCase().equals(guild.getName().toLowerCase()))){
+		if(guilds.stream().anyMatch(c->c.getName().equalsIgnoreCase(guild.getName().toLowerCase()))){
 			throw new GuildSameNameException();
 		}
 		else if(!guild.getCreator().equals(client.getUser().getUsername())) {
@@ -103,7 +93,7 @@ public class GuildService {
 	
 	@CacheEvict(cacheNames = {"percentageGuilds", "topPointGuild"}, allEntries = true)
 	@Transactional
-	public void deleteGuild(Guild guild, String clientUsername) throws DataAccessException {
+	public void deleteGuild(Guild guild, String clientUsername){
 		
 		Collection<Client> clients = this.guildRepository.findClientsByGuild(guild);
 		if(guild.getCreator().equals(clientUsername)){
@@ -120,7 +110,7 @@ public class GuildService {
 	
 	@CacheEvict(cacheNames = {"percentageGuilds", "topPointGuild"}, allEntries = true)
 	@Transactional
-	public void joinGuild(String clientUsername, Guild guild) throws DataAccessException{
+	public void joinGuild(String clientUsername, Guild guild){
 		
 		Client client = this.clientRepository.findClientByUsername(clientUsername);
 		client.setGuild(guild);
@@ -128,15 +118,15 @@ public class GuildService {
 	
 	@CacheEvict(cacheNames = {"percentageGuilds", "topPointGuild"}, allEntries = true)
 	@Transactional
-	public void leaveGuild(Client client,Guild guild) throws DataAccessException{
+	public void leaveGuild(Client client,Guild guild){
 		if(client.getGuild().equals(guild))
-		client.setGuild(null);
+			client.setGuild(null);
 	}
 
 	@Transactional
-	public Collection<String> findAllGuildNames() throws DataAccessException {
-		Collection<String> res = this.guildRepository.findAllGuildNames();
-		return res;		
+	public Collection<String> findAllGuildNames(){
+		return this.guildRepository.findAllGuildNames();
+				
 	}
 	
 }
