@@ -141,8 +141,7 @@ public class DietController {
 			}
 
 			// return "redirect:/trainer/"+ trainer.getUser().getUsername() + "/clients/" + clientId + "/trainings/"+ training.getId();
-			return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId +
-			 "/trainings/" + trainingId + "/diets/" + diet.getId();
+			return "redirect:/trainer/" + trainerUsername + "/diets";
 		}
 	}
 
@@ -246,7 +245,7 @@ public class DietController {
 			List<DietType> dietTypes = Arrays.asList(DietType.values());
 			model.addAttribute("dietTypes", dietTypes);
 
-			return "clients/diets/dietsCreateOrUpdate";
+			return "client/diets/dietsCreateOrUpdate";
 		} else {
 			Training training = this.trainingService.findTrainingById(trainingId);
 
@@ -264,7 +263,7 @@ public class DietController {
 				e.printStackTrace();
 			}
 
-			return "redirect:/client/" + clientUsername + "/trainings/" + trainingId + "/diets/" + diet.getId();
+			return "redirect:/client/" + clientUsername + "/diets";
 		}
 	}
 	// // GET
