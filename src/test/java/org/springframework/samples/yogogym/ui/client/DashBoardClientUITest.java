@@ -14,8 +14,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -66,18 +64,6 @@ public class DashBoardClientUITest {
 		}
 		driver.findElement(By.id("canvasBodyParts")).click();
 		driver.findElement(By.id("canvasRepititionType")).click();
-	}
-
-	@Test
-	public void testDashboardEmpty() throws Exception {
-		utils.init();
-		utils.as(CLIENT, CLIENT_PASSWORD);
-		utils.dashboardOfMonthAndYear("2020-05");
-		try {
-			 assertEquals("No data for this month", driver.findElement(By.xpath("//b")).getText());
-		} catch (Error e) {
-			verificationErrors.append(e.toString());
-		}
 	}
 
 	@Test
