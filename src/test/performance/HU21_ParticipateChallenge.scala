@@ -91,13 +91,13 @@ class HU21_ParticipateChallenge extends Simulation {
 	}	
 	
 
-	val listAndShowNewChallengeClientScn = scenario("Inscribe And Submit Challenge Client").exec(
+	val listAndShowNewChallengeClientScn = scenario("Show new Challenges Client").exec(
 																Home.home,
 																Login.loginClient,
 																ListNewChallenges.listNewChallenges,
 																ShowNewChallenge.showNewChallenge)
 																
-	val listAndShowSubmittedChallengeAdminScn = scenario("Evaluate Challenge Admin").exec(
+	val listAndShowSubmittedChallengeAdminScn = scenario("Show Submitted Challenges Admin").exec(
 																Home.home,
 																Login.loginAdmin,
 																ListSubmittedChallenges.listSubmittedChallenges,

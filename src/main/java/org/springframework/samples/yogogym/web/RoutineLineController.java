@@ -1,4 +1,3 @@
-
 package org.springframework.samples.yogogym.web;
 
 import java.util.Calendar;
