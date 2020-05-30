@@ -348,7 +348,7 @@ public class RoutineControllerE2ETest {
 				trainingId).with(csrf()).param("name", routine.getName())
 						.param("description", routine.getDescription())
 						.param("repsPerWeek", routine.getRepsPerWeek().toString()))
-				.andExpect(view().name("trainer/routines/routinesCreateOrUpdate"));
+				.andExpect(view().name("client/routines/routinesCreateOrUpdate"));
 	}
 
 	@WithMockUser(username = "client1", authorities = { "client" })
@@ -366,7 +366,7 @@ public class RoutineControllerE2ETest {
 				trainingId).with(csrf()).param("name", routine.getName())
 						.param("description", routine.getDescription())
 						.param("repsPerWeek", routine.getRepsPerWeek().toString()))
-				.andExpect(view().name("trainer/routines/routinesCreateOrUpdate"));
+				.andExpect(view().name("client/routines/routinesCreateOrUpdate"));
 	}
 
 	@WithMockUser(username = "client1", authorities = { "client" })
@@ -384,7 +384,7 @@ public class RoutineControllerE2ETest {
 				trainingId).with(csrf()).param("name", routine.getName())
 						.param("description", routine.getDescription())
 						.param("repsPerWeek", routine.getRepsPerWeek().toString()))
-				.andExpect(view().name("trainer/routines/routinesCreateOrUpdate"));
+				.andExpect(view().name("client/routines/routinesCreateOrUpdate"));
 	}
 
 	// shouldNotUpdateRoutineBadInput

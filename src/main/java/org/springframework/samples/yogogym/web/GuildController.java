@@ -117,7 +117,7 @@ public class GuildController {
 	}
 
 	@PostMapping("client/{clientUsername}/guilds/create")
-	public String processGuildCreationForm(@Valid Guild guildAtr, BindingResult result,
+	public String processGuildCreationForm(@Valid Guild g, BindingResult result,
 			@PathVariable("clientUsername") String clientUsername, final ModelMap model)
 			throws GuildSameNameException, GuildSameCreatorException, GuildLogoException {
 
@@ -131,14 +131,14 @@ public class GuildController {
 		if (result.hasErrors()) {
 
 			model.addAttribute(CLIENT, client);
-			model.addAttribute(GUILD_ATTR, guildAtr);
+			model.addAttribute(GUILD_ATTR, g);
 
 			return CLIENT_CREATE_OR_UPDATE;
 		} else {
 
 			try {
-				client.setGuild(guildAtr);
-				this.guildService.saveGuild(guildAtr, client);
+				client.setGuild(g);
+				this.guildService.saveGuild(g, client);
 			} catch (GuildNotCreatorException ex) {
 				result.rejectValue("creator", "required: ", "The creator has to be the same as the user logged");
 				return CLIENT_CREATE_OR_UPDATE;
