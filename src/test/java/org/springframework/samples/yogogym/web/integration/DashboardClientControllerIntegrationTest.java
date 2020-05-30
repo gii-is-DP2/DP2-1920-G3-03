@@ -22,34 +22,37 @@ public class DashboardClientControllerIntegrationTest {
 	
 	@Test
 	void initDashboardClientSuccessful() throws Exception{
+		String monthAndYear = "2020-01";
 		ModelMap model = new ModelMap();
 		String username = "client1";
 		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client1", "client1999"));
 		SecurityContextHolder.setContext(securityContext);
-		String view = this.dashboardClientController.getDashboard(username, model);
+		String view = this.dashboardClientController.getDashboard(monthAndYear, username, model);
 		assertEquals(view, "client/dashboards/dashboard");
 	}
 	
 	@Test
 	void initDashboardClientEmpty() throws Exception{
+		String monthAndYear = "2020-01";
 		ModelMap model = new ModelMap();
 		String username = "client3";
 		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client3", "client1999"));
 		SecurityContextHolder.setContext(securityContext);
-		String view = this.dashboardClientController.getDashboard(username, model);
+		String view = this.dashboardClientController.getDashboard(monthAndYear, username, model);
 		assertEquals(view, "client/dashboards/dashboard");
 	}
 	
 	@Test
 	void initDashboardClientFailed() throws Exception{
+		String monthAndYear = "2020-01";
 		ModelMap model = new ModelMap();
 		String username = "client1";
 		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 	    securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("client3", "client1999"));
 		SecurityContextHolder.setContext(securityContext);
-		String view = this.dashboardClientController.getDashboard(username, model);
+		String view = this.dashboardClientController.getDashboard(monthAndYear, username, model);
 		assertEquals(view, "exception");
 	}
 

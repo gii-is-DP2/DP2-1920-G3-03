@@ -20,8 +20,9 @@ public class DashboardAdminControllerIntegrationTest {
 
 	@Test
 	void initEquipmentDashboard() throws Exception {
+		String monthAndYear = "2020-01";
 		ModelMap model = new ModelMap();
-		String view = this.dashboardsAdminController.getDashboardEquipment(model);
+		String view = this.dashboardsAdminController.getDashboardEquipment(monthAndYear,model);
 		assertEquals(view, "admin/dashboards/dashboardEquipment");
 	}
 

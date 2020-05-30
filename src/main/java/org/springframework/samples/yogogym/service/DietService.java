@@ -1,6 +1,6 @@
 package org.springframework.samples.yogogym.service;
 
-import java.util.ArrayList;
+
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -19,6 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.collect.Lists;
 
 @Service
 public class DietService {
@@ -47,17 +49,14 @@ public class DietService {
 		
 	}
 	
-	@Transactional
-	public Collection<Diet> findAllDiet(){
-		
-		Collection<Diet> res = new ArrayList<>();
-		
-		for(Diet d: this.dietRepository.findAll())
-			res.add(d);
-		
-		return res;		
+
+	@Transactional(readOnly=true)
+	public Collection<Diet> findAllDiet() throws DataAccessException {
+		return Lists.newArrayList(this.dietRepository.findAll());		
+
 	}
-	@Transactional
+	
+	@Transactional(readOnly=true)
 	public DietType selectDietType(Integer trainingId) {
 		
 		DietType res = null;
@@ -101,10 +100,10 @@ public class DietService {
 	}
 
 	
-	@Transactional
-	public Diet findDietById(Integer dietId){
-		
-		return this.dietRepository.findById(dietId).get();
-			
+
+	@Transactional(readOnly=true)
+	public Diet findDietById(Integer dietId) throws DataAccessException {
+		return this.dietRepository.findById(dietId).get();	
+
 	}
 }

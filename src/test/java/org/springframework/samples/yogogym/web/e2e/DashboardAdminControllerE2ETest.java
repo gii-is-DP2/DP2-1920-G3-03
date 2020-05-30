@@ -21,15 +21,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DashboardAdminControllerE2ETest {
 	
+	private static final String[] nameEquipmentTest = {"Bars 30-50 mm", "Dumbbells", "Elliptical", "Kettlebells", "Treadmill",
+	"Weight-Disc 30-50 mm"};
+
+	private static final Integer[] countEquipmentTest = {1, 1, 1, 2, 5, 1};
+	
 	@Autowired
 	private MockMvc mockMvc;
 	
 	@WithMockUser(username = "admin1", authorities = { "admin" })
 	@Test
 	void testInitAllDashboardEquipmentSuccessful() throws Exception {
-		mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
+		mockMvc.perform(get("/admin/dashboardEquipment?monthAndYear=2020-01")).andExpect(status().isOk())
 				.andExpect(view().name("admin/dashboards/dashboardEquipment"))
-				.andExpect(model().attributeExists("hasEquipmentWeek", "hasEquipmentMonth"));
+				.andExpect(model().attribute("hasEquipment", true))
+				.andExpect(model().attribute("orderName", nameEquipmentTest))
+				.andExpect(model().attribute("count", countEquipmentTest));
 	}
 	
 	@WithMockUser(username = "client1", authorities = { "client" })
@@ -45,7 +52,7 @@ public class DashboardAdminControllerE2ETest {
 				.andExpect(view().name("admin/dashboards/dashboardChallenges"))
 				.andExpect(model().attribute("ChallengesExists", true))
 				.andExpect(model().attribute("client", "Sofia Victoria Obeso"))
-				.andExpect(model().attribute("guild", "Gym for Dummies"));
+				.andExpect(model().attribute("guild", "Weightlifting"));
 	}
 	
 	@WithMockUser(username = "admin1", authorities = { "admin" })

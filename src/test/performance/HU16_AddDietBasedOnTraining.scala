@@ -6,6 +6,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.jdbc.Predef._
 
+
 class HU16_AddDietBasedOnTraining extends Simulation {
 
 	val httpProtocol = http
@@ -95,14 +96,16 @@ class HU16_AddDietBasedOnTraining extends Simulation {
 		.pause(9)
 	}
 
-
 	val createDietSuccessfulScn = scenario("Create Diet Successful").exec(
+
 																Home.home,
 																Login.login,
 																ListDiets.listDiets,
 																NewDietSuccessful.newDietSuccessful)
 																
+
 	val createDietErrorScn = scenario("Create Diet Error").exec(
+
 																Home.home,
 																Login.login,
 																ListDiets.listDiets,
@@ -110,8 +113,10 @@ class HU16_AddDietBasedOnTraining extends Simulation {
 	
 
 	setUp(
-		createDietSuccessfulScn.inject(rampUsers(11000) during (100 seconds)), // 7000, 100
-		createDietErrorScn.inject(rampUsers(11000) during (100 seconds))       // 4000, 80
+
+		createDietSuccessfulScn.inject(rampUsers(4800) during (100 seconds)), 
+		createDietErrorScn.inject(rampUsers(4800) during (100 seconds))       
+
 		).protocols(httpProtocol)
 		 .assertions(
 					global.responseTime.max.lt(5000),    

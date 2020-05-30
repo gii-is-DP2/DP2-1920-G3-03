@@ -1,18 +1,3 @@
-/*
- * Copyright 2002-2013 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.springframework.samples.yogogym.service;
 
 import java.text.DateFormat;
@@ -41,12 +26,6 @@ import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTra
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Mostly used as a facade for all Petclinic controllers Also a placeholder
- * for @Transactional and @Cacheable annotations
- *
- * @author Michael Isvy
- */
 @Service
 public class TrainingService {
 
@@ -59,28 +38,22 @@ public class TrainingService {
 		this.clientRepository = clientRepository;
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Training> findAllTrainings() throws DataAccessException {
 		
-		Collection<Training> res = (Collection<Training>) this.trainingRepository.findAll();
-		
-		return res;
+		return (Collection<Training>) this.trainingRepository.findAll();
 	}
 	
 	@Transactional
 	public Collection<Training> findTrainingFromClient(int clientId) throws DataAccessException {
 		
-		Collection<Training> res = this.trainingRepository.findTrainingFromClient(clientId);
-		
-		return res;		
+		return this.trainingRepository.findTrainingFromClient(clientId);
 	}
 	
 	@Transactional
 	public Training findTrainingById(int trainingId) throws DataAccessException {
 		
-		Training res = this.trainingRepository.findTrainingById(trainingId);
-		
-		return res;		
+		return this.trainingRepository.findTrainingById(trainingId);	
 	}
 	
 	@Transactional(rollbackFor = {PastInitException.class, PastEndException.class, EndBeforeEqualsInitException.class, 
@@ -181,17 +154,17 @@ public class TrainingService {
 		}
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Training> countConcurrentTrainingsForInit(List<Integer> ids, int trainingId, Date init) {
 		return this.trainingRepository.countConcurrentTrainingsForInit(ids, trainingId, init);
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Training> countConcurrentTrainingsForEnd(List<Integer> ids, int trainingId, Date end) {
 		return this.trainingRepository.countConcurrentTrainingsForEnd(ids, trainingId, end);
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Training> countConcurrentTrainingsForIncluding(List<Integer> ids, int trainingId, Date init, Date end) {
 		return this.trainingRepository.countConcurrentTrainingsForIncluding(ids, trainingId, init, end);
 	}
@@ -205,13 +178,13 @@ public class TrainingService {
 	}
 	
 	//Copy training
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Training> findTrainingWithPublicClient() throws DataAccessException{
 		List<Training> res = (List<Training>) this.trainingRepository.findTrainingWithPublicClient();
 		return res.get(0) == null ? new ArrayList<Training>() : res;
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Integer> findTrainingIdFromClient(int id) throws DataAccessException{
 		List<Integer> res = (List<Integer>) this.trainingRepository.findTrainingIdFromClient(id);
 		return res.get(0) == null ? new ArrayList<Integer>() : res;

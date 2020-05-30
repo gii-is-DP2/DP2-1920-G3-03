@@ -1,3 +1,4 @@
+
 package org.springframework.samples.yogogym.service;
 
 
@@ -35,23 +36,25 @@ public class GuildService {
 		this.forumRepository = forumRepository;
 	}
 
-	@Transactional
-	public Collection<Guild> findAllGuild(){
+
+	@Transactional(readOnly=true)
+	public Collection<Guild> findAllGuild() throws DataAccessException {
 		return this.guildRepository.findAllGuilds();
-		
 	}
 	
-	@Transactional
-	public Guild findGuildById(Integer guildId){
-		
+	@Transactional(readOnly=true)
+	public Guild findGuildById(Integer guildId) throws DataAccessException {	
 		return this.guildRepository.findGuildById(guildId);	
 	}
-		 
-	@Transactional
-	public Collection<Client> findAllClientesByGuild(Guild guild){
-		
-		return this.guildRepository.findClientsByGuild(guild);
-
+	
+	@Transactional(readOnly=true)
+	public Guild findGuildByName(String guildName) throws DataAccessException {
+		return this.guildRepository.findGuildByName(guildName);
+	}
+	 
+	@Transactional(readOnly=true)
+	public Collection<Client> findAllClientesByGuild(Guild guild) throws DataAccessException {
+		return this.guildRepository.findClientsByGuild(guild);	
 	}
 	
 	@CacheEvict(cacheNames = "percentageGuilds", allEntries = true)
@@ -124,10 +127,11 @@ public class GuildService {
 			client.setGuild(null);
 	}
 
-	@Transactional
-	public Collection<String> findAllGuildNames(){
+
+	@Transactional(readOnly=true)
+	public Collection<String> findAllGuildNames() throws DataAccessException {
 		return this.guildRepository.findAllGuildNames();
-				
+
 	}
 	
 }

@@ -61,7 +61,7 @@ public class DashboardChallengesAdminUITest {
 			verificationErrors.append(e.toString());
 		}
 		try {
-			assertEquals("Gym for Dummies", driver.findElement(By.xpath("//h5[2]/b")).getText());
+			assertEquals("Weightlifting", driver.findElement(By.xpath("//h5[2]/b")).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}

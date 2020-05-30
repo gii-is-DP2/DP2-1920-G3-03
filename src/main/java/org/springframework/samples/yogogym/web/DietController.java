@@ -141,8 +141,7 @@ public class DietController {
 			}
 
 			// return "redirect:/trainer/"+ trainer.getUser().getUsername() + "/clients/" + clientId + "/trainings/"+ training.getId();
-			return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId +
-			 "/trainings/" + trainingId + "/diets/" + diet.getId();
+			return "redirect:/trainer/" + trainerUsername + "/diets";
 		}
 	}
 
@@ -261,7 +260,7 @@ public class DietController {
 				e.printStackTrace();
 			}
 
-			return "redirect:/client/" + clientUsername + "/trainings/" + trainingId + "/diets/" + diet.getId();
+			return "redirect:/client/" + clientUsername + "/diets";
 		}
 	}
 	// // GET

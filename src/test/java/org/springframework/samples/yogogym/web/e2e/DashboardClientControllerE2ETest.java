@@ -41,30 +41,26 @@ public class DashboardClientControllerE2ETest {
 	@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
 	@Test
 	void testInitAllDashboardClientSuccessful() throws Exception {
-		mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+		mockMvc.perform(get("/client/{clientUsername}/dashboard?monthAndYear=2020-01", TEST_USERNAME)).andExpect(status().isOk())
 				.andExpect(view().name("client/dashboards/dashboard"))
-				.andExpect(model().attribute("hasBodyPartsMonth", false))
-				.andExpect(model().attribute("hasBodyPartsAll", true))
-				.andExpect(model().attribute("hasRepetitionTypeMonth", false))
-				.andExpect(model().attribute("hasRepetitionTypeAll", true))
-				.andExpect(model().attribute("hasKcalMonth", false)).andExpect(model().attribute("hasKcalAll", true))
-				.andExpect(model().attribute("orderBodyPartsAll", NAME_BODY_PART_ALL))
-				.andExpect(model().attribute("countBodyPartsAll", COUNT_BODY_PART_ALL))
-				.andExpect(model().attribute("orderRepetitionTypeAll", NAME_REPETITION_TYPE_ALL))
-				.andExpect(model().attribute("countRepetitionTypeAll", COUNT_REPETITION_TYPE_ALL))
-				.andExpect(model().attribute("kcalAll", SUM_KCAL_ALL));
+				.andExpect(model().attribute("hasBodyParts", true))
+				.andExpect(model().attribute("hasRepetitionType", true))
+				.andExpect(model().attribute("hasKcal", true))
+				.andExpect(model().attribute("orderBodyParts", NAME_BODY_PART_ALL))
+				.andExpect(model().attribute("countBodyParts", COUNT_BODY_PART_ALL))
+				.andExpect(model().attribute("orderRepetitionType", NAME_REPETITION_TYPE_ALL))
+				.andExpect(model().attribute("countRepetitionType", COUNT_REPETITION_TYPE_ALL))
+				.andExpect(model().attribute("kcal", SUM_KCAL_ALL));
 	}
 	
 	@WithMockUser(username = TEST_USERNAME2, authorities = { "client" })
 	@Test
 	void testInitEmptyDashboardClientSuccessful() throws Exception {
-		mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME2)).andExpect(status().isOk())
+		mockMvc.perform(get("/client/{clientUsername}/dashboard?monthAndYear=2020-01", TEST_USERNAME2)).andExpect(status().isOk())
 				.andExpect(view().name("client/dashboards/dashboard"))
-				.andExpect(model().attribute("hasBodyPartsMonth", false))
-				.andExpect(model().attribute("hasBodyPartsAll", false))
-				.andExpect(model().attribute("hasRepetitionTypeMonth", false))
-				.andExpect(model().attribute("hasRepetitionTypeAll", false))
-				.andExpect(model().attribute("hasKcalMonth", false)).andExpect(model().attribute("hasKcalAll", false));
+				.andExpect(model().attribute("hasBodyParts", false))
+				.andExpect(model().attribute("hasRepetitionType", false))
+				.andExpect(model().attribute("hasKcal", false));
 	}
 	
 	@WithMockUser(username = TEST_USERNAME2, authorities = { "client" })

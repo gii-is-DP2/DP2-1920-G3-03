@@ -21,16 +21,13 @@ public class EquipmentService {
 		this.equipmentRepository = equipmentRepository;
 	}
 	
-	@Transactional
-	public Equipment findEquipmentById(int equipmentId)throws DataAccessException
-	{
+	@Transactional(readOnly=true)
+	public Equipment findEquipmentById(int equipmentId)throws DataAccessException {
 		return equipmentRepository.findEquipmentById(equipmentId);
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Equipment> findAllEquipment() throws DataAccessException {
-		
 		return Lists.newArrayList(this.equipmentRepository.findAll());
-			
 	}
 }

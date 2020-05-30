@@ -1,18 +1,3 @@
-/*
- * Copyright 2002-2013 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.springframework.samples.yogogym.service;
 
 import java.util.Collection;
@@ -24,12 +9,6 @@ import org.springframework.samples.yogogym.repository.ForumRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Mostly used as a facade for all Petclinic controllers Also a placeholder
- * for @Transactional and @Cacheable annotations
- *
- * @author Michael Isvy
- */
 @Service
 public class ForumService {
 
@@ -40,37 +19,29 @@ public class ForumService {
 		this.forumRepository = forumRepository;
 	}
 	
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Forum> findAllForums() throws DataAccessException {
-		Collection<Forum> res = this.forumRepository.findAllForums();
-		
-		return res;
+		return this.forumRepository.findAllForums();
 	}
 	
 	@Transactional
-	public void saveForum(Forum f) throws DataAccessException
-	{
-		this.forumRepository.save(f);
+	public void saveForum(Forum forum) throws DataAccessException {
+		this.forumRepository.save(forum);
 	}
 	
 	@Transactional
-	public void deleteForum(Forum f) throws DataAccessException
-	{
-		this.forumRepository.delete(f);
+	public void deleteForum(Forum forum) throws DataAccessException {
+		this.forumRepository.delete(forum);
 	}
 	
-	@Transactional
-	public int findForumIdByGuildId(int guildId) throws DataAccessException{
-		int res = this.forumRepository.findForumIdByGuildId(guildId);
-		
-		return res;
+	@Transactional(readOnly=true)
+	public int findForumIdByGuildId(int guildId) throws DataAccessException {
+		return this.forumRepository.findForumIdByGuildId(guildId);
 	}
 	
-	@Transactional
-	public Forum findForumByGuildId(int guildId) throws DataAccessException{
-		Forum res = this.forumRepository.findForumByGuildId(guildId);
-		
-		return res;
+	@Transactional(readOnly=true)
+	public Forum findForumByGuildId(int guildId) throws DataAccessException {
+		return this.forumRepository.findForumByGuildId(guildId);
 	}
 
 }
