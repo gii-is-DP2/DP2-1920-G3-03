@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Diet;
 import org.springframework.samples.yogogym.model.Routine;
