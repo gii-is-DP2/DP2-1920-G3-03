@@ -35,8 +35,8 @@ excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes
 excludeAutoConfiguration= SecurityConfiguration.class)
 public class ExerciseControllerTest {
 	
-	private final int testExerciseId1 = 1;
-	private final int testExerciseId2 = 2;
+	private static final int EXERCISE1_ID = 1;
+	private static final int EXERCISE2_ID = 2;
 	
 	@MockBean
 	private ExerciseService exerciseService;
@@ -48,7 +48,7 @@ public class ExerciseControllerTest {
 	void setUp()
 	{
 		Exercise exercise1 = new Exercise();
-		exercise1.setId(testExerciseId1);
+		exercise1.setId(EXERCISE1_ID);
 		exercise1.setName("Exercise test 1");
 		exercise1.setDescription("Desc 1");
 		exercise1.setKcal(100);
@@ -58,7 +58,7 @@ public class ExerciseControllerTest {
 		exercise1.setEquipment(null);
 		
 		Exercise exercise2 = new Exercise();
-		exercise2.setId(testExerciseId2);
+		exercise2.setId(EXERCISE2_ID);
 		exercise2.setName("Exercise test 2");
 		exercise2.setDescription("Desc 2");
 		exercise2.setKcal(100);
@@ -71,8 +71,8 @@ public class ExerciseControllerTest {
 		allExercises.add(exercise1);
 		allExercises.add(exercise2);
 		
-		given(this.exerciseService.findExerciseById(testExerciseId1)).willReturn(exercise1);
-		given(this.exerciseService.findExerciseById(testExerciseId2)).willReturn(exercise2);
+		given(this.exerciseService.findExerciseById(EXERCISE1_ID)).willReturn(exercise1);
+		given(this.exerciseService.findExerciseById(EXERCISE2_ID)).willReturn(exercise2);
 		given(this.exerciseService.findAllExercise()).willReturn(allExercises);	
 	}
 	
@@ -131,7 +131,7 @@ public class ExerciseControllerTest {
 	@Test
 	void testGetExerciseDetailsTrainer() throws Exception
 	{
-		mockMvc.perform(get("/mainMenu/exercises/{exerciseId}",testExerciseId1))
+		mockMvc.perform(get("/mainMenu/exercises/{exerciseId}",EXERCISE1_ID))
 			.andExpect(status().isOk())
 			.andExpect(model().attributeExists("exercise"))
 			.andExpect(model().attribute("exercise", hasProperty("name", is("Exercise test 1"))))
@@ -148,7 +148,7 @@ public class ExerciseControllerTest {
 	@Test
 	void testGetExerciseDetailsClient() throws Exception
 	{
-		mockMvc.perform(get("/mainMenu/exercises/{exerciseId}",testExerciseId1))
+		mockMvc.perform(get("/mainMenu/exercises/{exerciseId}",EXERCISE1_ID))
 			.andExpect(status().isOk())
 			.andExpect(model().attributeExists("exercise"))
 			.andExpect(model().attribute("exercise", hasProperty("name", is("Exercise test 1"))))
@@ -165,7 +165,7 @@ public class ExerciseControllerTest {
 	@Test
 	void testGetExerciseDetailsAdmin() throws Exception
 	{
-		mockMvc.perform(get("/mainMenu/exercises/{exerciseId}",testExerciseId1))
+		mockMvc.perform(get("/mainMenu/exercises/{exerciseId}",EXERCISE1_ID))
 			.andExpect(status().isOk())
 			.andExpect(model().attributeExists("exercise"))
 			.andExpect(model().attribute("exercise", hasProperty("name", is("Exercise test 1"))))
