@@ -48,7 +48,6 @@ public class GuildControllerTests {
 	
 	private static final int testGuildId1 = 1;
 	private static final int testGuildId2 = 2;
-	private static final int testGuildId4 = 4;
 	
 	private static final int testClientId1 = 1;
 	private static final String testClientUsername1 = "client1";
@@ -170,7 +169,8 @@ public class GuildControllerTests {
 	void testWrongAuthority() throws Exception {
 		testWrongAuth(0,"/client/{clientUsername}/guilds",testClientUsername2);
 		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}",testClientUsername2,testGuildId1);
-		testWrongAuth(1,"/client/{clientUsername}/guilds/{guildId}/create",testClientUsername2,testGuildId4);
+		testWrongAuth(0,"/client/{clientUsername}/guilds/create",testClientUsername2);
+		testWrongAuth(1,"/client/{clientUsername}/guilds/create",testClientUsername2);
 		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}/edit",testClientUsername2,testGuildId1);
 		testWrongAuth(1,"/client/{clientUsername}/guilds/{guildId}/edit",testClientUsername2,testGuildId1);
 		testWrongAuth(0,"/client/{clientUsername}/guilds/{guildId}/delete",testClientUsername2,testGuildId1);

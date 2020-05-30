@@ -126,7 +126,7 @@ public class ChallengeService {
 		
 		//If we are editing, delete the challenge that is being edited
 		if(challenge.getId() != null) {
-			res = res.stream().filter(c -> c.getId() != challenge.getId()).collect(Collectors.toList());
+			res = res.stream().filter(c -> !c.getId().equals(challenge.getId())).collect(Collectors.toList());
 		}
 		return res;
 	}
