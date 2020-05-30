@@ -73,6 +73,7 @@ public class CreateTrainingUITest {
 		utils.exceptionView();
 	}
 	
+	@Test
 	public void testShowDetailsTrainingClientTrainedUI() throws Exception {
 		utils.as(TRAINER1_USERNAME, TRAINER1_PASS);
 		
