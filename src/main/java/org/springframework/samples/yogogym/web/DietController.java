@@ -141,8 +141,7 @@ public class DietController {
 			}
 
 			// return "redirect:/trainer/"+ trainer.getUser().getUsername() + "/clients/" + clientId + "/trainings/"+ training.getId();
-			return "redirect:/trainer/" + trainerUsername + "/clients/" + clientId +
-			 "/trainings/" + trainingId + "/diets/" + diet.getId();
+			return "redirect:/trainer/" + trainerUsername + "/diets";
 		}
 	}
 
@@ -171,26 +170,25 @@ public class DietController {
 			 @PathVariable("trainingId") int trainingId, @PathVariable("dietId") int dietId, ModelMap model) {
 		
 		Client client = this.clientService.findClientById(clientId);
+		Training training = this.trainingService.findTrainingById(trainingId);
 		
 		if(!isClientOfLoggedTrainer(clientId,trainerUsername))
 			return "exception";
 
-		diet.setId(dietId);
-	
 		if (result.hasErrors()) {
 			List<DietType> dietTypes = Arrays.asList(DietType.values());
 			model.put("dietTypes", dietTypes);
-			model.put("diet", diet);
+			model.addAttribute("diet", diet);
+			model.addAttribute("client",client);
+			model.addAttribute("training", training);
 			return "trainer/diets/dietsCreateOrUpdate";
 		} 
 		else {
-
-			diet.setId(dietId);		
-			Training training = this.trainingService.findTrainingById(trainingId);
-			training.setDiet(diet);
 			
 			try {
-				this.trainingService.saveTraining(training,client);
+				diet.setId(dietId);
+				this.dietService.saveDiet(diet, trainingId);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -225,6 +223,7 @@ public class DietController {
 
 
 		Diet diet = new Diet();
+		diet.setType(this.dietService.selectDietType(trainingId));
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		Training training = this.trainingService.findTrainingById(trainingId);
 		List<DietType> dietTypes = Arrays.asList(DietType.values());
@@ -246,25 +245,22 @@ public class DietController {
 			List<DietType> dietTypes = Arrays.asList(DietType.values());
 			model.addAttribute("dietTypes", dietTypes);
 
-			return "clients/diets/dietsCreateOrUpdate";
+			return "client/diets/dietsCreateOrUpdate";
 		} else {
 			Training training = this.trainingService.findTrainingById(trainingId);
 
-			if(diet.getType() == DietType.AUTO_ASSIGN){
-				DietType dietType = this.dietService.selectDietType(trainingId);
-				diet.setType(dietType);
-			}	
+			diet.setType(this.dietService.selectDietType(trainingId));	
 			diet = generateDiet(diet, client.getId());
 						
 			training.setDiet(diet);
 
 			try {
-				this.trainingService.saveTraining(training,client);
+				this.dietService.saveDiet(diet,trainingId);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			return "redirect:/client/" + clientUsername + "/trainings/" + trainingId + "/diets/" + diet.getId();
+			return "redirect:/client/" + clientUsername + "/diets";
 		}
 	}
 	// // GET

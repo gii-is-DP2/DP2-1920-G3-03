@@ -21,20 +21,25 @@ import org.springframework.stereotype.Service;
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 public class DashboardsAdminServiceTest {
+	
+	private static final String[] nameEquipmentTest = {"Bars 30-50 mm", "Dumbbells", "Elliptical", "Kettlebells", "Treadmill",
+														"Weight-Disc 30-50 mm"};
+	
+	private static final Integer[] countEquipmentTest = {1, 1, 1, 2, 5, 1};
 
 	@Autowired
 	protected DashboardsAdminService dashboardService;
 
 	@Test
 	void shouldCountEquipment() {
-		List<Integer> count = this.dashboardService.countEquipment(3000);
-		assertThat(count.size()).isEqualTo(6);
+		Integer[] count = this.dashboardService.countEquipment(1, 2020);
+		assertThat(count).isEqualTo(countEquipmentTest);
 	}
 
 	@Test
 	void shouldNameEquipment() {
-		List<String> count = this.dashboardService.nameEquipment(3000);
-		assertThat(count.size()).isEqualTo(6);
+		String[] count = this.dashboardService.nameEquipment(1, 2020);
+		assertThat(count).isEqualTo(nameEquipmentTest);
 	}
 	
 	@Test
@@ -53,7 +58,7 @@ public class DashboardsAdminServiceTest {
 	@Test
 	void shouldCountCompletedInscriptionsOfMonthAndYear(){
 		int inscriptions = this.dashboardService.countCompletedInscriptionsOfMonthAndYear(1,2020);
-		assertThat(inscriptions).isEqualTo(3);
+		assertThat(inscriptions).isEqualTo(2);
 	}
 	
 	@Test
@@ -79,8 +84,8 @@ public class DashboardsAdminServiceTest {
 	@Test
 	void shouldGetTopGuildOfMonthAndYear(){
 		DashboardAdminChallengesTopGuild topGuild = this.dashboardService.getTopGuild(1, 2020);
-		assertThat(topGuild.getGuild()).isEqualTo("Gym for Dummies");
-		assertThat(topGuild.getPoints()).isEqualTo(30);
+		assertThat(topGuild.getGuild()).isEqualTo("Weightlifting");
+		assertThat(topGuild.getPoints()).isEqualTo(20);
 	}
 	
 	@Test

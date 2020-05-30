@@ -24,7 +24,7 @@
 	
 	                <yogogym:inputField label="${name}" name="name"/>
 	                <yogogym:inputField label="${description}" name="description"/>
-	                <yogogym:selectField label="${type}" name="type" names="${dietTypes}" size="1"/>
+	                <yogogym:inputField label="${type}" name="type" readonly = "true"/>
 		
 					<input type="hidden" name="carb" value="0"/>
 					<input type="hidden" name="fat" value="0"/>
@@ -55,7 +55,7 @@
 
             	<yogogym:inputField label="${name}" name="name"/>
                 <yogogym:inputField label="${description}" name="description"/>
-                <yogogym:selectField label="${type}" name="type" names="${dietTypes}" size="1"/>
+                <yogogym:inputField label="${type}" name="type" readonly = "true"/>
                 <yogogym:inputField label="${kcal}" name="kcal"/>
                 <yogogym:inputField label="${protein}" name="protein"/>
                 <yogogym:inputField label="${carb}" name="carb"/>

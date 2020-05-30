@@ -1,10 +1,12 @@
 package org.springframework.samples.yogogym.service;
 
+
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.dao.DataAccessException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Diet;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
@@ -13,6 +15,8 @@ import org.springframework.samples.yogogym.model.Enums.DietType;
 import org.springframework.samples.yogogym.model.Enums.Intensity;
 import org.springframework.samples.yogogym.repository.DietRepository;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,15 +42,18 @@ public class DietService {
 		Calendar cal = Calendar.getInstance();
 		Date actualDate = cal.getTime();
 		
-		if(training.getEndDate().before(actualDate))
+		if(training.getEndDate().before(actualDate)) 
 			throw new TrainingFinished();
-		else		
+		else 
 			dietRepository.save(diet);
+		
 	}
 	
+
 	@Transactional(readOnly=true)
 	public Collection<Diet> findAllDiet() throws DataAccessException {
 		return Lists.newArrayList(this.dietRepository.findAll());		
+
 	}
 	
 	@Transactional(readOnly=true)
@@ -72,21 +79,31 @@ public class DietService {
 					veryIntense++;
 			}
 		}
-		if((low>moderated)&&(low>moderated)&&(low>moderated))
+		if((low>=moderated)&&(low>=intense)&&(low>=veryIntense))
 			res = DietType.VOLUME;
 		if((moderated>=low)&&(moderated>=intense)&&(moderated>=veryIntense))
 			res = DietType.MAINTENANCE;
-		if((intense>low)&&(intense>moderated)&&(intense>veryIntense))
+		if((intense>=low)&&(intense>=moderated)&&(intense>=veryIntense))
 			res = DietType.DEFINITION;
-		if((veryIntense>low)&&(veryIntense>intense)&&(veryIntense>moderated))
+		if((veryIntense>=low)&&(veryIntense>=intense)&&(veryIntense>=moderated))
 			res = DietType.EXTREME_DEFINITION;
 		
 		return res;
 	}
+	
+	public String getLoggedUsername()
+	{
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String clientUsername = ((UserDetails)principal).getUsername();
+		
+		return clientUsername;
+	}
 
 	
+
 	@Transactional(readOnly=true)
 	public Diet findDietById(Integer dietId) throws DataAccessException {
 		return this.dietRepository.findById(dietId).get();	
+
 	}
 }

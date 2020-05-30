@@ -47,11 +47,11 @@ public class UtilsTrainingUI {
 		this.driver.findElement(By.linkText("Training Management")).click();
 	}
 
-	public void createTraining(String newTrainingName, Calendar calInit, Calendar calEnd, Boolean concurrentTraining) {	
+	public void createTraining(String newTrainingName, Calendar calInit, Calendar calEnd, Boolean trainingForClient3) {	
 		
 		accessListTrainings();
 		
-		if(Boolean.TRUE.equals(concurrentTraining)) {
+		if(Boolean.TRUE.equals(trainingForClient3)) {
 			this.driver.findElement(By.xpath("(//a[contains(text(),'Add Training')])[3]")).click();
 		}
 		else {
@@ -107,6 +107,12 @@ public class UtilsTrainingUI {
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
+	}
+	
+	public void copyTraining(String trainingName) {
+		driver.findElement(By.linkText("Copy Training")).click();
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		driver.findElement(By.linkText(trainingName)).click();
 	}
 	
 }

@@ -30,9 +30,14 @@ public class DashboardsAdminController {
 	}
 
 	@GetMapping("/admin/dashboardEquipment")
-	public String getDashboardEquipment(ModelMap model) {
-		dashboardEquipment(28, "Month", model);
-		dashboardEquipment(7, "Week", model);
+	public String getDashboardEquipment(@PathParam("monthAndYear") String monthAndYear, ModelMap model) {
+		int date [] = getMonthAndYear(monthAndYear);
+		int year = date[0];
+		int month = date[1];
+		model.addAttribute("year",year);
+		model.addAttribute("month",month);
+		
+		dashboardEquipment(month, year, model);
 		return "admin/dashboards/dashboardEquipment";
 	}
 	
@@ -64,7 +69,7 @@ public class DashboardsAdminController {
 	}
 
 	@GetMapping("/admin/dashboardGeneral")
-	public String getDashboardGeneral( ModelMap model) {
+	public String getDashboardGeneral(ModelMap model) {
 
 		Integer clients = this.dashboardsAdminService.countClients();
 		Integer trainers = this.dashboardsAdminService.countTrainers();
@@ -93,28 +98,20 @@ public class DashboardsAdminController {
 	
 	/**
 	 * <p>Get all the necessary data to create the dashboard.</p>
-	 * @param days : number of days.
-	 * @param string : 'Days' or 'Month'.
+	 * @param month 
+	 * @param year 
 	 * @param model : the modelMap of the view.
 	 * @return void : it puts the data in the model.
 	 */
-	private void dashboardEquipment(Integer days, String string, ModelMap model) {
-		List<Integer> countEquipment = this.dashboardsAdminService.countEquipment(days);
-		List<String> nameEquipment = this.dashboardsAdminService.nameEquipment(days);
-		if (!countEquipment.isEmpty() || !nameEquipment.isEmpty()) {
-			String[] s = new String[nameEquipment.size()];
-			for (int i = 0; i < nameEquipment.size(); i++) {
-				s[i] = nameEquipment.get(i);
-			}
-			Integer[] c = new Integer[countEquipment.size()];
-			for (int i = 0; i < countEquipment.size(); i++) {
-				c[i] = countEquipment.get(i);
-			}
-			model.addAttribute("orderName" + string, s);
-			model.addAttribute("count" + string, c);
-			model.addAttribute("hasEquipment" + string, true);
+	private void dashboardEquipment(int month, int year, ModelMap model) {
+		Integer[] countEquipment = this.dashboardsAdminService.countEquipment(month, year);
+		String[] nameEquipment = this.dashboardsAdminService.nameEquipment(month, year);
+		if (countEquipment.length>0 || nameEquipment.length>0) {
+			model.addAttribute("orderName", nameEquipment);
+			model.addAttribute("count", countEquipment);
+			model.addAttribute("hasEquipment", true);
 		} else {
-			model.addAttribute("hasEquipment" + string, false);
+			model.addAttribute("hasEquipment", false);
 		}
 
 	}

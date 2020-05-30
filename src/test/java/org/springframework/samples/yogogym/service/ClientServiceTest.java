@@ -104,13 +104,13 @@ public class ClientServiceTest {
 	@Test
 	void shouldClassificationNameAll() {
 		List<String> names = this.clientService.classificationNameAll();
-		assertThat(names.size()).isEqualTo(3);
+		assertThat(names.size()).isEqualTo(2);
 	}
 	
 	@Test
 	void shouldClassificationPointAll() {
 		List<Integer> points = this.clientService.classificationPointAll();
-		assertThat(points.size()).isEqualTo(3);
+		assertThat(points.size()).isEqualTo(2);
 	}
 	
 	@Test
