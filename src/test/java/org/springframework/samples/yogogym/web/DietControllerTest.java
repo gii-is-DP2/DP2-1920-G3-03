@@ -25,6 +25,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Diet;
+import org.springframework.samples.yogogym.model.Food;
 import org.springframework.samples.yogogym.model.Enums.*;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.Trainer;
@@ -32,6 +33,7 @@ import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.User;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DietService;
+import org.springframework.samples.yogogym.service.FoodService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
@@ -44,14 +46,20 @@ excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes
 excludeAutoConfiguration= SecurityConfiguration.class)
 public class DietControllerTest {
 	
-	private static final int testDietId = 1;
-	
-	private static final String testTrainerUsername = "trainer1";
-	
+	private static final int testDietId = 1;	
+	private static final String testTrainerUsername = "trainer1";	
 	private static final int testClientId = 1;
-	
 	private static final int testTrainingId = 1;
+	private static final int testTrainingId2 = 2;
+
+	private static final int foodId = 1;
+	private static final int foodId2 = 2;
+	private static final int foodId3 = 3;
 	
+	private static final String CLIENT1_USERNAME = "client1";
+	
+	
+
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	Calendar testInitialTrainingDate = Calendar.getInstance();
 		
@@ -72,6 +80,9 @@ public class DietControllerTest {
 	@MockBean
 	private TrainingService trainingService;
 	
+	@MockBean
+	private FoodService foodService;
+
 	@Autowired
 	private MockMvc mockMvc;
 		
@@ -80,7 +91,42 @@ public class DietControllerTest {
 	{
 		//Trainer 1
 
+		Collection<Food> foods = new ArrayList<>();
+		Food food1 = new Food();
+		food1.setId(foodId);
+		food1.setName("Bread");
+		food1.setKcal(80);
+		food1.setProtein(20);
+		food1.setFat(20);
+		food1.setCarb(30);
+		food1.setWeight(20);
+		food1.setFoodType(FoodType.BRANCH);
+		
+		Food food3 = new Food();
+		food1.setId(foodId3);
+		food1.setName("Steak");
+		food1.setKcal(80);
+		food1.setProtein(20);
+		food1.setFat(20);
+		food1.setCarb(30);
+		food1.setWeight(20);
+		food1.setFoodType(FoodType.BRANCH);
+		
+		foods.add(food3);
+		foods.add(food1);
+		
+		Food food2 = new Food();
+		food2.setId(foodId2);
+		food2.setName("Apple");
+		food2.setKcal(57);
+		food2.setProtein(10);
+		food2.setFat(20);
+		food2.setCarb(30);
+		food2.setWeight(20);
+		food2.setFoodType(FoodType.BREAKFAST);
+		
 		Diet d= new Diet();
+		d.setId(testDietId);
 		d.setName("DietTest");
 		d.setDescription("Test");
 		d.setType(DietType.MAINTENANCE);
@@ -88,10 +134,41 @@ public class DietControllerTest {
 		d.setCarb(10);
 		d.setProtein(10);
 		d.setFat(10);
+		d.setFoods(foods);
 
+		Date initialDate = testInitialTrainingDate.getTime();
+		testInitialTrainingDate.add(Calendar.DAY_OF_MONTH, 3);
+		Date endDate = testInitialTrainingDate.getTime();
+		testInitialTrainingDate.add(Calendar.DAY_OF_MONTH, 4);
+		
+		Date initialDate2 = testInitialTrainingDate.getTime();
+		testInitialTrainingDate.add(Calendar.DAY_OF_MONTH, 6);
+		Date endDate2 = testInitialTrainingDate.getTime();
+		
+		Collection<Routine> routines = new ArrayList<>();
+		Collection<Training> trainings = new ArrayList<>();
+		Training training = new Training();
+		training.setId(testTrainingId);
+		training.setName("training 1");
+		training.setInitialDate(initialDate);
+		training.setEndDate(endDate);
+		training.setDiet(d);
+		training.setRoutines(routines);
+		trainings.add(training);
+		
+		Training training2 = new Training();
+		training.setId(testTrainingId2);
+		training.setName("training 2");
+		training.setInitialDate(initialDate2);
+		training.setEndDate(endDate2);
+		training.setDiet(d);
+		training.setRoutines(routines);
+		trainings.add(training);
+		trainings.add(training2);
+		
 		Client client = new Client();
 		User user_client = new User();
-		user_client.setUsername("client1");
+		user_client.setUsername(CLIENT1_USERNAME);
 		user_client.setEnabled(true);
 		client.setUser(user_client);
 		client.setId(testClientId);
@@ -99,6 +176,7 @@ public class DietControllerTest {
 		client.setHeight(180.0);
 		client.setWeight(70.0);
 		client.setFatPercentage(20.0);
+		client.setTrainings(trainings);
 		
 		Collection<Client> clients = new ArrayList<>();
 		clients.add(client);
@@ -109,26 +187,18 @@ public class DietControllerTest {
 		user_trainer.setEnabled(true);
 		trainer.setUser(user_trainer);
 		trainer.setClients(clients);
-				
-		Date initialDate = testInitialTrainingDate.getTime();
 		
-		testInitialTrainingDate.add(Calendar.DAY_OF_MONTH, 1);
-		Date endDate = testInitialTrainingDate.getTime();
 		
-		Collection<Routine> routines = new ArrayList<>();
-		
-		Training training = new Training();
-		training.setId(testTrainingId);
-		training.setName("training 1");
-		training.setInitialDate(initialDate);
-		training.setEndDate(endDate);
-		training.setDiet(null);
-		training.setRoutines(routines);
 		
 		given(this.clientService.findClientById(testClientId)).willReturn(client);
+		given(this.clientService.findClientByUsername(CLIENT1_USERNAME)).willReturn(client);
 		given(this.trainerService.findTrainer(testTrainerUsername)).willReturn(trainer);
 		given(this.trainingService.findTrainingById(testTrainingId)).willReturn(training);
+		given(this.trainingService.findTrainingById(testTrainingId2)).willReturn(training2);
 		given(this.dietService.findDietById(testDietId)).willReturn(d);
+		given(this.foodService.findFoodById(foodId)).willReturn(food1);
+		given(this.foodService.findFoodById(foodId2)).willReturn(food2);
+		given(this.foodService.findAllFoods()).willReturn(foods);
 		
 		//Trainer 2
 		Client client_t2 = new Client();
@@ -170,6 +240,7 @@ public class DietControllerTest {
 		}
 	}
 	
+
 	@WithMockUser(username="client1", authorities= {"client"})
 	@Test
 	void testWrongAuthority() throws Exception
@@ -362,4 +433,63 @@ public class DietControllerTest {
 	void testProcessWrongtUpdateDietForm() throws Exception{
 		testProcessWrongUpdateDietForm("diet1", "description 1", DietType.DEFINITION, -10,-10,-10,-10);
 	}
+	// FOODS
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testShowFoods() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods",
+		CLIENT1_USERNAME,testTrainingId,testDietId))
+			.andExpect(status().isOk())
+			.andExpect(view().name("client/foods/foodsOnDiet"))
+			.andDo(print());
+	}
+
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testAddFood() throws Exception
+	{
+
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/addFood",
+		CLIENT1_USERNAME,testTrainingId,testDietId,foodId2))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(view().name(
+				"redirect:/client/"+CLIENT1_USERNAME+"/trainings/"+testTrainingId+"/diets/"+testDietId));
+	}
+
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testDeleteFoods() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods/delete",
+		CLIENT1_USERNAME,testTrainingId,testDietId))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name(
+				"redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods"));
+	}
+
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testDeleteFood() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/deleteFood",
+		CLIENT1_USERNAME,testTrainingId,testDietId,foodId))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name(
+				"redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods"));
+				
+	}
+	
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testAddDuplicatedFood() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/addFood",
+		CLIENT1_USERNAME,testTrainingId2,testDietId,foodId))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(view().name(
+				"redirect:/client/"+CLIENT1_USERNAME+"/trainings/"+testTrainingId2+"/diets/"+testDietId));
+	}
+
 }

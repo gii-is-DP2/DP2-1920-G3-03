@@ -80,6 +80,7 @@ INSERT INTO diets(id,name,description,kcal,protein,fat,carb) VALUES (1, 'Dieta 1
 INSERT INTO diets(id,name,description,kcal,protein,fat,carb) VALUES (2, 'Dieta 2','Desc 2', 1, 1, 1, 1);
 INSERT INTO diets(id,name,description,kcal,protein,fat,carb) VALUES (3, 'Dieta 3','Desc 3', 1, 1, 1, 1);
 INSERT INTO diets(id,name,description,kcal,protein,fat,carb) VALUES (4, 'Dieta 4','Desc 4', 1, 1, 1, 1);
+INSERT INTO diets(id,name,description,kcal,protein,fat,carb) VALUES (5, 'DietaEjemplo', 'Desc Ejemplo', 3000, 150, 130, 500);
 
 /* FOOD_DIET */
 
@@ -91,6 +92,7 @@ INSERT INTO diets_foods(diet_id,foods_id) VALUES (1,5);
 INSERT INTO diets_foods(diet_id,foods_id) VALUES (2,1);
 INSERT INTO diets_foods(diet_id,foods_id) VALUES (3,2);
 INSERT INTO diets_foods(diet_id,foods_id) VALUES (4,3);
+INSERT INTO diets_foods(diet_id,foods_id) VALUES (5,1);
 
 /* TRAINING */
 
@@ -105,7 +107,8 @@ INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,di
 
 /* Always Updated Trainings */
 
-INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (9, DATEADD(day, 100, CURRENT_DATE), DATEADD(day, 101, CURRENT_DATE), 'Test', 2, 'trainer1', null);
+
+INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (9, DATEADD(day, 100, CURRENT_DATE), DATEADD(day, 101, CURRENT_DATE), 'Test', 2, 'trainer1', 5);
 
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (10, DATEADD(day, -7, CURRENT_DATE), DATEADD(day, 7, CURRENT_DATE), 'Entrenamiento1', 0, 'trainer1', null);
 INSERT INTO trainings(id,initial_date,end_date,name,editing_permission,author,diet_id) VALUES (11, DATEADD(day, 14, CURRENT_DATE), DATEADD(day, 21, CURRENT_DATE), 'Entrenamiento2', 2, 'client6', null);

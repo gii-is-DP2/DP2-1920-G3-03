@@ -36,6 +36,8 @@ public class GuildControllerE2ETest {
 
 	@BeforeEach
 	void setup() {
+		
+		
 
 	}
 	

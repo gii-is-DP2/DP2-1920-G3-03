@@ -3,19 +3,25 @@ package org.springframework.samples.yogogym.web;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Diet;
+import org.springframework.samples.yogogym.model.Food;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.DietType;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DietService;
+import org.springframework.samples.yogogym.service.FoodService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
-
+import org.springframework.samples.yogogym.service.exceptions.FoodDuplicatedException;
+import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
+import org.springframework.samples.yogogym.util.SecurityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -23,6 +29,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import org.springframework.validation.BindingResult;
@@ -31,18 +38,22 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class DietController {
 
+	private static final String EXCEPTION = "exception";
+	
 	private final ClientService clientService;
 	private final TrainerService trainerService;
 	private final TrainingService trainingService;
 	private final DietService dietService;
+	private final FoodService foodService;
 
 	@Autowired
 	public DietController(final ClientService clientService, final TrainerService trainerService,
-			final DietService dietService,final TrainingService trainingService) {
+			final DietService dietService,final TrainingService trainingService, final FoodService foodService) {
 		this.clientService = clientService;
 		this.trainerService = trainerService;
 		this.dietService = dietService;
 		this.trainingService = trainingService;
+		this.foodService = foodService;
 
 	}
 
@@ -203,6 +214,11 @@ public class DietController {
 	@GetMapping("/client/{clientUsername}/diets")
 	public String getClientDietList(@PathVariable("clientUsername") String clientUsername, Model model) {
 		
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername, false, this.clientService, null);
+
+		if (Boolean.FALSE.equals(isLogged))
+			return EXCEPTION;
+		
 		Calendar now = Calendar.getInstance();
 		Date date = now.getTime();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");		
@@ -221,7 +237,11 @@ public class DietController {
 	public String initDietCreateFormAsClient( @PathVariable("clientUsername") String clientUsername,
 			@PathVariable("trainingId") int trainingId, Model model) {
 
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername, false, this.clientService, null);
 
+		if (Boolean.FALSE.equals(isLogged))
+			return EXCEPTION;
+		
 		Diet diet = new Diet();
 		diet.setType(this.dietService.selectDietType(trainingId));
 		Client client = this.clientService.findClientByUsername(clientUsername);
@@ -238,6 +258,11 @@ public class DietController {
 	@PostMapping("/client/{clientUsername}/trainings/{trainingId}/diets/create")
 	public String processDietCreateFormAsClient(@Valid Diet diet, BindingResult result, @PathVariable("clientUsername") String clientUsername,
 			@PathVariable("trainingId") int trainingId, Model model) {
+		
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername, false, this.clientService, null);
+
+		if (Boolean.FALSE.equals(isLogged))
+			return EXCEPTION;
 		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 
@@ -268,7 +293,11 @@ public class DietController {
 	public String getDietDetailsAsClient(@PathVariable("clientUsername") String clientUsername,
 			 @PathVariable("dietId") int dietId, @PathVariable("trainingId") int trainingId, Model model) {
 
-			
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername, false, this.clientService, null);
+
+		if (Boolean.FALSE.equals(isLogged))
+			return EXCEPTION;
+		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		Diet diet = this.dietService.findDietById(dietId);
 		Training training = this.trainingService.findTrainingById(trainingId);
@@ -279,6 +308,82 @@ public class DietController {
 
 		return "client/diets/dietsDetails";
 	}
+	
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods")
+	public String showFoods(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") Integer trainingId, @PathVariable("dietId") Integer dietId, Model model) {
+	
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername, false, this.clientService, null);
+
+		if (Boolean.FALSE.equals(isLogged))
+			return EXCEPTION;
+		
+	Diet diet = this.dietService.findDietById(dietId);
+	Collection<Food> foods = diet.getFoods();
+
+	
+	model.addAttribute("diet", diet);
+	model.addAttribute("foods",foods);
+	
+	return "client/foods/foodsOnDiet";
+	}	
+	
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/addFood")
+	public String addFood(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") Integer trainingId, @PathVariable("dietId") Integer dietId,@PathVariable("foodId") Integer foodId, Model model,RedirectAttributes redirectAttrs) {
+		
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername, false, this.clientService, null);
+
+		if (Boolean.FALSE.equals(isLogged))
+			return EXCEPTION;
+		
+		Food f = this.foodService.findFoodById(foodId);
+		
+		try {
+			this.dietService.addFood(dietId, trainingId, f);
+		} catch (TrainingFinished e) {
+			// TODO Auto-generated catch block
+			return "exception";
+		} catch (FoodDuplicatedException e) {
+			redirectAttrs.addFlashAttribute("foodDuplicated", "This food is in your Diet already");
+			return "redirect:/client/"+clientUsername+"/trainings/"+trainingId+"/diets/"+dietId+"/foods";
+		}
+		
+		return "redirect:/client/"+clientUsername+"/trainings/"+trainingId+"/diets/"+dietId;
+	}
+	
+	
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods/delete")
+	public String deleteFoods(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") Integer trainingId, @PathVariable("dietId") Integer dietId, Model model) {
+	
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername, false, this.clientService, null);
+
+		if (Boolean.FALSE.equals(isLogged))
+			return EXCEPTION;
+		
+		Diet diet = this.dietService.findDietById(dietId);
+		diet.setFoods(null);
+		try {
+			this.dietService.saveDiet(diet, trainingId);
+		} catch (TrainingFinished e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods"; 
+	
+	}	
+	
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/deleteFood")
+	public String deleteFood(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") Integer trainingId, @PathVariable("dietId") Integer dietId,@PathVariable("foodId") Integer foodId, Model model) {
+		
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername, false, this.clientService, null);
+
+		if (Boolean.FALSE.equals(isLogged))
+			return EXCEPTION;
+		
+		this.dietService.deleteFood(dietId, foodId);
+		
+		return "redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods";
+	}
+	
 	// SECURITY-PART
 
 	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		

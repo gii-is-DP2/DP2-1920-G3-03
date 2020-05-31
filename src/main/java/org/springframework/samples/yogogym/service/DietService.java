@@ -1,6 +1,5 @@
 package org.springframework.samples.yogogym.service;
 
-
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -8,12 +7,15 @@ import java.util.Date;
 import org.springframework.dao.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Diet;
+import org.springframework.samples.yogogym.model.Food;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.DietType;
 import org.springframework.samples.yogogym.model.Enums.Intensity;
 import org.springframework.samples.yogogym.repository.DietRepository;
+import org.springframework.samples.yogogym.repository.FoodRepository;
+import org.springframework.samples.yogogym.service.exceptions.FoodDuplicatedException;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,12 +28,14 @@ import com.google.common.collect.Lists;
 public class DietService {
 
 	private DietRepository dietRepository;
+	private FoodRepository foodRepository;
 	private TrainingService trainingService;
 
 	@Autowired
-	public DietService(DietRepository dietRepository,TrainingService trainingService) {
+	public DietService(DietRepository dietRepository,TrainingService trainingService, FoodRepository foodRepository) {
 		this.dietRepository = dietRepository;
 		this.trainingService = trainingService;
+		this.foodRepository = foodRepository;
 	}
 	
 	@Transactional
@@ -49,13 +53,49 @@ public class DietService {
 		
 	}
 	
+	@Transactional
+	public void addFood(int dietId, int trainingId, Food f) throws TrainingFinished, FoodDuplicatedException{
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+		Diet diet = this.dietRepository.findDietById(dietId);
+		
+		Calendar cal = Calendar.getInstance();
+		Date actualDate = cal.getTime();
+		if(diet.getFoods().contains(f))
+			throw new FoodDuplicatedException();
+		if(training.getEndDate().before(actualDate)) 
+			throw new TrainingFinished();
+		else 
+			diet.getFoods().add(f);
+			
+		
+	}
+	
+	@Transactional(readOnly=true)
+	public Diet findDietById(Integer dietId) throws DataAccessException {
+		return this.dietRepository.findDietById(dietId);	
 
+	}
+	
 	@Transactional(readOnly=true)
 	public Collection<Diet> findAllDiet() throws DataAccessException {
 		return Lists.newArrayList(this.dietRepository.findAll());		
 
 	}
+
+	public void deleteAllFoodFromDiet(Integer dietId) throws DataAccessException {
+		Diet diet = this.dietRepository.findDietById(dietId);
+		diet.setFoods(null);
+		this.dietRepository.save(diet);
+	}
 	
+	public void deleteFood(Integer dietId, Integer foodId)throws DataAccessException{
+		Diet d = this.dietRepository.findDietById(dietId);
+		Food f = this.foodRepository.findFoodById(foodId);
+		d.getFoods().remove(f);
+		this.dietRepository.save(d);
+		
+	}
 	@Transactional(readOnly=true)
 	public DietType selectDietType(Integer trainingId) {
 		
@@ -97,13 +137,5 @@ public class DietService {
 		String clientUsername = ((UserDetails)principal).getUsername();
 		
 		return clientUsername;
-	}
-
-	
-
-	@Transactional(readOnly=true)
-	public Diet findDietById(Integer dietId) throws DataAccessException {
-		return this.dietRepository.findById(dietId).get();	
-
 	}
 }
