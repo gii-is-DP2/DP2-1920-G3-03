@@ -80,7 +80,7 @@ public class DashboardsAdminControllerTest {
 		@WithMockUser(username = "admin1", authorities = { "admin" })
 		@Test
 		void testInitAllDashboard() throws Exception {
-			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
+			mockMvc.perform(get("/admin/dashboardEquipment?monthAndYear=2020-05")).andExpect(status().isOk())
 					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
 					.andExpect(model().attribute("hasEquipment", true))
 					.andExpect(model().attribute("count", COUNT))
@@ -120,7 +120,7 @@ public class DashboardsAdminControllerTest {
 		@WithMockUser(username = "admin1", authorities = { "admin" })
 		@Test
 		void testInitDashboardWithoutWeek() throws Exception {
-			mockMvc.perform(get("/admin/dashboardEquipment")).andExpect(status().isOk())
+			mockMvc.perform(get("/admin/dashboardEquipment?monthAndYear=2020-05")).andExpect(status().isOk())
 					.andExpect(view().name("admin/dashboards/dashboardEquipment"))
 					.andExpect(model().attribute("hasEquipment", false));
 		}

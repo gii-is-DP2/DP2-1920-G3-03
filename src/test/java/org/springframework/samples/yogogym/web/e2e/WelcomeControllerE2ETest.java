@@ -6,8 +6,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,10 +32,10 @@ public class WelcomeControllerE2ETest {
 	}
 
 	@WithMockUser()
-	@Test
-	void testWelcomeControllerE2ESuccessful() throws Exception {
-		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("welcome"))
+	@ParameterizedTest
+	@ValueSource(strings = {"/", "/welcome"})
+	void testWelcomeControllerE2ESuccessful(String content) throws Exception {
+		mockMvc.perform(get(content)).andExpect(status().isOk()).andExpect(view().name("welcome"))
 				.andExpect(model().attributeExists("quote", "apiFunctional"));
 	}
-
 }

@@ -79,7 +79,7 @@ public class DashboardClientControllerTests {
 		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
 		@Test
 		void testInitAllDashboardClient() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/dashboard?monthAndYear=2020-05", TEST_USERNAME)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
 					.andExpect(model().attribute("hasBodyParts", true))
 					.andExpect(model().attribute("hasRepetitionType", true))
@@ -121,7 +121,7 @@ public class DashboardClientControllerTests {
 		@WithMockUser(username = TEST_USERNAME2, authorities = { "client" })
 		@Test
 		void testInitDashboardClientEmpty() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME2)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/dashboard?monthAndYear=2020-05", TEST_USERNAME2)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
 					.andExpect(model().attribute("hasBodyParts", false))
 					.andExpect(model().attribute("hasRepetitionType", false))
@@ -131,7 +131,7 @@ public class DashboardClientControllerTests {
 		@WithMockUser(username = TEST_USERNAME3, authorities = { "client" })
 		@Test
 		void testWrongUsername() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/dashboard?monthAndYear=2020-05", TEST_USERNAME)).andExpect(status().isOk())
 					.andExpect(view().name("exception"));
 		}
 	}
@@ -167,7 +167,7 @@ public class DashboardClientControllerTests {
 		@WithMockUser(username = TEST_USERNAME4, authorities = { "client" })
 		@Test
 		void testInitAllDashboardClient() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME4)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/dashboard?monthAndYear=2020-05", TEST_USERNAME4)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
 					.andExpect(model().attribute("hasBodyParts", false))
 					.andExpect(model().attribute("hasRepetitionType", true))
@@ -208,7 +208,7 @@ public class DashboardClientControllerTests {
 		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
 		@Test
 		void testInitAllDashboardClient() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/dashboard?monthAndYear=2020-05", TEST_USERNAME)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
 					.andExpect(model().attribute("hasBodyParts", true))
 					.andExpect(model().attribute("hasRepetitionType", false))
@@ -248,7 +248,7 @@ public class DashboardClientControllerTests {
 		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
 		@Test
 		void testInitAllDashboardClient() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/dashboard?monthAndYear=2020-05", TEST_USERNAME)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
 					.andExpect(model().attribute("hasBodyParts", true))
 					.andExpect(model().attribute("hasRepetitionType", true))
@@ -289,7 +289,7 @@ public class DashboardClientControllerTests {
 		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
 		@Test
 		void testInitAllDashboardClient() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/dashboard?monthAndYear=2020-05", TEST_USERNAME)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
 					.andExpect(model().attribute("hasBodyParts", false))
 					.andExpect(model().attribute("hasRepetitionType", true))
@@ -329,7 +329,7 @@ public class DashboardClientControllerTests {
 		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
 		@Test
 		void testInitAllDashboardClient() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/dashboard?monthAndYear=2020-05", TEST_USERNAME)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
 					.andExpect(model().attribute("hasBodyParts", false))
 					.andExpect(model().attribute("hasRepetitionType", true))
@@ -369,7 +369,7 @@ public class DashboardClientControllerTests {
 		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
 		@Test
 		void testInitAllDashboardClient() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/dashboard?monthAndYear=2020-05", TEST_USERNAME)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
 					.andExpect(model().attribute("hasBodyParts", true))
 					.andExpect(model().attribute("hasRepetitionType", false))
@@ -409,7 +409,7 @@ public class DashboardClientControllerTests {
 		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
 		@Test
 		void testInitAllDashboardClient() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/dashboard?monthAndYear=2020-05", TEST_USERNAME)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
 					.andExpect(model().attribute("hasBodyParts", true))
 					.andExpect(model().attribute("hasRepetitionType", false))
@@ -450,7 +450,7 @@ public class DashboardClientControllerTests {
 		@WithMockUser(username = TEST_USERNAME, authorities = { "client" })
 		@Test
 		void testInitAllDashboardClient() throws Exception {
-			mockMvc.perform(get("/client/{clientUsername}/dashboard", TEST_USERNAME)).andExpect(status().isOk())
+			mockMvc.perform(get("/client/{clientUsername}/dashboard?monthAndYear=2020-05", TEST_USERNAME)).andExpect(status().isOk())
 					.andExpect(view().name("client/dashboards/dashboard"))
 					.andExpect(model().attribute("hasBodyParts", true))
 					.andExpect(model().attribute("hasRepetitionType", true))

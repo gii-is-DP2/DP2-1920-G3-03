@@ -66,7 +66,7 @@ public class TrainingServiceTests {
 	@BeforeAll
 	public static void setup() {
 		NOW.set(Calendar.HOUR, 0);
-		NOW.add(Calendar.HOUR, -12);
+		NOW.add(Calendar.HOUR, 0);
 		NOW.set(Calendar.MINUTE, 0);
 		NOW.set(Calendar.SECOND, 0);
 		NOW.set(Calendar.MILLISECOND, 0);
@@ -487,6 +487,7 @@ public class TrainingServiceTests {
 		Calendar endDate = (Calendar) NOW.clone();
 		
 		initDate.add(Calendar.DAY_OF_MONTH, addInitDate);
+		
 		endDate.add(Calendar.DAY_OF_MONTH, addEndDate);
 		
 		Training training = new Training();
