@@ -109,8 +109,6 @@ public class FoodControllerTests {
 		foods.add(food1);
 		foods.add(food2);
 
-		// Training training = this.trainingService.findTrainingById(trainingId);
-
 		Training training1 = new Training();
 		training1.setId(TRAINING2_ID);
 		training1.setName("Training 1");
