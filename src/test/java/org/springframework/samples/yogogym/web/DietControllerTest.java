@@ -25,6 +25,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Diet;
+import org.springframework.samples.yogogym.model.Food;
 import org.springframework.samples.yogogym.model.Enums.*;
 import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.Trainer;
@@ -45,22 +46,16 @@ excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes
 excludeAutoConfiguration= SecurityConfiguration.class)
 public class DietControllerTest {
 	
-	private static final int testDietId = 1;	
 	private static final String testTrainerUsername = "trainer1";	
-	private static final int testClientId = 1;
-	private static final int testTrainingId = 1;
-	
-	private static final Integer DIET5_ID = 5;
+	private static final int CLIENT1_ID = 1;	
+	private static final Integer DIET1_ID = 1;
 	private static final String CLIENT1_USERNAME = "client1";
-	private static final Integer TRAINING9_ID = 9;
-
-	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-	Calendar testInitialTrainingDate = Calendar.getInstance();
+	private static final Integer TRAINING1_ID = 1;
 		
 	//Trainer 2
 	private static final String testTrainerUsername_t2 = "trainer2";
 	
-	private static final int testClientId_t2 = 2;
+	private static final int CLIENT1_ID_t2 = 2;
 	
 	@MockBean
 	private DietService dietService;
@@ -94,12 +89,37 @@ public class DietControllerTest {
 		d.setProtein(10);
 		d.setFat(10);
 
+		Food food1 = new Food();
+		food1.setId(1);
+		food1.setName("Bread");
+		food1.setKcal(80);
+		food1.setProtein(20);
+		food1.setFat(20);
+		food1.setCarb(30);
+		food1.setWeight(20);
+		food1.setFoodType(FoodType.BRANCH);
+
+		Food food2 = new Food();
+		food2.setId(2);
+		food2.setName("Bread");
+		food2.setKcal(80);
+		food2.setProtein(20);
+		food2.setFat(20);
+		food2.setCarb(30);
+		food2.setWeight(20);
+		food2.setFoodType(FoodType.BRANCH);
+
+		Collection<Food> foods_d = new ArrayList<>();
+		foods_d.add(food1);
+		foods_d.add(food2);
+		d.setFoods(foods_d);
+
 		Client client = new Client();
 		User user_client = new User();
 		user_client.setUsername("client1");
 		user_client.setEnabled(true);
 		client.setUser(user_client);
-		client.setId(testClientId);
+		client.setId(CLIENT1_ID);
 		client.setAge(18);
 		client.setHeight(180.0);
 		client.setWeight(70.0);
@@ -115,25 +135,26 @@ public class DietControllerTest {
 		trainer.setUser(user_trainer);
 		trainer.setClients(clients);
 				
+		Calendar testInitialTrainingDate = Calendar.getInstance();
+
 		Date initialDate = testInitialTrainingDate.getTime();
-		
 		testInitialTrainingDate.add(Calendar.DAY_OF_MONTH, 1);
 		Date endDate = testInitialTrainingDate.getTime();
 		
 		Collection<Routine> routines = new ArrayList<>();
-		
+				
 		Training training = new Training();
-		training.setId(testTrainingId);
+		training.setId(TRAINING1_ID);
 		training.setName("training 1");
 		training.setInitialDate(initialDate);
 		training.setEndDate(endDate);
-		training.setDiet(null);
+		training.setDiet(d);
 		training.setRoutines(routines);
 		
-		given(this.clientService.findClientById(testClientId)).willReturn(client);
+		given(this.clientService.findClientById(CLIENT1_ID)).willReturn(client);
 		given(this.trainerService.findTrainer(testTrainerUsername)).willReturn(trainer);
-		given(this.trainingService.findTrainingById(testTrainingId)).willReturn(training);
-		given(this.dietService.findDietById(testDietId)).willReturn(d);
+		given(this.trainingService.findTrainingById(TRAINING1_ID)).willReturn(training);
+		given(this.dietService.findDietById(DIET1_ID)).willReturn(d);
 		
 		//Trainer 2
 		Client client_t2 = new Client();
@@ -141,7 +162,7 @@ public class DietControllerTest {
 		user_client_t2.setUsername("client2");
 		user_client_t2.setEnabled(true);
 		client_t2.setUser(user_client_t2);
-		client_t2.setId(testClientId_t2);
+		client_t2.setId(CLIENT1_ID_t2);
 		client_t2.setAge(40);
 		client_t2.setHeight(160.0);
 		client_t2.setWeight(90.0);
@@ -156,8 +177,9 @@ public class DietControllerTest {
 		trainer_t2.setUser(user_trainer_t2);
 		trainer_t2.setClients(clients_t2);
 		
-		given(this.clientService.findClientById(testClientId_t2)).willReturn(client_t2);
+		given(this.clientService.findClientById(CLIENT1_ID_t2)).willReturn(client_t2);
 		given(this.trainerService.findTrainer(testTrainerUsername_t2)).willReturn(trainer_t2);	
+
 	}
 	
 	void testWrongAuth(int mode,String path,Object... uriVars) throws Exception
@@ -180,11 +202,11 @@ public class DietControllerTest {
 	void testWrongAuthority() throws Exception
 	{
 		// Authority is not trainer
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}",testTrainerUsername,testClientId,testTrainingId,testDietId);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId);
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}",testTrainerUsername,CLIENT1_ID,TRAINING1_ID,DIET1_ID);
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,CLIENT1_ID,TRAINING1_ID);
+		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,CLIENT1_ID,TRAINING1_ID);
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,CLIENT1_ID,TRAINING1_ID,DIET1_ID);
+		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,CLIENT1_ID,TRAINING1_ID,DIET1_ID);
 	}
 	
 	@WithMockUser(username="trainer1", authorities= {"trainer"})
@@ -192,10 +214,10 @@ public class DietControllerTest {
 	void testTrainerWrongClients() throws Exception
 	{
 		// Wrong client id
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId_t2,testTrainingId);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId_t2,testTrainingId);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId_t2,testTrainingId,testDietId);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId_t2,testTrainingId,testDietId);
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,CLIENT1_ID_t2,TRAINING1_ID);
+		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,CLIENT1_ID_t2,TRAINING1_ID);
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,CLIENT1_ID_t2,TRAINING1_ID,DIET1_ID);
+		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,CLIENT1_ID_t2,TRAINING1_ID,DIET1_ID);
 	}
 	
 	@WithMockUser(username="trainer2", authorities= {"trainer"})
@@ -204,12 +226,12 @@ public class DietControllerTest {
 	{
 		// Wrong trainer
 		// testWrongAuth(0,"/trainer/{trainerUsername}/routines",testTrainerUsername);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}",testTrainerUsername,testClientId,testTrainingId,testDietId);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId);
-		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId);
-		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId);
-		// testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/delete",testTrainerUsername,testClientId,testTrainingId,testDietId);
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}",testTrainerUsername,CLIENT1_ID,TRAINING1_ID,DIET1_ID);
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,CLIENT1_ID,TRAINING1_ID);
+		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,CLIENT1_ID,TRAINING1_ID);
+		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,CLIENT1_ID,TRAINING1_ID,DIET1_ID);
+		testWrongAuth(1,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,CLIENT1_ID,TRAINING1_ID,DIET1_ID);
+		// testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/delete",testTrainerUsername,CLIENT1_ID,TRAINING1_ID,DIET1_ID);
 	}
 	
 
@@ -217,7 +239,7 @@ public class DietControllerTest {
 	@Test
 	void testGetDietDetails() throws Exception
 	{
-		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}",testTrainerUsername,testClientId,testTrainingId,testDietId))
+		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}",testTrainerUsername,CLIENT1_ID,TRAINING1_ID,DIET1_ID))
 			.andExpect(status().isOk())
 			.andExpect(view().name("trainer/diets/dietsDetails"))
 			.andDo(print());
@@ -227,7 +249,7 @@ public class DietControllerTest {
 	@Test
 	void testInitCreateDietForm() throws Exception
 	{
-		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId))
+		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,CLIENT1_ID,TRAINING1_ID))
 		.andExpect(status().isOk())
 		.andExpect(view().name("trainer/diets/dietsCreateOrUpdate"))
 		.andExpect(model().attributeExists("diet"));
@@ -245,7 +267,7 @@ public class DietControllerTest {
 		diet.setProtein(10);
 		diet.setFat(10);
 		
-		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId)
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,CLIENT1_ID,TRAINING1_ID)
 			.with(csrf())
 			.param("name", diet.getName())
 			.param("description", diet.getDescription())
@@ -267,7 +289,7 @@ public class DietControllerTest {
 		diet.setDescription(description);
 		diet.setType(dietType);
 		
-		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,testClientId,testTrainingId)
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/create",testTrainerUsername,CLIENT1_ID,TRAINING1_ID)
 			.with(csrf())
 			.param("name", diet.getName())
 			.param("description", diet.getDescription())
@@ -281,7 +303,7 @@ public class DietControllerTest {
 	@Test
 	void testInitUpdateDietForm() throws Exception
 	{
-		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId))
+		mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,CLIENT1_ID,TRAINING1_ID,DIET1_ID))
 		.andExpect(status().isOk())
 		.andExpect(view().name("trainer/diets/dietsCreateOrUpdate"))
 		.andExpect(model().attributeExists("diet"));
@@ -301,7 +323,7 @@ public class DietControllerTest {
 		d.setProtein(protein);
 		d.setFat(fat);
 		
-		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId)
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,CLIENT1_ID,TRAINING1_ID,DIET1_ID)
 			.with(csrf())
 			.param("name", d.getName())
 			.param("description", d.getDescription())
@@ -312,7 +334,7 @@ public class DietControllerTest {
 			.param("fat",d.getFat().toString()))
 
 		.andExpect(status().is3xxRedirection())
-		.andExpect(view().name("redirect:/trainer/" + testTrainerUsername + "/clients/" + testClientId + "/trainings/" + testTrainingId + "/diets/" + testDietId));
+		.andExpect(view().name("redirect:/trainer/" + testTrainerUsername + "/clients/" + CLIENT1_ID + "/trainings/" + TRAINING1_ID + "/diets/" + DIET1_ID));
 	}
 
 	void testProcessWrongUpdateDietForm(String name, String description, DietType dietType, 
@@ -329,7 +351,7 @@ public class DietControllerTest {
 		d.setProtein(protein);
 		d.setFat(fat);
 		
-		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,testClientId,testTrainingId,testDietId)
+		mockMvc.perform(post("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}/diets/{dietId}/edit",testTrainerUsername,CLIENT1_ID,TRAINING1_ID,DIET1_ID)
 			.with(csrf())
 			.param("name", d.getName())
 			.param("description", d.getDescription())
@@ -367,13 +389,13 @@ public class DietControllerTest {
 	void testProcessWrongtUpdateDietForm() throws Exception{
 		testProcessWrongUpdateDietForm("diet1", "description 1", DietType.DEFINITION, -10,-10,-10,-10);
 	}
-	// FOODS
+	//FOODS
 	@WithMockUser(username="client1", authorities= {"client"})
 	@Test
 	void testShowFoods() throws Exception
 	{
 		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods",
-		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID))
+		CLIENT1_USERNAME,TRAINING1_ID,DIET1_ID))
 			.andExpect(status().isOk())
 			// .andExpect(view().name("client/foods/foodsOnDiet"))
 			.andDo(print());
@@ -385,10 +407,10 @@ public class DietControllerTest {
 	{
 
 		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/addFood",
-		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID,1))
+		CLIENT1_USERNAME,TRAINING1_ID,DIET1_ID,4))
 			.andExpect(status().is3xxRedirection())
 			.andExpect(view().name(
-				"redirect:/client/"+CLIENT1_USERNAME+"/trainings/"+TRAINING9_ID+"/diets/"+DIET5_ID));
+				"redirect:/client/"+CLIENT1_USERNAME+"/trainings/"+TRAINING1_ID+"/diets/"+DIET1_ID));
 	}
 
 	@WithMockUser(username="client1", authorities= {"client"})
@@ -397,8 +419,8 @@ public class DietControllerTest {
 	{
 
 		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods/delete",
-		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID))
-			.andExpect(status().isOk())
+		CLIENT1_USERNAME,TRAINING1_ID,DIET1_ID))
+			.andExpect(status().is3xxRedirection())
 			.andExpect(view().name(
 				"redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods"))
 				.andDo(print());
@@ -409,12 +431,12 @@ public class DietControllerTest {
 	void testDeleteFood() throws Exception
 	{
 
-		mockMvc.perform(get(" ",
-		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID,1))
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/deleteFood",
+		CLIENT1_USERNAME,TRAINING1_ID,DIET1_ID,1))
 			.andExpect(status().isOk())
 			.andExpect(view().name(
 				"redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods"))
 				.andDo(print());
-	}
+	} 
 
 }

@@ -200,7 +200,7 @@ public class DietControllerE2ETest {
 		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods",
 		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID))
 			.andExpect(status().isOk())
-			// .andExpect(view().name("client/foods/foodsOnDiet"))
+			.andExpect(view().name("client/foods/foodsOnDiet"))
 			.andDo(print());
 	}
 
