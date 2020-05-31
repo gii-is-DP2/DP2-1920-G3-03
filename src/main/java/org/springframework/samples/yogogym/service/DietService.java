@@ -103,7 +103,7 @@ public class DietService {
 
 	@Transactional(readOnly=true)
 	public Diet findDietById(Integer dietId) throws DataAccessException {
-		return this.dietRepository.findById(dietId).get();	
+		return this.dietRepository.findDietById(dietId);	
 
 	}
 }

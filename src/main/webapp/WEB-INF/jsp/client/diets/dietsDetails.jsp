@@ -16,6 +16,7 @@
 	        	<th>Height</th>
 	            <th>Age</th>
 	            <th>Fat percentage</th>
+	            
 	        </tr>
 	        </thead>
 			<tr>
@@ -23,6 +24,7 @@
 				<td><c:out value="${client.height}"/></td>	
 				<td><c:out value="${client.age}"/></td>	
 				<td><c:out value="${client.fatPercentage}"/></td>	
+				
 			</tr>	
 		</table>
 
@@ -38,7 +40,9 @@
 	            <th>Proteins</th>
 				<th>Carbs</th>
 	            <th>Fats</th>
+	            <th>Foods</th>
 				<th>Edit</th>
+				<th>Add Food</th>
 	        </tr>
 	        </thead>
 			<tr>
@@ -50,6 +54,8 @@
 		            <td><c:out value="${diet.protein}"/></td>
 					<td><c:out value="${diet.carb}"/></td>
 		            <td><c:out value="${diet.fat}"/></td>
+		            <spring:url value="/client/${clientUsername}/trainings/${training.id}/diets/${diet.id}/showFoods" var="showFoods" />
+		            <td> <a href="${fn:escapeXml(showFoods)}">Show Foods Added</a>	</td>	
 					
 					<c:choose>
 						<c:when test="${training.endDate < actualDate}">	
@@ -58,6 +64,8 @@
 						<c:otherwise>
 							<spring:url value="/client/${clientUsername}/trainings/${training.id}/diets/create" var="dietAddUrl" />
 							<td> <a href="${fn:escapeXml(dietAddUrl)}">Edit</a>	</td>	
+								<spring:url value="/client/${clientUsername}/trainings/${training.id}/diets/${diet.id}/foods" var="dietAddFood" />	
+							<td> <a href="${fn:escapeXml(dietAddFood)}">Add Food</a></td>	
 						</c:otherwise>
 					</c:choose>
 			</tr>	

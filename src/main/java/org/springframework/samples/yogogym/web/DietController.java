@@ -3,11 +3,13 @@ package org.springframework.samples.yogogym.web;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Diet;
+import org.springframework.samples.yogogym.model.Food;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.DietType;
@@ -279,6 +281,18 @@ public class DietController {
 
 		return "client/diets/dietsDetails";
 	}
+	
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods")
+	public String showFoods(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") Integer trainingId, @PathVariable("dietId") Integer dietId, Model model) {
+	
+	Diet diet = this.dietService.findDietById(dietId);
+	Collection<Food> foods = diet.getFoods();
+	
+	model.addAttribute("diet", diet);
+	model.addAttribute("foods",foods);
+	
+	return "client/foods/foodsOnDiet";
+	}	
 	// SECURITY-PART
 
 	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		

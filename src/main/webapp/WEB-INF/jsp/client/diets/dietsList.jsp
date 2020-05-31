@@ -21,6 +21,7 @@
 				<th>Carbs</th>
 	            <th>Fats</th>
 				<th>Edit</th>
+				
 	        </tr>
 	        </thead>
 
@@ -49,7 +50,11 @@
 
 				</c:when>
 				<c:otherwise>
-				 	<td><c:out value="${training.diet.name}"/></td>
+				 	<td>
+					 <spring:url value="/client/${clientUsername}/trainings/${training.id}/diets/{dietId}" var="dietUrl">
+                        <spring:param name="dietId" value="${training.diet.id}"/>
+                    </spring:url>
+                    <a href="${fn:escapeXml(dietUrl)}"><c:out value="${training.diet.name}"/></a>
 		            <td><c:out value="${training.diet.description}"/></td>
 		            <td><c:out value="${training.diet.type}"/></td>
 		            <td><c:out value="${training.diet.kcal}"/></td>
@@ -62,7 +67,7 @@
 						</c:when>
 						<c:otherwise>
 						<spring:url value="/client/${clientUsername}/trainings/${training.id}/diets/create" var="dietAddUrl" />
-							<td> <a href="${fn:escapeXml(dietAddUrl)}">Add Diet</a>	</td>							
+							<td> <a href="${fn:escapeXml(dietAddUrl)}">Add Diet</a>	</td>	
 						</c:otherwise>
 					</c:choose>		
 
