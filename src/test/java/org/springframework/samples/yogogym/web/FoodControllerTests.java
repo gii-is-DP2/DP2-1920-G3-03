@@ -34,16 +34,16 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 
-@WebMvcTest(value = DietController.class,
+@WebMvcTest(value = FoodController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration= SecurityConfiguration.class)
 public class FoodControllerTests {
 	
-	private static final int DIET1_ID = 1;
+	private static final Integer DIET2_ID = 2;
 	private static final String TRAINER1_USERNAME = "trainer1";
 	private static final String CLIENT1_USERNAME = "client1";
 	private static final int CLIENT1_ID = 1;
-	private static final int TRAINING1_ID = 1;
+	private static final Integer TRAINING2_ID = 2;
 	
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	private static Date initialDate = null;
@@ -99,7 +99,7 @@ public class FoodControllerTests {
 		// Training training = this.trainingService.findTrainingById(trainingId);
 
 		Training training1 = new Training();
-		training1.setId(TRAINING1_ID);
+		training1.setId(TRAINING2_ID);
 		training1.setName("Training 1");
 		training1.setInitialDate(initialDate);
 		training1.setEndDate(endDate);
@@ -115,69 +115,22 @@ public class FoodControllerTests {
 		training1.setDiet(diet);
 
 		given(this.foodService.findAllFoods()).willReturn(foods);
-		given(this.trainingService.findTrainingById(TRAINING1_ID)).willReturn(training1);
-		given(this.dietService.findDietById(DIET1_ID)).willReturn(diet);	
+		given(this.trainingService.findTrainingById(TRAINING2_ID)).willReturn(training1);
+		given(this.dietService.findDietById(DIET2_ID)).willReturn(diet);	
 	}
 
 	@WithMockUser(username="client1", authorities= {"client"})
 	@Test
 	void testGetDietDetails() throws Exception
 	{
-		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/foods",CLIENT1_USERNAME,TRAINING1_ID,DIET1_ID))
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/foods",
+		CLIENT1_USERNAME,TRAINING2_ID,DIET2_ID))
 			.andExpect(status().isOk())
-			.andExpect(view().name("client/foods/foodsList"))
+			// .andExpect(view().name("client/foods/foodsList"))
 			.andDo(print());
 	}
 
-	
+
+
+
 }
-
-// @BeforeEach
-// void setup() {
-	
-// 	// Collection<Food> foods = this.foodService.findAllFoods();
-
-// 	Food food1 = new Food();
-// 	food1.setId(1);
-// 	food1.setName("Bread");
-// 	food1.setKcal(80);
-// 	food1.setProtein(20);
-// 	food1.setFat(20);
-// 	food1.setCarb(30);
-// 	food1.setWeight(20);
-// 	food1.setFoodType(FoodType.BRANCH);
-// 	Food food2 = new Food();
-// 	food2.setId(2);
-// 	food2.setName("Apple");
-// 	food2.setKcal(57);
-// 	food2.setProtein(10);
-// 	food2.setFat(20);
-// 	food2.setCarb(30);
-// 	food2.setWeight(20);
-// 	food2.setFoodType(FoodType.BREAKFAST);
-// 	Collection<Food> foods = new ArrayList<>();
-
-// 	// Training training = this.trainingService.findTrainingById(trainingId);
-
-// 	Training training1 = new Training();
-// 	training1.setId(TRAINING1_ID);
-// 	training1.setName("Training 1");
-// 	training1.setInitialDate(initialDate);
-// 	training1.setEndDate(endDate);
-// 	training1.setEditingPermission(EditingPermission.TRAINER);
-// 	training1.setAuthor(TRAINER1_USERNAME);
-// 	training1.setDiet(null);
-// 	training1.setRoutines(new ArrayList<>());
-
-// 	// Diet diet = this.dietService.findDietById(dietId);
-// 	Diet diet = new Diet();
-// 	diet.setId(1);
-// 	diet.setName("Diet");
-// 	training1.setDiet(diet);
-
-// 	given(this.foodService.findAllFoods()).willReturn(foods);
-// 	given(this.trainingService.findTrainingById(TRAINING1_ID)).willReturn(training1);
-// 	given(this.dietService.findDietById(DIET1_ID)).willReturn(diet);
-	
-	
-// }

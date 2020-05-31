@@ -18,7 +18,7 @@ public class FoodService {
 
 	
 	@Autowired
-	public FoodService(FoodRepository foodRepository, DietRepository dietRepository, DietService dietService) {
+	public FoodService(FoodRepository foodRepository) {
 		this.foodRepository = foodRepository;
 	
 	}

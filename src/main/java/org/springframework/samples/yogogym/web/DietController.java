@@ -48,7 +48,7 @@ public class DietController {
 
 	@Autowired
 	public DietController(final ClientService clientService, final TrainerService trainerService,
-			final DietService dietService,final TrainingService trainingService,FoodService foodService) {
+			final DietService dietService,final TrainingService trainingService, final FoodService foodService) {
 		this.clientService = clientService;
 		this.trainerService = trainerService;
 		this.dietService = dietService;

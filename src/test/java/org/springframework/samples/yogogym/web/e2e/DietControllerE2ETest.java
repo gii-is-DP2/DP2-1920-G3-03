@@ -32,19 +32,17 @@ import org.springframework.test.web.servlet.MockMvc;
 @Transactional
 public class DietControllerE2ETest {
 	
-	private static final int testDietId = 1;
-	
-	private static final String testTrainerUsername = "trainer1";
-
-	
+	private static final int testDietId = 1;	
+	private static final String testTrainerUsername = "trainer1";	
 	private static final int testClientId = 1;
-	
 	private static final int testClientId3 = 3;
-	
 	private static final int testTrainingId = 1;
-	
 	private static final int testTrainingIdActive = 9;
-	
+
+	private static final Integer DIET5_ID = 5;
+	private static final String CLIENT1_USERNAME = "client1";
+	private static final Integer TRAINING9_ID = 9;
+
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	Calendar testInitialTrainingDate = Calendar.getInstance();
 		
@@ -194,6 +192,55 @@ public class DietControllerE2ETest {
 		.andExpect(status().isOk())
 		.andExpect(view().name("trainer/diets/dietsCreateOrUpdate"));
 	}
+	//FOODS
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testShowFoods() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods",
+		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID))
+			.andExpect(status().isOk())
+			// .andExpect(view().name("client/foods/foodsOnDiet"))
+			.andDo(print());
+	}
+
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testAddFood() throws Exception
+	{
+
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/addFood",
+		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID,4))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(view().name(
+				"redirect:/client/"+CLIENT1_USERNAME+"/trainings/"+TRAINING9_ID+"/diets/"+DIET5_ID));
+	}
+
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testDeleteFoods() throws Exception
+	{
+
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods/delete",
+		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(view().name(
+				"redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods"))
+				.andDo(print());
+	}
+
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testDeleteFood() throws Exception
+	{
+
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/deleteFood",
+		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID,1))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(view().name(
+				"redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods"))
+				.andDo(print());
+	} 
 
 	//Derivated Methods
 	
