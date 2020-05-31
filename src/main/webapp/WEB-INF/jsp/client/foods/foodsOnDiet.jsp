@@ -18,6 +18,7 @@
 	            <th>Fats</th>
 				<th>Weight</th>
 				<th>Food Type</th>
+				<th></th>
 				
 	        </tr>
 	        </thead>
@@ -30,7 +31,19 @@
 				<td><c:out value="${foods.carb}"/></td>	
 				<td><c:out value="${foods.weight}"/></td>	
 				<td><c:out value="${foods.foodType}"/></td>	
+				
+				<td><spring:url value="/client/${clientUsername}/trainings/${trainingId}/diets/${diet.id}/food/${foods.id}/deleteFood"
+				var="deleteOneFood">
+				</spring:url>
+		<a href="${fn:escapeXml(deleteOneFood)}" class="btn btn-default">Delete this food</a>
+				
+				</td>
 			</tr>	
 		</c:forEach>
 		</table>
+		
+		<spring:url value="/client/${clientUsername}/trainings/${trainingId}/diets/${diet.id}/showFoods/delete"
+			var="deleteFood">
+		</spring:url>
+		<a href="${fn:escapeXml(deleteFood)}" class="btn btn-default">Delete All Foods</a>
   </yogogym:layout>

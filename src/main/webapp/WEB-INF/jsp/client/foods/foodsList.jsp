@@ -11,16 +11,27 @@
 			<thead>
 	        <tr>
 				<th>Name</th>
+				<th>Kcals</th>
+	            <th>Proteins</th>
+				<th>Carbs</th>
+	            <th>Fats</th>
+				<th>Weight</th>
 				<th>Food Type</th>
-				<th></th>
+				<th><th>
 	        </tr>
 	        </thead>
 
 	<c:forEach var="foods" items="${foods}">				
 		<tr>
-		<spring:url value="/client/${clientUsername}/trainings/${training.id}/diets/${diet.id}/food/${foods.id}" var="foodAddUrl" />
-			<td> <a href="${fn:escapeXml(foodAddUrl)}"><c:out value="${foods.name}"/></a></td>	
-			<td><c:out value="${foods.foodType}"/></td>
+			<td> <c:out value="${foods.name}"/></td>	
+			<td><c:out value="${foods.kcal}"/></td>	
+				<td><c:out value="${foods.protein}"/></td>	
+				<td><c:out value="${foods.fat}"/></td>	
+				<td><c:out value="${foods.carb}"/></td>	
+				<td><c:out value="${foods.weight}"/></td>	
+				<td><c:out value="${foods.foodType}"/></td>	
+			<td><spring:url value="/client/${clientUsername}/trainings/${training.id}/diets/${diet.id}/food/${foods.id}/addFood" var="addFood" />
+				<td> <a href="${fn:escapeXml(addFood)}">Add Food to your diet</a></td></td>
 			
 		</tr>	 	
 	</c:forEach>

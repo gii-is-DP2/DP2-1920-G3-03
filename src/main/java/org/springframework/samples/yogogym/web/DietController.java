@@ -17,7 +17,7 @@ import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DietService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
-
+import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -287,12 +287,37 @@ public class DietController {
 	
 	Diet diet = this.dietService.findDietById(dietId);
 	Collection<Food> foods = diet.getFoods();
+
 	
 	model.addAttribute("diet", diet);
 	model.addAttribute("foods",foods);
 	
 	return "client/foods/foodsOnDiet";
 	}	
+	
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods/delete")
+	public String deleteFoods(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") Integer trainingId, @PathVariable("dietId") Integer dietId, Model model) {
+	
+		Diet diet = this.dietService.findDietById(dietId);
+		diet.setFoods(null);
+		try {
+			this.dietService.saveDiet(diet, trainingId);
+		} catch (TrainingFinished e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods"; 
+	
+	}	
+	
+	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/deleteFood")
+	public String deleteFood(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") Integer trainingId, @PathVariable("dietId") Integer dietId,@PathVariable("foodId") Integer foodId, Model model) {
+		
+		this.dietService.deleteFood(dietId, foodId);
+		
+		return "redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods";
+	}
+	
 	// SECURITY-PART
 
 	private Boolean isClientOfLoggedTrainer(final int clientId, final String trainerUsername) {		

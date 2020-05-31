@@ -43,10 +43,5 @@ public class FoodService {
 	}
 	
 	
-	public void deleteAllFoodFromDiet(Integer dietId) throws DataAccessException {
-		Diet diet = this.dietService.findDietById(dietId);
-		diet.setFoods(null);
-		this.dietRepository.save(diet);
-	}
 	
 }

@@ -48,25 +48,14 @@ public class FoodController {
 		
 	}
 	
-	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}")
-	public String foodDetails(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") Integer trainingId, @PathVariable("dietId") Integer dietId,@PathVariable("foodId") Integer foodId, Model model) {
-		Food food = this.foodService.findFoodById(foodId);
-		Training training = this.trainingService.findTrainingById(trainingId);
-		Diet diet = this.dietService.findDietById(dietId);
-	
-		model.addAttribute("training",training);
-		model.addAttribute("diet",diet);
-		model.addAttribute("food",food);
-	
-		return "client/foods/foodDetails";
-	}
-	
 	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/addFood")
 	public String addFood(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") Integer trainingId, @PathVariable("dietId") Integer dietId,@PathVariable("foodId") Integer foodId, Model model) {
 		
 		Diet d = this.dietService.findDietById(dietId);
 		Food f = this.foodService.findFoodById(foodId);
-		d.getFoods().add(f);
+		if(!d.getFoods().contains(f))
+			d.getFoods().add(f);
+		
 		try {
 			this.dietService.saveDiet(d, trainingId);
 		} catch (TrainingFinished e) {
@@ -76,5 +65,6 @@ public class FoodController {
 		
 		return "redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}";
 	}
+		
 		
 }
