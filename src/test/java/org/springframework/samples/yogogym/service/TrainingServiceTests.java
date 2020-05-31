@@ -66,6 +66,7 @@ public class TrainingServiceTests {
 	@BeforeAll
 	public static void setup() {
 		NOW.set(Calendar.HOUR, 0);
+		NOW.add(Calendar.HOUR, -12);
 		NOW.set(Calendar.MINUTE, 0);
 		NOW.set(Calendar.SECOND, 0);
 		NOW.set(Calendar.MILLISECOND, 0);
@@ -255,7 +256,7 @@ public class TrainingServiceTests {
 	}
 	
 	@ParameterizedTest
-	@ValueSource(ints = {14,15,19,20})
+	@ValueSource(ints = {14,15,19,21})
 	@Transactional
 	public void shouldNotInsertTrainingDueToInitInTraining(int addInitialDate) throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
 		
@@ -276,7 +277,7 @@ public class TrainingServiceTests {
 	}
 	
 	@ParameterizedTest
-	@ValueSource(ints = {14,15,19,20})
+	@ValueSource(ints = {14,15,19,21})
 	@Transactional
 	public void shouldNotInsertTrainingDueToEndInTraining(int addEndDate) throws DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException{
 		
@@ -393,7 +394,7 @@ public class TrainingServiceTests {
 	}
 	
 	@ParameterizedTest
-	@ValueSource(ints = {14,15,19,20})
+	@ValueSource(ints = {14,15,19,21})
 	@Transactional
 	public void shouldNotUpdateTrainingDueToEndInTraining(int addEndDate) throws  DataAccessException, PastInitException, EndBeforeEqualsInitException, InitInTrainingException, EndInTrainingException, PeriodIncludingTrainingException, PastEndException, LongerThan90DaysException {
 		
