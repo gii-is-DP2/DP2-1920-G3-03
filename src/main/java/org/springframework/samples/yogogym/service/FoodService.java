@@ -14,6 +14,7 @@ import org.springframework.samples.yogogym.model.Guild;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.DietRepository;
 import org.springframework.samples.yogogym.repository.FoodRepository;
+import org.springframework.samples.yogogym.service.exceptions.FoodDuplicatedException;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,14 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class FoodService {
 
 	private FoodRepository foodRepository;
-	private DietRepository dietRepository;
-	private DietService dietService;
+
 	
 	@Autowired
 	public FoodService(FoodRepository foodRepository, DietRepository dietRepository, DietService dietService) {
 		this.foodRepository = foodRepository;
-		this.dietRepository = dietRepository;
-		this.dietService = dietService;
+	
 	}
 	
 	@Transactional(readOnly=true)

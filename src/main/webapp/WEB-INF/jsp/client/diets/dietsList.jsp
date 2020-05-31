@@ -8,7 +8,13 @@
 <yogogym:layout pageName="diets">
 
     <h2>Client's diets</h2>
-		
+	<c:if test="${foodDuplicated != null}">
+			<div class="text-center alert alert-danger" role="alert">
+				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		  		<span class="sr-only">Error:</span>
+	   			${foodDuplicated}
+	   		</div>
+	</c:if>
 		<table class="table table-striped">
 			<thead>
 	        <tr>
