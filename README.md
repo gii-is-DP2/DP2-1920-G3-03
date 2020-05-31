@@ -97,17 +97,6 @@ Como administrador quiero poder gestionar los datos del gimnasio, así como el n
 
 ---
 
-#### HU7 - Gestión Entrenadores
-
-Como administrador quiero ser capaz de gestionar mis empleados, los cuales son los monitores y los entrenadores, para llevar un control del personal contratado.
-
-#### Escenarios
-
-* **Suficientes datos que mostrar:** Si el sistema posee entrenadores y monitores se le mostraran los distintos datos que posea cada uno, como por ejemplo el nombre, apellidos, dni, correo electrónico, número de teléfono, así como la información de sus contratos.
-* **Sin datos para mostrar:** Si el sistema no posee monitores o entrenadores inscritos, los valores serán nulos o con valor 0.
-
----
-
 ### Entrenador
 
 ---
@@ -301,6 +290,19 @@ Como cliente quiero poder crear gremios, para que en un futuro puedan inscribirs
 
 ---
 
+#### HU7 - Gestionar alimentos de mis dietas
+
+Como cliente quiero ser capaz de gestionar los alimentos de mis dietas, es decir, poder añadir y eliminar aquellos alimentos que deseo que estén en mi dieta.
+
+#### Escenarios
+
+* **Añadir alimento:** Dado un cliente, entrará en aquella dieta que desee editar, acto seguido pulsará el bóton de "ver todas los alimentos", seleccionará el que más le guste y pulsará "añadir a mi dieta", añadiendose a la dieta correctamente.
+* **Añadir alimento repetido:** Dado un cliente, entrará en aquella dieta que desee editar, acto seguido pulsará el bóton de "ver todas los alimentos", seleccionará el que más le guste y pulsará "añadir a mi dieta", si dicha dieta ya posee ese alimento, nos saltará un mensaje de error avisandonos y no se realizará dicha acción.
+* **Eliminar alimento:** Dado un cliente, entrará en aquella dieta que desee editar, acto seguido pulsará el bóton de "ver alimentos asociados a mi dieta", seleccionará aquel alimento que desee eliminar y pulsará "eliminar alimento", eliminandose de la dieta correctamente.
+* **Eliminar todos los alimentos de una dieta:** Dado un cliente, entrará en aquella dieta que desee editar, acto seguido pulsará el bóton de "ver alimentos asociados a mi dieta", pulsará "eliminar todos los alimentos de la dieta", y acto seguido se eliminarán todos los alimento de la dieta.
+
+---
+
 #### HU14 - Apuntarme y salirme de gremios
 
 Como cliente quiero poder unirme a gremios para poder formar parte de una comunidad y participar para poder recibir premios, y poder salirme de aquel gremio al que me haya unido.
@@ -438,7 +440,7 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | ------------------- | ------ | --------------- | ------------ |
 | HU1                 | 1      | P3              | Finalizada   |
 | HU3                 | 1      | P3              | Finalizada   |
-| HU4                 | 1      | P2              | Sin Comenzar |
+| HU4                 | 1      | P2              | Finalizada   |
 | HU5                 | 1      | P2              | Finalizada   |
 | HU8                 | 1      | P1              | Finalizada   |
 | HU9                 | 1      | P1              | Finalizada   |
@@ -453,11 +455,12 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | HU22                | 1      | P3              | Finalizada   |
 | HU24                | 1      | P1              | Finalizada   |
 | HU25                | 1      | P1              | Finalizada   |
-| HU2                 | 2      | P3              | Sin Comenzar |
-| HU6                 | 2      | P2              | Sin Comenzar |
-| HU16                | 2      | P3              | Sin Comenzar |
-| HU17                | 2      | P2              | Sin Comenzar |
-| HU19                | 2      | P1              | Sin Comenzar |
-| HU7                 | 3      | P3              | Sin Comenzar |
-| HU20                | 3      | P2              | Sin Comenzar |
-| HU23                | 3      | P1              | Sin Comenzar |
+| HU2                 | 2      | P3              | Finalizada   |
+| HU6                 | 2      | P2              | Finalizada   |
+| HU16                | 2      | P3              | Finalizada   |
+| HU17                | 2      | P2              | Finalizada   |
+| HU19                | 2      | P1              | Finalizada   |
+| HU7                 | 3      | P3              | Finalizada   |
+| HU20                | 3      | P2              | Finalizada   |
+| HU23                | 3      | P1              | En Curso     |
+| HU7                 | 3      | P2              | Finalizada   |
