@@ -285,6 +285,19 @@ Como cliente quiero poder crear gremios, para que en un futuro puedan inscribirs
 
 ---
 
+#### HU7 - Gestionar alimentos de mis dietas
+
+Como cliente quiero ser capaz de gestionar los alimentos de mis dietas, es decir, poder añadir y eliminar aquellos alimentos que deseo que estén en mi dieta.
+
+#### Escenarios
+
+* **Añadir alimento:** Dado un cliente, entrará en aquella dieta que desee editar, acto seguido pulsará el bóton de "ver todas los alimentos", seleccionará el que más le guste y pulsará "añadir a mi dieta", añadiendose a la dieta correctamente.
+* **Añadir alimento repetido:** Dado un cliente, entrará en aquella dieta que desee editar, acto seguido pulsará el bóton de "ver todas los alimentos", seleccionará el que más le guste y pulsará "añadir a mi dieta", si dicha dieta ya posee ese alimento, nos saltará un mensaje de error avisandonos y no se realizará dicha acción.
+* **Eliminar alimento:** Dado un cliente, entrará en aquella dieta que desee editar, acto seguido pulsará el bóton de "ver alimentos asociados a mi dieta", seleccionará aquel alimento que desee eliminar y pulsará "eliminar alimento", eliminandose de la dieta correctamente.
+* **Eliminar todos los alimentos de una dieta:** Dado un cliente, entrará en aquella dieta que desee editar, acto seguido pulsará el bóton de "ver alimentos asociados a mi dieta", pulsará "eliminar todos los alimentos de la dieta", y acto seguido se eliminarán todos los alimento de la dieta.
+
+---
+
 #### HU14 - Apuntarme y salirme de gremios
 
 Como cliente quiero poder unirme a gremios para poder formar parte de una comunidad y participar para poder recibir premios, y poder salirme de aquel gremio al que me haya unido.
@@ -447,3 +460,5 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | HU19                | 2      | P1              | Finalizada   |
 | HU20                | 3      | P1              | Finalizada   |
 | HU23                | 3      | P2              | Finalizada   |
+| HU7                 | 3      | P2              | Finalizada   |
+
