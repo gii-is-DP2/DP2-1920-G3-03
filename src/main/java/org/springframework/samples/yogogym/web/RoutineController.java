@@ -187,8 +187,8 @@ public class RoutineController {
 
 			try {
 				this.routineService.saveRoutine(routine, trainerUsername, trainingId);
-				this.trainingService.saveTraining(training, client);
 				training.getRoutines().add(routine);
+				this.trainingService.saveTraining(training, client);
 			} catch (MaxRoutinesException e) {
 				String error = "You cannot create more than 10 routines";
 				redirectAttrs.addFlashAttribute("error", error);
