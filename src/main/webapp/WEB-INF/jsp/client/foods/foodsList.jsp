@@ -7,6 +7,18 @@
 
 <yogogym:layout pageName="foodsPage">
   <h2>All Foods</h2>
+ 
+  	<div style="margin:0 auto; width:70%; margin-bottom: 15px;">
+		<c:if test="${foodDuplicated != null}">
+			<div class="text-center alert alert-danger" role="alert">
+				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		  		<span class="sr-only">Error:</span>
+	   			${foodDuplicated}
+	   		</div>
+		</c:if>
+		
+	</div>
+
   <table class="table table-striped">
 			<thead>
 	        <tr>

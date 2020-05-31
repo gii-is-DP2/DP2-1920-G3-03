@@ -15,6 +15,7 @@ import org.springframework.samples.yogogym.model.Enums.DietType;
 import org.springframework.samples.yogogym.model.Enums.Intensity;
 import org.springframework.samples.yogogym.repository.DietRepository;
 import org.springframework.samples.yogogym.repository.FoodRepository;
+import org.springframework.samples.yogogym.service.exceptions.FoodDuplicatedException;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,6 +53,24 @@ public class DietService {
 		
 	}
 	
+	@Transactional
+	public void addFood(int dietId, int trainingId, Food f) throws TrainingFinished, FoodDuplicatedException{
+		
+		Training training = this.trainingService.findTrainingById(trainingId);
+		Diet diet = this.dietRepository.findDietById(dietId);
+		
+		Calendar cal = Calendar.getInstance();
+		Date actualDate = cal.getTime();
+		if(diet.getFoods().contains(f))
+			throw new FoodDuplicatedException();
+		if(training.getEndDate().before(actualDate)) 
+			throw new TrainingFinished();
+		else 
+			diet.getFoods().add(f);
+			
+		
+	}
+	
 	@Transactional(readOnly=true)
 	public Diet findDietById(Integer dietId) throws DataAccessException {
 		return this.dietRepository.findDietById(dietId);	
@@ -63,7 +82,7 @@ public class DietService {
 		return Lists.newArrayList(this.dietRepository.findAll());		
 
 	}
-	
+
 	public void deleteAllFoodFromDiet(Integer dietId) throws DataAccessException {
 		Diet diet = this.dietRepository.findDietById(dietId);
 		diet.setFoods(null);
