@@ -32,6 +32,7 @@ import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.User;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DietService;
+import org.springframework.samples.yogogym.service.FoodService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
@@ -44,14 +45,15 @@ excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes
 excludeAutoConfiguration= SecurityConfiguration.class)
 public class DietControllerTest {
 	
-	private static final int testDietId = 1;
-	
-	private static final String testTrainerUsername = "trainer1";
-	
+	private static final int testDietId = 1;	
+	private static final String testTrainerUsername = "trainer1";	
 	private static final int testClientId = 1;
-	
 	private static final int testTrainingId = 1;
 	
+	private static final Integer DIET5_ID = 5;
+	private static final String CLIENT1_USERNAME = "client1";
+	private static final Integer TRAINING9_ID = 9;
+
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	Calendar testInitialTrainingDate = Calendar.getInstance();
 		
@@ -72,6 +74,9 @@ public class DietControllerTest {
 	@MockBean
 	private TrainingService trainingService;
 	
+	@MockBean
+	private FoodService foodService;
+
 	@Autowired
 	private MockMvc mockMvc;
 		
@@ -362,4 +367,54 @@ public class DietControllerTest {
 	void testProcessWrongtUpdateDietForm() throws Exception{
 		testProcessWrongUpdateDietForm("diet1", "description 1", DietType.DEFINITION, -10,-10,-10,-10);
 	}
+	// FOODS
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testShowFoods() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods",
+		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID))
+			.andExpect(status().isOk())
+			.andExpect(view().name("client/foods/foodsOnDiet"))
+			.andDo(print());
+	}
+
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testAddFood() throws Exception
+	{
+
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/addFood",
+		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID,1))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(view().name(
+				"redirect:/client/"+CLIENT1_USERNAME+"/trainings/"+TRAINING9_ID+"/diets/"+DIET5_ID));
+	}
+
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testDeleteFoods() throws Exception
+	{
+
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods/delete",
+		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID))
+			.andExpect(status().isOk())
+			.andExpect(view().name(
+				"redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods"))
+				.andDo(print());
+	}
+
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testDeleteFood() throws Exception
+	{
+
+		mockMvc.perform(get(" ",
+		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID,1))
+			.andExpect(status().isOk())
+			.andExpect(view().name(
+				"redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods"))
+				.andDo(print());
+	}
+
 }
