@@ -214,6 +214,11 @@ public class DietController {
 	@GetMapping("/client/{clientUsername}/diets")
 	public String getClientDietList(@PathVariable("clientUsername") String clientUsername, Model model) {
 		
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername, false, this.clientService, null);
+
+		if (Boolean.FALSE.equals(isLogged))
+			return EXCEPTION;
+		
 		Calendar now = Calendar.getInstance();
 		Date date = now.getTime();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");		
@@ -232,7 +237,11 @@ public class DietController {
 	public String initDietCreateFormAsClient( @PathVariable("clientUsername") String clientUsername,
 			@PathVariable("trainingId") int trainingId, Model model) {
 
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername, false, this.clientService, null);
 
+		if (Boolean.FALSE.equals(isLogged))
+			return EXCEPTION;
+		
 		Diet diet = new Diet();
 		diet.setType(this.dietService.selectDietType(trainingId));
 		Client client = this.clientService.findClientByUsername(clientUsername);
@@ -249,6 +258,11 @@ public class DietController {
 	@PostMapping("/client/{clientUsername}/trainings/{trainingId}/diets/create")
 	public String processDietCreateFormAsClient(@Valid Diet diet, BindingResult result, @PathVariable("clientUsername") String clientUsername,
 			@PathVariable("trainingId") int trainingId, Model model) {
+		
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername, false, this.clientService, null);
+
+		if (Boolean.FALSE.equals(isLogged))
+			return EXCEPTION;
 		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 
@@ -279,7 +293,11 @@ public class DietController {
 	public String getDietDetailsAsClient(@PathVariable("clientUsername") String clientUsername,
 			 @PathVariable("dietId") int dietId, @PathVariable("trainingId") int trainingId, Model model) {
 
-			
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername, false, this.clientService, null);
+
+		if (Boolean.FALSE.equals(isLogged))
+			return EXCEPTION;
+		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		Diet diet = this.dietService.findDietById(dietId);
 		Training training = this.trainingService.findTrainingById(trainingId);
@@ -311,6 +329,11 @@ public class DietController {
 	
 	@GetMapping("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/addFood")
 	public String addFood(@PathVariable("clientUsername") String clientUsername, @PathVariable("trainingId") Integer trainingId, @PathVariable("dietId") Integer dietId,@PathVariable("foodId") Integer foodId, Model model,RedirectAttributes redirectAttrs) {
+		
+		Boolean isLogged = SecurityUtils.isLoggedUser(clientUsername, false, this.clientService, null);
+
+		if (Boolean.FALSE.equals(isLogged))
+			return EXCEPTION;
 		
 		Food f = this.foodService.findFoodById(foodId);
 		

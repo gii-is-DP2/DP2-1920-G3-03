@@ -41,6 +41,7 @@ public class DietControllerE2ETest {
 
 	private static final Integer DIET5_ID = 5;
 	private static final String CLIENT1_USERNAME = "client1";
+	private static final String CLIENT2_USERNAME = "client2";
 	private static final Integer TRAINING9_ID = 9;
 
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -75,6 +76,16 @@ public class DietControllerE2ETest {
 	{
 		// Wrong client id
 		testWrongAuth(0,"/trainer/{trainerUsername}/clients/{clientId}",testTrainerUsername,testClientId3);
+
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testWrongClients() throws Exception
+	{
+	
+		// Wrong client USERNAME
+		testWrongAuth(0,"/client/{clientUsername}/diets",CLIENT2_USERNAME);
 
 	}
 
@@ -192,7 +203,8 @@ public class DietControllerE2ETest {
 		.andExpect(status().isOk())
 		.andExpect(view().name("trainer/diets/dietsCreateOrUpdate"));
 	}
-	//FOODS
+	
+	//FOODS TESTS
 	@WithMockUser(username="client1", authorities= {"client"})
 	@Test
 	void testShowFoods() throws Exception
@@ -214,6 +226,17 @@ public class DietControllerE2ETest {
 			.andExpect(status().is3xxRedirection())
 			.andExpect(view().name(
 				"redirect:/client/"+CLIENT1_USERNAME+"/trainings/"+TRAINING9_ID+"/diets/"+DIET5_ID));
+	}
+	
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testAddFoodOnDietAlready() throws Exception
+	{
+
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/food/{foodId}/addFood",
+		CLIENT1_USERNAME,TRAINING9_ID,DIET5_ID,1))
+			.andExpect(view().name(
+				"redirect:/client/"+CLIENT1_USERNAME+"/trainings/"+TRAINING9_ID+"/diets/"+DIET5_ID+"/foods"));
 	}
 
 	@WithMockUser(username="client1", authorities= {"client"})

@@ -26,8 +26,6 @@ public class FoodController {
 	private DietService dietService;
 	private ClientService clientService;
 
-
-
 	@Autowired
 	public FoodController(FoodService foodService, TrainingService trainingService, DietService dietService,ClientService clientService) {
 		this.foodService = foodService;
