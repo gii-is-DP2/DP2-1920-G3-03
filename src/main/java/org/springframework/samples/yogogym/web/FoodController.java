@@ -1,10 +1,8 @@
 package org.springframework.samples.yogogym.web;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Diet;
 import org.springframework.samples.yogogym.model.Food;
 import org.springframework.samples.yogogym.model.Training;
@@ -12,12 +10,9 @@ import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.DietService;
 import org.springframework.samples.yogogym.service.FoodService;
 import org.springframework.samples.yogogym.service.TrainingService;
-import org.springframework.samples.yogogym.service.exceptions.FoodDuplicatedException;
-import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.samples.yogogym.util.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 

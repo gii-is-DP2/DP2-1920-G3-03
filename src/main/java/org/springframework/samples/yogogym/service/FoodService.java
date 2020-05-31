@@ -1,21 +1,13 @@
 package org.springframework.samples.yogogym.service;
 
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.samples.yogogym.model.Diet;
 import org.springframework.samples.yogogym.model.Food;
-import org.springframework.samples.yogogym.model.Guild;
-import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.repository.DietRepository;
 import org.springframework.samples.yogogym.repository.FoodRepository;
-import org.springframework.samples.yogogym.service.exceptions.FoodDuplicatedException;
-import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

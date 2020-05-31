@@ -1,26 +1,11 @@
 package org.springframework.samples.yogogym.web.integration;
 
-import static io.restassured.RestAssured.when;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.samples.yogogym.model.TokenMapper;
 import org.springframework.samples.yogogym.web.PlaylistController;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
-import lombok.extern.java.Log;
-
-
-
-import org.junit.jupiter.api.Test;
 
 import lombok.extern.java.Log;
 

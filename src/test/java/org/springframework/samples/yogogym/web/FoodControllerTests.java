@@ -2,7 +2,9 @@ package org.springframework.samples.yogogym.web;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,23 +33,32 @@ import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(value = TrainingController.class,
+
+@WebMvcTest(value = DietController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration= SecurityConfiguration.class)
-class FoodControllerTests {
-	
-	private static final String TRAINER1_USERNAME = "trainer1";
-	private static final String CLIENT1_USERNAME = "client1";
+public class FoodControllerTests {
 	
 	private static final int DIET1_ID = 1;
+	private static final String TRAINER1_USERNAME = "trainer1";
+	private static final String CLIENT1_USERNAME = "client1";
+	private static final int CLIENT1_ID = 1;
 	private static final int TRAINING1_ID = 1;
-
+	
+	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	private static Date initialDate = null;
-	private static Date endDate = null;
+	private static Date endDate = null;	
+	//Trainer 2
+	private static final String testTrainerUsername_t2 = "trainer2";
+	
+	private static final int testClientId_t2 = 2;
+	
+	@MockBean
+	private DietService dietService;
 	
 	@MockBean
 	private ClientService clientService;
-	
+
 	@MockBean
 	private TrainerService trainerService;
 	
@@ -57,14 +68,11 @@ class FoodControllerTests {
 	@MockBean
 	private FoodService foodService;
 
-	@MockBean
-	private DietService dietService;
-
 	@Autowired
 	private MockMvc mockMvc;
 		
 	@BeforeEach
-	void setup() {
+		void setup() {
 		
 		// Collection<Food> foods = this.foodService.findAllFoods();
 
@@ -108,40 +116,68 @@ class FoodControllerTests {
 
 		given(this.foodService.findAllFoods()).willReturn(foods);
 		given(this.trainingService.findTrainingById(TRAINING1_ID)).willReturn(training1);
-		given(this.dietService.findDietById(DIET1_ID)).willReturn(diet);
-		
-		
+		given(this.dietService.findDietById(DIET1_ID)).willReturn(diet);	
 	}
-	
-	//CLIENT
-	// @WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})
-	// @Test
-	// void testClientFoodList() throws Exception {
-	// 	mockMvc.perform(get("/client/client1/trainings/1/diets/1"))
-		// mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/foods",CLIENT1_USERNAME,TRAINING1_ID,DIET1_ID))
-				// .andExpect(status().isOk());
-				// .andExpect(model().attributeExists("food"))
-				// .andExpect(model().attributeExists("training"))
-				// .andExpect(model().attributeExists("diet"));
-				// .andExpect(view().name("client/foods/foodsList"));
-	}			
-	
-	// @WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
-	// @Test
-	// void testTrainerTrainingDetails() throws Exception {
-	// 	mockMvc.perform(get("/trainer/{trainerUsername}/clients/{clientId}/trainings/{trainingId}",TRAINER1_USERNAME,CLIENT1_ID,CLIENT1_TRAINING1_ID))
-	// 	 		.andExpect(status().isOk())
-	// 	 		.andExpect(model().attributeExists("client"))
-	// 			.andExpect(model().attributeExists("training"))
-	// 			.andExpect(model().attribute("training", hasProperty("name", is("Training 1"))))
-	// 			.andExpect(model().attribute("training", hasProperty("initialDate", equalTo(initialDate))))
-	// 			.andExpect(model().attribute("training", hasProperty("endDate", equalTo(endDate))))
-	// 			.andExpect(model().attribute("training", hasProperty("author", is(TRAINER1_USERNAME))))
-	// 			.andExpect(model().attribute("training", hasProperty("editingPermission", equalTo(EditingPermission.TRAINER))))
-	// 			.andExpect(model().attribute("training", hasProperty("routines", is(new ArrayList<>()))))
-	// 			.andExpect(model().attribute("training", hasProperty("diet", nullValue())))
-	// 			.andExpect(view().name("trainer/trainings/trainingsDetails"));
-	// }
 
-	 
+	@WithMockUser(username="client1", authorities= {"client"})
+	@Test
+	void testGetDietDetails() throws Exception
+	{
+		mockMvc.perform(get("/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/foods",CLIENT1_USERNAME,TRAINING1_ID,DIET1_ID))
+			.andExpect(status().isOk())
+			.andExpect(view().name("client/foods/foodsList"))
+			.andDo(print());
+	}
+
+	
 }
+
+// @BeforeEach
+// void setup() {
+	
+// 	// Collection<Food> foods = this.foodService.findAllFoods();
+
+// 	Food food1 = new Food();
+// 	food1.setId(1);
+// 	food1.setName("Bread");
+// 	food1.setKcal(80);
+// 	food1.setProtein(20);
+// 	food1.setFat(20);
+// 	food1.setCarb(30);
+// 	food1.setWeight(20);
+// 	food1.setFoodType(FoodType.BRANCH);
+// 	Food food2 = new Food();
+// 	food2.setId(2);
+// 	food2.setName("Apple");
+// 	food2.setKcal(57);
+// 	food2.setProtein(10);
+// 	food2.setFat(20);
+// 	food2.setCarb(30);
+// 	food2.setWeight(20);
+// 	food2.setFoodType(FoodType.BREAKFAST);
+// 	Collection<Food> foods = new ArrayList<>();
+
+// 	// Training training = this.trainingService.findTrainingById(trainingId);
+
+// 	Training training1 = new Training();
+// 	training1.setId(TRAINING1_ID);
+// 	training1.setName("Training 1");
+// 	training1.setInitialDate(initialDate);
+// 	training1.setEndDate(endDate);
+// 	training1.setEditingPermission(EditingPermission.TRAINER);
+// 	training1.setAuthor(TRAINER1_USERNAME);
+// 	training1.setDiet(null);
+// 	training1.setRoutines(new ArrayList<>());
+
+// 	// Diet diet = this.dietService.findDietById(dietId);
+// 	Diet diet = new Diet();
+// 	diet.setId(1);
+// 	diet.setName("Diet");
+// 	training1.setDiet(diet);
+
+// 	given(this.foodService.findAllFoods()).willReturn(foods);
+// 	given(this.trainingService.findTrainingById(TRAINING1_ID)).willReturn(training1);
+// 	given(this.dietService.findDietById(DIET1_ID)).willReturn(diet);
+	
+	
+// }
