@@ -38,10 +38,13 @@ public class DietServiceTest {
 	
 	@Autowired 
 	protected TrainingService trainingService;
+
 	
 	private final int trainingId = 1;
 	private final int clientId = 1;
-	
+	private final int DIET_ID = 1;
+	private static final int FOOD_ID=1;
+
 	@Test
 	void shouldFindAllDiets(){
 		Collection<Diet> diets = (Collection<Diet>) this.dietService.findAllDiet();
@@ -135,5 +138,38 @@ public class DietServiceTest {
 		assertThrows(Exception.class, ()->this.dietService.saveDiet(c,training.getId()));
 		
 	}
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Test
+	@Transactional
+	public void shouldDeleteAllFoodsFromDiet() {
+		
+		int foundOnDietBefore = this.dietService.findDietById(DIET_ID).getFoods().size();
+		
+		assertThat(foundOnDietBefore).isGreaterThan(0);
 
+		this.dietService.deleteAllFoodFromDiet(DIET_ID);
+		
+		// int foundOnDietAfter = this.dietService.findDietById(DIET_ID).getFoods().size();
+
+		assertThat(this.dietService.findDietById(DIET_ID).getFoods()).isNull();
+		
+	}
+
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Test
+	@Transactional
+	public void shouldDeleteFood() {
+		
+		int foundOnDietBefore = this.dietService.findDietById(DIET_ID).getFoods().size();
+		
+		assertThat(foundOnDietBefore).isGreaterThan(0);
+
+		this.dietService.deleteFood(DIET_ID, FOOD_ID);
+		
+		int foundOnDietAfter = this.dietService.findDietById(DIET_ID).getFoods().size();
+
+		assertThat(foundOnDietAfter).isEqualTo(foundOnDietBefore-1);
+
+		
+	}
 }

@@ -1,6 +1,5 @@
 package org.springframework.samples.yogogym.service;
 
-
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
