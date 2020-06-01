@@ -50,7 +50,7 @@ public class DashBoardClientUITest {
 		utils.init();
 		utils.as(CLIENT, CLIENT_PASSWORD);
 		utils.dashboardOfMonthAndYear("2020-01");
-		driver.findElement(By.xpath("//td")).click();
+		//driver.findElement(By.xpath("//td")).click();
 		try {
 			assertEquals("1100", driver.findElement(By.xpath("//b")).getText());
 		} catch (Error e) {
