@@ -9,10 +9,30 @@
 <script src="https://code.jquery.com/jquery-3.4.1.slim.js" integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
-	
+<style>
+	.ui-datepicker-calendar
+	{
+		display:none;
+	}
+</style>
+
+<script>
+	$(function(){		
+		$("#monthPicker").datepicker( {
+			showButtonPanel: true,
+	        dateFormat: 'yy-mm',	        
+	        onClose: function(dateText, inst) {
+	        	if(!$("#monthPicker").val())
+	        	{
+                	$(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));	        		
+	        	}
+            }
+		});		
+	});
+</script>
 <form id="form1" onsubmit="/admin/dashboardEquipment/">
 		
-	<input type="month" name="monthAndYear" required />
+	<input id="monthPicker" type="text" name="monthAndYear" required="required" pattern="^[0-9]{4}-[0-9]{2}$"/>
 	<input type="submit" value="Enviar"/>
 
 </form>
