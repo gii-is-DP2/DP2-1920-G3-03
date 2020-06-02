@@ -1,67 +1,70 @@
 package org.springframework.samples.yogogym.ui.guilds;
 
-import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
+import static org.junit.Assert.fail;
 
-import static org.junit.Assert.*;
-import org.openqa.selenium.*;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DeleteGuildUITest {
 
+
 	@LocalServerPort
 	private int port;
-
 	private WebDriver driver;
-	private StringBuffer verificationErrors = new StringBuffer();
+	UtilsGuildUI utils;
+	
+	private static final String CLIENT_USERNAME = "client1";
 
 	@BeforeEach
 	public void setUp() throws Exception {
 		driver = new FirefoxDriver();
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		utils = new UtilsGuildUI(port, driver);
 	}
-
-	@Test
-	public void testDeleteGuild() throws Exception {
-		
-		as("client3");
-		deleteGuild();
-	}
-
+	
+	
 	@AfterEach
 	public void tearDown() throws Exception {
 		driver.quit();
-		String verificationErrorString = verificationErrors.toString();
+		String verificationErrorString = utils.getVerificationError().toString();
 		if (!"".equals(verificationErrorString)) {
 			fail(verificationErrorString);
 		}
 	}
 
-	private void as(String username) {
 
-		driver.get("http://localhost:" + port);
-		driver.findElement(By.linkText("Login")).click();
-		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys(username);
-		driver.findElement(By.id("password")).clear();
-		driver.findElement(By.id("password")).sendKeys("client1999");
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Test
+	public void testDeleteGuildUI() throws Exception {
+		
+		utils.as(CLIENT_USERNAME);
+		utils.listGuilds();
+		utils.showYourGuild();
+		driver.findElement(By.linkText("Delete")).click();
 
 	}
-
-	private void deleteGuild() {
-
-		driver.findElement(By.linkText("Client")).click();
-		driver.findElement(By.linkText("Guilds")).click();
-		driver.findElement(By.linkText("See your Guild")).click();
-		driver.findElement(By.linkText("Delete")).click();
-		
+	
+	@Test
+	public void testDeleteNotYourGuild() throws Exception {
+		utils.as(CLIENT_USERNAME);
+		utils.listGuilds();
+		driver.findElement(By.linkText("Calisthenics")).click();
+		driver.get("http://localhost:" + port + "/client/client4/guilds/1/delete");
+		utils.exceptionView();
 	}
 
 }

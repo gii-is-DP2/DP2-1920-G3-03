@@ -129,19 +129,19 @@ public class PlaylistController {
 		List<String> res = new ArrayList<>();
 		
 		List<String> playlistsVeryIntense = new ArrayList<>();
-		String veryIntenseA[] = new String[] { "37i9dQZF1DWUgX5cUT0GbU", "37i9dQZF1DX76Wlfdnj7AP" };
+		String veryIntenseA[] = new String[] { "37i9dQZF1DWUgX5cUT0GbU", "37i9dQZF1DX76Wlfdnj7AP","37i9dQZF1DX186v583rmzp","37i9dQZF1DWUVpAXiEPK8P","37i9dQZF1DX4eRPd9frC1m",};
 		playlistsVeryIntense.addAll(Arrays.asList((veryIntenseA)));
 		
 		List<String> playlistsIntense = new ArrayList<>();
-		String intenseA[] = new String[] { "37i9dQZF1DX2apWzyECwyZ", "37i9dQZF1DWYp5sAHdz27Y" };
+		String intenseA[] = new String[] { "37i9dQZF1DX2apWzyECwyZ", "37i9dQZF1DWYp5sAHdz27Y","37i9dQZF1DX76t638V6CA8","37i9dQZF1DXdxcBWuJkbcy","37i9dQZF1DX32NsLKyzScr","37i9dQZF1DX8ucVJaqqjpS"};
 		playlistsIntense.addAll(Arrays.asList((intenseA)));
 		
 		List<String> playlistsModerated = new ArrayList<>();
-		String moderatedA[] = new String[] { "37i9dQZF1DX7QOv5kjbU68", "37i9dQZF1DX70RN3TfWWJh" };
+		String moderatedA[] = new String[] { "37i9dQZF1DX7QOv5kjbU68", "37i9dQZF1DX70RN3TfWWJh" ,"37i9dQZF1DWTl4y3vgJOXW","37i9dQZF1DX70RN3TfWWJh","37i9dQZF1DWYp5sAHdz27Y","37i9dQZF1DWXmQEAjlxGhi"};
 		playlistsModerated.addAll(Arrays.asList(moderatedA));
 		
 		List<String> playlistsLow = new ArrayList<>();
-		String lowA[] = new String[] { "37i9dQZF1DX7hgjNHEiO3v", "37i9dQZF1DX7R7Bjxm48PR", "37i9dQZF1DXcTpoGQmyr2B" };
+		String lowA[] = new String[] { "37i9dQZF1DX7hgjNHEiO3v", "37i9dQZF1DX7R7Bjxm48PR", "37i9dQZF1DXcTpoGQmyr2B","37i9dQZF1DWSJHnPb1f0X3","37i9dQZF1DWY9gC038Looy","37i9dQZF1DX7cmFV9rWM0u"};
 		playlistsLow.addAll(Arrays.asList((lowA)));
 		
 		Training t = this.trainingService.findTrainingById(trainingId);
@@ -179,7 +179,7 @@ public class PlaylistController {
 			res = playlistsVeryIntense;
 
 		
-		return res.get(ram.nextInt(res.size() - 1));
+		return res.get(ram.nextInt(res.size()));
 
 	}
 

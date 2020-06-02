@@ -1,16 +1,11 @@
 package org.springframework.samples.yogogym.ui.guilds;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.concurrent.TimeUnit;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+
+import static org.junit.Assert.*;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -18,11 +13,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UpdateGuildBadURLUITest {
-
+public class JoinAndLeaveGuilUITest {
+	
 	@LocalServerPort
 	private int port;
-
+	
 	private WebDriver driver;
 	private StringBuffer verificationErrors = new StringBuffer();
 
@@ -33,11 +28,11 @@ public class UpdateGuildBadURLUITest {
 	}
 
 	@Test
-	public void testUpdateGuildBadURL() throws Exception {
-
-		as("client2");
-		updateGuild();
-		checkErrors();
+	public void testLeaveAGuildYouAreNotIn() throws Exception {
+		
+		as("client6");
+		leaveGuild();
+		exceptionViewShown();
 	}
 
 	@AfterEach
@@ -48,36 +43,28 @@ public class UpdateGuildBadURLUITest {
 			fail(verificationErrorString);
 		}
 	}
-
 	private void as(String username) {
 
 		driver.get("http://localhost:" + port);
 		driver.findElement(By.linkText("Login")).click();
-		driver.findElement(By.id("username")).click();
 		driver.findElement(By.id("username")).clear();
 		driver.findElement(By.id("username")).sendKeys(username);
 		driver.findElement(By.id("password")).clear();
 		driver.findElement(By.id("password")).sendKeys("client1999");
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
-
 	}
 
-	private void updateGuild() {
+	private void leaveGuild() {
 
 		driver.findElement(By.linkText("Client")).click();
-		driver.findElement(By.linkText("Guilds")).click();
-		driver.findElement(By.linkText("See your Guild")).click();
-		driver.findElement(By.linkText("Edit")).click();
-		driver.findElement(By.id("logo")).click();
-		driver.findElement(By.id("logo")).clear();
-		driver.findElement(By.id("logo")).sendKeys("estonoesunenlace.png");
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[6]/a/span[2]")).click();
+		driver.findElement(By.linkText("Calisthenics")).click();
+		driver.get("http://localhost:"+port+"/client/client6/guilds/1/leave");
 	}
-
-	private void checkErrors() {
+	
+	private void exceptionViewShown() {
 		try {
-			assertEquals("The link must start with https://",
-					driver.findElement(By.xpath("//form[@id='guild']/div/div[2]/div/span[2]")).getText());
+			assertEquals("Something happened...", driver.findElement(By.xpath("//h2")).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
