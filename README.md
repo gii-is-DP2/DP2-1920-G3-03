@@ -121,12 +121,6 @@ Como entrenador quiero realizar rutinas a nuestros clientes para facilitar el de
 Como entrenador quiero llevar el control de las rutinas para poder cambiar la rutina adaptándola de la mejor forma al cliente y corregir errores.
 
 #### Escenarios:
-* **Gestionar la rutina de un usuario sin que este tenga rutina:** Dado un entrenador que se dispone a gestionar la rutina de un usuario, cuando ese usuario no posee ninguna rutina. La vista de encargada la gestión de rutinas notificará al entrenador de que el usuario indicado que no posee ninguna rutina y le ofertará la opción de crearla. 
-* **Gestionar la rutina de un usuario cuyo usuario no entrenas:** Dado un entrenador que se dispone a gestionar la rutina de un usuario, cuando no eres entrenador de ese usuario. La operación de gestión no se puede efectuar. El sistema limita a solo poder ver la rutina que tiene el usuario deseado, pero no es manipulable por alguien que no sea su entrenador.
-* **Gestionar la rutina de un usuario borrando todos los ejercicios:** Dado un entrenador que se dispone a gestionar la rutina, en este caso modificar, de un usuario, borrando todos los ejercicios, cuando el usuario posee una rutina completa. La operación de gestión no se puede efectuar ya que debe existir un mínimo de 3 actividades por rutina.
-* **Gestionar la rutina de un usuario:** Dado un entrenador que se dispone a gestionar la rutina de un usuario si incumplir ninguna regla de negocio, cuando este usuario ya posee una. La operación de gestión se efectúa correctamente y esta queda disponible tanto por el usuario para poder visualizar los cambios como para el entrenador poder modificarlos en un futuro.
-* **Gestionar la rutina del entrenamiento finalizado de un usuario:** Dado un entrenador qie se dispone a gestionar la rutina de un usuario cuyo entrenamiento ha finalizado, la operación no se efectua ya que al finalizar (fecha final del entrenamiento anterior a la actual) un entrenamiento este entra en un estado inmutable. 
-=======
 
 (En cuanto a operaciones de gestión, nos referimos a POST: Editar y borrar)
 
@@ -142,7 +136,7 @@ Como entrenador quiero llevar el control de las rutinas para poder cambiar la ru
   - Repeticiones por semana tiene un valor inferior a 1
 
   La vista redirecciona al entrenador a la misma vista de editar indicándole el error/es y atributo/os que provocan el conflicto.
-  
+
 ---
 
 #### HU10 - Añadir dietas alimenticias a los entrenamientos
@@ -461,13 +455,6 @@ Como cliente quiero poder añadir playlist de spotify aleatorias adaptadas a mis
 | HU25                | 1      | P1              | Finalizada   |
 | HU2                 | 2      | P3              | Finalizada   |
 | HU6                 | 2      | P2              | Finalizada   |
-| HU16                | 2      | P3              | Finalizada   |
-| HU17                | 2      | P2              | Finalizada   |
-| HU19                | 2      | P1              | Finalizada   |
-| HU7                 | 3      | P3              | Finalizada   |
-| HU20                | 3      | P2              | Finalizada   |
-| HU23                | 3      | P1              | En Curso     |
-| HU7                 | 3      | P2              | Finalizada   |
 | HU16                | 2      | P2              | Finalizada   |
 | HU17                | 2      | P3              | Finalizada   |
 | HU19                | 2      | P1              | Finalizada   |
