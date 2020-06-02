@@ -65,8 +65,7 @@ public class TrainingServiceTests {
 	
 	@BeforeAll
 	public static void setup() {
-		NOW.set(Calendar.HOUR, 0);
-		NOW.add(Calendar.HOUR, 0);
+		NOW.set(Calendar.HOUR_OF_DAY, 0);
 		NOW.set(Calendar.MINUTE, 0);
 		NOW.set(Calendar.SECOND, 0);
 		NOW.set(Calendar.MILLISECOND, 0);
