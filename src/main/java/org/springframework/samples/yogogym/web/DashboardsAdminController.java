@@ -4,183 +4,72 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.yogogym.model.Challenge;
-import org.springframework.samples.yogogym.model.Client;
-import org.springframework.samples.yogogym.model.Guild;
-import org.springframework.samples.yogogym.model.Inscription;
-import org.springframework.samples.yogogym.model.Enums.Status;
-import org.springframework.samples.yogogym.service.ClientService;
+import org.springframework.samples.yogogym.projections.DashboardAdminChallengesPercentageClients;
+import org.springframework.samples.yogogym.projections.DashboardAdminChallengesPercentageGuilds;
+import org.springframework.samples.yogogym.projections.DashboardAdminChallengesTopClient;
+import org.springframework.samples.yogogym.projections.DashboardAdminChallengesTopGuild;
 import org.springframework.samples.yogogym.service.DashboardsAdminService;
 import org.springframework.samples.yogogym.service.GuildService;
-import org.springframework.samples.yogogym.service.InscriptionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class DashboardsAdminController {
 
 	private final DashboardsAdminService dashboardsAdminService;
-	private final ClientService clientService;
-	private final InscriptionService inscriptionService;
 	private final GuildService guildService;
 
 	@Autowired
-	public DashboardsAdminController(final DashboardsAdminService dashboardsAdminService, ClientService clientService,
-			InscriptionService inscriptionService, GuildService guildService) {
+	public DashboardsAdminController(final DashboardsAdminService dashboardsAdminService, GuildService guildService) {
 		this.dashboardsAdminService = dashboardsAdminService;
-		this.clientService = clientService;
-		this.inscriptionService = inscriptionService;
 		this.guildService = guildService;
 	}
 
 	@GetMapping("/admin/dashboardEquipment")
-	public String getDashboardEquipment(ModelMap model) {
-		dashboard(28, "Month", model);
-		dashboard(7, "Week", model);
+	public String getDashboardEquipment(@PathParam("monthAndYear") String monthAndYear, ModelMap model) {
+		int date [] = getMonthAndYear(monthAndYear);
+		int year = date[0];
+		int month = date[1];
+		model.addAttribute("year",year);
+		model.addAttribute("month",month);
+		
+		dashboardEquipment(month, year, model);
 		return "admin/dashboards/dashboardEquipment";
 	}
 	
-	private void dashboard(Integer days, String string, ModelMap model) {
-		List<Integer> countEquipment = this.dashboardsAdminService.countEquipment(days);
-		List<String> nameEquipment = this.dashboardsAdminService.nameEquipment(days);
-		if (!countEquipment.isEmpty() || !nameEquipment.isEmpty()) {
-			String[] s = new String[nameEquipment.size()];
-			for (int i = 0; i < nameEquipment.size(); i++) {
-				s[i] = nameEquipment.get(i);
-			}
-			Integer[] c = new Integer[countEquipment.size()];
-			for (int i = 0; i < countEquipment.size(); i++) {
-				c[i] = countEquipment.get(i);
-			}
-			model.addAttribute("orderName" + string, s);
-			model.addAttribute("count" + string, c);
-			model.addAttribute("hasEquipment" + string, true);
-		} else {
-			model.addAttribute("hasEquipment" + string, false);
-		}
+	
+	@GetMapping("/admin/dashboardChallenges")
+	public String getDashboardChallenges(@PathParam("monthAndYear") String monthAndYear, ModelMap model) {
 
-	}
-
-	@GetMapping("/admin/dashboardChallenges/{month}")
-	public String getDashboardChallenges(@PathVariable("month") int month, ModelMap model) {
-
-		Date now = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(now);
-		if (month == 0)
-			month = cal.get(Calendar.MONTH) + 1;
-		List<Challenge> challenges = (List<Challenge>) this.dashboardsAdminService.getChallengesOfMonth(month);
-
-		if (!challenges.isEmpty()) {
+		int date [] = getMonthAndYear(monthAndYear);
+		int year = date[0];
+		int month = date[1];
+		model.addAttribute("year",year);
+		model.addAttribute("month",month);
+		
+		int numberOfChallenges = this.dashboardsAdminService.countChallengesOfMonthAndYear(month, year);
+		if (numberOfChallenges > 0) {
 			model.addAttribute("ChallengesExists", true);
-			dashboardChallenges(challenges, month, model);
+			
+			int countCompletedInscriptions = this.dashboardsAdminService.countCompletedInscriptionsOfMonthAndYear(month, year);
+			if(countCompletedInscriptions == 0) {
+				model.addAttribute("NoCompletedChallenges", true);
+			}else {
+				dashboardChallenges(month, year, model);
+			}
 		} else {
 			model.addAttribute("ChallengesExists", false);
 		}
-
+		
 		return "admin/dashboards/dashboardChallenges";
 	}
 
-	private void dashboardChallenges(List<Challenge> challenges, int month, ModelMap model) {
-
-		// client with more points
-		Client client = null;
-		Integer cPoints = null;
-
-		List<Inscription> completedInscriptionsThisMonth = this.dashboardsAdminService.findCompletedInscriptionsThisMonth(month);
-		if (completedInscriptionsThisMonth.isEmpty()) {
-			model.addAttribute("NoCompletedChallenges", true);
-			return;
-		}
-
-		List<Client> clients = (List<Client>) this.clientService.findAllClient();
-		for (Client c : clients) {
-			Integer auxPoints = 0;
-			for (Inscription i : c.getInscriptions()) {
-				if (completedInscriptionsThisMonth.contains(i)) {
-					auxPoints += i.getChallenge().getPoints();
-				}
-			}
-			if (cPoints == null || auxPoints > cPoints) {
-				client = c;
-				cPoints = auxPoints;
-			}
-		}
-
-		model.addAttribute("client", client);
-		model.addAttribute("cPoints", cPoints);
-
-		// Guild with more points
-		Guild guild = null;
-		Integer gPoints = null;
-
-		List<Guild> Allguilds = (List<Guild>) this.guildService.findAllGuild();
-		for (Guild g : Allguilds) {
-
-			clients = (List<Client>) this.guildService.findAllClientesByGuild(g);
-			Integer auxcPoints = 0;
-			for (Client c : clients) {
-				for (Inscription i : c.getInscriptions()) {
-					if (completedInscriptionsThisMonth.contains(i)) {
-						auxcPoints += i.getChallenge().getPoints();
-					}
-				}
-			}
-
-			if (gPoints == null || auxcPoints > gPoints) {
-				guild = g;
-				gPoints = auxcPoints;
-			}
-		}
-
-		model.addAttribute("guild", guild);
-		model.addAttribute("gPoints", gPoints);
-
-		// Graphs
-		String[] challengesNames = new String[challenges.size()];
-		for (int i = 0; i < challenges.size(); i++) {
-			challengesNames[i] = challenges.get(i).getName();
-		}
-		model.addAttribute("challengesNames", challengesNames);
-
-		// Percentage of clients who completed each challenge
-		Integer numberOfClients = this.clientService.findAllClient().size();
-		Double[] percentageClients = new Double[challenges.size()];
-
-		for (int i = 0; i < challenges.size(); i++) {
-			Double clientsWhoCompleted = (double) this.inscriptionService
-					.findInscriptionsByChallengeId(challenges.get(i).getId()).stream()
-					.filter(ins -> ins.getStatus().equals(Status.COMPLETED)).count();
-			percentageClients[i] = (clientsWhoCompleted / numberOfClients) * 100;
-		}
-
-		model.addAttribute("percentageClients", percentageClients);
-
-		// Percentage of Guilds who completed each challenge
-		List<Guild> guilds = (List<Guild>) this.guildService.findAllGuild();
-		Integer numberOfGuilds = guilds.size();
-		Double[] percentageGuilds = new Double[challenges.size()];
-
-		for (int i = 0; i < challenges.size(); i++) {
-			Double guildsWhoCompleted = 0.;
-			Challenge cll = challenges.get(i);
-			for (Guild g : guilds) {
-				if (this.guildService.findAllClientesByGuild(g).stream().anyMatch(c -> c.getInscriptions().stream()
-						.anyMatch(ins -> ins.getChallenge().equals(cll) && ins.getStatus().equals(Status.COMPLETED))))
-					guildsWhoCompleted += 1.;
-			}
-			percentageGuilds[i] = (guildsWhoCompleted / numberOfGuilds) * 100;
-		}
-
-		model.addAttribute("percentageGuilds", percentageGuilds);
-
-	}
-
 	@GetMapping("/admin/dashboardGeneral")
-	public String getDashboardGeneral( ModelMap model) {
+	public String getDashboardGeneral(ModelMap model) {
 
 		Integer clients = this.dashboardsAdminService.countClients();
 		Integer trainers = this.dashboardsAdminService.countTrainers();
@@ -205,4 +94,127 @@ public class DashboardsAdminController {
 
 		return "admin/dashboards/dashboardGeneral";
 	}
+	
+	
+	/**
+	 * <p>Get all the necessary data to create the dashboard.</p>
+	 * @param month 
+	 * @param year 
+	 * @param model : the modelMap of the view.
+	 * @return void : it puts the data in the model.
+	 */
+	private void dashboardEquipment(int month, int year, ModelMap model) {
+		Integer[] countEquipment = this.dashboardsAdminService.countEquipment(month, year);
+		String[] nameEquipment = this.dashboardsAdminService.nameEquipment(month, year);
+		if (countEquipment.length>0 || nameEquipment.length>0) {
+			model.addAttribute("orderName", nameEquipment);
+			model.addAttribute("count", countEquipment);
+			model.addAttribute("hasEquipment", true);
+		} else {
+			model.addAttribute("hasEquipment", false);
+		}
+
+	}
+	
+	/**
+	 * <p>Separate the Month and Year from a String</p>
+	 * @param monthAndYear: A string of this type YYYY-mm
+	 * @return int[]: An array of: [0]: the Year  [1]: The Month
+	 */
+	private int[] getMonthAndYear(String monthAndYear) {
+		int date [] = {0,0};
+		
+		if(monthAndYear == null) {
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(now);
+			
+			date[0] = cal.get(Calendar.YEAR);
+			date[1] = cal.get(Calendar.MONTH) + 1;
+		}
+		else {
+			String[] str =  monthAndYear.split("-");
+			date[0] = Integer.valueOf(str[0]);
+			date[1] = Integer.valueOf(str[1]);
+		}
+		return date;
+	}
+	
+	/**
+	 * <p>Get all the necessary data to create the dashboard if there are challenges with inscriptions created</p>
+	 * @param month
+	 * @param year
+	 * @param model: the modelMap of the view
+	 * @return void: It puts the data in the model
+	 */
+	private void dashboardChallenges(int month, int year, ModelMap model) {
+		
+		// client with more points
+		DashboardAdminChallengesTopClient p1 = this.dashboardsAdminService.getTopClient(month, year);
+		String client = p1.getUsername();
+		String email = p1.getEmail();
+		Integer cPoints = p1.getPoints();
+
+		model.addAttribute("client", client);
+		model.addAttribute("cPoints", cPoints);
+		model.addAttribute("email", email);
+
+		// Guild with more points
+		DashboardAdminChallengesTopGuild p2 = this.dashboardsAdminService.getTopGuild(month, year);
+		String guild = p2.getGuild();
+		Integer gPoints = p2.getPoints();
+
+		model.addAttribute("guild", guild);
+		model.addAttribute("gPoints", gPoints);
+
+		// Graphs
+		String[] challengesNames = this.dashboardsAdminService.getChallengesNamesOfMonthAndYear(month, year);
+		List<DashboardAdminChallengesPercentageClients> p3 = this.dashboardsAdminService.getPercentageClients(month, year);
+		List<DashboardAdminChallengesPercentageGuilds> p4 = this.dashboardsAdminService.getPercentageGuilds(month, year);
+		
+		getPercentagesAndNames(p3, p4, challengesNames, model);
+	}
+
+	/**
+	 * <p>Merge all the challenges names with its corresponding percentages</p>
+	 * @param p1: DashboardAdminChallengesPercentageClients
+	 * @param p2: DashboardAdminChallengesPercentageGuilds
+	 * @param String[]: challengesNames
+	 * @param model: the modelMap of the view
+	 * @return void: It puts the data in the model
+	 */
+	private void getPercentagesAndNames(List<DashboardAdminChallengesPercentageClients> p1,
+										List<DashboardAdminChallengesPercentageGuilds> p2, String[] challengesNames, ModelMap model) {
+		
+		int numberOfChallenges = challengesNames.length;
+		long[] percentageClients = new long[numberOfChallenges];
+		long[] percentageGuilds = new long[numberOfChallenges];
+		
+		
+		int j = 0;
+		int k = 0;
+		for(int i = 0; i < numberOfChallenges; i++) {
+			
+			if(j < p1.size() && challengesNames[i].equals(p1.get(j).getChallengeName())) {
+				percentageClients[i] = Math.round(p1.get(j).getPercentageClients() *100);
+				j++;
+				
+				if(k < p2.size() && challengesNames[i].equals(p2.get(k).getChallengeName())) {
+					percentageGuilds[i] = Math.round(p2.get(k).getPercentageGuilds() *100);
+					k++;
+				}
+				else {
+					percentageGuilds[i] = 0;
+				}
+			}
+			else {
+				percentageClients[i] = 0;
+				percentageGuilds[i] = 0;
+			}
+		}
+		model.addAttribute("challengesNames", challengesNames);
+		model.addAttribute("percentageClients", percentageClients);
+		model.addAttribute("percentageGuilds", percentageGuilds);
+	}
+	
 }

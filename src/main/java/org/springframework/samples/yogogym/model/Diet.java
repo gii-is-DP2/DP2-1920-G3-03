@@ -9,7 +9,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.samples.yogogym.model.Enums.DietType;
@@ -55,6 +54,7 @@ public class Diet extends BaseEntity{
 	@Min(0)
 	protected Integer carb;
 	
+	@Column(name = "foods")
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	protected Collection<Food> foods;
 

@@ -6,7 +6,7 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="guildsDetails">
-	<h1><c:out value="${guild.name}"/></h1>
+	<h1 style="color:#F2502D;font-size:xx-large" align="left"><c:out value="${guild.name}"/></h1>
 	<p></p>
 	<p><img src="<c:url value="${guild.logo}"/>" width ="380" height="300"/></p>
 	
@@ -37,6 +37,13 @@
 			var="leaveUrl">
 		</spring:url>
 		<a href="${fn:escapeXml(leaveUrl)}" class="btn btn-default">Leave the Guild</a>
+	</c:if>
+	
+	<c:if test="${client.guild.id==guild.id}">
+		<spring:url value="/client/${clientUsername}/guilds/${guild.id}/forums/${forumId}"
+			var="forumUrl">
+		</spring:url>
+		<a href="${fn:escapeXml(forumUrl)}" class="btn btn-default">Forum</a>
 	</c:if>
 	
 </yogogym:layout>

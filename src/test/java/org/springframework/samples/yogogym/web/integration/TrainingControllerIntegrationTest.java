@@ -2,7 +2,6 @@ package org.springframework.samples.yogogym.web.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -58,9 +57,9 @@ public class TrainingControllerIntegrationTest {
 		logIn(username);
 		createTrainingEmpty(3,7);
 		
-		String view = this.trainingController.getTrainingListCopy(14, 1, username, model);
+		String view = this.trainingController.getTrainingListCopy(16, 1, username, model);
 		assertEquals(view, "trainer/trainings/listCopyTraining");
-		String view2 = this.trainingController.processTrainingCopy(1, 14, 1, username, model);
+		String view2 = this.trainingController.processTrainingCopy(1, 16, 1, username, model);
 		assertEquals(view2, "redirect:/trainer/{trainerUsername}/trainings");
 	}
 
@@ -88,9 +87,9 @@ public class TrainingControllerIntegrationTest {
 		logIn(username);
 		createTrainingEmpty(3,4);
 		
-		String view = this.trainingController.getTrainingListCopy(14, 1, username, model);
+		String view = this.trainingController.getTrainingListCopy(16, 1, username, model);
 		assertEquals(view, "trainer/trainings/listCopyTraining");
-		String view2 = this.trainingController.processTrainingCopy(3, 14, 1, username, model);
+		String view2 = this.trainingController.processTrainingCopy(3, 16, 1, username, model);
 		assertEquals(view2, "exception");
 	}
 

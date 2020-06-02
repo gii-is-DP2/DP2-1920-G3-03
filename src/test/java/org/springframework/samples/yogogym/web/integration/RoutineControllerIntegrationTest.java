@@ -46,7 +46,7 @@ public class RoutineControllerIntegrationTest {
 		String wrongTrainerUsername = "trainer2";
 		ModelMap model = new ModelMap();
 		
-		String view = routineController.RoutinesList(wrongTrainerUsername, model);
+		String view = routineController.routinesList(wrongTrainerUsername, model);
 		assertEquals(view, "exception");
 	}
 	
@@ -67,7 +67,7 @@ public class RoutineControllerIntegrationTest {
 		int trainingId = 4;
 		ModelMap model = new ModelMap();
 		
-		String view = routineController.ClientRoutineDetails(trainerUsername, clientId, routineId, trainingId, model);
+		String view = routineController.clientRoutineDetails(trainerUsername, clientId, routineId, trainingId, model);
 		assertEquals(view, "exception");
 	}
 	

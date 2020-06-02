@@ -23,7 +23,6 @@ public class ParticipateChallengesClientUITest {
 	private static final String CHALLENGE_1 = "Challenge1";
 	private static final String CHALLENGE_3 = "Challenge3";
 	private static final String CHALLENGE_4 = "Challenge4";
-	private static final String CHALLENGE_5 = "Challenge5";
 	private static final String CLIENT_1 = "client1";
 	private static final String CLIENT_2 = "client2";
 	private static final String CLIENT_PASSWORD = "client1999";
@@ -125,7 +124,7 @@ public class ParticipateChallengesClientUITest {
 		utils.init();
 		utils.as(CLIENT_1, CLIENT_PASSWORD);
 		utils.listMyChallenges();
-		utils.submitUrlChallenge(CHALLENGE_5, url);
+		utils.submitUrlChallenge(CHALLENGE_3, url);
 
 		// The status changes to submitted
 		try {
@@ -137,7 +136,7 @@ public class ParticipateChallengesClientUITest {
 
 		utils.logout(CLIENT_1);
 		utils.as(ADMIN, ADMIN_PASSWORD);
-		utils.showSubmittedChallenge(CHALLENGE_5);
+		utils.showSubmittedChallenge(CHALLENGE_3);
 
 		// The submitted challenge has the previus url
 		try {
@@ -154,7 +153,7 @@ public class ParticipateChallengesClientUITest {
 		// The status changes to completed
 		try {
 			assertEquals(COMPLETED,
-					driver.findElement(By.xpath("//table[@id='challengesTable']/tbody/tr[4]/td[6]")).getText());
+					driver.findElement(By.xpath("//table[@id='challengesTable']/tbody/tr[3]/td[6]")).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}

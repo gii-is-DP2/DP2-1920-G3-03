@@ -27,10 +27,16 @@
         <webjars-jquery.version>2.2.4</webjars-jquery.version>
         <wro4j.version>1.8.0</wro4j.version>
 
-        <jacoco.version>0.8.5</jacoco.version>
+        <jacoco.version>0.8.2</jacoco.version>
         <spring-format.version>0.0.19</spring-format.version>
         <selenium.version>3.141.59</selenium.version>
-
+		
+		<!-- Sonar Qube -->
+		
+		<sonar.junit.reportPath>${buildDir}/target/jacoco.exec</sonar.junit.reportPath>
+		<sonar.exclusions>${buildDir}src/main/java/org.springframework.samples.yogogym.util/DataGenerator.java</sonar.exclusions>
+		
+        <rest-assured.version>4.2.0</rest-assured.version>
     </properties>
 
     <dependencies>
@@ -55,6 +61,12 @@
             <groupId>org.springframework.security</groupId>  
             <artifactId>spring-security-taglibs</artifactId>  
         </dependency>
+        <dependency>
+            <groupId>com.github.scribejava</groupId>
+            <artifactId>scribejava-apis</artifactId>
+            <version>2.5.3</version>
+            <scope>test</scope>
+		</dependency>
         <!-- Databases - Uses H2 by default -->
         <!-- dependency>
                 <groupId>org.hsqldb</groupId>
@@ -139,23 +151,33 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-remote-driver</artifactId>
-            <version>${selenium.version}</version>
+            <version>${selenium.version}</version><!--$NO-MVN-MAN-VER$-->
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-firefox-driver</artifactId>
-            <version>${selenium.version}</version>
+            <version>${selenium.version}</version><!--$NO-MVN-MAN-VER$-->
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
-            <version>${selenium.version}</version>
+            <version>${selenium.version}</version><!--$NO-MVN-MAN-VER$-->
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-support</artifactId>
-            <version>${selenium.version}</version>
+            <version>${selenium.version}</version><!--$NO-MVN-MAN-VER$-->
         </dependency>
+        	<dependency>
+    		<groupId>io.rest-assured</groupId>
+    		<artifactId>rest-assured</artifactId>
+    		<scope>test</scope>
+		</dependency>		
+		<dependency>
+    		<groupId>io.rest-assured</groupId>
+    		<artifactId>json-path</artifactId>
+    		<scope>test</scope>
+		</dependency>
         <!-- Development tools -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -191,26 +213,28 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
+          
+          	<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<!-- attached to Maven test phase -->
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+                   	
             <!-- Spring Boot Actuator displays build-related information if a git.properties 
             file is present at the classpath -->
             <plugin>
@@ -270,7 +294,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<argLine>-Duser.timezone=UTC</argLine>
+					<argLine>${argLine} -Duser.timezone=UTC -XX:PermSize=256m -XX:MaxPermSize=1048m</argLine>
 					<excludes>
 						<exclude>**/*UITest.java</exclude>
 						<exclude>**/*APITest.java</exclude>

@@ -6,7 +6,7 @@
 <%@ taglib prefix="yogogym" tagdir="/WEB-INF/tags" %>
 
 <yogogym:layout pageName="clients">
-	
+		
 	<c:if test="${error != null}">
 		<div class="text-center alert alert-danger" role="alert">
 			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -55,36 +55,69 @@
 			<p><a style="color:grey">Edit Training</a></p>
 		</c:otherwise>
 	</c:choose>
-	<c:choose>
-		<c:when test="${training.author==client.user.username}">
-			<br>
-			<br>
-			<spring:url value="/client/${client.user.username}/trainings/${training.id}/delete" var="trainingDeleteUrl" />
-			<a href="${fn:escapeXml(trainingDeleteUrl)}">Delete Training</a>
+
+    <br> 
+    	<form action="https://accounts.spotify.com/authorize">
+    		<input type="hidden" name ="redirect_uri" value = "http://localhost:8080/callback/"/>
+    		<input type="hidden" name ="client_id" value = "956b8ae3e4b246b6a82c4a2c5ce6e4ac"/>
+    		<input type = "hidden" name = "response_type" value ="code"/>
+    		<input type = "hidden" name = "training_id" value="${training.id}"/>
+    		<button class="btn btn-default">Check playlist for this training</button>
+    	</form>
+	<br>    
+      
+    <c:choose>
+		<c:when test="${training.endDate < actualDate || training.editingPermission!='TRAINER'}">
+			<spring:url value="/client/${client.user.username}/trainings/${training.id}/routine/create" var="addRoutineUrl"/>
+			<a href="${fn:escapeXml(addRoutineUrl)}">Add Routine</a>
 		</c:when>
 		<c:otherwise>
-			<br>
-			<br>
-			<p><a style="color:grey">Delete Training</a></p>
+			 <p><a style="color:grey">Add Routine</a></p>
 		</c:otherwise>
 	</c:choose>
-    <br>    
-    <spring:url value="/client/${client.user.username}/trainings/${training.id}/routine/create" var="addRoutineUrl"/>
-    <a href="${fn:escapeXml(addRoutineUrl)}">Add Routine</a>
+    
     <br>
     <br>
+  
     <c:forEach var="routine" items="${training.routines}">
     	
     	<h3>Routine: <c:out value="${routine.name}"/></h3>
     	<h3>Repetitions per Week: <c:out value="${routine.repsPerWeek}"/></h3>
-    	<spring:url value="/client/${client.user.username}/trainings/${training.id}/routine/${routine.id}/update" var="updateRoutineUrl"/>
-    	<a href="${fn:escapeXml(updateRoutineUrl)}">Edit Routine</a>
+    	
+    	<c:choose>
+			<c:when test="${training.endDate < actualDate || training.editingPermission!='TRAINER'}">
+	    		<spring:url value="/client/${client.user.username}/trainings/${training.id}/routine/${routine.id}/update" var="updateRoutineUrl"/>
+	    		<a href="${fn:escapeXml(updateRoutineUrl)}">Edit Routine</a>
+    		</c:when>
+    		<c:otherwise>
+    			<a style="color:grey">Edit Routine</a>
+    		</c:otherwise>
+    	</c:choose>
+    	
     	<br>
-    	<spring:url value="/client/${client.user.username}/trainings/${training.id}/routine/${routine.id}/delete" var="deleteRoutineUrl"/>
-    	<a href="${fn:escapeXml(deleteRoutineUrl)}">Delete Routine</a>
+    	
+    	<c:choose>
+			<c:when test="${training.endDate < actualDate || training.editingPermission!='TRAINER'}">
+		    	<spring:url value="/client/${client.user.username}/trainings/${training.id}/routine/${routine.id}/delete" var="deleteRoutineUrl"/>
+		    	<a href="${fn:escapeXml(deleteRoutineUrl)}">Delete Routine</a>
+    		</c:when>
+    		<c:otherwise>
+    			<a style="color:grey">Delete Routine</a>
+    		</c:otherwise>
+    	</c:choose>
+    	
     	<br>
-    	<spring:url value="/client/${client.user.username}/trainings/${training.id}/routines/${routine.id}/routineLine/create" var="addRoutineLineUrl"/>
-    	<a href="${fn:escapeXml(addRoutineLineUrl)}">Add Routine Line</a>
+    	
+    	<c:choose>
+			<c:when test="${training.endDate < actualDate || training.editingPermission!='TRAINER'}">
+		    	<spring:url value="/client/${client.user.username}/trainings/${training.id}/routines/${routine.id}/routineLine/create" var="addRoutineLineUrl"/>
+		    	<a href="${fn:escapeXml(addRoutineLineUrl)}">Add Routine Line</a>
+			</c:when>
+			<c:otherwise>
+    			<a style="color:grey">Add Routine Line</a>
+    		</c:otherwise>
+		</c:choose>		
+		
 		<table class="table table-striped">
 			<thead>
 	        <tr>
@@ -135,7 +168,7 @@
 					<td><c:out value="${lineRoutine.exercise.kcal}"/></td>
 					
 					<c:choose>
-						<c:when test="${training.endDate < actualDate}">
+						<c:when test="${training.endDate < actualDate || training.editingPermission=='TRAINER'}">
 								
 							<td><a style="color:grey">Edit</a></td>
 										

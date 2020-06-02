@@ -1,51 +1,41 @@
-/*
- * Copyright 2002-2013 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.springframework.samples.yogogym.service;
 
-
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.yogogym.model.Diet;
+import org.springframework.samples.yogogym.model.Food;
+import org.springframework.samples.yogogym.model.Routine;
+import org.springframework.samples.yogogym.model.RoutineLine;
 import org.springframework.samples.yogogym.model.Training;
+import org.springframework.samples.yogogym.model.Enums.DietType;
+import org.springframework.samples.yogogym.model.Enums.Intensity;
 import org.springframework.samples.yogogym.repository.DietRepository;
+import org.springframework.samples.yogogym.repository.FoodRepository;
+import org.springframework.samples.yogogym.service.exceptions.FoodDuplicatedException;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Mostly used as a facade for all Petclinic controllers Also a placeholder
- * for @Transactional and @Cacheable annotations
- *
- * @author Michael Isvy
- */
+import com.google.common.collect.Lists;
+
 @Service
 public class DietService {
 
 	private DietRepository dietRepository;
+	private FoodRepository foodRepository;
 	private TrainingService trainingService;
 
 	@Autowired
-	public DietService(DietRepository dietRepository,TrainingService trainingService) {
+	public DietService(DietRepository dietRepository,TrainingService trainingService, FoodRepository foodRepository) {
 		this.dietRepository = dietRepository;
 		this.trainingService = trainingService;
+		this.foodRepository = foodRepository;
 	}
 	
 	@Transactional
@@ -56,27 +46,96 @@ public class DietService {
 		Calendar cal = Calendar.getInstance();
 		Date actualDate = cal.getTime();
 		
-		if(training.getEndDate().before(actualDate))
+		if(training.getEndDate().before(actualDate)) 
 			throw new TrainingFinished();
-		else		
+		else 
 			dietRepository.save(diet);
+		
 	}
 	
 	@Transactional
-	public Collection<Diet> findAllDiet() throws DataAccessException {
+	public void addFood(int dietId, int trainingId, Food f) throws TrainingFinished, FoodDuplicatedException{
 		
-		Collection<Diet> res = new ArrayList<>();
+		Training training = this.trainingService.findTrainingById(trainingId);
+		Diet diet = this.dietRepository.findDietById(dietId);
 		
-		for(Diet d: this.dietRepository.findAll())
-			res.add(d);
+		Calendar cal = Calendar.getInstance();
+		Date actualDate = cal.getTime();
+		if(diet.getFoods().contains(f))
+			throw new FoodDuplicatedException();
+		if(training.getEndDate().before(actualDate)) 
+			throw new TrainingFinished();
+		else 
+			diet.getFoods().add(f);
+			
 		
-		return res;		
 	}
-	@Transactional
+	
+	@Transactional(readOnly=true)
 	public Diet findDietById(Integer dietId) throws DataAccessException {
+		return this.dietRepository.findDietById(dietId);	
+
+	}
+	
+	@Transactional(readOnly=true)
+	public Collection<Diet> findAllDiet() throws DataAccessException {
+		return Lists.newArrayList(this.dietRepository.findAll());		
+
+	}
+
+	public void deleteAllFoodFromDiet(Integer dietId) throws DataAccessException {
+		Diet diet = this.dietRepository.findDietById(dietId);
+		diet.setFoods(null);
+		this.dietRepository.save(diet);
+	}
+	
+	public void deleteFood(Integer dietId, Integer foodId)throws DataAccessException{
+		Diet d = this.dietRepository.findDietById(dietId);
+		Food f = this.foodRepository.findFoodById(foodId);
+		d.getFoods().remove(f);
+		this.dietRepository.save(d);
 		
-		Diet res = this.dietRepository.findById(dietId).get();
+	}
+	@Transactional(readOnly=true)
+	public DietType selectDietType(Integer trainingId) {
 		
-		return res;		
+		DietType res = null;
+		Training t = this.trainingService.findTrainingById(trainingId);
+		Collection<Routine> routines = t.getRoutines();
+		Integer low = 0;
+		Integer moderated = 0;
+		Integer intense = 0;
+		Integer veryIntense = 0;
+		for(Routine r : routines) {
+			Collection<RoutineLine> routineLine = r.getRoutineLine();
+			for(RoutineLine rl : routineLine) {
+				if(rl.getExercise().getIntensity().equals(Intensity.LOW))
+					low++;
+				if(rl.getExercise().getIntensity().equals(Intensity.MODERATED))
+					moderated++;
+				if(rl.getExercise().getIntensity().equals(Intensity.INTENSE))
+					intense++;
+				if(rl.getExercise().getIntensity().equals(Intensity.VERY_INTENSE))
+					veryIntense++;
+			}
+		}
+		if((low>=moderated)&&(low>=intense)&&(low>=veryIntense))
+			res = DietType.VOLUME;
+		if((moderated>=low)&&(moderated>=intense)&&(moderated>=veryIntense))
+			res = DietType.MAINTENANCE;
+		if((intense>=low)&&(intense>=moderated)&&(intense>=veryIntense))
+			res = DietType.DEFINITION;
+		if((veryIntense>=low)&&(veryIntense>=intense)&&(veryIntense>=moderated))
+			res = DietType.EXTREME_DEFINITION;
+		
+		return res;
+	}
+	
+	public String getLoggedUsername()
+	{
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String clientUsername = ((UserDetails)principal).getUsername();
+		
+		return clientUsername;
 	}
 }

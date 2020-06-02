@@ -1,18 +1,38 @@
 package org.springframework.samples.yogogym.web;
 
-import java.util.Date;
-import java.util.Locale;
-import java.text.ParseException;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.yogogym.configuration.SecurityConfiguration;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Diet;
@@ -20,10 +40,7 @@ import org.springframework.samples.yogogym.model.Routine;
 import org.springframework.samples.yogogym.model.Trainer;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.User;
-import org.springframework.samples.yogogym.model.Enums.BodyParts;
 import org.springframework.samples.yogogym.model.Enums.EditingPermission;
-import org.springframework.samples.yogogym.model.Enums.Intensity;
-import org.springframework.samples.yogogym.model.Enums.RepetitionType;
 import org.springframework.samples.yogogym.service.ClientService;
 import org.springframework.samples.yogogym.service.TrainerService;
 import org.springframework.samples.yogogym.service.TrainingService;
@@ -34,29 +51,11 @@ import org.springframework.samples.yogogym.service.exceptions.LongerThan90DaysEx
 import org.springframework.samples.yogogym.service.exceptions.PastEndException;
 import org.springframework.samples.yogogym.service.exceptions.PastInitException;
 import org.springframework.samples.yogogym.service.exceptions.PeriodIncludingTrainingException;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.test.context.support.WithMockUser;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.hamcrest.CoreMatchers.*;
 
 @WebMvcTest(value = TrainingController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes = WebSecurityConfigurer.class),
@@ -95,10 +94,7 @@ class TrainingControllerTests {
 	
 	@MockBean
 	private TrainingService trainingService;
-	
-	@MockBean
-	private ClientFormatter clientFormatter;
-	
+		
 	@Autowired
 	private MockMvc mockMvc;
 		
@@ -266,18 +262,7 @@ class TrainingControllerTests {
 		given(this.trainingService.findTrainingWithPublicClient()).willReturn(trainingList1);
 		given(this.trainingService.findTrainingIdFromClient(CLIENT1_ID)).willReturn(trainingIdList);
 		given(this.trainingService.findTrainingIdFromClient(CLIENT2_ID)).willReturn(new ArrayList<>());
-		given(this.clientService.isPublicByTrainingId(CLIENT1_TRAINING4_ID)).willReturn(true);
-		try {
-			given(this.clientFormatter.parse(NIF1, Locale.ENGLISH)).willReturn(client1);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		try {
-			given(this.clientFormatter.parse(NIF2, Locale.ENGLISH)).willReturn(client2);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
+		given(this.clientService.isPublicByTrainingId(CLIENT1_TRAINING4_ID)).willReturn(true);		
 	}
 	
 	//TRAINER
@@ -439,7 +424,8 @@ class TrainingControllerTests {
 					hasProperty("id", equalTo(CLIENT1_TRAINING1_ID)),hasProperty("name", is("Training 1")),
 					hasProperty("initialDate", equalTo(initialDate)),hasProperty("endDate", equalTo(endDate)),
 					hasProperty("editingPermission", equalTo(EditingPermission.TRAINER)),hasProperty("author", is(TRAINER1_USERNAME)),
-					hasProperty("diet", nullValue()),hasProperty("routines", is(new ArrayList<>()))))))))));
+					hasProperty("diet", nullValue()),hasProperty("routines", is(new ArrayList<>()))))))))))
+				.andExpect(view().name("trainer/trainings/trainingsList"));
 	}			
 	
 	@WithMockUser(username=TRAINER1_USERNAME, authorities= {"trainer"})
@@ -907,7 +893,8 @@ class TrainingControllerTests {
 				.andExpect(model().attribute("trainings", hasItem(allOf(hasProperty("id", equalTo(CLIENT1_TRAINING1_ID)),
 					hasProperty("name", is("Training 1")),hasProperty("initialDate", equalTo(initialDate)),hasProperty("endDate", equalTo(endDate)),
 					hasProperty("editingPermission", equalTo(EditingPermission.TRAINER)),hasProperty("author", is(TRAINER1_USERNAME)),
-					hasProperty("diet", nullValue()),hasProperty("routines", is(new ArrayList<>()))))));
+					hasProperty("diet", nullValue()),hasProperty("routines", is(new ArrayList<>()))))))
+				.andExpect(view().name("client/trainings/trainingsList"));
 	}	
 	
 	@WithMockUser(username=CLIENT1_USERNAME, authorities= {"client"})

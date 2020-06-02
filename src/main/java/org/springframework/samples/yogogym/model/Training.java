@@ -1,5 +1,6 @@
 package org.springframework.samples.yogogym.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -7,7 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -60,4 +60,36 @@ public class Training extends BaseEntity{
 	@JoinColumn(name = "diet_id")
 	@Valid
 	protected Diet diet;
+	
+	public void copyTrainingInfo(Training trainingToCopy) {
+		if(trainingToCopy.getDiet()!=null) {
+			this.setDiet(trainingToCopy.getDiet());
+		}
+		if(trainingToCopy.getRoutines()!=null) {
+			for(Routine r : trainingToCopy.getRoutines()) {
+				Routine nueva = new Routine();
+				if(r.getRoutineLine()!=null) {
+					Collection<RoutineLine> routinesLines = new ArrayList<>();
+					for(RoutineLine rl : r.getRoutineLine()) {
+						RoutineLine nuevaRl = new RoutineLine();
+						nuevaRl.setExercise(rl.getExercise());
+						nuevaRl.setReps(rl.getReps());
+						nuevaRl.setSeries(rl.getSeries());
+						nuevaRl.setTime(rl.getTime());
+						nuevaRl.setWeight(rl.getWeight());
+						routinesLines.add(nuevaRl);
+					}
+					nueva.setRoutineLine(routinesLines);
+				}
+				nueva.setDescription(r.getDescription());
+				nueva.setName(r.getName());
+				nueva.setRepsPerWeek(r.getRepsPerWeek());
+				this.routines.add(nueva);
+			}
+		}
+	}
+	
+	public Boolean isEmpty() {
+		return this.getDiet()==null && (this.getRoutines().isEmpty()||this.getRoutines()==null);
+	}
 }
