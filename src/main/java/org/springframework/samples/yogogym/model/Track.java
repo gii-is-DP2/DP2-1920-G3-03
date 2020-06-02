@@ -1,8 +1,6 @@
 
 package org.springframework.samples.yogogym.model;
 
-import java.text.DecimalFormat;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

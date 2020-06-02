@@ -2,9 +2,6 @@ package org.springframework.samples.yogogym.ui.guilds;
 
 import static org.junit.Assert.assertEquals;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
