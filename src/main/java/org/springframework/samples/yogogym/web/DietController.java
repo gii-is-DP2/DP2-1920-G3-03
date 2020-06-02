@@ -6,8 +6,10 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.samples.yogogym.model.Client;
 import org.springframework.samples.yogogym.model.Diet;
 import org.springframework.samples.yogogym.model.Food;
@@ -27,13 +29,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.validation.Valid;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class DietController {
@@ -134,7 +134,6 @@ public class DietController {
 
 			return "trainer/diets/dietsCreateOrUpdate";
 		} else {
-			Trainer trainer = this.trainerService.findTrainer(trainerUsername);
 			Training training = this.trainingService.findTrainingById(trainingId);
 
 			if(diet.getType() == DietType.AUTO_ASSIGN){
@@ -340,7 +339,6 @@ public class DietController {
 		try {
 			this.dietService.addFood(dietId, trainingId, f);
 		} catch (TrainingFinished e) {
-			// TODO Auto-generated catch block
 			return "exception";
 		} catch (FoodDuplicatedException e) {
 			redirectAttrs.addFlashAttribute("foodDuplicated", "This food is in your Diet already");
@@ -364,7 +362,6 @@ public class DietController {
 		try {
 			this.dietService.saveDiet(diet, trainingId);
 		} catch (TrainingFinished e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return "redirect:/client/{clientUsername}/trainings/{trainingId}/diets/{dietId}/showFoods"; 

@@ -7,9 +7,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import org.junit.jupiter.api.Test;
 import org.springframework.samples.yogogym.web.PlaylistController;
 
-import lombok.extern.java.Log;
-
-@Log
 public class SpotifyAPIContractTest {
     
     private String idPlaylist = "37i9dQZF1DX2apWzyECwyZ";

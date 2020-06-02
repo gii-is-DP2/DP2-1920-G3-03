@@ -25,7 +25,6 @@ import org.springframework.samples.yogogym.model.Food;
 import org.springframework.samples.yogogym.model.Training;
 import org.springframework.samples.yogogym.model.Enums.DietType;
 import org.springframework.samples.yogogym.service.exceptions.FoodDuplicatedException;
-import org.springframework.samples.yogogym.service.exceptions.GuildNotCreatorException;
 import org.springframework.samples.yogogym.service.exceptions.TrainingFinished;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.DirtiesContext;

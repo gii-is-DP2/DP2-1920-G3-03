@@ -1,14 +1,10 @@
 package org.springframework.samples.yogogym.web.integration;
 
 import static io.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.notNullValue;
 
 import org.junit.jupiter.api.Test;
 
-import lombok.extern.java.Log;
-
-
-@Log
 public class QuoteControllerAPIContractTest {
 
 	@Test

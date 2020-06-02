@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@SuppressWarnings("serial")
 public class TokenMapper implements Serializable {
 
 	@JsonProperty("access_token")

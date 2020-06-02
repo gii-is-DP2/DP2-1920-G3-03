@@ -171,13 +171,11 @@
         	<dependency>
     		<groupId>io.rest-assured</groupId>
     		<artifactId>rest-assured</artifactId>
-    		<version>${rest-assured.version}</version>
     		<scope>test</scope>
 		</dependency>		
 		<dependency>
     		<groupId>io.rest-assured</groupId>
     		<artifactId>json-path</artifactId>
-    		<version>${rest-assured.version}</version>
     		<scope>test</scope>
 		</dependency>
         <!-- Development tools -->
