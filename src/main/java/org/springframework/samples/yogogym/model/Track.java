@@ -1,6 +1,8 @@
 
 package org.springframework.samples.yogogym.model;
 
+import java.text.DecimalFormat;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -66,12 +68,17 @@ public class Track {
 
 	@JsonProperty("duration_ms")
 	public Double getDurationMs() {
-//		DecimalFormat df = new DecimalFormat("0.00");
-//		String res =df.format(durationMs/60000);
-//		Double res1 = Double.valueOf(res);
-		return durationMs/60000;
-	}
 
+		Double res = (int)(Math.round(durationMs/60000 * 100))/100.0;
+		Integer entera = res.intValue();
+		if(res-entera >0.6) {
+			Double aux = entera-res;
+			aux = aux-0.6;
+			entera+=1;
+			res = entera+aux;
+		}
+		return res; 
+	}
 	@JsonProperty("duration_ms")
 	public void setDurationMs(Double durationMs) {
 		this.durationMs = durationMs;
