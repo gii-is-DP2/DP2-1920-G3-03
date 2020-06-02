@@ -20,22 +20,20 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DashBoardEquipmentAdminUITest {
 
+	private static final String ADMIN = "admin1";
+	private static final String ADMIN_PASSWORD = "admin1999";
+
 	@LocalServerPort
 	private int port;
-
 	private WebDriver driver;
 	private StringBuffer verificationErrors = new StringBuffer();
+	UtilsEquipmentsUI utils;
 
 	@BeforeEach
 	public void setUp() throws Exception {
 		driver = new FirefoxDriver();
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-	}
-
-	@Test
-	public void testDashBoardEquipmentAdminUI() throws Exception {
-		as("admin1");
-		showDashboardEquipment();
+		utils = new UtilsEquipmentsUI(port, driver);
 	}
 
 	@AfterEach
@@ -47,28 +45,33 @@ public class DashBoardEquipmentAdminUITest {
 		}
 	}
 
-	private void as(String username) {
-		driver.get("http://localhost:" + port);
-		driver.findElement(By.linkText("Login")).click();
-		driver.findElement(By.id("password")).clear();
-		driver.findElement(By.id("password")).sendKeys("admin1999");
-		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys(username);
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
+	@Test
+	public void testDashboardCompleted() throws Exception {
+		utils.init();
+		utils.as(ADMIN, ADMIN_PASSWORD);
+		utils.dashboardOfMonthAndYear("2020-01");
+
 		try {
-			assertEquals(username, driver
-					.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul[2]/li/a/strong")).getText());
+			assertEquals("Month: 1 - 2020", driver.findElement(By.xpath("//h3")).getText());
+		} catch (Error e) {
+			verificationErrors.append(e.toString());
+		}
+		driver.findElement(By.id("canvas")).click();
+		driver.findElement(By.id("canvas")).click();
+		driver.findElement(By.id("canvas")).click();
+	}
+	
+	@Test
+	public void testDashboardUncompleted() throws Exception {
+		utils.init();
+		utils.as(ADMIN, ADMIN_PASSWORD);
+		utils.dashboardOfMonthAndYear("2020-05");
+
+		try {
+			assertEquals("Month: 5 - 2020", driver.findElement(By.xpath("//h3")).getText());
 		} catch (Error e) {
 			verificationErrors.append(e.toString());
 		}
 	}
 
-	private void showDashboardEquipment() {
-		driver.findElement(By.linkText("Admin")).click();
-		driver.findElement(By.xpath("//div[@id='bs-example-navbar-collapse-1']/ul/li[2]/ul/li[3]/a/span[2]")).click();
-		driver.findElement(By.id("canvasWeek")).click();
-		driver.findElement(By.id("canvasWeek")).click();
-		driver.findElement(By.id("canvasMonth")).click();
-		driver.findElement(By.id("canvasMonth")).click();
-	}
 }

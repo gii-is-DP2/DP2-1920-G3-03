@@ -72,7 +72,7 @@ public class RoutineServiceTest {
 		cal.add(Calendar.DAY_OF_MONTH, 1);
 		Date  newEndDate = cal.getTime();
 		
-		createRoutine(trainerUsername,newEndDate,trainingId);
+		createRoutine(trainerUsername,newEndDate,trainingId, EditingPermission.TRAINER);
 	}
 	
 	@Test
@@ -102,7 +102,7 @@ public class RoutineServiceTest {
 		cal.add(Calendar.DAY_OF_MONTH, 1);
 		Date  newEndDate = cal.getTime();
 		
-		deleteRoutine(trainerUsername,newEndDate,EditingPermission.TRAINER);		
+		deleteRoutine(trainerUsername,1,1,newEndDate,EditingPermission.TRAINER);		
 	}
 	
 	@Test
@@ -128,7 +128,7 @@ public class RoutineServiceTest {
 		cal.add(Calendar.DAY_OF_MONTH, 1);
 		Date  newEndDate = cal.getTime();
 				
-		createRoutine(clientUsername,newEndDate,trainingId);
+		createRoutine(clientUsername,newEndDate,trainingId, EditingPermission.CLIENT);
 	}
 	
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
@@ -140,7 +140,7 @@ public class RoutineServiceTest {
 		cal.add(Calendar.DAY_OF_MONTH, 1);
 		Date  newEndDate = cal.getTime();
 		
-		deleteRoutine(clientUsername,newEndDate,EditingPermission.CLIENT);		
+		deleteRoutine("client6",18,11,newEndDate,EditingPermission.CLIENT);		
 	}
 	
 	@Test
@@ -157,11 +157,12 @@ public class RoutineServiceTest {
 	
 	//Base Methods
 	
-	void createRoutine(String username,Date newEndDate, final int trainingId)
+	void createRoutine(String username,Date newEndDate, final int trainingId, EditingPermission permision)
 	{
 		//Setting future end date
 		Training training = this.trainingService.findTrainingById(trainingId);
 		training.setEndDate(newEndDate);
+		training.setEditingPermission(permision);
 		
 		//Check all routine and all of a specific training before adding
 		Collection<Routine> trainingRoutinesbeforeAdding = this.routineService.findAllRoutinesFromTraining(trainingId);
@@ -208,7 +209,7 @@ public class RoutineServiceTest {
 		assertTrue(hasBeenAddedToRoutine && hasBeenAddedToTraining && sameName && sameDescription && sameRepetitionsPerWeek);		
 	}
 	
-	void deleteRoutine(String username, Date newEndDate, EditingPermission editPerm)
+	void deleteRoutine(String username, int routineId, int trainingId, Date newEndDate, EditingPermission editPerm)
 	{			
 		//Get the specified routine (routineId)
 		Routine routine = this.routineService.findRoutineById(routineId);
@@ -218,6 +219,7 @@ public class RoutineServiceTest {
 		training.setEndDate(newEndDate);
 		training.setEditingPermission(editPerm);
 		Client client = this.clientService.findClientByUsername(clientUsername);
+		
 		try {
 			this.trainingService.saveTraining(training,client);
 		}

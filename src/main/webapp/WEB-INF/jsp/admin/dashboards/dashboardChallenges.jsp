@@ -9,40 +9,42 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 
-<script type="text/javascript">
-function createUrl(){
-    var action_src = "/admin/dashboardChallenges/" + document.getElementsByName("month")[0].value;
-    var form = document.getElementById('form1');
-    form.action = action_src ;
-}
-</script>
-
 
 <petclinic:layout pageName="dashboards">
 <script src="https://code.jquery.com/jquery-3.4.1.slim.js" integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
 
-<form id="form1" onsubmit="createUrl()">
+<style>
+	.ui-datepicker-calendar
+	{
+		display:none;
+	}
+</style>
+
+<script>
+	$(function(){		
+		$("#monthPicker").datepicker( {
+			showButtonPanel: true,
+	        dateFormat: 'yy-mm',	        
+	        onClose: function(dateText, inst) {
+	        	if(!$("#monthPicker").val())
+	        	{
+                	$(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));	        		
+	        	}
+            }
+		});		
+	});
+</script>
+
+<form id="form1" onsubmit="/admin/dashboardChallenges/">
 		
-	<select id="month" name="month">
-	  <option selected disabled hidden>Month</option>
-	  <option value="1">January</option>
-	  <option value="2">February</option>
-	  <option value="3">March</option>
-	  <option value="4">April</option>
-	  <option value="5">May</option>
-	  <option value="6">June</option>
-	  <option value="7">July</option>
-	  <option value="8">August</option>
-	  <option value="9">September</option>
-	  <option value="10">October</option>
-	  <option value="11">November</option>
-	  <option value="12">December</option>
-	</select>
-	<input type="submit" value="Change"></input>
+	<input id="monthPicker" type="text" name="monthAndYear" required="required" pattern="^[0-9]{4}-[0-9]{2}$"/>
+	<input type="submit" value="Enviar"/>
 
 </form>
+<br>
+<h3>Month: <c:out value="${month}"/> - <c:out value="${year}"/></h3>
 
 <c:choose>
 
@@ -61,13 +63,13 @@ function createUrl(){
 			<c:otherwise>
 				<div>
 					<h3 style="color:green">Client with more points this month: </h3> 
-					<h5><b><c:out value="${client.firstName} ${client.lastName}"/></b>  (<c:out value="${client.email}"/>)</h5>
+					<h5><b><c:out value="${client}"/></b>  (<c:out value="${email}"/>)</h5>
 					<b>Points:</b><c:out value="${cPoints}"></c:out>
 					
 					<br><br>
 								
 					<h3 style="color:green">Guild with more points this month: </h3> 
-					<h5><b><c:out value="${guild.name}"></c:out></b></h5>
+					<h5><b><c:out value="${guild}"></c:out></b></h5>
 					<b>Points:</b><c:out value="${gPoints}"></c:out>
 				</div>
 				

@@ -1,7 +1,6 @@
 
 package org.springframework.samples.yogogym.service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -9,6 +8,8 @@ import org.springframework.samples.yogogym.model.Exercise;
 import org.springframework.samples.yogogym.repository.ExerciseRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.collect.Lists;
 
 @Service
 public class ExerciseService {
@@ -31,16 +32,9 @@ public class ExerciseService {
 		this.exerciseRepository.save(exercise);
 	}
 
-	@Transactional
+	@Transactional(readOnly=true)
 	public Collection<Exercise> findAllExercise() throws DataAccessException {
-
-		Collection<Exercise> res = new ArrayList<>();
-
-		for (Exercise e : this.exerciseRepository.findAll()) {
-			res.add(e);
-		}
-
-		return res;
+		return Lists.newArrayList(this.exerciseRepository.findAll());
 	}
 
 	@Transactional(readOnly = true)

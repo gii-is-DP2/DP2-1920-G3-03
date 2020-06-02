@@ -80,11 +80,15 @@ public class InscriptionController {
 	@GetMapping("/client/{clientUsername}/challenges/{challengeId}/inscription/create")
 	public String createInscriptionByChallengeId(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, ModelMap model) {	  
 		
-		if(!isLoggedPrincipal(clientUsername))
+		if(!isLoggedPrincipal(clientUsername) )
 			return "exception";
 		
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 		Client client = this.clientService.findClientByUsername(clientUsername);
+		
+		if(alreadyInscribed(client, challenge))
+				return "exception";
+		
 	   	Inscription inscription = new Inscription();
 	   	
 	   	inscription.setChallenge(challenge);
@@ -127,6 +131,12 @@ public class InscriptionController {
 		}
 		
 		return principalUsername.trim().toLowerCase().equals(Username.trim().toLowerCase());
+	}
+	
+	private boolean alreadyInscribed(Client client, Challenge challenge) {
+		
+		Inscription a = this.inscriptionService.findInscriptionByClientAndChallenge(client, challenge);
+		return a != null;
 	}
 	
 }

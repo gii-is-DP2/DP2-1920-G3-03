@@ -22,6 +22,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -44,7 +45,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper=false)
-@Table(name = "clients")
+@Table(name = "clients", indexes = { @Index(columnList = "username")})
 public class Client extends Person {
 	
 	@OneToOne(cascade = CascadeType.ALL)

@@ -60,10 +60,11 @@
                 <yogogym:inputField label="${protein}" name="protein"/>
                 <yogogym:inputField label="${carb}" name="carb"/>
                 <yogogym:inputField label="${fat}" name="fat"/>
-
+				
+				
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button class="btn btn-default" type="submit"><fmt:message key="saveDiet"/></button>
+                        <button class="btn btn-default" type="submit">Save Diet</button>
                     </div>
                 </div>
                 

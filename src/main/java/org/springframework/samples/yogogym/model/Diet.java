@@ -54,6 +54,7 @@ public class Diet extends BaseEntity{
 	@Min(0)
 	protected Integer carb;
 	
+	@Column(name = "foods")
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	protected Collection<Food> foods;
 

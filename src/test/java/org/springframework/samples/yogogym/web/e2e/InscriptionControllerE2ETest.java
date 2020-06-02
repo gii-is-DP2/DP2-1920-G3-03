@@ -39,6 +39,8 @@ public class InscriptionControllerE2ETest {
 	private static final String CLIENT_USERNAME_1 = "client1";
 	private static final String CLIENT_USERNAME_2 = "client2";
 	
+	private static final String EXCEPTION = "exception";
+	
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -68,7 +70,7 @@ public class InscriptionControllerE2ETest {
 	void testShowSubmittedInscriptionByIdAdminNotSubmitted() throws Exception {
 		
 		mockMvc.perform(get("/admin/inscriptions/submitted/{inscriptionId}", INSCRIPTION_ID_1)).andExpect(status().isOk())
-				.andExpect(view().name("exception"));
+				.andExpect(view().name(EXCEPTION));
 	}
 	
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
@@ -116,7 +118,7 @@ public class InscriptionControllerE2ETest {
 
 		mockMvc.perform(post("/client/{clientUsername}/challenges/{challengeId}/inscription/{inscriptionId}/submit",
 				CLIENT_USERNAME_1, CHALLENGE_ID_1, INSCRIPTION_ID_1).with(csrf()).param("url", "https://test.com"))
-				.andExpect(view().name("exception"));
+				.andExpect(view().name(EXCEPTION));
 	}
 
 }

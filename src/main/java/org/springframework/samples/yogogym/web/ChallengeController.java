@@ -36,6 +36,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class ChallengeController {
 
 	
+	private static final String EXCEPTION = "exception";
+	private static final String CREATE_OR_UPDATE_CHALLENGE = "/admin/challenges/challengesCreateOrUpdate";
+	
+	
 	private ChallengeService challengeService;
 	private ExerciseService exerciseService;
 	private InscriptionService inscriptionService;
@@ -84,48 +88,26 @@ public class ChallengeController {
 	public String initCreationForm(ModelMap modelMap) {
 	
 		Challenge c = new Challenge();
-
-		Collection<Exercise> exercises = this.exerciseService.findAllExercise();
-		Map<Integer,String> selectVals = new TreeMap<>();
-		
-		String value = "";
-		for(Exercise e:exercises)
-		{
-			value = e.getName();
-			
-			if(e.getEquipment() != null)
-				value = value.concat(", Equipment: "+e.getEquipment().getName());
-			
-			selectVals.put(e.getId(), value);
-		}
+		Map<Integer,String> exercises = getAllExercises();
 				
 		modelMap.addAttribute("challenge", c);
-		modelMap.addAttribute("exercises",selectVals);
+		modelMap.addAttribute("exercises", exercises);
 		
-		return "/admin/challenges/challengesCreateOrUpdate";
+		return CREATE_OR_UPDATE_CHALLENGE;
 	}
 	
+
 	@PostMapping("/admin/challenges/new")
 	public String processCreationForm(@ModelAttribute("exercise.id")int exerciseId ,@Valid Challenge challenge,BindingResult result, ModelMap model) {
 		
 		if(result.hasErrors()) {
+			
 			model.put("challenge",challenge);
-			Collection<Exercise> exercises = this.exerciseService.findAllExercise();
-			Map<Integer,String> selectVals = new TreeMap<>();
 			
-			String value = "";
-			for(Exercise e:exercises)
-			{
-				value = e.getName();
-				
-				if(e.getEquipment() != null)
-					value = value.concat(", Equipment: "+e.getEquipment().getName());
-				
-				selectVals.put(e.getId(), value);
-			}
-			model.addAttribute("exercises",selectVals);
+			Map<Integer,String> exercises = getAllExercises();
+			model.addAttribute("exercises", exercises);
 			
-			return "/admin/challenges/challengesCreateOrUpdate";
+			return CREATE_OR_UPDATE_CHALLENGE;
 		}
 		else {
 			try{
@@ -141,22 +123,10 @@ public class ChallengeController {
             		result.rejectValue("initialDate", "required: ", "There must not be more than 3 challenges per week");
             	}
             	
-            	Collection<Exercise> exercises = this.exerciseService.findAllExercise();
-    			Map<Integer,String> selectVals = new TreeMap<>();
+            	Map<Integer,String> exercises = getAllExercises();
+    			model.addAttribute("exercises", exercises);
     			
-    			String value = "";
-    			for(Exercise e:exercises)
-    			{
-    				value = e.getName();
-    				
-    				if(e.getEquipment() != null)
-    					value = value.concat(", Equipment: "+e.getEquipment().getName());
-    				
-    				selectVals.put(e.getId(), value);
-    			}
-    			model.addAttribute("exercises",selectVals);
-    			
-                return "/admin/challenges/challengesCreateOrUpdate";
+                return CREATE_OR_UPDATE_CHALLENGE;
             }
 
 			return "redirect:/admin/challenges";
@@ -167,19 +137,9 @@ public class ChallengeController {
 	public String initUpdateForm(@PathVariable("challengeId")int challengeId, ModelMap model) {
 		
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
-		Collection<Exercise> exercises = this.exerciseService.findAllExercise();
-		Map<Integer,String> selectVals = new TreeMap<>();
 		
-		String value = "";
-		for(Exercise e:exercises)
-		{
-			value = e.getName();
-			
-			if(e.getEquipment() != null)
-				value = value.concat(", Equipment: "+e.getEquipment().getName());
-			
-			selectVals.put(e.getId(), value);
-		}
+		Map<Integer,String> exercises = getAllExercises();
+		model.addAttribute("exercises", exercises);
 		
 		// If there are inscriptions, it cannot be edited
 		Collection<Inscription> inscriptions = inscriptionService.findInscriptionsByChallengeId(challengeId);
@@ -188,9 +148,8 @@ public class ChallengeController {
 		}
 					
 		model.addAttribute(challenge);
-		model.addAttribute("exercises",selectVals);
 		
-		return "/admin/challenges/challengesCreateOrUpdate";
+		return CREATE_OR_UPDATE_CHALLENGE;
 	}
 	
 	@PostMapping("/admin/challenges/{challengeId}/edit")
@@ -198,24 +157,12 @@ public class ChallengeController {
 			@ModelAttribute("exercise.id")int exerciseId, @Valid Challenge challenge,  BindingResult result,ModelMap model) {
 		
 		if(result.hasErrors()) {
+			
 			model.put("challenge",challenge);
-			Collection<Exercise> exercises = this.exerciseService.findAllExercise();
-			Map<Integer,String> selectVals = new TreeMap<>();
+			Map<Integer,String> exercises = getAllExercises();
+			model.addAttribute("exercises", exercises);
 			
-			String value = "";
-			for(Exercise e:exercises)
-			{
-				value = e.getName();
-				
-				if(e.getEquipment() != null)
-					value = value.concat(", Equipment: "+e.getEquipment().getName());
-				
-				selectVals.put(e.getId(), value);
-			}
-			
-			model.addAttribute("exercises",selectVals);
-			
-			return "/admin/challenges/challengesCreateOrUpdate";
+			return CREATE_OR_UPDATE_CHALLENGE;
 		}
 		else {
 			try{
@@ -231,25 +178,11 @@ public class ChallengeController {
             	else if(ex instanceof ChallengeMore3Exception) {
             		result.rejectValue("initialDate", "required: ", "There must not be more than 3 challenges per week");
             	}
-            	
-            	Collection<Exercise> exercises = this.exerciseService.findAllExercise();
-    			Map<Integer,String> selectVals = new TreeMap<>();
+            	Map<Integer,String> exercises = getAllExercises();
+    			model.addAttribute("exercises", exercises);
     			
-    			String value = "";
-    			for(Exercise e:exercises)
-    			{
-    				value = e.getName();
-    				
-    				if(e.getEquipment() != null)
-    					value = value.concat(", Equipment: "+e.getEquipment().getName());
-    				
-    				selectVals.put(e.getId(), value);
-    			}
-    			model.addAttribute("exercises",selectVals);
-    			
-                return "/admin/challenges/challengesCreateOrUpdate";
+                return CREATE_OR_UPDATE_CHALLENGE;
             }
-
 			return "redirect:/admin/challenges";
 		}
 	}
@@ -261,7 +194,7 @@ public class ChallengeController {
 		try {
 			this.challengeService.deleteChallenge(challenge);
 		}catch(ChallengeWithInscriptionsException ex){
-			return "exception";
+			return EXCEPTION;
 		}
 		
 		return "redirect:/admin/challenges";
@@ -273,7 +206,7 @@ public class ChallengeController {
 	public String listChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
 			
 		if(!isLoggedPrincipal(clientUsername))
-			return "exception";
+			return EXCEPTION;
 		
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		List<Challenge> challenges = this.challengeService.findAllChallengesClients(client.getId(), client.getInscriptions());
@@ -286,13 +219,13 @@ public class ChallengeController {
 	public String showChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, ModelMap model) {	  
 
 		if(!isLoggedPrincipal(clientUsername))
-			return "exception";
+			return EXCEPTION;
 		
 	   	Challenge challenge = this.challengeService.findChallengeById(challengeId);
 	    //Not already inscribed
 	    Client client = this.clientService.findClientByUsername(clientUsername);
 	    if(client.getInscriptions().stream().anyMatch(i -> i.getChallenge().equals(challenge)))
-	    	return "exception";
+	    	return EXCEPTION;
 	  		
 	   	model.addAttribute("challenge", challenge);
 	   	
@@ -303,7 +236,7 @@ public class ChallengeController {
 	public String listMyChallengesClient(@PathVariable("clientUsername") String clientUsername, ModelMap modelMap) {
 			
 		if(!isLoggedPrincipal(clientUsername))
-			return "exception";
+			return EXCEPTION;
 
 		Client client = this.clientService.findClientByUsername(clientUsername);
 		
@@ -319,7 +252,7 @@ public class ChallengeController {
 	public String showAndEditMyChallengeByIdClient(@PathVariable("clientUsername") String clientUsername, @PathVariable("challengeId") int challengeId, ModelMap model) {	  
 
 		if(!isLoggedPrincipal(clientUsername))
-			return "exception";
+			return EXCEPTION;
 	
 		Challenge challenge = this.challengeService.findChallengeById(challengeId);
 	   	Client client = this.clientService.findClientByUsername(clientUsername);
@@ -328,13 +261,32 @@ public class ChallengeController {
 	   	if(client.getInscriptions().stream().anyMatch(i -> i.getChallenge().equals(challenge))) {
 	   		inscription = client.getInscriptions().stream().filter(i -> i.getChallenge().equals(challenge)).findFirst().get();
 	   	}else {
-	   		return "exception";
+	   		return EXCEPTION;
 	   	}
 	   	
 	   	model.addAttribute("challenge", challenge);
 	   	model.addAttribute("inscription",inscription);
 	   	
 	    return "client/challenges/myChallengeDetailsAndUpdate";
+	}
+	
+	private Map<Integer, String> getAllExercises() {
+		
+		Collection<Exercise> exercises = this.exerciseService.findAllExercise();
+		Map<Integer,String> selectVals = new TreeMap<>();
+		
+		String value = "";
+		for(Exercise e:exercises)
+		{
+			value = e.getName();
+			
+			if(e.getEquipment() != null)
+				value = value.concat(", Equipment: "+e.getEquipment().getName());
+			
+			selectVals.put(e.getId(), value);
+		}
+		
+		return selectVals;
 	}
 	
 	private boolean isLoggedPrincipal(String Username) {
