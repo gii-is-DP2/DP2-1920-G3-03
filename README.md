@@ -359,12 +359,17 @@ Como cliente quiero poder tener un dashboard donde poder ver el Historial de act
 
 #### HU19 - Personalizar mi entrenamiento
 
-Como cliente quiero poder personalizar mi entrenamiento para actualizarlo o personalizarlo a mi gusto.
+Como cliente quiero poder personalizar mi entrenamiento para tener un mayor dominio respecto a los entrenamientos que realizo.
 
 #### Escenarios:
 
-* **Con permiso para edición:** Dado un cliente con un entrenamiento que pueda ser editado se le permitirá actualizarlo a su gusto.
-* **Sin permiso para edición:** Dado un cliente con un entrenamiento que  no puede ser editado no se le permitirá actualizarlo.
+* **Como creador del entrenamiento:** * Dado un cliente con usuario "client1" a la hora de crear un entrenamiento desde la vista del menu de cliente haciendo click en "Trainings" y "Add Training". El entrenamiento automáticamente asigna como creador al "client1" y por lo tanto tiene todos los privilegios de gestión del entrenamiento: crear, actualizar y borrar.
+
+* **Como no creador del entrenamiento:** * Dado un cliente con usuario "client1" que posee un entrenamiento no creado por el, este solo dispondrá de los permisos que indican los escenarios de "con permiso de edición" y "sin permiso de edición".
+
+* **Con permiso para edición:** Dado un cliente con usuario "client1" a la hora de editar un entrenamiento creado por un entrenador, si este posee la opción de que el entrenamiento sea actualizable tanto por el entrenador como por el cliente, el cliente tendrá la opción de editar entrenamiento pero no será capaz de borrarlo ya que no es el creador.
+
+* **Sin permiso para edición:** Dado un cliente con usuario "client1" a la hora de editar un entrenamiento creado por un entrenador, si este no le da la opción de que el entrenamiento sea actualizable tanto por el entrenador como por el cliente, el cliente tendrá la opción de editar entrenamiento desactivada.
 
 ---
 
