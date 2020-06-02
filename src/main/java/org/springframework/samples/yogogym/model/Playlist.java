@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "description",
-   
     "href",
     "id",
     "tracks",
@@ -23,12 +22,13 @@ public class Playlist {
   
     @JsonProperty("href")
     private String href;
+    
     @JsonProperty("id")
     private String id;
    
     @JsonProperty("name")
     private String name;
-   
+       
     @JsonProperty("tracks")
     private Tracks tracks;
     
@@ -110,5 +110,6 @@ public class Playlist {
     public void setUri(String uri) {
         this.uri = uri;
     }
+    
 
 }

@@ -14,6 +14,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -22,72 +24,88 @@ public class UpdateGuildUITest {
 
 	@LocalServerPort
 	private int port;
-
 	private WebDriver driver;
-	private StringBuffer verificationErrors = new StringBuffer();
+	UtilsGuildUI utils;
+	
+	private static final String CLIENT_USERNAME = "client1";
+
+	private static final String GUILD_DESC = "Actualizando Guild";
 
 	@BeforeEach
 	public void setUp() throws Exception {
 		driver = new FirefoxDriver();
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		utils = new UtilsGuildUI(port, driver);
 	}
-
-	@Test
-	public void testUpdateGuild() throws Exception {
-
-		as("client2");
-		updateGuild();
-		checkTheUpdate();
-	}
-
+	
+	
 	@AfterEach
 	public void tearDown() throws Exception {
 		driver.quit();
-		String verificationErrorString = verificationErrors.toString();
+		String verificationErrorString = utils.getVerificationError().toString();
 		if (!"".equals(verificationErrorString)) {
 			fail(verificationErrorString);
 		}
 	}
 
-	private void as(String username) {
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+	@Test
+	public void testUpdateGuildUI() throws Exception {
 
-		driver.get("http://localhost:" + port);
-		driver.findElement(By.linkText("Login")).click();
-		driver.findElement(By.id("username")).click();
-		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys(username);
-		driver.findElement(By.id("password")).clear();
-		driver.findElement(By.id("password")).sendKeys("client1999");
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		utils.as(CLIENT_USERNAME);
+		utils.updateGuild("AnotherName", GUILD_DESC, "https://loco.png");
+		
 	}
-
-	private void updateGuild() {
-		driver.findElement(By.linkText("Client")).click();
-		driver.findElement(By.linkText("Guilds")).click();
-		driver.findElement(By.linkText("See your Guild")).click();
-		driver.findElement(By.linkText("Edit")).click();
-		driver.findElement(By.id("name")).click();
-		driver.findElement(By.id("name")).clear();
-		driver.findElement(By.id("name")).sendKeys("Weightlifting 2");
-		driver.findElement(By.id("description")).click();
-		driver.findElement(By.id("description")).click();
-		driver.findElement(By.id("description")).clear();
-		driver.findElement(By.id("description")).sendKeys("This is a normal Update");
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-	}
-
-	private void checkTheUpdate() {
-
+	
+	@Test
+	public void testUpdateGuildBadURLUI() throws Exception {
+		utils.as(CLIENT_USERNAME);
+		utils.updateGuild("Another Name", GUILD_DESC, "bad URL");
+		
 		try {
-			assertEquals("Description: This is a normal Update", driver.findElement(By.xpath("//p[3]")).getText());
+			assertEquals("The link must start with https://",
+					driver.findElement(By.xpath("//form[@id='guild']/div/div[2]/div/span[2]")).getText());
 		} catch (Error e) {
-			verificationErrors.append(e.toString());
-		}
-		try {
-			assertEquals("Weightlifting 2", driver.findElement(By.xpath("//h1")).getText());
-		} catch (Error e) {
-			verificationErrors.append(e.toString());
+			utils.getVerificationError().append(e.toString());
 		}
 	}
+	
+	@Test
+	public void testUpdatGuildEmptyUI () throws Exception {
+		
+		utils.as(CLIENT_USERNAME);
+		utils.updateGuild("", "", "");
+		
+		try {
+			assertEquals("no puede estar vacío",
+					driver.findElement(By.xpath("//form[@id='guild']/div/div[2]/div/span[2]")).getText());
+		} catch (Error e) {
+			utils.getVerificationError().append(e.toString());
+		}
+		try {
+			assertEquals("no puede estar vacío",
+					driver.findElement(By.xpath("//form[@id='guild']/div/div[3]/div/span[2]")).getText());
+		} catch (Error e) {
+			utils.getVerificationError().append(e.toString());
+		}
+		try {
+			assertEquals("no puede estar vacío",
+					driver.findElement(By.xpath("//form[@id='guild']/div/div[4]/div/span[2]")).getText());
+		} catch (Error e) {
+			utils.getVerificationError().append(e.toString());
+		}
 
+	}
+	
+	@Test
+	public void updateGuildSameNameUI() throws Exception {
+		 utils.as(CLIENT_USERNAME);
+		 utils.updateGuild("Weightlifting", GUILD_DESC, "https://updating.jpg");
+		 try {
+				assertEquals("There is already a guild with that name",
+						driver.findElement(By.xpath("//form[@id='guild']/div/div[3]/div/span[2]")).getText());
+			} catch (Error e) {
+				utils.getVerificationError().append(e.toString());
+			}
+	}
 }
